@@ -1,8 +1,10 @@
 /*
- * Copyright (c) 2009 PJRC.COM, LLC
+ * Diy PS3 controller
  * Copyright (c) 2010 Mathieu Laurendeau
  *
- * USB HID joystick layer.
+ * Original code from the Keyboard example for Teensy USB Development Board
+ * http://www.pjrc.com/teensy/usb_keyboard.html
+ * Copyright (c) 2008 PJRC.COM, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
