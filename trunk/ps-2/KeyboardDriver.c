@@ -28,7 +28,6 @@
 #include "KeyboardDriver.h"
 #include "MouseDriver.h"
 #include "EventAction.h"
-#include "System.h"
 
 #include "usb_joystick.h"
 #include "led.h"
