@@ -22,10 +22,6 @@
 #ifndef _RINGBUFF_H_
 #define _RINGBUFF_H_
 
-#define	RING_DEFAULT_SIZE	64
-#define RING_RECIEVE_SIZE	64 + 16
-#define RING_TRANSMIT_SIZE	128
-
 typedef struct _ringbuff_t
 {
 	uint8_t *data;			// Physical memory address where the buffer is stored
