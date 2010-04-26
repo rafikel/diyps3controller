@@ -38,6 +38,17 @@
 #define KB_INT                          INT7
 #define KB_INT_VECTOR                   INT7_vect
 
+#if defined(__AVR_AT90USB162__)
+#define KB_DATA_PORT                    PORTD
+#define KB_DATA_DDR                     DDRD
+#define KB_DATA_PIN                     PIND
+#define KB_DATA_BIT                     PD1
+
+#define KB_CLOCK_PORT                   PORTD
+#define KB_CLOCK_DDR                    DDRD
+#define KB_CLOCK_PIN                    PIND
+#define KB_CLOCK_BIT                    PD7
+#elif defined(__AVR_AT90USB1286__)
 #define KB_DATA_PORT                    PORTE
 #define KB_DATA_DDR                     DDRE
 #define KB_DATA_PIN                     PINE
@@ -47,6 +58,9 @@
 #define KB_CLOCK_DDR                    DDRE
 #define KB_CLOCK_PIN                    PINE
 #define KB_CLOCK_BIT                    PE7
+#endif
+
+
 
 #define KB_BUFSIZE                      8
 
