@@ -30,7 +30,6 @@
 #include "RingBuffer.h"
 #include "KeyboardDriver.h"
 #include "MouseDriver.h"
-#include "System.h"
 
 #include "led.h"
 
@@ -41,11 +40,7 @@
  */
 void main( void ) __attribute__ ((noreturn));
 
-system_t Configuration;
-
 #define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
-
-#define TEST 0
 
 /*
  ********************************************************************************
@@ -66,10 +61,10 @@ void main( void )
     LED_ON;
     
     /* Initialize Keyboard Driver */
-    if(!TEST) KB_Init();
+    KB_Init();
 
     /* Initialize Mouse Driver */
-    if(!TEST) MS_Init();
+    MS_Init();
     
     /* Initialize USB Joystick variables */
     usb_joystick_raz();
@@ -86,62 +81,23 @@ void main( void )
     /* Send a first packet */
     usb_joystick_send();
 	
-	if(TEST)
-	{
-		usb_joystick_press(CROSS_BUTTON);
-	}
-
+    /*
+	 * Comment that code to test rotation speed for a given position.
+	 */
     while( 1 )
     {
-        if(!TEST)
-		{
-			KB_EventTask();
-			MS_EventTask();
-		}
-		else
-		{
-
-			//That code is used to test rotation speed for a given position.
-
-			usb_joystick_move_zrz(153, 128);
-			usb_joystick_send();
-
-			_delay_ms(5000);
-
-			/*
-			int i;
-
-			usb_joystick_move_zrz(128, 83);
-			usb_joystick_send();
-			
-			for(i=0 ; i ; i++)
-			{
-				_delay_ms(1000);
-			}
-			
-			usb_joystick_move_zrz(128, 128);
-			usb_joystick_send();
-			
-			LED_ON;
-			_delay_ms(5000);
-			LED_OFF;
-			
-			usb_joystick_move_zrz(128, 173);
-			usb_joystick_send();
-			
-			for(i=0 ; i<1600 ; i++)
-			{
-				_delay_ms(1000);
-			}
-			
-			usb_joystick_move_zrz(128, 128);
-			usb_joystick_send();
-			
-			LED_ON;
-			_delay_ms(5000);
-			LED_OFF;
-			*/
-		}
+        KB_EventTask();
+		MS_EventTask();
     }
+    
+    /*
+     * Uncomment that code to test rotation speed for a given position.
+     */
+//	while( 1 )
+//    {
+//		usb_joystick_move_zrz(153, 128);
+//		usb_joystick_send();
+//		_delay_ms(5000);
+//	}
 }
 
