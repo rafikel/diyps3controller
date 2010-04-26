@@ -191,8 +191,12 @@ void MS_EventTask( void )
 		ms_timer_enable_interrupt( );
 		
 		usb_joystick_move_zrz(ACTION_VW_IDLE, ACTION_VW_IDLE);
-				
+
 		usb_joystick_press_dir(NO_BUTTON);
+
+		usb_joystick_release(R2_BUTTON);
+		usb_joystick_release(L2_BUTTON);
+
 		usb_joystick_send();
 	}
 }
@@ -394,29 +398,35 @@ static void EventDispatcher( packet_t *packet )
 	{
 		ms_dispatch.middle = packet->middle;
 		if(ms_dispatch.middle)
-			usb_joystick_press(R2_BUTTON);
+			usb_joystick_press(RIGHT_HAT_BUTTON);
 		else
-			usb_joystick_release(R2_BUTTON);
+			usb_joystick_release(RIGHT_HAT_BUTTON);
 	}
 
 	zsign = packet->z > 128;
 	z = ( zsign )? ~packet->z + 1 : packet->z;
 	
-	if( zsign == 0 )
+	if(z > 0)
 	{
-		if( z >= 1 )
+		if( zsign == 0 )
 		{
-			selected+=z;
-			usb_joystick_press_dir(weapons[selected%4]);
+			if( z >= 1 )
+			{
+				usb_joystick_press(R2_BUTTON);
+			}
+		}
+		else
+		{
+			if( z >= 1 )
+			{
+				usb_joystick_press(L2_BUTTON);
+			}
 		}
 	}
 	else
 	{
-		if( z >= 1 )
-		{
-			selected-=z;
-			usb_joystick_press_dir(weapons[selected%4]);
-		}
+		usb_joystick_release(R2_BUTTON);
+		usb_joystick_release(L2_BUTTON);
 	}
 	
 	usb_joystick_send();
