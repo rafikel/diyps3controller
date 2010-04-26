@@ -40,6 +40,17 @@
 #define MS_INT                          INT6
 #define MS_INT_VECTOR                   INT6_vect
 
+#if defined(__AVR_AT90USB162__)
+#define MS_DATA_PORT                    PORTD
+#define MS_DATA_DDR                     DDRD
+#define MS_DATA_PIN                     PIND
+#define MS_DATA_BIT                     PD0
+
+#define MS_CLOCK_PORT                   PORTD
+#define MS_CLOCK_DDR                    DDRD
+#define MS_CLOCK_PIN                    PIND
+#define MS_CLOCK_BIT                    PD6
+#elif defined(__AVR_AT90USB1286__)
 #define MS_DATA_PORT                    PORTE
 #define MS_DATA_DDR                     DDRE
 #define MS_DATA_PIN                     PINE
@@ -49,6 +60,7 @@
 #define MS_CLOCK_DDR                    DDRE
 #define MS_CLOCK_PIN                    PINE
 #define MS_CLOCK_BIT                    PE6
+#endif
 
 /*
  ********************************************************************************
