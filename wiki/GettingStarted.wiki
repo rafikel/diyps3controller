@@ -21,6 +21,7 @@ Download Eclipse IDE for C/C++ Developers from http://www.eclipse.org/downloads/
 
 Extract it to a directory (for ex. C:\AVR\Eclipse).
 Launch C:\AVR\Eclipse\eclipse.exe (create a shortcut to your desktop).
+Create a new workspace.
 
 *SVN Plugin*
 
