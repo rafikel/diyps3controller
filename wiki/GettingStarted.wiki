@@ -52,4 +52,4 @@ Check Out As: modify project name if needed, and click finish.
 
 Check out is performed, and the new project appears in Project Explorer view.
 
-Project is build automatically (can be disabled), and the .hex binary file can be downloaded to the target (for ex Teensy++ board).
+Project is build automatically, and the .hex binary file can be downloaded to the target (for ex Teensy++ board).
