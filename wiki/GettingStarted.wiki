@@ -46,7 +46,7 @@ Proceed to installation, and restart eclipse.
 Project Explorer view, right click, New>Other.
 Select SVN>Project from SVN, click next.
 Enter URL: https://diyps3controller.googlecode.com/svn/trunk/
-Click next, Click "Trust Always" (googlecode certificate).
+Click next, Click no (do not nomalize URL), and click "Trust Always" (googlecode certificate).
 Click Head Revision, and click Finish.
 Check out as: Select "Check out as a project configured using the New Project Wizard", select "Head Revision", and click finish.
 Select a wizard: Select "C project" and click next.
