@@ -1,0 +1,38 @@
+#summary One-sentence summary of this page.
+
+Explains how to install developpement tools for this project.
+
+= Introduction =
+
+This wiki explains how to install Eclipse CDT with SVN and AVR plugins.
+It explains how to perform a checkout of the project, and the Eclipse settings to modify, build and debug this project.
+
+Platform is Windows, but it can be easily adapted to Linux.
+
+= Details =
+
+Download Eclipse IDE for C/C++ Developers from http://www.eclipse.org/downloads/
+
+Extract it to a directory (for ex. C:\AVR\Eclipse).
+Launch C:\AVR\Eclipse\eclipse.exe (create a shortcut to your desktop).
+
+Help>Install New Software
+Work with: select Galileo - http://download.eclipse.org/releases/galileo
+type filter text: svn
+Select "Subversive SVN Integration for the Mylyn Project" and "Subversive SVN Team Provider".
+Proceed to installation, and restart eclipse.
+
+Help>Install New Software
+Add...
+Name: Eclipse AVR
+Location: http://avr-eclipse.sourceforge.net/updatesite/ 
+
+
+
+
+
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
