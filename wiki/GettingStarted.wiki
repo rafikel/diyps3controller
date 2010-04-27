@@ -1,4 +1,4 @@
-#summary This wiki explains _*a simple way*_ to install developpement tools for this project.
+#summary This wiki explains a simple way to install developpement tools for this project.
 
 = Introduction =
 
