@@ -1,4 +1,4 @@
-This wiki explains how to install developpement tools for this project.
+This wiki explains _a simple way_ to install developpement tools for this project.
 
 = Introduction =
 
