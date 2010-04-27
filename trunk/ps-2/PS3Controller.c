@@ -38,8 +38,6 @@
  * Local Functions and Variables
  ********************************************************************************
  */
-void main( void ) __attribute__ ((noreturn));
-
 #define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
 
 /*
@@ -47,7 +45,7 @@ void main( void ) __attribute__ ((noreturn));
  * main
  ********************************************************************************
  */
-void main( void )
+int main( void )
 {
 
 
@@ -99,5 +97,7 @@ void main( void )
 //		usb_joystick_send();
 //		_delay_ms(5000);
 //	}
+
+    return 0;
 }
 
