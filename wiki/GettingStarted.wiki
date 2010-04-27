@@ -20,26 +20,39 @@ A java jre is required (http://www.java.com/).
 Download Eclipse IDE for C/C++ Developers from http://www.eclipse.org/downloads/
 
 Extract it to a directory (for ex. C:\AVR\Eclipse).
+
 Launch C:\AVR\Eclipse\eclipse.exe (create a shortcut to your desktop).
+
 Create a new workspace.
 
 *SVN Plugin*
 
 Help>Install New Software
+
 Work with: select Galileo
+
 type filter text: svn
+
 Select "Subversive SVN Integration for the Mylyn Project" and "Subversive SVN Team Provider".
+
 Proceed to installation (select SVN 1.6), and restart eclipse.
 
 *AVR Plugin*
 
 Help>Install New Software
+
 Add...
+
 Name: Eclipse AVR
+
 Location: http://avr-eclipse.sourceforge.net/updatesite/ 
+
 Click Ok
+
 Work with: select Eclipse AVR
+
 Select AVR Eclipse Plugin.
+
 Proceed to installation, and restart eclipse.
 
 *Project checkout*
