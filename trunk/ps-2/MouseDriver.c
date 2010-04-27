@@ -290,9 +290,6 @@ static void EventFilter( uint8_t scancode )
 	}
 }
 
-static const uint8_t weapons[4] = {LEFT_BUTTON, DOWN_BUTTON, UP_BUTTON, RIGHT_BUTTON};
-static uint8_t selected = 0;
-
 typedef struct
 {
 	uint8_t pos;
