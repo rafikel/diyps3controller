@@ -15,7 +15,7 @@ Download and install WinAVR from http://sourceforge.net/projects/winavr/files/
 
 *Eclipse CDT*
 
-A java jre is required (http://www.java.com/).
+A java jre is required (http://javadl.sun.com/webapps/download/AutoDL?BundleId=39494 or browse http://www.java.com/).
 
 Download Eclipse IDE for C/C++ Developers from http://www.eclipse.org/downloads/
 
