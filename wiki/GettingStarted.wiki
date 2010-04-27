@@ -31,7 +31,14 @@ Work with: select Eclipse AVR
 Select AVR Eclipse Plugin.
 Proceed to installation, and restart eclipse.
 
+Project Explorer view, right click, New>Other.
+Select SVN>Project from SVN, click next.
+Enter URL: https://diyps3controller.googlecode.com/svn/trunk/
+Click next, Click Trust for googlecode certificate.
+Click Head Revision, and click Finish.
+Check Out As: modify project name if needed, and click finish.
 
+Check out is performed, and the new project appears in Project Explorer view.
 
 
 
