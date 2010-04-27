@@ -57,8 +57,8 @@ Click C/C++ Build>Settings>Tool Settings
 >AVR Compiler>Langage Standard>Select "ISO C99 + GNU Extensions".
 Click Apply, then OK.
 Click next.
-Select MCU type (AT90USB1286 for Teensy++).
-Select MCU frequency : 16000000
+Select MCU type "AT90USB1286" (for Teensy++).
+Select MCU frequency : 16000000.
 Click Finish.
 
 Check out is performed, and the new project appears in Project Explorer view.
