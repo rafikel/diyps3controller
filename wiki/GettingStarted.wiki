@@ -7,7 +7,7 @@ Explains how to install developpement tools for this project.
 This wiki explains how to install Eclipse CDT with SVN and AVR plugins.
 It explains how to perform a checkout, modify and build the project.
 
-Platform is Windows, but it can be easily adapted to Linux.
+Target OS is Windows, but it can be easily adapted to Linux.
 
 = Details =
 
