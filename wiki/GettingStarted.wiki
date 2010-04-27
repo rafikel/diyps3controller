@@ -5,7 +5,7 @@ Explains how to install developpement tools for this project.
 = Introduction =
 
 This wiki explains how to install Eclipse CDT with SVN and AVR plugins.
-It explains how to perform a checkout of the project, and the Eclipse settings to modify, build and debug this project.
+It explains how to perform a checkout, modify and build the project.
 
 Platform is Windows, but it can be easily adapted to Linux.
 
@@ -51,3 +51,5 @@ Click Head Revision, and click Finish.
 Check Out As: modify project name if needed, and click finish.
 
 Check out is performed, and the new project appears in Project Explorer view.
+
+Project is build automatically (can be disabled), and the .hex binary file can be downloaded to the target (for ex Teensy++ board).
