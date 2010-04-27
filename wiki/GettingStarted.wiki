@@ -3,7 +3,7 @@
 = Introduction =
 
 This wiki explains how to install Eclipse CDT with SVN and AVR plugins.
-It explains how to perform a checkout, modify and build the project.
+It explains how to perform a checkout and build the project.
 
 Target OS is Windows, but it can be easily adapted to Linux.
 
