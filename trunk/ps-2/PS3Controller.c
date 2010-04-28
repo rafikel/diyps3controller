@@ -78,7 +78,10 @@ int main( void )
 
     /* Send a first packet */
     usb_joystick_send();
-	
+
+    /* Reset the mouse */
+    MS_MouseReset();
+
     /*
 	 * Comment that code to test rotation speed for a given position.
 	 */
