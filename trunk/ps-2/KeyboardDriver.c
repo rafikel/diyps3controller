@@ -496,7 +496,7 @@ static void KB_Send( uint8_t data )
 	// 9. Release the data line.
 	cbi( KB_DATA_DDR, KB_DATA_BIT );
 	cbi( KB_DATA_PORT, KB_DATA_BIT );
-	loop_until_bit_is_set( MS_CLOCK_PIN, MS_CLOCK_BIT );
+	loop_until_bit_is_set( KB_CLOCK_PIN, KB_CLOCK_BIT );
 
 	// 10. Wait for the device to bring Data low.
 	// ACK from Keyboard.
