@@ -21,7 +21,7 @@
 #include "sixaxis.h"
 #include "dump.h"
 
-static int debug = 1;
+static int debug = 0;
 
 static const char *hid_report_name[] = { 
 	"reserved", "input", "output", "feature" };
@@ -412,6 +412,7 @@ int main(int argc, char *argv[])
 					tcpc = -1;
 				} else {
 					handle_control(tcpc, buf, len, &state);
+					send_report_now = 1;
 				}
 			} else {
 				tcpc = tcpaccept(tcps);
@@ -428,7 +429,7 @@ int main(int argc, char *argv[])
 		if (send_report_now) {
 			/* If we can, send it now.
 			   Otherwise, if we can't send it, just skip to the next one */
-			if (pfd[1].revents & POLLOUT) {
+			//if (pfd[1].revents & POLLOUT) {
 				if (debug >= 1)
 					sixaxis_dump_state(&state);
 				if (sixaxis_periodic_report(&state)) {
@@ -437,12 +438,12 @@ int main(int argc, char *argv[])
 						warn("send_report");
 					}
 				}
-			}
+			//}
 
 			/* Schedule next report */
 			send_report_now = 0;
 			gettimeofday(&now, NULL);
-			timeradd(&now, (&(struct timeval){0,20000}), &next_report);
+			timeradd(&now, (&(struct timeval){0,1000000}), &next_report);
 		}
 	}
 	

@@ -15,6 +15,14 @@
 #include "sixaxis.h"
 #include "dump.h"
 
+#define SCREEN_WIDTH  320
+#define SCREEN_HEIGHT 240
+#define DEAD_ZONE 25
+#define DEFAULT_MULTIPLIER 4
+#define REFRESH_PERIOD 10000 //=10ms
+
+static int debug = 0;
+
 SDL_Surface *screen = NULL;
 
 int initialize(int width, int height, const char *title)
@@ -63,48 +71,95 @@ int sockfd;
 
 void key(int sym, int down)
 {
-	unsigned char buf[48];
 	int index = -1;
 
 	switch (sym) {
-	case 'p':	 index = sb_ps;		break;
+	case SDLK_RSHIFT:	index = sb_ps;		break;
 
-	case 'w':	 index = sb_triangle;	break;
-	case 'x':	 index = sb_cross;	break;
-	case 'd':	 index = sb_circle;	break;
-	case 'a':	 index = sb_square;	break;
+	case 'e':		index = sb_triangle;	break;
+	case SDLK_SPACE:	index = sb_cross;	break;
+	case SDLK_LCTRL:	index = sb_circle;	break;
+	case 'r':		index = sb_square;	break;
 
-	case 'g':        index = sb_select;	break;
-	case 'h':        index = sb_start;	break;
+	case SDLK_TAB: 		index = sb_select;	break;
+	case SDLK_BACKSPACE:    index = sb_start;	break;
 
-	case '1':        index = sb_l2;		break;
-	case '2':        index = sb_l1;		break;
-	case '3':        index = sb_r1;		break;
-	case '4':        index = sb_r2;		break;
-
-	case SDLK_UP:	 index = sb_up;		break;
-	case SDLK_DOWN:	 index = sb_down;	break;
-	case SDLK_LEFT:	 index = sb_left;	break;
-	case SDLK_RIGHT: index = sb_right;	break;
+	case 't':        	index = sb_l2;		break;
+	case 'k':        	index = sb_l1;		break;
+	case 'l':        	index = sb_r1;		break;
+	case 'g':	        index = sb_r2;		break;
+	case SDLK_LSHIFT:       index = sb_l3;		break;
+	case 'f':	        index = sb_r3;		break;
+	
+	case '1':		index = sb_up;		break;
+	case '4':	 	index = sb_down;	break;
+	case '3':	 	index = sb_left;	break;
+	case '2': 		index = sb_right;	break;
+	
+	case 'q':		down?move_x(-127):move_x(0);	break;
+	case 'z':	 	down?move_y(-127):move_y(0);	break;
+	case 's':	 	down?move_y(127):move_y(0);	break;
+	case 'd': 		down?move_x(127):move_x(0);	break;
 	}
 
 	if (index >= 0) {
 		state.user.button[index].pressed = down ? 1 : 0;
 		state.user.button[index].value = down ? 255 : 0;
 	}
+}
 
-	if (assemble(buf, sizeof(buf), &state) < 0)
-		printf("can't assemble\n");
+void move_z_rz(int z, int rz)
+{	
+	if(z > 0) state.user.axis[1].x = DEAD_ZONE + z;
+        else if(z < 0) state.user.axis[1].x = z - DEAD_ZONE;
+	else state.user.axis[1].x = 0;
+	if(rz > 0) state.user.axis[1].y = DEAD_ZONE + rz;
+        else if(rz < 0) state.user.axis[1].y = rz - DEAD_ZONE;
+	else state.user.axis[1].y = 0;
+}
 
-	send(sockfd, buf, 48, MSG_DONTWAIT);
-	sixaxis_dump_state(&state);
+void move_x(int x)
+{
+	state.user.axis[0].x = x;
+}
+
+void move_y(int y)
+{	
+	state.user.axis[0].y = y;
+}
+
+void clic(int button, int down)
+{
+	int index = -1;
+	
+	switch(button)
+	{
+	case SDL_BUTTON_LEFT: 		index = sb_r1; break;
+	case SDL_BUTTON_RIGHT: 		index = sb_l1; break;
+	case SDL_BUTTON_MIDDLE: 	index = sb_r3; break;
+	case SDL_BUTTON_WHEELUP: 	index = sb_r2; break;
+	case SDL_BUTTON_WHEELDOWN: 	index = sb_l2; break;
+	}
+
+	if (index >= 0) {
+		state.user.button[index].pressed = down ? 1 : 0;
+		state.user.button[index].value = down ? 255 : 0;
+	}
 }
 
 int main(int argc, char *argv[])
 {
-	SDL_Event event;
+	SDL_Event events[8];
+	SDL_Event* event;
 	int done;
 	int i;
+	int cpt = 0;
+	int num_evt;
+	unsigned char buf[48];
+	int merge_x, merge_y;
+	int nb_motion;
+	double multiplier = DEFAULT_MULTIPLIER;
+	
 	
 	sixaxis_init(&state);
 	for (i = 0; sixaxis_assemble[i].func; i++)
@@ -116,31 +171,77 @@ int main(int argc, char *argv[])
 	if (!sixaxis_assemble[i].func)
 		errx(1, "can't find assemble function");
 			
-	if (!initialize(320, 240, "Sixaxis Control"))
+	if (!initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Sixaxis Control"))
 		errx(1, "can't init sdl");
+
+	SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_ShowCursor(SDL_DISABLE);
 
 	sockfd = tcpconnect();
 
 	done = 0;
 	while(!done) 
 	{
-		if(SDL_WaitEvent(&event)) 
+		SDL_PumpEvents();
+		num_evt = SDL_PeepEvents(events, sizeof(events), SDL_GETEVENT, SDL_ALLEVENTS);
+		if(num_evt > 0)
 		{
-			switch( event.type ) {
-			case SDL_QUIT:
-				done = 1;
-				break;
-			case SDL_KEYDOWN:
-				if(event.key.keysym.sym == SDLK_ESCAPE)
+			merge_x = 0;
+			merge_y = 0;
+			nb_motion = 0;
+			//if(num_evt>1) printf("%d\n", num_evt);
+			for(event=events; event<events+num_evt; ++event)
+			{
+				switch( event->type ) {
+				case SDL_QUIT:
 					done = 1;
-				else 
-					key(event.key.keysym.sym, 1);
-				break;
-			case SDL_KEYUP:
-				key(event.key.keysym.sym, 0);
-				break;
+					break;
+				case SDL_KEYDOWN:
+					if(event->key.keysym.sym == SDLK_ESCAPE)
+						done = 1;
+					else if(event->key.keysym.sym == SDLK_KP_MINUS)
+					{
+						multiplier -= 0.5;
+						printf("multiplier: %e\n", multiplier);
+					}
+					else if(event->key.keysym.sym == SDLK_KP_PLUS)
+					{
+						multiplier += 0.5;
+						printf("multiplier: %e\n", multiplier);
+					}
+					else 
+						key(event->key.keysym.sym, 1);
+					break;
+				case SDL_KEYUP:
+					key(event->key.keysym.sym, 0);
+					break;
+				case SDL_MOUSEMOTION:
+					merge_x += multiplier*event->motion.xrel;
+					merge_y += multiplier*event->motion.yrel;
+					nb_motion++;
+					cpt = 0;
+					break;
+				case SDL_MOUSEBUTTONDOWN:
+					clic(event->button.button, 1);
+					break;
+				case SDL_MOUSEBUTTONUP:
+					clic(event->button.button, 0);
+					break;
+				}
+				
 			}
+			if(nb_motion) move_z_rz(merge_x/nb_motion, merge_y/nb_motion);
+			else move_z_rz(0, 0);
 		}
+		else
+		{
+			move_z_rz(0, 0);
+		}
+		if (assemble(buf, sizeof(buf), &state) < 0)
+			printf("can't assemble\n");
+		send(sockfd, buf, 48, MSG_DONTWAIT);
+		if(debug) sixaxis_dump_state(&state);
+		usleep(10000);
 	}
 
 	printf("Exiting\n");
