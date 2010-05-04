@@ -77,6 +77,16 @@ struct sixaxis_state state;
 int (*assemble)(uint8_t *buf, int len, struct sixaxis_state *state);
 int sockfd;
 
+void move_x(int x)
+{
+	state.user.axis[0].x = x;
+}
+
+void move_y(int y)
+{
+	state.user.axis[0].y = y;
+}
+
 void key(int sym, int down)
 {
 	int index = -1;
@@ -124,16 +134,6 @@ void move_z_rz(int z, int rz)
 	if(rz > 0) state.user.axis[1].y = DEAD_ZONE + rz;
         else if(rz < 0) state.user.axis[1].y = rz - DEAD_ZONE;
 	else state.user.axis[1].y = 0;
-}
-
-void move_x(int x)
-{
-	state.user.axis[0].x = x;
-}
-
-void move_y(int y)
-{	
-	state.user.axis[0].y = y;
 }
 
 void clic(int button, int down)
