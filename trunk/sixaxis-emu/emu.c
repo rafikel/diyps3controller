@@ -1,5 +1,7 @@
 /* Sixaxis emulator
 
+   Copyright (c) 2010 Mathieu Laurendeau
+
    Copyright (c) 2009 Jim Paris <jim@jtan.com>
    License: GPLv3
 */
