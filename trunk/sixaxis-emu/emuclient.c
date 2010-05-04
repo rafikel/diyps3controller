@@ -109,10 +109,10 @@ void key(int sym, int down)
 	case SDLK_LSHIFT:       index = sb_l3;		break;
 	case 'f':	        index = sb_r3;		break;
 	
-	case '1':		index = sb_up;		break;
-	case '4':	 	index = sb_down;	break;
-	case '3':	 	index = sb_left;	break;
-	case '2': 		index = sb_right;	break;
+	case '&':		index = sb_up;		break;
+	case 'é':	 	index = sb_down;	break;
+	case '"':	 	index = sb_left;	break;
+	case '\'': 		index = sb_right;	break;
 	
 	case 'q':		down?move_x(-127):move_x(0);	break;
 	case 'z':	 	down?move_y(-127):move_y(0);	break;
@@ -144,9 +144,10 @@ void clic(int button, int down)
 	{
 	case SDL_BUTTON_LEFT: 		index = sb_r1; break;
 	case SDL_BUTTON_RIGHT: 		index = sb_l1; break;
-	case SDL_BUTTON_MIDDLE: 	index = sb_r3; break;
+	case SDL_BUTTON_MIDDLE: 	index = sb_triangle; break;
 	case SDL_BUTTON_WHEELUP: 	index = sb_r2; break;
 	case SDL_BUTTON_WHEELDOWN: 	index = sb_l2; break;
+	case 8: 	                index = sb_r3; break; //Logitech G5 side button
 	}
 
 	if (index >= 0) {
