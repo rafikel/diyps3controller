@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 	int merge_x, merge_y;
 	int nb_motion;
 	double multiplier = DEFAULT_MULTIPLIER;
-	
+	int report_wheel_up, report_wheel_down;
 	
 	sixaxis_init(&state);
 	for (i = 0; sixaxis_assemble[i].func; i++)
@@ -197,6 +197,8 @@ int main(int argc, char *argv[])
 			merge_x = 0;
 			merge_y = 0;
 			nb_motion = 0;
+			report_wheel_up = 0;
+			report_wheel_down = 0;
 			//if(num_evt>1) printf("%d\n", num_evt);
 			for(event=events; event<events+num_evt; ++event)
 			{
@@ -231,9 +233,28 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					clic(event->button.button, 1);
+					if(event->button.button == SDL_BUTTON_WHEELUP)
+					{
+						report_wheel_up = 1;
+					}
+					else if(event->button.button == SDL_BUTTON_WHEELDOWN)
+					{
+						report_wheel_down = 1;
+					}
 					break;
 				case SDL_MOUSEBUTTONUP:
-					clic(event->button.button, 0);
+					if(report_wheel_up && event->button.button == SDL_BUTTON_WHEELUP)
+					{
+						SDL_PushEvent(event);
+					}
+					else if(report_wheel_down && event->button.button == SDL_BUTTON_WHEELDOWN)
+					{
+						SDL_PushEvent(event);
+					}
+					else
+					{
+						clic(event->button.button, 0);
+					}
 					break;
 				}
 				
