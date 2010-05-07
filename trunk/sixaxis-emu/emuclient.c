@@ -28,6 +28,7 @@
 #define DEAD_ZONE 25
 #define DEFAULT_MULTIPLIER 4
 #define REFRESH_PERIOD 10000 //=10ms
+#define EVENT_BUFFER_SIZE 32
 
 static int debug = 0;
 
@@ -158,7 +159,7 @@ void clic(int button, int down)
 
 int main(int argc, char *argv[])
 {
-	SDL_Event events[8];
+	SDL_Event events[EVENT_BUFFER_SIZE];
 	SDL_Event* event;
 	int done;
 	int i;
@@ -169,6 +170,8 @@ int main(int argc, char *argv[])
 	int nb_motion;
 	double multiplier = DEFAULT_MULTIPLIER;
 	int report_wheel_up, report_wheel_down;
+	int change;
+	int send_command;
 	
 	sixaxis_init(&state);
 	for (i = 0; sixaxis_assemble[i].func; i++)
@@ -192,9 +195,11 @@ int main(int argc, char *argv[])
 	while(!done) 
 	{
 		SDL_PumpEvents();
-		num_evt = SDL_PeepEvents(events, sizeof(events), SDL_GETEVENT, SDL_ALLEVENTS);
+		num_evt = SDL_PeepEvents(events, sizeof(events)/sizeof(events[0]), SDL_GETEVENT, SDL_ALLEVENTS);
 		if(num_evt > 0)
 		{
+			change = 1;
+			send_command = 1;
 			merge_x = 0;
 			merge_y = 0;
 			nb_motion = 0;
@@ -265,13 +270,22 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			move_z_rz(0, 0);
+			if(change)
+			{
+				move_z_rz(0, 0);
+				change = 0;
+				send_command = 1;
+			}
 		}
-		if (assemble(buf, sizeof(buf), &state) < 0)
-			printf("can't assemble\n");
-		send(sockfd, buf, 48, MSG_DONTWAIT);
-		if(debug) sixaxis_dump_state(&state);
-		usleep(10000);
+		if(send_command)
+		{
+			if (assemble(buf, sizeof(buf), &state) < 0)
+				printf("can't assemble\n");
+			send(sockfd, buf, 48, MSG_DONTWAIT);
+			if(debug) sixaxis_dump_state(&state);
+			send_command = 0;
+		}
+		usleep(REFRESH_PERIOD);
 	}
 
 	printf("Exiting\n");
