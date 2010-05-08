@@ -25,12 +25,16 @@
 
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
-#define DEAD_ZONE 25
+#define DEFAULT_DEAD_ZONE 18
 #define DEFAULT_MULTIPLIER 4
 #define REFRESH_PERIOD 10000 //=10ms
 #define EVENT_BUFFER_SIZE 32
 
 static int debug = 0;
+static int done = 0;
+static double multiplier = DEFAULT_MULTIPLIER;
+static int dead_zone = DEFAULT_DEAD_ZONE;
+static int dead_zone_calibration = 0;
 
 SDL_Surface *screen = NULL;
 
@@ -119,6 +123,27 @@ void key(int sym, int down)
 	case 'z':	 	down?move_y(-127):move_y(0);	break;
 	case 's':	 	down?move_y(127):move_y(0);	break;
 	case 'd': 		down?move_x(127):move_x(0);	break;
+
+	case SDLK_ESCAPE:	if(down) done = 1; break;
+	case SDLK_KP_MINUS:	if(down) { multiplier -= 0.5; printf("multiplier: %e\n", multiplier); } break;
+	case SDLK_KP_PLUS: 	if(down) { multiplier += 0.5; printf("multiplier: %e\n", multiplier); } break;
+	case SDLK_KP_DIVIDE:	if(down && dead_zone_calibration) { dead_zone -= 1; printf("dead_zone: %d\n", dead_zone); } break;
+	case SDLK_KP_MULTIPLY: 	if(down && dead_zone_calibration) { dead_zone += 1; printf("dead_zone: %d\n", dead_zone); } break;
+	case SDLK_F1:
+		if(down)
+		{
+			if(dead_zone_calibration)
+			{
+				dead_zone_calibration = 0;
+				printf("dead zone calibration mode disabled\n");
+			}
+			else
+			{
+				dead_zone_calibration = 1;
+				printf("dead zone calibration mode enabled\n");
+			}
+		}
+		break;
 	}
 
 	if (index >= 0) {
@@ -129,11 +154,11 @@ void key(int sym, int down)
 
 void move_z_rz(int z, int rz)
 {	
-	if(z > 0) state.user.axis[1].x = DEAD_ZONE + z;
-        else if(z < 0) state.user.axis[1].x = z - DEAD_ZONE;
+	if(z > 0) state.user.axis[1].x = dead_zone + z;
+        else if(z < 0) state.user.axis[1].x = z - dead_zone;
 	else state.user.axis[1].x = 0;
-	if(rz > 0) state.user.axis[1].y = DEAD_ZONE + rz;
-        else if(rz < 0) state.user.axis[1].y = rz - DEAD_ZONE;
+	if(rz > 0) state.user.axis[1].y = dead_zone + rz;
+        else if(rz < 0) state.user.axis[1].y = rz - dead_zone;
 	else state.user.axis[1].y = 0;
 }
 
@@ -161,14 +186,12 @@ int main(int argc, char *argv[])
 {
 	SDL_Event events[EVENT_BUFFER_SIZE];
 	SDL_Event* event;
-	int done;
 	int i;
 	int cpt = 0;
 	int num_evt;
 	unsigned char buf[48];
 	int merge_x, merge_y;
 	int nb_motion;
-	double multiplier = DEFAULT_MULTIPLIER;
 	int report_wheel_up, report_wheel_down;
 	int change;
 	int send_command;
@@ -213,20 +236,7 @@ int main(int argc, char *argv[])
 					done = 1;
 					break;
 				case SDL_KEYDOWN:
-					if(event->key.keysym.sym == SDLK_ESCAPE)
-						done = 1;
-					else if(event->key.keysym.sym == SDLK_KP_MINUS)
-					{
-						multiplier -= 0.5;
-						printf("multiplier: %e\n", multiplier);
-					}
-					else if(event->key.keysym.sym == SDLK_KP_PLUS)
-					{
-						multiplier += 0.5;
-						printf("multiplier: %e\n", multiplier);
-					}
-					else 
-						key(event->key.keysym.sym, 1);
+					key(event->key.keysym.sym, 1);
 					break;
 				case SDL_KEYUP:
 					key(event->key.keysym.sym, 0);
@@ -274,6 +284,11 @@ int main(int argc, char *argv[])
 			{
 				move_z_rz(0, 0);
 				change = 0;
+				send_command = 1;
+			}
+			if(dead_zone_calibration)
+			{
+				move_z_rz(dead_zone_calibration, 0);
 				send_command = 1;
 			}
 		}
