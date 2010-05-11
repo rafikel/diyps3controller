@@ -262,16 +262,20 @@ void handle_control(int tcpc, const unsigned char *buf, size_t len,
 	int ret;
 
 	/* Expect that we got 48 bytes, ignore anything else */
-	if (len != 48) {
+	if (len < 48) {
 		printf("tcp control short packet %ld\n", (unsigned long)len);
 		return;
 	}
 
-	/* Process it as input report 01 */
-	ret = process_report(HID_TYPE_INPUT, 0x01, buf, len, state);
-	if (ret < 0) {
-		printf("tcp control process error %d\n", ret);
-		return;
+	while(len>=48)
+	{
+		/* Process it as input report 01 */
+		ret = process_report(HID_TYPE_INPUT, 0x01, buf, 48, state);
+		if (ret < 0) {
+			printf("tcp control process error %d\n", ret);
+			return;
+		}
+		len-=48;
 	}
 
 	return;
