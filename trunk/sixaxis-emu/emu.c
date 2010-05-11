@@ -280,6 +280,7 @@ void handle_control(int tcpc, const unsigned char *buf, size_t len,
 			printf("tcp control process error %d\n", ret);
 			return;
 		}
+		buf+=48;
 		len-=48;
 	}
 
