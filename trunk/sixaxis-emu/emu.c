@@ -267,7 +267,12 @@ void handle_control(int tcpc, const unsigned char *buf, size_t len,
 		return;
 	}
 
-	while(len>=48)
+	if(len > 48)
+	{
+		printf("%d tcp packets merged\n", len/48);
+	}
+
+	while(len >= 48)
 	{
 		/* Process it as input report 01 */
 		ret = process_report(HID_TYPE_INPUT, 0x01, buf, 48, state);
