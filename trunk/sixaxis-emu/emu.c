@@ -299,6 +299,7 @@ int main(int argc, char *argv[])
 	struct timeval next_report, now, diff;
 	struct sixaxis_state state;
 	int send_report_now = 0;
+	struct timeval tv1, tv2;
 
 	sixaxis_init(&state);
 
@@ -445,9 +446,20 @@ int main(int argc, char *argv[])
 				if (debug >= 1)
 					sixaxis_dump_state(&state);
 				if (sixaxis_periodic_report(&state)) {
+
+					if (debug >= 2) {
+						gettimeofday(&tv1, NULL);
+					}
+
 					if (send_report(data, HID_TYPE_INPUT,
 							0x01, &state, 0) == -1) {
 						warn("send_report");
+					}
+
+					/* Dump contents */
+					if (debug >= 2) {
+						gettimeofday(&tv2, NULL);
+						printf("blocking send took: %ld µs\n", (tv2.tv_sec*1000+tv2.tv_usec) - (tv1.tv_sec*1000+tv1.tv_usec));
 					}
 				}
 			//}
@@ -456,8 +468,6 @@ int main(int argc, char *argv[])
 			send_report_now = 0;
 			gettimeofday(&now, NULL);
 			timeradd(&now, (&(struct timeval){0,1000000}), &next_report);
-
-			usleep(8000);
 		}
 	}
 	
