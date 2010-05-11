@@ -61,7 +61,7 @@ Project Explorer view, right click, New>Other.
 
 Select SVN>Project from SVN, click next.
 
-Enter URL: https://diyps3controller.googlecode.com/svn/trunk/
+Enter URL: https://diyps3controller.googlecode.com/svn/trunk/ps-2
 
 Click next, Click no (do not nomalize URL), and click "Trust Always" (googlecode certificate).
 
