@@ -456,6 +456,8 @@ int main(int argc, char *argv[])
 			send_report_now = 0;
 			gettimeofday(&now, NULL);
 			timeradd(&now, (&(struct timeval){0,1000000}), &next_report);
+
+			usleep(8000);
 		}
 	}
 	
