@@ -157,6 +157,8 @@ int process(int psm, const unsigned char *buf, int len,
 	uint8_t report;
 	const char *name;
 	int ret = 0;
+	struct timeval tv1, tv2;
+	unsigned long time;
 
 	if (len < 1)
 		return -1;
@@ -189,7 +191,15 @@ int process(int psm, const unsigned char *buf, int len,
 		}
 		report = buf[1];
 		/* printf("<- GET_REPORT %s 0x%02x\n", hid_report_name[type], report); */
+		if (debug >= 2) {
+			gettimeofday(&tv1, NULL);
+		}
 		ret = send_report(psm == CTRL ? ctrl : data, type, report, state, 1);
+		if (debug >= 2) {
+			gettimeofday(&tv2, NULL);
+			time = (tv2.tv_sec*1000+tv2.tv_usec) - (tv1.tv_sec*1000+tv1.tv_usec);
+			printf("blocking send took: %ld µs\n", time);
+		}
 		break;
 
 	case HID_SET_REPORT:
@@ -459,7 +469,7 @@ int main(int argc, char *argv[])
 					/* Dump contents */
 					if (debug >= 2) {
 						gettimeofday(&tv2, NULL);
-						printf("blocking send took: %ld µs\n", (tv2.tv_sec*1000+tv2.tv_usec) - (tv1.tv_sec*1000+tv1.tv_usec));
+						printf("non blocking send took: %ld µs\n", (tv2.tv_sec*1000+tv2.tv_usec) - (tv1.tv_sec*1000+tv1.tv_usec));
 					}
 				}
 			//}
