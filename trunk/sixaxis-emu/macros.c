@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 /* This is the minimum amount of time between KEYDOWN and KEYUP. */
-#define DEFAULT_DELAY 20
+#define DEFAULT_DELAY 50
 
 /* This is the name of the file that contains all macro files. */
 #define MACRO_FILE "macros.txt"

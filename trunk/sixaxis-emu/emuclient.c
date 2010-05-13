@@ -150,11 +150,14 @@ void key(int sym, int down)
 		}
 		break;
 	case SDLK_F1:
-		key = SDLK_F1;
-		pthread_attr_init(&thread_attr);
-		pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-		pthread_create( &thread, &thread_attr, (void*)macro, (void*) &key);
-		break;
+		if(down)
+		{
+			key = SDLK_F1;
+			pthread_attr_init(&thread_attr);
+			pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+			pthread_create( &thread, &thread_attr, (void*)macro, (void*) &key);
+			break;
+		}
 	}
 
 	if (index >= 0) {
