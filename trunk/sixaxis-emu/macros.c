@@ -416,7 +416,7 @@ SDLKey process_line(const char* line, SDLKey macro) {
 			(*pt)[(*pt)->size - 1].event.type = SDL_KEYDOWN;
 			(*pt)[(*pt)->size - 1].event.key.state = SDL_KEYDOWN;
 			(*pt)[(*pt)->size - 1].event.key.keysym.sym = key;
-			(*pt)[(*pt)->size - 1].delay = DEFAULT_DELAY * 1000;
+			(*pt)[(*pt)->size - 1].delay = DEFAULT_DELAY;
 
 			allocate_element(pt);
 
@@ -430,7 +430,7 @@ SDLKey process_line(const char* line, SDLKey macro) {
 
 			allocate_element(pt);
 
-			(*pt)[(*pt)->size - 1].delay = delay * 1000;
+			(*pt)[(*pt)->size - 1].delay = delay;
 		}
 	}
 
@@ -457,7 +457,7 @@ void dump_scripts() {
 							p_element->event.key.keysym.sym));
 				}
 				if (p_element->delay) {
-					printf("DELAY %d\n", p_element->delay / 1000);
+					printf("DELAY %d\n", p_element->delay);
 				}
 			}
 			printf("\n");
@@ -513,14 +513,19 @@ void initialize_macros() {
  */
 void macro(SDLKey* key) {
 
+	s_macro_event_delay** p_table;
 	s_macro_event_delay* p_element;
 
-	for (p_element = macro_table[*key]; p_element->delay != -1; p_element++) {
-		if (p_element->event.type != SDL_NOEVENT) {
-			SDL_PushEvent(&(p_element->event));
-		}
-		if (p_element->delay > 0) {
-			usleep(p_element->delay * 1000);
+	for (p_table = macro_table; p_table < macro_table + SDLK_LAST; p_table++) {
+		if (*p_table) {
+			for (p_element = *p_table; p_element && p_element < *p_table + (*p_table)->size; p_element++) {
+				if (p_element->event.type != SDL_NOEVENT) {
+					SDL_PushEvent(&(p_element->event));
+				}
+				if (p_element->delay > 0) {
+					usleep(p_element->delay*1000);
+				}
+			}
 		}
 	}
 }
