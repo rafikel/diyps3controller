@@ -29,8 +29,11 @@
 #define SCREEN_HEIGHT 240
 #define DEFAULT_DEAD_ZONE 18
 #define DEFAULT_MULTIPLIER 4
+#define MULTIPLIER_STEP 0.25
 #define REFRESH_PERIOD 10000 //=10ms
 #define EVENT_BUFFER_SIZE 32
+
+#define POSTPONE_COUNT 3
 
 static int debug = 0;
 static int done = 0;
@@ -130,11 +133,11 @@ void key(int sym, int down)
 	case SDLK_d: 		down?move_x(127):move_x(0);	break;
 
 	case SDLK_ESCAPE:	if(down) done = 1; break;
-	case SDLK_KP_MINUS:	if(down) { multiplier -= 0.5; printf("multiplier: %e\n", multiplier); } break;
-	case SDLK_KP_PLUS: 	if(down) { multiplier += 0.5; printf("multiplier: %e\n", multiplier); } break;
+	case SDLK_KP_MINUS:	if(down) { multiplier -= MULTIPLIER_STEP; printf("multiplier: %e\n", multiplier); } break;
+	case SDLK_KP_PLUS: 	if(down) { multiplier += MULTIPLIER_STEP; printf("multiplier: %e\n", multiplier); } break;
 	case SDLK_KP_DIVIDE:	if(down && dead_zone_calibration) { dead_zone -= 1; printf("dead_zone: %d\n", dead_zone); } break;
 	case SDLK_KP_MULTIPLY: 	if(down && dead_zone_calibration) { dead_zone += 1; printf("dead_zone: %d\n", dead_zone); } break;
-	case SDLK_INSERT:
+	case SDLK_KP0:
 		if(down)
 		{
 			if(dead_zone_calibration)
@@ -182,12 +185,14 @@ void clic(int button, int down)
 	
 	switch(button)
 	{
-	case SDL_BUTTON_LEFT: 		index = sb_r1; break;
-	case SDL_BUTTON_RIGHT: 		index = sb_l1; break;
-	case SDL_BUTTON_MIDDLE: 	index = sb_triangle; break;
-	case SDL_BUTTON_WHEELUP: 	index = sb_r2; break;
-	case SDL_BUTTON_WHEELDOWN: 	index = sb_l2; break;
-	case 8: 	                index = sb_r3; break; //Logitech G5 side button
+	case SDL_BUTTON_LEFT: 		index = sb_r1; 			break;
+	case SDL_BUTTON_RIGHT: 		index = sb_l1; 			break;
+	case SDL_BUTTON_MIDDLE: 	index = sb_triangle; 	break;
+	case SDL_BUTTON_WHEELUP: 	index = sb_r2; 			break;
+	case SDL_BUTTON_WHEELDOWN: 	index = sb_l2; 			break;
+	case SDL_BUTTON_X1:			index = sb_square; 		break;
+	case SDL_BUTTON_X2: 		index = sb_r3; 			break;
+	case 8: 	                index = sb_triangle; 	break; //Logitech G5 side button
 	}
 
 	if (index >= 0) {
@@ -206,7 +211,7 @@ int main(int argc, char *argv[])
 	unsigned char buf[48];
 	int merge_x, merge_y;
 	int nb_motion;
-	int report_wheel_up, report_wheel_down;
+	int postpone_wheel_up = 0, postpone_wheel_down = 0, postpone_button_x1 = 0, postpone_button_x2 = 0;
 	int change;
 	int send_command;
 	
@@ -242,8 +247,6 @@ int main(int argc, char *argv[])
 			merge_x = 0;
 			merge_y = 0;
 			nb_motion = 0;
-			report_wheel_up = 0;
-			report_wheel_down = 0;
 			//if(num_evt>1) printf("%d\n", num_evt);
 			for(event=events; event<events+num_evt; ++event)
 			{
@@ -265,23 +268,59 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					clic(event->button.button, 1);
+					break;
+				case SDL_MOUSEBUTTONUP:
 					if(event->button.button == SDL_BUTTON_WHEELUP)
 					{
-						report_wheel_up = 1;
+						if(postpone_wheel_up < POSTPONE_COUNT)
+						{
+							SDL_PushEvent(event);
+							postpone_wheel_up++;
+						}
+						else
+						{
+							postpone_wheel_up = 0;
+							clic(event->button.button, 0);
+						}
 					}
 					else if(event->button.button == SDL_BUTTON_WHEELDOWN)
 					{
-						report_wheel_down = 1;
+						if(postpone_wheel_down < POSTPONE_COUNT)
+						{
+							SDL_PushEvent(event);
+							postpone_wheel_down++;
+						}
+						else
+						{
+							postpone_wheel_down = 0;
+							clic(event->button.button, 0);
+						}
 					}
-					break;
-				case SDL_MOUSEBUTTONUP:
-					if(report_wheel_up && event->button.button == SDL_BUTTON_WHEELUP)
+					else if(event->button.button == SDL_BUTTON_X1)
 					{
-						SDL_PushEvent(event);
+						if(postpone_button_x1 < POSTPONE_COUNT)
+						{
+							SDL_PushEvent(event);
+							postpone_button_x1++;
+						}
+						else
+						{
+							postpone_button_x1 = 0;
+							clic(event->button.button, 0);
+						}
 					}
-					else if(report_wheel_down && event->button.button == SDL_BUTTON_WHEELDOWN)
+					else if(event->button.button == SDL_BUTTON_X2)
 					{
-						SDL_PushEvent(event);
+						if(postpone_button_x2 < POSTPONE_COUNT)
+						{
+							SDL_PushEvent(event);
+							postpone_button_x2++;
+						}
+						else
+						{
+							postpone_button_x2 = 0;
+							clic(event->button.button, 0);
+						}
 					}
 					else
 					{
