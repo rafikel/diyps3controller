@@ -475,9 +475,9 @@ void read_macros() {
 	char file[LINE_MAX];
 	char line[LINE_MAX];
 	FILE* fp;
-	FILE* fplist = fopen("scripts.txt", "r");
+	FILE* fplist = fopen(MACRO_FILE, "r");
 	if (!fplist) {
-		fprintf(stderr, "Can not find 'scripts.txt'\n");
+		fprintf(stderr, "Can not find %s\n", MACRO_FILE);
 	} else {
 		while (fgets(file, LINE_MAX, fplist)) {
 			if(file[strlen(file) - 1] == '\n')
