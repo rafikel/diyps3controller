@@ -104,30 +104,30 @@ void key(int sym, int down)
 	switch (sym) {
 	case SDLK_RSHIFT:	index = sb_ps;		break;
 
-	case 'e':		index = sb_triangle;	break;
+	case SDLK_e:		index = sb_triangle;	break;
 	case SDLK_SPACE:	index = sb_cross;	break;
 	case SDLK_LCTRL:	index = sb_circle;	break;
-	case 'r':		index = sb_square;	break;
+	case SDLK_r:		index = sb_square;	break;
 
 	case SDLK_TAB: 		index = sb_select;	break;
 	case SDLK_BACKSPACE:    index = sb_start;	break;
 
-	case 't':        	index = sb_l2;		break;
-	case 'k':        	index = sb_l1;		break;
-	case 'l':        	index = sb_r1;		break;
-	case 'g':	        index = sb_r2;		break;
+	case SDLK_t:        	index = sb_l2;		break;
+	case SDLK_k:        	index = sb_l1;		break;
+	case SDLK_l:        	index = sb_r1;		break;
+	case SDLK_g:	        index = sb_r2;		break;
 	case SDLK_LSHIFT:       index = sb_l3;		break;
-	case 'f':	        index = sb_r3;		break;
+	case SDLK_f:	        index = sb_r3;		break;
 	
-	case '&':		index = sb_up;		break;
-	case 'é':	 	index = sb_down;	break;
-	case '"':	 	index = sb_left;	break;
-	case '\'': 		index = sb_right;	break;
+	case SDLK_AMPERSAND:	index = sb_up;		break;
+	case SDLK_WORLD_73:	 	index = sb_down;	break;
+	case SDLK_QUOTEDBL:	 	index = sb_left;	break;
+	case SDLK_QUOTE: 		index = sb_right;	break;
 	
-	case 'q':		down?move_x(-127):move_x(0);	break;
-	case 'z':	 	down?move_y(-127):move_y(0);	break;
-	case 's':	 	down?move_y(127):move_y(0);	break;
-	case 'd': 		down?move_x(127):move_x(0);	break;
+	case SDLK_q:		down?move_x(-127):move_x(0);	break;
+	case SDLK_z:	 	down?move_y(-127):move_y(0);	break;
+	case SDLK_s:	 	down?move_y(127):move_y(0);	break;
+	case SDLK_d: 		down?move_x(127):move_x(0);	break;
 
 	case SDLK_ESCAPE:	if(down) done = 1; break;
 	case SDLK_KP_MINUS:	if(down) { multiplier -= 0.5; printf("multiplier: %e\n", multiplier); } break;
