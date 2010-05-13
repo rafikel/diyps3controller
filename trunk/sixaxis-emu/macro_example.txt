@@ -1,0 +1,12 @@
+#Defines the action that triggers the macro execution
+MACRO F1
+#Performs a keystroke (key down + delay 20ms + key up)
+KEY a
+#Sleep 20ms
+DELAY 20
+#Perform a key down
+KEYDOWN b
+#Sleep 60ms
+DELAY 60
+#Perform a key up
+KEYUP b

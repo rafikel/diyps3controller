@@ -22,6 +22,8 @@
 #include <sys/socket.h>
 #include "sixaxis.h"
 #include "dump.h"
+#include <pthread.h>
+#include "macros.h"
 
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
@@ -95,6 +97,9 @@ void move_y(int y)
 void key(int sym, int down)
 {
 	int index = -1;
+	pthread_t thread;
+	pthread_attr_t thread_attr;
+	SDLKey key;
 
 	switch (sym) {
 	case SDLK_RSHIFT:	index = sb_ps;		break;
@@ -129,7 +134,7 @@ void key(int sym, int down)
 	case SDLK_KP_PLUS: 	if(down) { multiplier += 0.5; printf("multiplier: %e\n", multiplier); } break;
 	case SDLK_KP_DIVIDE:	if(down && dead_zone_calibration) { dead_zone -= 1; printf("dead_zone: %d\n", dead_zone); } break;
 	case SDLK_KP_MULTIPLY: 	if(down && dead_zone_calibration) { dead_zone += 1; printf("dead_zone: %d\n", dead_zone); } break;
-	case SDLK_F1:
+	case SDLK_INSERT:
 		if(down)
 		{
 			if(dead_zone_calibration)
@@ -143,6 +148,12 @@ void key(int sym, int down)
 				printf("dead zone calibration mode enabled\n");
 			}
 		}
+		break;
+	case SDLK_F1:
+		key = SDLK_F1;
+		pthread_attr_init(&thread_attr);
+		pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+		pthread_create( &thread, &thread_attr, (void*)macro, (void*) &key);
 		break;
 	}
 
@@ -195,6 +206,8 @@ int main(int argc, char *argv[])
 	int report_wheel_up, report_wheel_down;
 	int change;
 	int send_command;
+	
+	initialize_macros();
 	
 	sixaxis_init(&state);
 	for (i = 0; sixaxis_assemble[i].func; i++)
@@ -305,6 +318,8 @@ int main(int argc, char *argv[])
 
 	printf("Exiting\n");
 	SDL_Quit();
+	
+	free_macros();
 	
 	return 0;
 }
