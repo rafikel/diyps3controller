@@ -511,21 +511,31 @@ void initialize_macros() {
 /*
  * This code is run by each thread that executes a macro.
  */
-void macro(SDLKey* key) {
+void macro(s_macro_event_delay* p_table) {
 
-	s_macro_event_delay** p_table;
 	s_macro_event_delay* p_element;
 
-	for (p_table = macro_table; p_table < macro_table + SDLK_LAST; p_table++) {
-		if (*p_table) {
-			for (p_element = *p_table; p_element && p_element < *p_table + (*p_table)->size; p_element++) {
-				if (p_element->event.type != SDL_NOEVENT) {
-					SDL_PushEvent(&(p_element->event));
-				}
-				if (p_element->delay > 0) {
-					usleep(p_element->delay*1000);
-				}
-			}
+	for (p_element = p_table; p_element < p_table + p_table->size; p_element++) {
+		if (p_element->event.type != SDL_NOEVENT) {
+			SDL_PushEvent(&(p_element->event));
 		}
+		if (p_element->delay > 0) {
+			usleep(p_element->delay*1000);
+		}
+	}
+}
+
+/*
+ * Launches a thread if there is a macro for that key.
+ */
+void macro_lookup(SDLKey key)
+{
+	pthread_t thread;
+	pthread_attr_t thread_attr;
+
+	if(macro_table[key]) {
+		pthread_attr_init(&thread_attr);
+		pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+		pthread_create( &thread, &thread_attr, (void*)macro, (void*) macro_table[key]);
 	}
 }

@@ -4,7 +4,7 @@
 
 #include <SDL/SDL.h>
 
-void macro(SDLKey*);
+void macro_lookup(SDLKey);
 void initialize_macros();
 void free_macros();
 

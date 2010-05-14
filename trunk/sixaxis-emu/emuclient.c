@@ -22,7 +22,6 @@
 #include <sys/socket.h>
 #include "sixaxis.h"
 #include "dump.h"
-#include <pthread.h>
 #include "macros.h"
 
 #define SCREEN_WIDTH  320
@@ -100,8 +99,6 @@ void move_y(int y)
 void key(int sym, int down)
 {
 	int index = -1;
-	pthread_t thread;
-	pthread_attr_t thread_attr;
 	SDLKey key;
 
 	switch (sym) {
@@ -152,16 +149,9 @@ void key(int sym, int down)
 			}
 		}
 		break;
-	case SDLK_F1:
-		if(down)
-		{
-			key = SDLK_F1;
-			pthread_attr_init(&thread_attr);
-			pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-			pthread_create( &thread, &thread_attr, (void*)macro, (void*) &key);
-			break;
-		}
 	}
+
+	if(down) macro_lookup(key);
 
 	if (index >= 0) {
 		state.user.button[index].pressed = down ? 1 : 0;
