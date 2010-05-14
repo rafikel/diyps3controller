@@ -99,7 +99,6 @@ void move_y(int y)
 void key(int sym, int down)
 {
 	int index = -1;
-	SDLKey key;
 
 	switch (sym) {
 	case SDLK_RSHIFT:	index = sb_ps;		break;
@@ -151,7 +150,7 @@ void key(int sym, int down)
 		break;
 	}
 
-	if(down) macro_lookup(key);
+	if(down) macro_lookup(sym);
 
 	if (index >= 0) {
 		state.user.button[index].pressed = down ? 1 : 0;
