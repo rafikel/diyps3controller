@@ -37,11 +37,31 @@
  
 #include "sixaxis_pair_emu.h"
 #include <util/delay.h>
+#include <avr/eeprom.h>
 
-#define LED_CONFIG    (DDRD |= (1<<6))
-#define LED_OFF        (PORTD &= ~(1<<6))
-#define LED_ON        (PORTD |= (1<<6))
+uint8_t EEMEM DeviceBdaddr[6];
+uint16_t EEMEM VendorId = 0x03EB;
+uint16_t EEMEM ProductId = 0x2042;
 
+/*
+ * External declaration, to set the product id and vendor id.
+ */
+extern USB_Descriptor_Device_t DeviceDescriptor;
+
+/*
+ * The device bdaddr, read from eeprom at startup.
+ */
+uint8_t VolatileDeviceBdaddr[6];
+
+/*
+ * The master bdaddr, read from eeprom at startup.
+ */
+uint8_t VolatileMasterBdaddr[6];
+
+/*
+ * Indicates if the master bdaddr was already requested or not.
+ */
+static unsigned char reply = 0;
 
 /** Indicates what report mode the host has requested, true for normal HID reporting mode, false for special boot
  *  protocol reporting mode.
@@ -59,6 +79,9 @@ uint16_t IdleCount = 500;
  */
 uint16_t IdleMSRemaining = 0;
 
+/*
+ * The reference report data.
+ */
 static USB_SixaxisReport_Data_t RefReportData = {
 	.buffer = {
 			0x01,0x00,0x00,0x00,
@@ -77,6 +100,16 @@ static USB_SixaxisReport_Data_t RefReportData = {
 	}
 };
 
+/*
+ * Reads the vendor id, the product id, and the bdaddr from the eeprom.
+ */
+void readEepromIdentifiers(void)
+{
+	DeviceDescriptor.ProductID = eeprom_read_word(&ProductId);
+	DeviceDescriptor.VendorID = eeprom_read_word(&VendorId);
+	eeprom_read_block((void*)&VolatileDeviceBdaddr, (const void*)&DeviceBdaddr, 6);
+}
+
 
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
@@ -84,9 +117,10 @@ static USB_SixaxisReport_Data_t RefReportData = {
 int main(void)
 {
 	int i;
-	LED_CONFIG;
+
+	readEepromIdentifiers();
+
 	SetupHardware();
-	LED_OFF;
 	
 	for (i=0;i<2000;++i)
 	{
@@ -185,13 +219,14 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 	USB_Device_EnableSOFEvents();
 }
 
-static unsigned char reply = 0;
-
+/*
+ * For debug purposes!
 static unsigned int nb_requests = 0;
 
 USB_Request_Header_t log[64];
+*/
 
-static char buf_0x03EF[64];
+static char last_set_data[64];
 
 /** Event handler for the USB_UnhandledControlRequest event. This is used to catch standard and class specific
  *  control requests that are not handled internally by the USB library (including the HID commands, which are
@@ -199,7 +234,10 @@ static char buf_0x03EF[64];
  */
 void EVENT_USB_Device_UnhandledControlRequest(void)
 {
+	/*
+	 * For debug purposes!
 	log[nb_requests++] = USB_ControlRequest;
+	*/
 	/* Handle HID Class specific requests */
 	switch (USB_ControlRequest.bRequest)
 	{
@@ -223,7 +261,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 						 */
 
 						char buf[] = {0x01,0x00,
-								0xaa,0xaa,0xaa,0xaa,0xaa,0xaa, //PS3 bdaddr
+								0xaa,0xaa,0xaa,0xaa,0xaa,0xaa, //dummy PS3 bdaddr
 								0x23,0x1e,0x00,0x03,0x50,0x81,0xd8,0x01,0x8a,0x00,0x00,0x01,0x64,0x19,0x01,0x00,0x64,0x00,0x01,0x90,0x00,0x19,0xfe,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,};
 
 						Endpoint_Write_Control_Stream_LE(buf, USB_ControlRequest.wLength);
@@ -236,9 +274,9 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 						 */
 
 						char buf[] = {0x01,0x00,
-								0x00,0x11,0x11,0x11,0x11,0x11, //PS3 bdaddr _MODIF_
+								0x00,0x00,0x00,0x00,0x00,0x00, //PS3 bdaddr, set by the next memcpy
 								0x23,0x1e,0x00,0x03,0x50,0x81,0xd8,0x01,0x8a,0x00,0x00,0x01,0x64,0x19,0x01,0x00,0x64,0x00,0x01,0x90,0x00,0x19,0xfe,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,};
-
+						memcpy(buf+2, VolatileMasterBdaddr, 6);
 						Endpoint_Write_Control_Stream_LE(buf, USB_ControlRequest.wLength);
 					}
 					Endpoint_ClearOUT();
@@ -246,8 +284,9 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 				else if((USB_ControlRequest.wValue & 0x03f2) == 0x03f2)
 				{
 					char buf[] = {0xf2,0xff,0xff,0x00,
-							0x00,0x22,0x22,0x22,0x22,0x22, //bluetooth dongle bdaddr _MODIF_
+							0x00,0x00,0x00,0x00,0x00,0x00, //device bdaddr, set by the next memcpy
 							0x00,0x03,0x50,0x81,0xd8,0x01,0x8a,0x00,0x00,0x01,0x64,0x19,0x01,0x00,0x64,0x00,0x01,0x90,0x00,0x19,0xfe,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,};
+					memcpy(buf+4, VolatileDeviceBdaddr, 6);
 					Endpoint_ClearSETUP();
 					Endpoint_Write_Control_Stream_LE(buf, USB_ControlRequest.wLength);
 					Endpoint_ClearOUT();
@@ -255,7 +294,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 				else if((USB_ControlRequest.wValue & 0x03ef) == 0x03ef)
 				{
 				    char buf[] = {0x00,0xef,0x03,0x00,0x04,0x03,0x01,0xb0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x02,0x05,0x01,0x92,0x02,0x02,0x01,0x91,0x02,0x05,0x01,0x91,0x02,0x04,0x00,0x76,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,};
-					buf[7] = buf_0x03EF[6];
+					buf[7] = last_set_data[6];
 					Endpoint_ClearSETUP();
 					Endpoint_Write_Control_Stream_LE(buf, USB_ControlRequest.wLength);
 					Endpoint_ClearOUT();
@@ -328,7 +367,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 
 				for(i=0; i<USB_ControlRequest.wLength; i++)
 				{
-					buf_0x03EF[i] = Endpoint_Read_Byte();
+					last_set_data[i] = Endpoint_Read_Byte();
 				}
 
 				/* Clear the endpoint data */
@@ -336,6 +375,17 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 
 				Endpoint_ClearStatusStage();
 
+				if(USB_ControlRequest.wValue == 0xDEAD)
+				{
+					eeprom_write_block(last_set_data, &VendorId, 2);
+					eeprom_write_block(last_set_data+2, &ProductId, 2);
+					eeprom_write_block(last_set_data+4, &DeviceBdaddr, 6);
+				}
+
+				if(USB_ControlRequest.wValue == 0x03f5)
+				{
+					memcpy(VolatileMasterBdaddr, last_set_data+2, 6);
+				}
 			}
 			
 			break;
