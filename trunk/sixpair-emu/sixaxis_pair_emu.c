@@ -105,8 +105,10 @@ static USB_SixaxisReport_Data_t RefReportData = {
  */
 void readEepromIdentifiers(void)
 {
-	DeviceDescriptor.ProductID = eeprom_read_word(&ProductId);
 	DeviceDescriptor.VendorID = eeprom_read_word(&VendorId);
+	DeviceDescriptor.ProductID = eeprom_read_word(&ProductId);
+	if(DeviceDescriptor.VendorID == 0xFFFF) DeviceDescriptor.VendorID = 0x03EB;
+	if(DeviceDescriptor.ProductID == 0xFFFF) DeviceDescriptor.ProductID = 0x2042;
 	eeprom_read_block((void*)&VolatileDeviceBdaddr, (const void*)&DeviceBdaddr, 6);
 }
 
