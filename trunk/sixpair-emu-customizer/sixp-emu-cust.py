@@ -6,8 +6,11 @@ import usb.core
 import os
 import sys
 import struct
-import bluetooth._bluetooth as _bt
 from array import array
+if sys.platform == "win32":
+    import bluetooth as _bt
+elif sys.platform == "linux2":
+    import bluetooth._bluetooth as _bt
 
 usb_devs = []
 bd_devs = []
