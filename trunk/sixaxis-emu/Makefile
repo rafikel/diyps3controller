@@ -1,5 +1,6 @@
 CC=gcc
 CFLAGS=-Wall
+#CFLAGS+=-DJOYSTICK
 
 .PHONY: all
 all: emu emuclient

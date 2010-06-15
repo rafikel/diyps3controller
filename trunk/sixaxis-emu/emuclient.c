@@ -45,7 +45,11 @@ SDL_Surface *screen = NULL;
 int initialize(int width, int height, const char *title)
 {
 	/* Init SDL */
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO
+#ifdef JOYSTICK
+	|SDL_INIT_JOYSTICK
+#endif
+	) < 0)
 	{
 		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
 		return 0;
@@ -60,6 +64,13 @@ int initialize(int width, int height, const char *title)
 		fprintf(stderr, "Unable to create video surface: %s\n", SDL_GetError());
 		return 0;
 	}
+	
+	SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_ShowCursor(SDL_DISABLE);
+
+#ifdef JOYSTICK
+	SDL_JoystickOpen(0);
+#endif
 
 	return 1;
 }
@@ -190,6 +201,106 @@ void clic(int button, int down)
 	}
 }
 
+#ifdef JOYSTICK
+void process_joystick_event(SDL_Event* event)
+{
+	int index;
+
+	switch(event->type)
+	{
+		case SDL_JOYAXISMOTION:
+
+			if(event->jaxis.axis == 0)
+			{
+				state.user.axis[0].x = event->jaxis.value/256;
+			}
+			else if(event->jaxis.axis == 1)
+			{
+				if(event->jaxis.value/128 > 16)
+				{
+					state.user.button[sb_l2].pressed = 1;
+					state.user.button[sb_l2].value = event->jaxis.value/128;
+				}
+				else if(event->jaxis.value/128 < -16)
+				{
+					state.user.button[sb_r2].pressed = 1;
+					state.user.button[sb_r2].value = -event->jaxis.value/128;
+				}
+				else
+				{
+					state.user.button[sb_l2].pressed = 0;
+					state.user.button[sb_l2].value = 0;
+					state.user.button[sb_r2].pressed = 0;
+					state.user.button[sb_r2].value = 0;
+				}
+			}
+			break;
+
+		case SDL_JOYBUTTONDOWN:
+
+			index = -1;
+			switch(event->jbutton.button)
+			{
+			case 0:
+				index = sb_l1;
+				break;
+			case 1:
+				index = sb_circle;
+				break;
+			case 2:
+				index = sb_triangle;
+				break;
+			case 3:
+				index = sb_cross;
+				break;
+			case 4:
+				index = sb_square;
+				break;
+			case 5:
+				index = sb_up;
+				break;
+			}
+			if(index >= 0)
+			{
+				state.user.button[index].pressed = 1;
+				state.user.button[index].value = 255;
+			}
+			break;
+
+		case SDL_JOYBUTTONUP:
+
+			index = -1;
+			switch(event->jbutton.button)
+			{
+			case 0:
+				index = sb_l1;
+				break;
+			case 1:
+				index = sb_circle;
+				break;
+			case 2:
+				index = sb_triangle;
+				break;
+			case 3:
+				index = sb_cross;
+				break;
+			case 4:
+				index = sb_square;
+				break;
+			case 5:
+				index = sb_up;
+				break;
+			}
+			if(index >= 0)
+			{
+				state.user.button[index].pressed = 0;
+				state.user.button[index].value = 0;
+			}
+			break;
+	}
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 	SDL_Event events[EVENT_BUFFER_SIZE];
@@ -219,9 +330,6 @@ int main(int argc, char *argv[])
 	if (!initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Sixaxis Control"))
 		errx(1, "can't init sdl");
 
-	SDL_WM_GrabInput(SDL_GRAB_ON);
-	SDL_ShowCursor(SDL_DISABLE);
-
 	sockfd = tcpconnect();
 
 	done = 0;
@@ -240,6 +348,13 @@ int main(int argc, char *argv[])
 			for(event=events; event<events+num_evt; ++event)
 			{
 				switch( event->type ) {
+#ifdef JOYSTICK
+				case SDL_JOYAXISMOTION:
+				case SDL_JOYBUTTONDOWN:
+				case SDL_JOYBUTTONUP:
+					process_joystick_event(event);
+					break;
+#endif
 				case SDL_QUIT:
 					done = 1;
 					break;
