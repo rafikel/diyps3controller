@@ -1,7 +1,11 @@
 #include "sixaxis.h"
 #include <string.h>
 #include <stdio.h>
+#ifndef WIN32
 #include <arpa/inet.h> /* for htons */
+#else
+#include <winsock2.h> /* for htons */
+#endif
 
 static int clamp(int min, int val, int max)
 {
