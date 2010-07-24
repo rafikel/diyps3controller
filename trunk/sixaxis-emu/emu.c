@@ -6,6 +6,7 @@
    License: GPLv3
 */
 
+#ifndef WIN32
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
@@ -493,3 +494,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+#endif
