@@ -13,6 +13,10 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#ifdef WIN32
+#define LINE_MAX 1024
+#endif
+
 /* This is the minimum amount of time between KEYDOWN and KEYUP. */
 #define DEFAULT_DELAY 50
 
