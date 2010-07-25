@@ -6,20 +6,24 @@
    License: GPLv3
 */
 
+#ifndef WIN32
 #include <termio.h>
+#include <sys/ioctl.h>
+#include <err.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#else
+#include <winsock2.h>
+#endif
 #include <unistd.h>
 #include <fcntl.h>
 #include <ctype.h>
 #include <string.h>
-#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <err.h>
 #include <math.h>
 #include <SDL/SDL.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
 #include "sixaxis.h"
 #include "dump.h"
 #include "macros.h"
@@ -42,6 +46,21 @@ static int dead_zone_calibration = 0;
 
 SDL_Surface *screen = NULL;
 
+#ifdef WIN32
+void err(int eval, const char *fmt)
+{
+	fprintf(stderr, fmt);
+	exit(eval);
+}
+#endif
+
+static int clamp(int min, int val, int max)
+{
+	if (val < min) return min;
+	if (val > max) return max;
+	return val;
+}
+
 int initialize(int width, int height, const char *title)
 {
 	/* Init SDL */
@@ -54,7 +73,11 @@ int initialize(int width, int height, const char *title)
 		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
 		return 0;
 	}
-	
+
+	/* enable stdout and stderr */
+	freopen( "CON", "w", stdout );
+	freopen( "CON", "w", stderr );
+
 	SDL_WM_SetCaption(title, title);
 
 	/* Init video */
@@ -82,14 +105,31 @@ int tcpconnect(void)
 	int fd;
 	struct sockaddr_in addr;
 
+#ifdef WIN32
+	WSADATA wsadata;
+
+	if (WSAStartup(MAKEWORD(1,1), &wsadata) == SOCKET_ERROR)
+		err(1, "WSAStartup");
+		
+	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+		err(1, "socket");		
+#else
 	if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 		err(1, "socket");
+#endif
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(TCP_PORT);
-	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+	addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); //inet_addr("192.168.56.101");
 	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 		err(1, "connect");
+
+#ifdef WIN32
+    // Set the socket I/O mode; iMode = 0 for blocking; iMode != 0 for non-blocking
+    int iMode = 1;
+    ioctlsocket(fd, FIONBIO, (u_long FAR*) &iMode);
+#endif
+
 	return fd;
 }
 
@@ -134,8 +174,13 @@ void key(int sym, int down)
 	case SDLK_QUOTEDBL:	 	index = sb_left;	break;
 	case SDLK_QUOTE: 		index = sb_right;	break;
 	
+#ifndef WIN32
 	case SDLK_q:		down?move_x(-127):move_x(0);	break;
 	case SDLK_z:	 	down?move_y(-127):move_y(0);	break;
+#else
+	case SDLK_a:		down?move_x(-127):move_x(0);	break;
+	case SDLK_w:	 	down?move_y(-127):move_y(0);	break;
+#endif
 	case SDLK_s:	 	down?move_y(127):move_y(0);	break;
 	case SDLK_d: 		down?move_x(127):move_x(0);	break;
 
@@ -212,19 +257,19 @@ void process_joystick_event(SDL_Event* event)
 
 			if(event->jaxis.axis == 0)
 			{
-				state.user.axis[0].x = event->jaxis.value/256;
+				state.user.axis[0].x = event->jaxis.value/96;
 			}
 			else if(event->jaxis.axis == 1)
 			{
 				if(event->jaxis.value/128 > 16)
 				{
 					state.user.button[sb_l2].pressed = 1;
-					state.user.button[sb_l2].value = event->jaxis.value/128;
+					state.user.button[sb_l2].value = clamp(0, event->jaxis.value/128, 255);
 				}
 				else if(event->jaxis.value/128 < -16)
 				{
 					state.user.button[sb_r2].pressed = 1;
-					state.user.button[sb_r2].value = -event->jaxis.value/128;
+					state.user.button[sb_r2].value = clamp(0, -event->jaxis.value/128, 255);
 				}
 				else
 				{
@@ -325,10 +370,10 @@ int main(int argc, char *argv[])
 			break;
 		}
 	if (!sixaxis_assemble[i].func)
-		errx(1, "can't find assemble function");
+		err(1, "can't find assemble function");
 			
 	if (!initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Sixaxis Control"))
-		errx(1, "can't init sdl");
+		err(1, "can't init sdl");
 
 	sockfd = tcpconnect();
 
@@ -455,7 +500,11 @@ int main(int argc, char *argv[])
 		{
 			if (assemble(buf, sizeof(buf), &state) < 0)
 				printf("can't assemble\n");
+#ifdef WIN32
+			send(sockfd, buf, 48, 0);
+#else
 			send(sockfd, buf, 48, MSG_DONTWAIT);
+#endif
 			if(debug) sixaxis_dump_state(&state);
 			send_command = 0;
 		}
