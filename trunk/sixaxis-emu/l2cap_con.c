@@ -1,4 +1,5 @@
 
+#ifndef WIN32
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/l2cap.h>
 #include <unistd.h>
@@ -36,4 +37,4 @@ int l2cap_send(int fd, const char* buf, int len, int blocking)
 {
 	return send(fd, buf, len, blocking ? 0 : MSG_DONTWAIT);
 }
-
+#endif
