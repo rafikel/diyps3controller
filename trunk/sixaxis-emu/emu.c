@@ -6,23 +6,56 @@
    License: GPLv3
 */
 
-#ifndef WIN32
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <err.h>
-#include <poll.h>
 #include <errno.h>
-#include <bluetooth/bluetooth.h>
 #include "l2cap_con.h"
 #include <sys/time.h>
 #include <signal.h>
+#ifndef WIN32
+#include <err.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <poll.h>
+#include <bluetooth/bluetooth.h>
+#else
+#include <winsock2.h>
+#endif
 #include <sys/types.h>
 #include "sixaxis.h"
 #include "dump.h"
+
+#ifdef WIN32
+#define SHUT_RDWR SD_BOTH
+
+static void err(int eval, const char *fmt)
+{
+	fprintf(stderr, fmt);
+	exit(eval);
+}
+
+void timersub(struct timeval *a, struct timeval *b, struct timeval *res)
+{
+	res->tv_sec = a->tv_sec - b->tv_sec;
+	res->tv_usec = a->tv_usec - b->tv_usec;
+	if (res->tv_usec < 0) {
+	  res->tv_sec--;
+	  res->tv_usec += 1000000;
+	}
+}
+
+void timeradd(struct timeval *a, struct timeval *b, struct timeval *res)
+{
+	res->tv_sec = a->tv_sec + b->tv_sec;
+	res->tv_usec = a->tv_usec + b->tv_usec;
+	if (res->tv_usec > 1000000) {
+	  res->tv_sec++;
+	  res->tv_usec -= 1000000;
+	}
+}
+#endif
 
 static int debug = 0;
 
@@ -212,7 +245,7 @@ int tcplisten(int port)
 
 	if ((fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1)
 		return -1;
-	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0)
+	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on)) < 0)
 		return -1;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
@@ -227,7 +260,7 @@ int tcplisten(int port)
 int tcpaccept(int server)
 {
 	struct sockaddr_in addr;
-	socklen_t addrlen = sizeof(struct sockaddr_in);
+	size_t addrlen = sizeof(struct sockaddr_in);
 	int fd;
 	fd = accept(server, (struct sockaddr *)&addr, &addrlen);
 	if (fd == -1)
@@ -274,20 +307,32 @@ int main(int argc, char *argv[])
 	char *bdaddr = NULL;
 	int ctrl, data;
 	int tcps = -1, tcpc = -1;
+#ifndef WIN32
 	struct pollfd pfd[3];
+	struct timespec timeout;
+#else
+	fd_set read_set;
+	struct timeval timeout;
+#endif
 	unsigned char buf[1024];
 	ssize_t len;
-	struct timespec timeout;
 	struct timeval next_report, now, diff;
 	struct sixaxis_state state;
 	int send_report_now = 0;
 	struct timeval tv1, tv2;
+#ifdef WIN32
+	int recv_flags = 0;
+#else
+	int recv_flags = MSG_DONTWAIT;
+#endif
 
 	sixaxis_init(&state);
 
 	/* Catch signals so we can do proper cleanup */
 	signal(SIGINT, sig_handler);
+#ifndef WIN32
 	signal(SIGHUP, sig_handler);
+#endif
 
 	/* Check args */
 	if (argc >= 1)
@@ -301,13 +346,13 @@ int main(int argc, char *argv[])
 	/* Connect to PS3 */
 	printf("connecting to %s psm %d\n", bdaddr, CTRL);
 	if ((ctrl = l2cap_connect(bdaddr, CTRL)) < 0) {
-		err(1, "can't connect to %s psm %d", bdaddr, CTRL);
+		err(1, "can't connect to control psm");
 	}
 	printf("connecting to %s psm %d\n", bdaddr, DATA);
 	if ((data = l2cap_connect(bdaddr, DATA)) < 0) {
 		shutdown(ctrl, SHUT_RDWR);
 		close(ctrl);
-		err(1, "can't connect to %s psm %d", bdaddr, DATA);
+		err(1, "can't connect to data psm");
 	}
 	printf("connected\n");
 
@@ -324,8 +369,9 @@ int main(int argc, char *argv[])
 		/* Listen for TCP control connections */
 		if (tcps < 0 && tcpc < 0)
 			if ((tcps = tcplisten(TCPPORT)) < 0)
-				warn("tcp listen");
+				printf("tcp listen\n");
 		
+#ifndef WIN32
 		memset(&pfd, 0, sizeof(pfd));
 		
 		/* Listen for data on either fd */
@@ -341,6 +387,11 @@ int main(int argc, char *argv[])
 		/* Check data PSM for output, if it's time to send a report */
 		if (send_report_now)
 			pfd[1].events |= POLLOUT;
+#else
+		FD_ZERO(&read_set);
+		FD_SET(ctrl, &read_set);
+		FD_SET(data, &read_set);
+#endif
 
 		/* Compute timeout so it expires when next report is due */
 		gettimeofday(&now, NULL);
@@ -350,6 +401,7 @@ int main(int argc, char *argv[])
 			timersub(&next_report, &now, &diff);
 
 		/* Poll with timeout */
+#ifndef WIN32
 		timeout.tv_sec = diff.tv_sec;
 		timeout.tv_nsec = diff.tv_usec * 1000;
 		if (ppoll(pfd, 3, &timeout, NULL) < 0) {
@@ -371,23 +423,38 @@ int main(int argc, char *argv[])
 				tcpc = -1;
 			}
 		}
-		
+#else
+		if (select(3, &read_set, NULL, NULL, &timeout) < 0) {
+			fprintf(stderr, "select");
+			break;
+		}
+#endif
 		/* Read and handle data */
-		if (pfd[0].revents & POLLIN) {
-			len = recv(ctrl, buf, 1024, MSG_DONTWAIT);
+#ifndef WIN32
+		if (pfd[0].revents & POLLIN)
+#else
+		if (FD_ISSET(ctrl, &read_set))
+#endif
+		{
+			len = l2cap_recv(ctrl, buf, 1024);
 			if (len > 0)
 				if (process(CTRL, buf, len,
-					    ctrl, data, &state) == -1) {
-					warnx("error processing ctrl");
+						ctrl, data, &state) == -1) {
+					fprintf(stderr, "error processing ctrl");
 					break;
 				}
 		}
-		if (pfd[1].revents & POLLIN) {
-			len = recv(data, buf, 1024, MSG_DONTWAIT);
+#ifndef WIN32
+		if (pfd[1].revents & POLLIN)
+#else
+		if (FD_ISSET(data, &read_set))
+#endif
+		{
+			len = l2cap_recv(data, buf, 1024);
 			if (len > 0) {
 				if (process(DATA, buf, len,
-					    ctrl, data, &state) == -1) {
-					warnx("error processing data");
+						ctrl, data, &state) == -1) {
+					fprintf(stderr, "error processing data");
 					break;
 				} else {
 					/* Respond to data report with a report of our own */
@@ -397,12 +464,17 @@ int main(int argc, char *argv[])
 		}
 
 		/* Read and handle tcp control connection */
-		if (pfd[2].revents & POLLIN) {
+#ifndef WIN32
+		if (pfd[2].revents & POLLIN)
+#else
+		if (FD_ISSET(tcpc, &read_set))
+#endif
+		{
 			if (tcpc >= 0) {
-				len = recv(tcpc, buf, 1024, MSG_DONTWAIT);
+				len = recv(tcpc, buf, 1024, recv_flags);
 				if (len <= 0) {
 					if (len < 0)
-						warn("tcp recv");
+						printf("tcp recv");
 					close(tcpc);
 					tcpc = -1;
 				} else {
@@ -412,7 +484,7 @@ int main(int argc, char *argv[])
 			} else {
 				tcpc = tcpaccept(tcps);
 				if (tcpc < 0)
-					warn("tcp accept");
+					printf("tcp accept");
 				else {
 					close(tcps);
 					tcps = -1;
@@ -435,7 +507,7 @@ int main(int argc, char *argv[])
 
 					if (send_report(data, HID_TYPE_INPUT,
 							0x01, &state, 0) == -1) {
-						warn("send_report");
+						printf("send_report");
 					}
 
 					/* Dump contents */
@@ -453,7 +525,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	
-	warnx("cleaning up");
+	printf("cleaning up");
 	shutdown(ctrl, SHUT_RDWR);
 	shutdown(data, SHUT_RDWR);
 	close(ctrl);
@@ -465,4 +537,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-#endif
