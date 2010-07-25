@@ -47,7 +47,7 @@ static int dead_zone_calibration = 0;
 SDL_Surface *screen = NULL;
 
 #ifdef WIN32
-void err(int eval, const char *fmt)
+static void err(int eval, const char *fmt)
 {
 	fprintf(stderr, fmt);
 	exit(eval);
@@ -264,12 +264,12 @@ void process_joystick_event(SDL_Event* event)
 				if(event->jaxis.value/128 > 16)
 				{
 					state.user.button[sb_l2].pressed = 1;
-					state.user.button[sb_l2].value = clamp(0, event->jaxis.value/128, 255);
+					state.user.button[sb_l2].value = clamp(0, event->jaxis.value/96, 255);
 				}
 				else if(event->jaxis.value/128 < -16)
 				{
 					state.user.button[sb_r2].pressed = 1;
-					state.user.button[sb_r2].value = clamp(0, -event->jaxis.value/128, 255);
+					state.user.button[sb_r2].value = clamp(0, -event->jaxis.value/96, 255);
 				}
 				else
 				{
