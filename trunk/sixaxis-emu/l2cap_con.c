@@ -51,12 +51,12 @@ int l2cap_connect(const char *bdaddr, int psm)
 	return 1;
 }
 
-int l2cap_send(int fd, const char* buf, int len, int blocking)
+int l2cap_send(int fd, const unsigned char* buf, int len, int blocking)
 {
 	return len;
 }
 
-int l2cap_recv(int fd, char* buf, int len)
+int l2cap_recv(int fd, unsigned char* buf, int len)
 {
 	return 0;
 }
