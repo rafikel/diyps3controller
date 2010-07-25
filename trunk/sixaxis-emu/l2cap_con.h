@@ -2,3 +2,9 @@
 int l2cap_connect(const char*, int);
 
 int l2cap_send(int, const char*, int, int);
+
+int l2cap_recv(int, char*, int len);
+
+#ifdef WIN32
+int bachk(const char *str);
+#endif
