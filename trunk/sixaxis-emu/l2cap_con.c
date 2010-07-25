@@ -37,4 +37,63 @@ int l2cap_send(int fd, const char* buf, int len, int blocking)
 {
 	return send(fd, buf, len, blocking ? 0 : MSG_DONTWAIT);
 }
+
+int l2cap_recv(int fd, char* buf, int len)
+{
+	return recv(fd, buf, len, MSG_DONTWAIT);
+}
+#else
+#include <string.h>
+#include <ctype.h>
+
+int l2cap_connect(const char *bdaddr, int psm)
+{
+	return 1;
+}
+
+int l2cap_send(int fd, const char* buf, int len, int blocking)
+{
+	return len;
+}
+
+int l2cap_recv(int fd, char* buf, int len)
+{
+	return 0;
+}
+
+int bachk(const char *str)
+{
+	char tmp[18], *ptr = tmp;
+
+	if (!str)
+		return -1;
+
+	if (strlen(str) != 17)
+		return -1;
+
+	memcpy(tmp, str, 18);
+
+	while (*ptr) {
+		*ptr = toupper(*ptr);
+		if (*ptr < '0' || (*ptr > '9' && *ptr < 'A') || *ptr > 'F')
+			return -1;
+		ptr++;
+
+		*ptr = toupper(*ptr);
+		if (*ptr < '0' || (*ptr > '9' && *ptr < 'A') || *ptr > 'F')
+			return -1;
+		ptr++;
+
+		*ptr = toupper(*ptr);
+		if (*ptr == 0)
+			break;
+		if (*ptr != ':')
+			return -1;
+		ptr++;
+	}
+
+	return 0;
+}
+
+
 #endif
