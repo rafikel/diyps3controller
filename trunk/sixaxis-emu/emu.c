@@ -15,7 +15,7 @@
 #include <poll.h>
 #include <errno.h>
 #include <bluetooth/bluetooth.h>
-#include <bluetooth/l2cap.h>
+#include "l2cap_con.h"
 #include <sys/time.h>
 #include <signal.h>
 #include <arpa/inet.h>
@@ -37,35 +37,6 @@ static int running = 1;
 void sig_handler(int sig)
 {
 	running = 0;
-}
-
-int l2connect(const char *bdaddr, int psm)
-{
-	int fd;
-	struct sockaddr_l2 addr;
-	struct linger l = { .l_onoff = 1, .l_linger = 5 };
-	int opt;
-
-	if ((fd = socket(PF_BLUETOOTH, SOCK_SEQPACKET, BTPROTO_L2CAP)) == -1)
-		return -1;
-	if (setsockopt(fd, SOL_SOCKET, SO_LINGER, &l, sizeof(l)) < 0) {
-		close(fd);
-		return -2;
-	}
-        opt = 0;
-        if (setsockopt(fd, SOL_L2CAP, L2CAP_LM, &opt, sizeof(opt)) < 0) {
-		close(fd);
-		return -3;
-	}
-	memset(&addr, 0, sizeof(addr));
-	addr.l2_family = AF_BLUETOOTH;
-	addr.l2_psm    = htobs(psm);
-	str2ba(bdaddr, &addr.l2_bdaddr);
-	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
-		close(fd);
-		return -4;
-	}
-	return fd;
 }
 
 int send_report(int fd, uint8_t type, uint8_t report,
@@ -110,7 +81,7 @@ int send_report(int fd, uint8_t type, uint8_t report,
 		
 	/* Send response.  Some messages (periodic input report) can be
 	   sent nonblocking, since they're not critical */
-	return send(fd, buf, len, blocking ? 0 : MSG_DONTWAIT);
+	return l2cap_send(fd, buf, len, blocking);
 }
 
 int process_report(uint8_t type, uint8_t report, const uint8_t *buf, int len,
@@ -329,11 +300,11 @@ int main(int argc, char *argv[])
 
 	/* Connect to PS3 */
 	printf("connecting to %s psm %d\n", bdaddr, CTRL);
-	if ((ctrl = l2connect(bdaddr, CTRL)) < 0) {
+	if ((ctrl = l2cap_connect(bdaddr, CTRL)) < 0) {
 		err(1, "can't connect to %s psm %d", bdaddr, CTRL);
 	}
 	printf("connecting to %s psm %d\n", bdaddr, DATA);
-	if ((data = l2connect(bdaddr, DATA)) < 0) {
+	if ((data = l2cap_connect(bdaddr, DATA)) < 0) {
 		shutdown(ctrl, SHUT_RDWR);
 		close(ctrl);
 		err(1, "can't connect to %s psm %d", bdaddr, DATA);
