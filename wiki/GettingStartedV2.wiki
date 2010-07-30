@@ -1,4 +1,4 @@
-#summary This wiki explains a simple way to install developpement tools for the diyps3controller v2.
+#summary This wiki explains a simple way to install developpement tools for the diyps3controller v2 (sixaxis emulator).
 
 = Introduction =
 
