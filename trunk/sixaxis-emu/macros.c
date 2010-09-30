@@ -370,12 +370,19 @@ SDLKey process_line(const char* line, SDLKey macro) {
 	SDLKey key;
 	int delay;
 	s_macro_event_delay** pt;
+	int ret;
 
 	if (macro != SDLK_UNKNOWN) {
 		pt = macro_table + macro;
 	}
 
-	sscanf(line, "%s %s", command, argument);
+	ret = sscanf(line, "%s %s", command, argument);
+	
+	if(ret < 2)
+	{
+	    /* invalid line */
+	    return macro;
+	}
 
 	if (!strncmp(command, "MACRO", strlen("MACRO"))) {
 		macro = get_key_from_buffer(argument);
@@ -386,7 +393,7 @@ SDLKey process_line(const char* line, SDLKey macro) {
 			(*pt)->size = 1;
 			strncpy((*pt)->macro, argument, MAX_ARG_LENGTH);
 		} else {
-			printf("Macro %s defined twice!\n", command);
+			printf("Macro %s defined twice!\n", macro);
 			macro = SDLK_UNKNOWN;
 		}
 	} else if (!strncmp(command, "KEYDOWN", strlen("KEYDOWN"))) {
