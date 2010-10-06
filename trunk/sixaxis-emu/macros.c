@@ -393,7 +393,7 @@ SDLKey process_line(const char* line, SDLKey macro) {
 			(*pt)->size = 1;
 			strncpy((*pt)->macro, argument, MAX_ARG_LENGTH);
 		} else {
-			printf("Macro %s defined twice!\n", macro);
+			printf("Macro %s defined twice!\n", argument);
 			macro = SDLK_UNKNOWN;
 		}
 	} else if (!strncmp(command, "KEYDOWN", strlen("KEYDOWN"))) {
