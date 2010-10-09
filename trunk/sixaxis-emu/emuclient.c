@@ -74,9 +74,11 @@ int initialize(int width, int height, const char *title)
 		return 0;
 	}
 
+#ifdef WIN32
 	/* enable stdout and stderr */
 	freopen( "CON", "w", stdout );
 	freopen( "CON", "w", stderr );
+#endif
 
 	SDL_WM_SetCaption(title, title);
 
