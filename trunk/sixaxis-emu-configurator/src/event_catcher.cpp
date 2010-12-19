@@ -336,7 +336,7 @@ event_catcher::~event_catcher()
     //dtor
 }
 
-void event_catcher::run(bool button, bool motion)
+void event_catcher::run(wxString event_type)
 {
     done = 0;
     SDL_Surface *screen = NULL;
@@ -395,7 +395,7 @@ void event_catcher::run(bool button, bool motion)
                 switch (event->type)
                 {
                 case SDL_KEYDOWN:
-                    if(button)
+                    if(event_type == _("button"))
                     {
                         m_DeviceType = _("keyboard");
                         m_DeviceId = _("0");
@@ -406,7 +406,7 @@ void event_catcher::run(bool button, bool motion)
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    if(button)
+                    if(event_type == _("button"))
                     {
                         m_DeviceType = _("mouse");
                         m_DeviceId = _("0");
@@ -417,7 +417,7 @@ void event_catcher::run(bool button, bool motion)
                     }
                     break;
                 case SDL_JOYBUTTONDOWN:
-                    if(button)
+                    if(event_type == _("button"))
                     {
                         m_DeviceType = _("joystick");
                         m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
@@ -428,7 +428,7 @@ void event_catcher::run(bool button, bool motion)
                     }
                     break;
                 case SDL_MOUSEMOTION:
-                    if(motion)
+                    if(event_type == _("axis"))
                     {
                         if(abs(event->motion.xrel) > 5 || abs(event->motion.yrel) > 5)
                         {
@@ -449,7 +449,7 @@ void event_catcher::run(bool button, bool motion)
                     }
                     break;
                 case SDL_JOYAXISMOTION:
-                    if(motion)
+                    if(event_type == _("button"))
                     {
                         if(abs(event->jaxis.value) > 10000)
                         {
