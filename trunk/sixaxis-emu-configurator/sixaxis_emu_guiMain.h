@@ -16,7 +16,7 @@
 #include <wx/stattext.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
-#include <wx/checkbox.h>
+#include <wx/statline.h>
 #include <wx/panel.h>
 #include <wx/grid.h>
 #include <wx/filedlg.h>
@@ -104,7 +104,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         void fillButtonAxisChoice(wxChoice* choice);
         void fillAxisAxisChoice(wxChoice* choice);
         void fillKeyboardButtonChoice(wxChoice* choice);
-        void auto_detect(event_catcher* evcatch, wxChoice* device_type, wxStaticText* device_name, wxChoice* device_id, wxChoice* event_type, wxChoice* event_id, bool button, bool motion);
+        void auto_detect(event_catcher* evcatch, wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id);
 
         //(*Identifiers(sixaxis_emu_guiFrame)
         static const long ID_STATICTEXT1;
@@ -112,10 +112,10 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_STATICTEXT9;
         static const long ID_STATICTEXT3;
         static const long ID_STATICTEXT2;
-        static const long ID_CHOICE2;
+        static const long ID_STATICTEXT35;
         static const long ID_STATICTEXT27;
-        static const long ID_CHOICE9;
-        static const long ID_CHOICE10;
+        static const long ID_STATICTEXT36;
+        static const long ID_STATICTEXT37;
         static const long ID_BUTTON1;
         static const long ID_PANEL1;
         static const long ID_STATICTEXT4;
@@ -124,16 +124,17 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_STATICTEXT5;
         static const long ID_STATICTEXT6;
         static const long ID_STATICTEXT8;
-        static const long ID_STATICTEXT7;
         static const long ID_STATICTEXT20;
-        static const long ID_CHOICE3;
+        static const long ID_STATICTEXT7;
+        static const long ID_STATICTEXT38;
         static const long ID_STATICTEXT30;
-        static const long ID_CHOICE12;
+        static const long ID_STATICTEXT39;
         static const long ID_CHOICE4;
-        static const long ID_CHOICE11;
+        static const long ID_STATICTEXT40;
         static const long ID_TEXTCTRL3;
-        static const long ID_CHOICE5;
         static const long ID_BUTTON8;
+        static const long ID_CHOICE5;
+        static const long ID_STATICLINE1;
         static const long ID_GRID1;
         static const long ID_BUTTON4;
         static const long ID_BUTTON6;
@@ -143,45 +144,25 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_STATICTEXT12;
         static const long ID_STATICTEXT13;
         static const long ID_STATICTEXT14;
+        static const long ID_STATICTEXT21;
         static const long ID_STATICTEXT16;
         static const long ID_STATICTEXT15;
         static const long ID_STATICTEXT17;
         static const long ID_STATICTEXT18;
-        static const long ID_STATICTEXT21;
-        static const long ID_CHOICE6;
+        static const long ID_STATICTEXT41;
         static const long ID_STATICTEXT32;
-        static const long ID_CHOICE13;
+        static const long ID_STATICTEXT42;
         static const long ID_CHOICE7;
-        static const long ID_CHOICE14;
+        static const long ID_STATICTEXT43;
+        static const long ID_BUTTON9;
         static const long ID_CHOICE8;
         static const long ID_TEXTCTRL8;
         static const long ID_TEXTCTRL9;
         static const long ID_TEXTCTRL10;
-        static const long ID_BUTTON9;
         static const long ID_GRID2;
         static const long ID_BUTTON3;
         static const long ID_BUTTON7;
         static const long ID_PANEL3;
-        static const long ID_CHECKBOX1;
-        static const long ID_TEXTCTRL1;
-        static const long ID_STATICTEXT26;
-        static const long ID_CHECKBOX2;
-        static const long ID_STATICTEXT22;
-        static const long ID_STATICTEXT33;
-        static const long ID_STATICTEXT23;
-        static const long ID_STATICTEXT24;
-        static const long ID_STATICTEXT25;
-        static const long ID_STATICTEXT28;
-        static const long ID_CHOICE15;
-        static const long ID_STATICTEXT34;
-        static const long ID_CHOICE16;
-        static const long ID_CHOICE17;
-        static const long ID_CHOICE18;
-        static const long ID_BUTTON10;
-        static const long ID_GRID3;
-        static const long ID_BUTTON11;
-        static const long ID_BUTTON13;
-        static const long ID_PANEL4;
         static const long ID_NOTEBOOK1;
         static const long idMenuNew;
         static const long idMenuOpen;
@@ -199,7 +180,6 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_MENUITEM9;
         static const long ID_MENUITEM10;
         static const long ID_MENUITEM11;
-        static const long ID_MENUITEM12;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
         //*)
@@ -207,40 +187,34 @@ class sixaxis_emu_guiFrame: public wxFrame
         //(*Declarations(sixaxis_emu_guiFrame)
         wxChoice* Choice5;
         wxStaticText* StaticText10;
-        wxStaticText* StaticText22;
         wxStaticText* StaticText9;
-        wxChoice* Choice14;
         wxMenuItem* MenuItem8;
         wxStaticText* StaticText20;
         wxMenuItem* MenuItem7;
-        wxChoice* Choice16;
         wxButton* Button4;
         wxStaticText* StaticText29;
         wxNotebook* Notebook1;
-        wxChoice* Choice11;
+        wxStaticText* StaticText37;
         wxMenuItem* MenuItem5;
-        wxStaticText* StaticText33;
         wxStaticText* StaticText13;
         wxStaticText* StaticText2;
-        wxPanel* Panel4;
         wxStaticText* StaticText14;
         wxStaticText* StaticText30;
-        wxChoice* Choice3;
         wxMenu* Menu3;
         wxButton* Button1;
-        wxStaticText* StaticText26;
         wxStaticText* StaticText6;
         wxMenuItem* MenuItem4;
+        wxStaticText* StaticText40;
         wxMenuItem* MenuItem14;
-        wxChoice* Choice18;
         wxMenuItem* MenuItem11;
+        wxStaticText* StaticText42;
         wxStaticText* StaticText32;
         wxStaticText* StaticText19;
+        wxStaticText* StaticText38;
         wxStaticText* StaticText8;
         wxStaticText* StaticText11;
         wxStaticText* StaticText18;
         wxMenuItem* MenuItem15;
-        wxCheckBox* CheckBox2;
         wxStaticText* StaticText31;
         wxPanel* Panel1;
         wxStaticText* StaticText1;
@@ -253,23 +227,14 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxChoice* Choice7;
         wxChoice* Choice8;
         wxMenuItem* MenuItem10;
-        wxChoice* Choice9;
-        wxChoice* Choice13;
-        wxCheckBox* CheckBox1;
         wxPanel* Panel3;
         wxStaticText* StaticText21;
+        wxStaticText* StaticText39;
         wxButton* Button6;
         wxMenuItem* MenuItem12;
-        wxStaticText* StaticText23;
-        wxStaticText* StaticText24;
-        wxButton* Button10;
-        wxButton* Button11;
         wxGrid* Grid2;
         wxMenuItem* MenuItem3;
-        wxChoice* Choice17;
-        wxChoice* Choice12;
         wxButton* Button3;
-        wxStaticText* StaticText34;
         wxStaticText* StaticText5;
         wxButton* Button7;
         wxStaticText* StaticText7;
@@ -277,29 +242,23 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxChoice* Choice4;
         wxButton* Button9;
         wxTextCtrl* TextCtrl8;
-        wxChoice* Choice6;
-        wxChoice* Choice10;
-        wxStaticText* StaticText28;
-        wxTextCtrl* TextCtrl1;
+        wxStaticLine* StaticLine1;
+        wxStaticText* StaticText43;
+        wxStaticText* StaticText41;
         wxStaticText* StaticText15;
         wxStaticText* StaticText12;
-        wxChoice* Choice15;
         wxTextCtrl* TextCtrl9;
+        wxStaticText* StaticText35;
         wxPanel* Panel2;
-        wxGrid* Grid3;
-        wxStaticText* StaticText25;
         wxMenuItem* MenuItem16;
-        wxButton* Button13;
         wxMenuItem* MenuItem9;
         wxStaticText* StaticText17;
         wxStaticText* StaticText4;
+        wxStaticText* StaticText36;
         wxTextCtrl* TextCtrl3;
-        wxMenuItem* MenuItem18;
         wxTextCtrl* TextCtrl10;
         wxStaticText* StaticText16;
         wxButton* Button8;
-        wxChoice* Choice2;
-        wxMenu* Menu5;
         wxMenu* Menu4;
         //*)
 
@@ -307,7 +266,6 @@ class sixaxis_emu_guiFrame: public wxFrame
         ConfigurationFile configFile;
         unsigned int currentController;
         unsigned int currentConfiguration;
-        bool expertMode;
 
         DECLARE_EVENT_TABLE()
 };
