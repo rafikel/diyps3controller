@@ -12,7 +12,7 @@ class event_catcher
         wxString GetDeviceId() { return m_DeviceId; }
         wxString GetEventType() { return m_EventType; }
         wxString GetEventId() { return m_EventId; }
-        void run(bool button, bool motion);
+        void run(wxString event_type);
     protected:
     private:
         wxString m_DeviceType;
