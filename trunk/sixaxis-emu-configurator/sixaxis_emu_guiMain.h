@@ -94,6 +94,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnMenuItemConfiguration3(wxCommandEvent& event);
         void OnMenuItemConfiguration4(wxCommandEvent& event);
         void OnMenuItemExpert(wxCommandEvent& event);
+        void OnMenuSave(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
         void fillDeviceTypeButtonChoice(wxChoice* choice);

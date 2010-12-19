@@ -129,7 +129,8 @@ END_EVENT_TABLE()
 void sixaxis_emu_guiFrame::fillButtonAxisChoice(wxChoice* choice)
 {
     choice->Clear();
-    choice->SetSelection( choice->Append(_("rstick left")) );
+    choice->SetSelection(choice->Append(_("")));
+    choice->Append(_("rstick left"));
     choice->Append(_("rstick right"));
     choice->Append(_("rstick up"));
     choice->Append(_("rstick down"));
@@ -154,7 +155,8 @@ void sixaxis_emu_guiFrame::fillButtonAxisChoice(wxChoice* choice)
 void sixaxis_emu_guiFrame::fillAxisAxisChoice(wxChoice* choice)
 {
     choice->Clear();
-    choice->SetSelection( choice->Append(_("rstick x")) );
+    choice->SetSelection(choice->Append(_("")));
+    choice->Append(_("rstick x"));
     choice->Append(_("rstick y"));
     choice->Append(_("lstick x"));
     choice->Append(_("lstick y"));
@@ -438,6 +440,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton7Click);
     Connect(idMenuNew,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemNew);
     Connect(idMenuOpen,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuOpen);
+    Connect(idMenuSave,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuSave);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnQuit);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController1);
     Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController2);
@@ -485,7 +488,7 @@ void sixaxis_emu_guiFrame::OnButtonAdd1Click(wxCommandEvent& event)
 {
     if(Choice5->GetStringSelection() == _(""))
     {
-        wxMessageBox( wxT("Nothing to add!"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
         return;
     }
     Grid1->InsertRows();
@@ -504,7 +507,7 @@ void sixaxis_emu_guiFrame::OnButton3Click(wxCommandEvent& event)
 {
     if(Choice8->GetStringSelection() == _(""))
     {
-        wxMessageBox( wxT("Nothing to add!"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
         return;
     }
     Grid2->InsertRows();
@@ -653,7 +656,9 @@ void sixaxis_emu_guiFrame::OnButton8Click(wxCommandEvent& event)
         TextCtrl3->SetValue(_("10"));
     }
 
-    Choice5->SetSelection( Choice5->Append(_("up")) );
+    Choice5->Clear();
+    Choice5->SetSelection(Choice5->Append(_("")));
+    Choice5->Append(_("up"));
     Choice5->Append(_("down"));
     Choice5->Append(_("right"));
     Choice5->Append(_("left"));
@@ -897,4 +902,8 @@ void sixaxis_emu_guiFrame::OnMenuItemConfiguration4(wxCommandEvent& event)
     currentConfiguration = 3;
     load_current();
     refresh_gui();
+}
+
+void sixaxis_emu_guiFrame::OnMenuSave(wxCommandEvent& event)
+{
 }

@@ -592,6 +592,7 @@
 					<label>Save</label>
 					<accel>Ctrl-s</accel>
 					<help>Save configuration</help>
+					<handler function="OnMenuSave" entry="EVT_MENU" />
 				</object>
 				<object class="wxMenuItem" name="idMenuSaveAs" variable="MenuItem5" member="yes">
 					<label>Save As...</label>
