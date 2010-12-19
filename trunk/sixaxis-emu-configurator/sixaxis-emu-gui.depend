@@ -1811,3 +1811,130 @@
 	<libxml/xmlversion.h>
 	<libxml/tree.h>
 
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/wx_pch.h
+	<wx/wxprec.h>
+	<wx/wx.h>
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiApp.cpp
+	"wx_pch.h"
+	"sixaxis_emu_guiApp.h"
+	"sixaxis_emu_guiMain.h"
+	<wx/image.h>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/wx_pch.h
+	<wx/wxprec.h>
+	<wx/wx.h>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiApp.h
+	<wx/app.h>
+
+1292782759 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.h
+	<wx/notebook.h>
+	<wx/sizer.h>
+	<wx/stattext.h>
+	<wx/menu.h>
+	<wx/textctrl.h>
+	<wx/statline.h>
+	<wx/panel.h>
+	<wx/grid.h>
+	<wx/filedlg.h>
+	<wx/choice.h>
+	<wx/button.h>
+	<wx/frame.h>
+	<wx/statusbr.h>
+	<event_catcher.h>
+	<ConfigurationFile.h>
+
+1292781902 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/event_catcher.h
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/ConfigurationFile.h
+	<Controller.h>
+	<list>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/Controller.h
+	<Configuration.h>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/Configuration.h
+	<Device.h>
+	<Event.h>
+	<Trigger.h>
+	<ButtonMapper.h>
+	<AxisMapper.h>
+	<list>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/Device.h
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/Event.h
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/Trigger.h
+	<Device.h>
+	<Event.h>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/ButtonMapper.h
+	<Device.h>
+	<Event.h>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/AxisMapper.h
+	<Device.h>
+	<Event.h>
+
+1292716927 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.cpp
+	"wx_pch.h"
+	"sixaxis_emu_guiMain.h"
+	<wx/msgdlg.h>
+	<wx/intl.h>
+	<wx/string.h>
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/AxisMapper.cpp
+	"AxisMapper.h"
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/ButtonMapper.cpp
+	"ButtonMapper.h"
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/Configuration.cpp
+	"Configuration.h"
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/ConfigurationFile.cpp
+	"ConfigurationFile.h"
+	<XmlReader.h>
+
+1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/XmlReader.h
+	<ConfigurationFile.h>
+	<libxml/xmlreader.h>
+	<libxml/xmlstring.h>
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/Controller.cpp
+	"Controller.h"
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/Device.cpp
+	"Device.h"
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/Event.cpp
+	"Event.h"
+
+1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/Trigger.cpp
+	"Trigger.h"
+
+1292781871 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/event_catcher.cpp
+	"event_catcher.h"
+	<SDL/SDL.h>
+
+1292751479 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
+	"XmlReader.h"
+	<stdexcept>
+
+1282900276 /usr/include/wx-2.8/wx/statline.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/univ/statline.h"
+	"wx/msw/statline.h"
+	"wx/gtk/statline.h"
+	"wx/gtk1/statline.h"
+	"wx/os2/statline.h"
+	"wx/mac/statline.h"
+	"wx/cocoa/statline.h"
+	"wx/generic/statline.h"
+
+1282900276 /usr/include/wx-2.8/wx/gtk/statline.h
+	"wx/defs.h"
+
