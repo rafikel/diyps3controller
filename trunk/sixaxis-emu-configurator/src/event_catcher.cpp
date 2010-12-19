@@ -346,6 +346,11 @@ void event_catcher::run(bool button, bool motion)
     const char* event_id;
     int i = 0;
 
+    m_DeviceType = _("");
+    m_DeviceId = _("");
+    m_EventType = _("");
+    m_EventId = _("");
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
     {
         fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
