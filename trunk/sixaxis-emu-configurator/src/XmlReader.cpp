@@ -114,6 +114,7 @@ void XmlReader::ProcessAxisElement(xmlNode * a_node)
     m_TempAxisMapper.SetAxis(id);
     m_TempAxisMapper.SetDevice(m_TempDevice);
     m_TempAxisMapper.SetEvent(m_TempEvent);
+    m_TempConfiguration.GetAxisMapperList()->push_back(m_TempAxisMapper);
 }
 
 void XmlReader::ProcessButtonElement(xmlNode * a_node)
@@ -172,11 +173,13 @@ void XmlReader::ProcessButtonElement(xmlNode * a_node)
     m_TempButtonMapper.SetButton(id);
     m_TempButtonMapper.SetDevice(m_TempDevice);
     m_TempButtonMapper.SetEvent(m_TempEvent);
+    m_TempConfiguration.GetButtonMapperList()->push_back(m_TempButtonMapper);
 }
 
 void XmlReader::ProcessAxisMapElement(xmlNode * a_node)
 {
     xmlNode* cur_node = NULL;
+    m_TempConfiguration.GetAxisMapperList()->clear();
 
     for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
     {
@@ -193,12 +196,12 @@ void XmlReader::ProcessAxisMapElement(xmlNode * a_node)
             }
         }
     }
-    m_TempConfiguration.GetAxisMapperList()->push_back(m_TempAxisMapper);
 }
 
 void XmlReader::ProcessButtonMapElement(xmlNode * a_node)
 {
     xmlNode* cur_node = NULL;
+    m_TempConfiguration.GetButtonMapperList()->clear();
 
     for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
     {
@@ -215,7 +218,6 @@ void XmlReader::ProcessButtonMapElement(xmlNode * a_node)
             }
         }
     }
-    m_TempConfiguration.GetButtonMapperList()->push_back(m_TempButtonMapper);
 }
 
 void XmlReader::ProcessTriggerElement(xmlNode * a_node)
