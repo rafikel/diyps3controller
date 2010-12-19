@@ -447,15 +447,77 @@ void event_catcher::run(wxString event_type)
                             }
                         }
                     }
+                    else if(event_type == _("axis up"))
+                    {
+                        if(event->motion.xrel > 5 || event->motion.yrel > 5)
+                        {
+                            m_DeviceType = _("mouse");
+                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
+                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_EventType = _("axis");
+                            done = 1;
+                            if(event->motion.xrel > event->motion.yrel)
+                            {
+                                m_EventId = _("x");
+                            }
+                            else
+                            {
+                                m_EventId = _("y");
+                            }
+                        }
+                    }
+                    else if(event_type == _("axis down"))
+                    {
+                        if(event->motion.xrel < -5 || event->motion.yrel < -5)
+                        {
+                            m_DeviceType = _("mouse");
+                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
+                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_EventType = _("axis");
+                            done = 1;
+                            if(event->motion.xrel < event->motion.yrel)
+                            {
+                                m_EventId = _("x");
+                            }
+                            else
+                            {
+                                m_EventId = _("y");
+                            }
+                        }
+                    }
                     break;
                 case SDL_JOYAXISMOTION:
-                    if(event_type == _("button"))
+                    if(event_type == _("axis"))
                     {
                         if(abs(event->jaxis.value) > 10000)
                         {
                             m_DeviceType = _("joystick");
                             m_DeviceId = wxString::Format(wxT("%i"),event->jaxis.which);
                             m_DeviceName = wxString(SDL_JoystickName(event->jaxis.which), wxConvUTF8);
+                            m_EventType = _("axis");
+                            m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
+                            done = 1;
+                        }
+                    }
+                    else if(event_type == _("axis up"))
+                    {
+                        if(event->jaxis.value > 10000)
+                        {
+                            m_DeviceType = _("mouse");
+                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
+                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_EventType = _("axis");
+                            m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
+                            done = 1;
+                        }
+                    }
+                    else if(event_type == _("axis down"))
+                    {
+                        if(abs(event->jaxis.value) < 10000)
+                        {
+                            m_DeviceType = _("mouse");
+                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
+                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
                             m_EventType = _("axis");
                             m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
                             done = 1;

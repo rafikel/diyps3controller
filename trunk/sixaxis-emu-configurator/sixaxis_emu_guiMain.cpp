@@ -483,12 +483,17 @@ void sixaxis_emu_guiFrame::OnMenuItemNew(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnButtonAdd1Click(wxCommandEvent& event)
 {
+    if(Choice5->GetStringSelection() == _(""))
+    {
+        wxMessageBox( wxT("Nothing to add!"), wxT("Error"), wxICON_ERROR);
+        return;
+    }
     Grid1->InsertRows();
     Grid1->SetCellValue(0, 0, StaticText38->GetLabel());
     Grid1->SetCellValue(0, 1, StaticText30->GetLabel());
-    Grid1->SetCellValue(0, 2, StaticText29->GetLabel());
+    Grid1->SetCellValue(0, 2, StaticText39->GetLabel());
     Grid1->SetCellValue(0, 3, Choice4->GetStringSelection());
-    Grid1->SetCellValue(0, 4, StaticText30->GetLabel());
+    Grid1->SetCellValue(0, 4, StaticText40->GetLabel());
     Grid1->SetCellValue(0, 5, TextCtrl3->GetValue());
     Grid1->SetCellValue(0, 6, Choice5->GetStringSelection());
     Grid1->AutoSizeColumns();
@@ -497,6 +502,11 @@ void sixaxis_emu_guiFrame::OnButtonAdd1Click(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnButton3Click(wxCommandEvent& event)
 {
+    if(Choice8->GetStringSelection() == _(""))
+    {
+        wxMessageBox( wxT("Nothing to add!"), wxT("Error"), wxICON_ERROR);
+        return;
+    }
     Grid2->InsertRows();
     Grid2->SetCellValue(0, 0, StaticText41->GetLabel());
     Grid2->SetCellValue(0, 1, StaticText32->GetLabel());
@@ -560,9 +570,11 @@ void sixaxis_emu_guiFrame::OnButton7Click(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnChoice4Select(wxCommandEvent& event)
 {
-    StaticText38->SetLabel(_(""));
-    StaticText30->SetLabel(_(""));
-    StaticText39->SetLabel(_(""));
+    StaticText41->SetLabel(_(""));
+    StaticText32->SetLabel(_(""));
+    StaticText42->SetLabel(_(""));
+    StaticText43->SetLabel(_(""));
+    Choice8->Clear();
 
     if(Choice7->GetStringSelection() == _("button"))
     {
@@ -572,8 +584,6 @@ void sixaxis_emu_guiFrame::OnChoice4Select(wxCommandEvent& event)
         TextCtrl9->SetValue(_(""));
         TextCtrl10->Disable();
         TextCtrl10->SetValue(_(""));
-
-        fillButtonAxisChoice(Choice8);
     }
     else
     {
@@ -583,14 +593,18 @@ void sixaxis_emu_guiFrame::OnChoice4Select(wxCommandEvent& event)
         TextCtrl9->SetValue(_("4"));
         TextCtrl10->Enable();
         TextCtrl10->SetValue(_("1"));
-
-        fillAxisAxisChoice(Choice8);
     }
     Panel3->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnChoice4Select1(wxCommandEvent& event)
 {
+    StaticText38->SetLabel(_(""));
+    StaticText30->SetLabel(_(""));
+    StaticText39->SetLabel(_(""));
+    StaticText40->SetLabel(_(""));
+    Choice5->Clear();
+
     if(Choice4->GetStringSelection() == _("button"))
     {
         TextCtrl3->Disable();
@@ -607,6 +621,8 @@ void sixaxis_emu_guiFrame::OnChoice4Select1(wxCommandEvent& event)
 void sixaxis_emu_guiFrame::auto_detect(event_catcher* evcatch, wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id)
 {
     evcatch->run(event_type);
+
+    device_type->SetLabel(wxString(evcatch->GetDeviceType()));
 
     device_name->SetLabel(wxString(evcatch->GetDeviceName()));
 
@@ -636,6 +652,24 @@ void sixaxis_emu_guiFrame::OnButton8Click(wxCommandEvent& event)
         TextCtrl3->Enable();
         TextCtrl3->SetValue(_("10"));
     }
+
+    Choice5->SetSelection( Choice5->Append(_("up")) );
+    Choice5->Append(_("down"));
+    Choice5->Append(_("right"));
+    Choice5->Append(_("left"));
+    Choice5->Append(_("r1"));
+    Choice5->Append(_("r2"));
+    Choice5->Append(_("r3"));
+    Choice5->Append(_("l1"));
+    Choice5->Append(_("l2"));
+    Choice5->Append(_("l3"));
+    Choice5->Append(_("circle"));
+    Choice5->Append(_("square"));
+    Choice5->Append(_("cross"));
+    Choice5->Append(_("triangle"));
+    Choice5->Append(_("start"));
+    Choice5->Append(_("select"));
+    Choice5->Append(_("PS"));
 
     Panel2->Layout();
 }
