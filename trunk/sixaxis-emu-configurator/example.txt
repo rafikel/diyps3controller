@@ -166,9 +166,27 @@
             <axis_map/>
         </configuration>
 	<configuration id="4">
-            <trigger device_type="keyboard" device_id="7" device_name="" button_id="F4"/>
-            <button_map/>
-            <axis_map/>
+            <trigger device_type="keyboard" device_id="1" device_name="" button_id="F1"/>
+            <button_map>
+                <button id="square">
+                    <device type="keyboard" id="1" name=""/>
+                    <event type="button" id="SPACE"/>
+                </button>
+        <button id="right">
+                    <device type="mouse" id="1" name=""/>
+                    <event type="axis" id="x" threshold="10"/>
+                </button>
+            </button_map>
+            <axis_map>
+                <axis id="lstick left">
+                    <device type="keyboard" id="1" name=""/>
+                    <event type="button" id="q"/>
+                </axis>
+        <axis id="rstick x">
+                    <device type="mouse" id="1" name=""/>
+                    <event type="axis" id="x" dead_zone="8" multiplier="4" exponent="1"/>
+                </axis>
+            </axis_map>
         </configuration>
     </controller>
 </root>
