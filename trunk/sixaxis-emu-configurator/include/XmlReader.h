@@ -19,9 +19,6 @@
 #define X_NODE_BUTTON "button"
 
 #define X_ATTR_ID "id"
-#define X_ATTR_DEVICE_TYPE "device_type"
-#define X_ATTR_DEVICE_ID "device_id"
-#define X_ATTR_DEVICE_NAME "device_name"
 #define X_ATTR_TYPE "type"
 #define X_ATTR_NAME "name"
 #define X_ATTR_BUTTON_ID "button_id"

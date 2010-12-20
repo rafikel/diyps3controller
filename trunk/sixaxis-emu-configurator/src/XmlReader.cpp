@@ -227,9 +227,9 @@ void XmlReader::ProcessTriggerElement(xmlNode * a_node)
     wxString device_name;
     wxString button_id;
 
-    device_type = wxString((char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_DEVICE_TYPE), wxConvUTF8);
-    device_id = wxString((char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_DEVICE_ID), wxConvUTF8);
-    device_name = wxString((char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_DEVICE_NAME), wxConvUTF8);
+    device_type = wxString((char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE), wxConvUTF8);
+    device_id = wxString((char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID), wxConvUTF8);
+    device_name = wxString((char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME), wxConvUTF8);
     button_id = wxString((char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID), wxConvUTF8);
 
     m_TempTrigger.SetDevice(Device(device_type, device_id, device_name));

@@ -1898,7 +1898,7 @@
 	"ConfigurationFile.h"
 	<XmlReader.h>
 
-1291670528 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/XmlReader.h
+1292874326 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/XmlReader.h
 	<ConfigurationFile.h>
 	<libxml/xmlreader.h>
 	<libxml/xmlstring.h>
@@ -1919,7 +1919,7 @@
 	"event_catcher.h"
 	<SDL/SDL.h>
 
-1292751479 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
+1292874372 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
 	"XmlReader.h"
 	<stdexcept>
 
@@ -1937,4 +1937,10 @@
 
 1282900276 /usr/include/wx-2.8/wx/gtk/statline.h
 	"wx/defs.h"
+
+1292875208 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlWritter.cpp
+	"XmlWritter.h"
+
+1292874829 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/XmlWritter.h
+	<XmlReader.h>
 
