@@ -184,7 +184,6 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     wxMenuItem* MenuItem1;
     wxFlexGridSizer* FlexGridSizer5;
     wxFlexGridSizer* FlexGridSizer9;
-    wxMenu* Menu1;
     wxFlexGridSizer* FlexGridSizer7;
     wxGridSizer* GridSizer1;
     wxFlexGridSizer* FlexGridSizer8;
@@ -382,6 +381,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Menu1->Append(MenuItem6);
     MenuItem4 = new wxMenuItem(Menu1, idMenuSave, _("Save\tCtrl-s"), _("Save configuration"), wxITEM_NORMAL);
     Menu1->Append(MenuItem4);
+    MenuItem4->Enable(false);
     MenuItem5 = new wxMenuItem(Menu1, idMenuSaveAs, _("Save As..."), _("Save configuration to specified file"), wxITEM_NORMAL);
     Menu1->Append(MenuItem5);
     Menu1->AppendSeparator();
@@ -441,6 +441,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(idMenuNew,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemNew);
     Connect(idMenuOpen,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuOpen);
     Connect(idMenuSave,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuSave);
+    Connect(idMenuSaveAs,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuSaveAs);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnQuit);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController1);
     Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController2);
@@ -482,6 +483,15 @@ void sixaxis_emu_guiFrame::OnAbout(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnMenuItemNew(wxCommandEvent& event)
 {
+    configFile = ConfigurationFile();
+
+    currentController = 0;
+    currentConfiguration = 0;
+    Menu3->Check(ID_MENUITEM1, true);
+    Menu4->Check(ID_MENUITEM8, true);
+    load_current();
+    refresh_gui();
+    Menu1->Enable(idMenuSave, false);
 }
 
 void sixaxis_emu_guiFrame::OnButtonAdd1Click(wxCommandEvent& event)
@@ -722,7 +732,7 @@ void sixaxis_emu_guiFrame::save_current()
     for(int i=0; i<Grid1->GetNumberRows(); i++)
     {
         //ButtonMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString threshold, wxString button)
-        buttonMappers->push_back(ButtonMapper(Grid1->GetCellValue(i, 0), Grid1->GetCellValue(i, 2), Grid1->GetCellValue(i, 1), Grid1->GetCellValue(i, 3), Grid1->GetCellValue(i, 4), Grid1->GetCellValue(i, 5), Grid1->GetCellValue(i, 6)));
+        buttonMappers->push_front(ButtonMapper(Grid1->GetCellValue(i, 0), Grid1->GetCellValue(i, 2), Grid1->GetCellValue(i, 1), Grid1->GetCellValue(i, 3), Grid1->GetCellValue(i, 4), Grid1->GetCellValue(i, 5), Grid1->GetCellValue(i, 6)));
     }
     //Save AxisMappers
     axisMappers = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetAxisMapperList();
@@ -730,7 +740,7 @@ void sixaxis_emu_guiFrame::save_current()
     for(int i=0; i<Grid2->GetNumberRows(); i++)
     {
         //AxisMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString axis, wxString deadZone, wxString multiplier, wxString exponent);
-        axisMappers->push_back(AxisMapper(Grid2->GetCellValue(i, 0), Grid2->GetCellValue(i, 2), Grid2->GetCellValue(i, 1), Grid2->GetCellValue(i, 3), Grid2->GetCellValue(i, 4), Grid2->GetCellValue(i, 5), Grid2->GetCellValue(i, 6), Grid2->GetCellValue(i, 7), Grid2->GetCellValue(i, 8)));
+        axisMappers->push_front(AxisMapper(Grid2->GetCellValue(i, 0), Grid2->GetCellValue(i, 2), Grid2->GetCellValue(i, 1), Grid2->GetCellValue(i, 3), Grid2->GetCellValue(i, 4), Grid2->GetCellValue(i, 5), Grid2->GetCellValue(i, 6), Grid2->GetCellValue(i, 7), Grid2->GetCellValue(i, 8)));
     }
 
 }
@@ -800,6 +810,7 @@ void sixaxis_emu_guiFrame::OnMenuOpen(wxCommandEvent& event)
     Menu4->Check(ID_MENUITEM8, true);
     load_current();
     refresh_gui();
+    Menu1->Enable(idMenuSave, true);
 }
 
 void sixaxis_emu_guiFrame::OnMenuItemController1(wxCommandEvent& event)
@@ -906,5 +917,18 @@ void sixaxis_emu_guiFrame::OnMenuItemConfiguration4(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnMenuSave(wxCommandEvent& event)
 {
+    save_current();
     configFile.WriteConfigFile();
+}
+
+void sixaxis_emu_guiFrame::OnMenuSaveAs(wxCommandEvent& event)
+{
+    if ( FileDialog1->ShowModal() != wxID_OK ) return;
+
+    wxString FileName = FileDialog1->GetPath();
+    if ( FileName.IsEmpty() ) return;
+
+    configFile.SetFilePath(FileName);
+
+    OnMenuSave(event);
 }
