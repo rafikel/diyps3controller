@@ -53,6 +53,7 @@
 		<Unit filename="include/Event.h" />
 		<Unit filename="include/Trigger.h" />
 		<Unit filename="include/XmlReader.h" />
+		<Unit filename="include/XmlWritter.h" />
 		<Unit filename="include/event_catcher.h" />
 		<Unit filename="sixaxis_emu_guiApp.cpp" />
 		<Unit filename="sixaxis_emu_guiApp.h" />
@@ -67,6 +68,7 @@
 		<Unit filename="src/Event.cpp" />
 		<Unit filename="src/Trigger.cpp" />
 		<Unit filename="src/XmlReader.cpp" />
+		<Unit filename="src/XmlWritter.cpp" />
 		<Unit filename="src/event_catcher.cpp" />
 		<Unit filename="wx_pch.h">
 			<Option compile="1" />

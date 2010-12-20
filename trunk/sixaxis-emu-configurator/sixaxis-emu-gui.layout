@@ -11,7 +11,7 @@
 		<Cursor position="650" topLine="0" />
 	</File>
 	<File name="include/ConfigurationFile.h" open="0" top="0" tabpos="8">
-		<Cursor position="609" topLine="0" />
+		<Cursor position="568" topLine="0" />
 	</File>
 	<File name="include/Controller.h" open="0" top="0" tabpos="4">
 		<Cursor position="414" topLine="0" />
@@ -25,20 +25,23 @@
 	<File name="include/Trigger.h" open="0" top="0" tabpos="8">
 		<Cursor position="472" topLine="0" />
 	</File>
-	<File name="include/XmlReader.h" open="0" top="0" tabpos="4">
-		<Cursor position="854" topLine="3" />
+	<File name="include/XmlReader.h" open="1" top="0" tabpos="2">
+		<Cursor position="188" topLine="0" />
+	</File>
+	<File name="include/XmlWritter.h" open="1" top="0" tabpos="4">
+		<Cursor position="759" topLine="0" />
 	</File>
 	<File name="include/event_catcher.h" open="0" top="0" tabpos="2">
-		<Cursor position="474" topLine="0" />
+		<Cursor position="469" topLine="0" />
 	</File>
 	<File name="sixaxis_emu_guiApp.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="726" topLine="0" />
 	</File>
-	<File name="sixaxis_emu_guiMain.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="59986" topLine="1208" />
+	<File name="sixaxis_emu_guiMain.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="45225" topLine="861" />
 	</File>
 	<File name="sixaxis_emu_guiMain.h" open="0" top="0" tabpos="6">
-		<Cursor position="4670" topLine="65" />
+		<Cursor position="4678" topLine="12" />
 	</File>
 	<File name="src/AxisMapper.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="889" topLine="0" />
@@ -64,10 +67,13 @@
 	<File name="src/Trigger.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="106" topLine="0" />
 	</File>
-	<File name="src/XmlReader.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="3743" topLine="115" />
+	<File name="src/XmlReader.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="9785" topLine="322" />
+	</File>
+	<File name="src/XmlWritter.cpp" open="1" top="1" tabpos="3">
+		<Cursor position="880" topLine="64" />
 	</File>
 	<File name="src/event_catcher.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="18339" topLine="328" />
+		<Cursor position="20716" topLine="484" />
 	</File>
 </CodeBlocks_layout_file>
