@@ -1,5 +1,6 @@
 #include "ConfigurationFile.h"
 #include <XmlReader.h>
+#include <XmlWritter.h>
 
 ConfigurationFile::ConfigurationFile()
 {
@@ -31,4 +32,11 @@ void ConfigurationFile::ReadConfigFile(wxString filePath)
     XmlReader reader(this);
 
     reader.ReadConfigFile(filePath);
+}
+
+void ConfigurationFile::WriteConfigFile()
+{
+    XmlWritter writer(this);
+
+    writer.WriteConfigFile();
 }

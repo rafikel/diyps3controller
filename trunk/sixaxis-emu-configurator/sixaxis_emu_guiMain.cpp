@@ -771,9 +771,9 @@ void sixaxis_emu_guiFrame::load_current()
         Grid2->SetCellValue(0, 3, it->GetEvent()->GetType());
         Grid2->SetCellValue(0, 4, it->GetEvent()->GetId());
         Grid2->SetCellValue(0, 5, it->GetAxis());
-        Grid2->SetCellValue(0, 6, it->GetDeadZone());
-        Grid2->SetCellValue(0, 7, it->GetMultiplier());
-        Grid2->SetCellValue(0, 8, it->GetExponent());
+        Grid2->SetCellValue(0, 6, it->GetEvent()->GetDeadZone());
+        Grid2->SetCellValue(0, 7, it->GetEvent()->GetMultiplier());
+        Grid2->SetCellValue(0, 8, it->GetEvent()->GetExponent());
         Grid2->AutoSizeColumns();
     }
 }
@@ -906,4 +906,5 @@ void sixaxis_emu_guiFrame::OnMenuItemConfiguration4(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnMenuSave(wxCommandEvent& event)
 {
+    configFile.WriteConfigFile();
 }

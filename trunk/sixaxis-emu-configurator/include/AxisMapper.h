@@ -18,20 +18,11 @@ class AxisMapper
         void SetEvent(Event val) { m_Event = val; }
         wxString GetAxis() { return m_Axis; }
         void SetAxis(wxString val) { m_Axis = val; }
-        wxString GetDeadZone() { return m_DeadZone; }
-        void SetDeadZone(wxString val) { m_DeadZone = val; }
-        wxString GetMultiplier() { return m_Multiplier; }
-        void SetMultiplier(wxString val) { m_Multiplier = val; }
-        wxString GetExponent() { return m_Exponent; }
-        void SetExponent(wxString val) { m_Exponent = val; }
     protected:
     private:
         Device m_Device;
         Event m_Event;
         wxString m_Axis;
-        wxString m_DeadZone;
-        wxString m_Multiplier;
-        wxString m_Exponent;
 };
 
 #endif // AXISMAPPER_H
