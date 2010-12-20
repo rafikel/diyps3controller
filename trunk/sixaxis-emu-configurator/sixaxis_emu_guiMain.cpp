@@ -498,7 +498,7 @@ void sixaxis_emu_guiFrame::OnButtonAdd1Click(wxCommandEvent& event)
 {
     if(Choice5->GetStringSelection() == _(""))
     {
-        wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox( wxT("Please select a Button!"), wxT("Error"), wxICON_ERROR);
         return;
     }
     Grid1->InsertRows();
