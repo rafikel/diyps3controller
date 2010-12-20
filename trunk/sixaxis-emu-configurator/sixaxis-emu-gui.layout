@@ -2,16 +2,16 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="include/AxisMapper.h" open="0" top="0" tabpos="11">
-		<Cursor position="592" topLine="0" />
+		<Cursor position="310" topLine="0" />
 	</File>
 	<File name="include/ButtonMapper.h" open="0" top="0" tabpos="0">
-		<Cursor position="575" topLine="0" />
+		<Cursor position="854" topLine="0" />
 	</File>
 	<File name="include/Configuration.h" open="0" top="0" tabpos="3">
-		<Cursor position="650" topLine="0" />
+		<Cursor position="984" topLine="0" />
 	</File>
 	<File name="include/ConfigurationFile.h" open="0" top="0" tabpos="8">
-		<Cursor position="568" topLine="0" />
+		<Cursor position="416" topLine="0" />
 	</File>
 	<File name="include/Controller.h" open="0" top="0" tabpos="4">
 		<Cursor position="414" topLine="0" />
@@ -20,16 +20,16 @@
 		<Cursor position="86" topLine="0" />
 	</File>
 	<File name="include/Event.h" open="0" top="0" tabpos="0">
-		<Cursor position="203" topLine="0" />
+		<Cursor position="1428" topLine="0" />
 	</File>
 	<File name="include/Trigger.h" open="0" top="0" tabpos="8">
-		<Cursor position="472" topLine="0" />
+		<Cursor position="535" topLine="0" />
 	</File>
-	<File name="include/XmlReader.h" open="1" top="0" tabpos="2">
-		<Cursor position="188" topLine="0" />
+	<File name="include/XmlReader.h" open="0" top="0" tabpos="2">
+		<Cursor position="497" topLine="6" />
 	</File>
-	<File name="include/XmlWritter.h" open="1" top="0" tabpos="4">
-		<Cursor position="759" topLine="0" />
+	<File name="include/XmlWritter.h" open="0" top="0" tabpos="4">
+		<Cursor position="238" topLine="0" />
 	</File>
 	<File name="include/event_catcher.h" open="0" top="0" tabpos="2">
 		<Cursor position="469" topLine="0" />
@@ -38,13 +38,13 @@
 		<Cursor position="726" topLine="0" />
 	</File>
 	<File name="sixaxis_emu_guiMain.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="45225" topLine="861" />
+		<Cursor position="32074" topLine="492" />
 	</File>
 	<File name="sixaxis_emu_guiMain.h" open="0" top="0" tabpos="6">
-		<Cursor position="4678" topLine="12" />
+		<Cursor position="9295" topLine="200" />
 	</File>
 	<File name="src/AxisMapper.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="889" topLine="0" />
+		<Cursor position="782" topLine="0" />
 	</File>
 	<File name="src/ButtonMapper.cpp" open="0" top="0" tabpos="10">
 		<Cursor position="216" topLine="0" />
@@ -53,7 +53,7 @@
 		<Cursor position="452" topLine="0" />
 	</File>
 	<File name="src/ConfigurationFile.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="702" topLine="0" />
+		<Cursor position="754" topLine="0" />
 	</File>
 	<File name="src/Controller.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="113" topLine="0" />
@@ -62,16 +62,16 @@
 		<Cursor position="30" topLine="0" />
 	</File>
 	<File name="src/Event.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="1389" topLine="12" />
+		<Cursor position="1599" topLine="0" />
 	</File>
 	<File name="src/Trigger.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="106" topLine="0" />
+		<Cursor position="153" topLine="0" />
 	</File>
-	<File name="src/XmlReader.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="9785" topLine="322" />
+	<File name="src/XmlReader.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="6382" topLine="198" />
 	</File>
-	<File name="src/XmlWritter.cpp" open="1" top="1" tabpos="3">
-		<Cursor position="880" topLine="64" />
+	<File name="src/XmlWritter.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="4012" topLine="103" />
 	</File>
 	<File name="src/event_catcher.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="20716" topLine="484" />
