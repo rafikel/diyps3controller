@@ -1,192 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <controller id="1">
-        <configuration id="1">
-            <trigger type="keyboard" id="0" name="" button_id="F1"/>
-            <button_map>
-                <button id="square">
-                    <device type="keyboard" id="0" name=""/>
-                    <event type="button" id="SPACE"/>
-                </button>
+  <controller id="1">
+    <configuration id="1">
+      <trigger type="keyboard" id="0" button_id="F1"/>
+      <button_map>
+        <button id="square">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="SPACE"/>
+        </button>
         <button id="right">
-                    <device type="mouse" id="0" name=""/>
-                    <event type="axis" id="x" threshold="10"/>
-                </button>
-            </button_map>
-            <axis_map>
-                <axis id="lstick left">
-                    <device type="keyboard" id="0" name=""/>
-                    <event type="button" id="q"/>
-                </axis>
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="x" threshold="10"/>
+        </button>
+      </button_map>
+      <axis_map>
+        <axis id="lstick left">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="q"/>
+        </axis>
         <axis id="rstick x">
-                    <device type="mouse" id="0" name=""/>
-                    <event type="axis" id="x" dead_zone="8" multiplier="4" exponent="1"/>
-                </axis>
-            </axis_map>
-        </configuration>
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="x" dead_zone="8" multiplier="4" exponent="1"/>
+        </axis>
+      </axis_map>
+    </configuration>
     <configuration id="2">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="3">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="4">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
-    </controller>
-    <controller id="2">
-        <configuration id="1">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+  </controller>
+  <controller id="2">
+    <configuration id="1">
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="2">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="3">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="4">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
-    </controller>
-    <controller id="3">
-        <configuration id="1">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+  </controller>
+  <controller id="3">
+    <configuration id="1">
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="2">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="3">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="4">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
-    </controller>
-    <controller id="4">
-        <configuration id="1">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+  </controller>
+  <controller id="4">
+    <configuration id="1">
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="2">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="3">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="4">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
-    </controller>
-    <controller id="5">
-        <configuration id="1">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+  </controller>
+  <controller id="5">
+    <configuration id="1">
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="2">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="3">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="4">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
-    </controller>
-    <controller id="6">
-        <configuration id="1">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+  </controller>
+  <controller id="6">
+    <configuration id="1">
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="2">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="3">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="4">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
-    </controller>
-    <controller id="7">
-        <configuration id="1">
-            <trigger type="keyboard" id="7" name="" button_id="F1"/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+  </controller>
+  <controller id="7">
+    <configuration id="1">
+      <trigger type="keyboard" id="7" button_id="F1"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="2">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="3">
-            <trigger type="" id="" name="" button_id=""/>
-            <button_map/>
-            <axis_map/>
-        </configuration>
+      <trigger type="" id="" button_id=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
     <configuration id="4">
-            <trigger type="keyboard" id="0" name="" button_id="F1"/>
-            <button_map>
-                <button id="square">
-                    <device type="keyboard" id="0" name=""/>
-                    <event type="button" id="SPACE"/>
-                </button>
+      <trigger type="keyboard" id="0" button_id="F1"/>
+      <button_map>
+        <button id="square">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="SPACE"/>
+        </button>
         <button id="right">
-                    <device type="mouse" id="0" name=""/>
-                    <event type="axis" id="x" threshold="10"/>
-                </button>
-            </button_map>
-            <axis_map>
-                <axis id="lstick left">
-                    <device type="keyboard" id="0" name=""/>
-                    <event type="button" id="q"/>
-                </axis>
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="x" threshold="10"/>
+        </button>
+      </button_map>
+      <axis_map>
+        <axis id="lstick left">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="q"/>
+        </axis>
         <axis id="rstick x">
-                    <device type="mouse" id="0" name=""/>
-                    <event type="axis" id="x" dead_zone="8" multiplier="4" exponent="1"/>
-                </axis>
-            </axis_map>
-        </configuration>
-    </controller>
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="x" dead_zone="8" multiplier="4" exponent="1"/>
+        </axis>
+      </axis_map>
+    </configuration>
+  </controller>
 </root>
