@@ -24,12 +24,18 @@ void XmlWritter::CreateEventNode(xmlNodePtr parent_node, Event* event)
     xmlNodePtr e_node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_EVENT, NULL);
     xmlNewProp(e_node, BAD_CAST X_ATTR_TYPE, BAD_CAST (const char*) event->GetType().mb_str(wxConvUTF8));
     xmlNewProp(e_node, BAD_CAST X_ATTR_ID, BAD_CAST (const char*) event->GetId().mb_str(wxConvUTF8));
-    xmlNewProp(e_node, BAD_CAST X_ATTR_THRESHOLD, BAD_CAST (const char*) event->GetThreshold().mb_str(wxConvUTF8));
     if(event->GetType() == _("axis"))
     {
-        xmlNewProp(e_node, BAD_CAST X_ATTR_DEADZONE, BAD_CAST (const char*) event->GetDeadZone().mb_str(wxConvUTF8));
-        xmlNewProp(e_node, BAD_CAST X_ATTR_MULTIPLIER, BAD_CAST (const char*) event->GetMultiplier().mb_str(wxConvUTF8));
-        xmlNewProp(e_node, BAD_CAST X_ATTR_EXPONENT, BAD_CAST (const char*) event->GetExponent().mb_str(wxConvUTF8));
+        if(strcmp((const char*) parent_node->name, X_NODE_AXIS))
+        {
+            xmlNewProp(e_node, BAD_CAST X_ATTR_THRESHOLD, BAD_CAST (const char*) event->GetThreshold().mb_str(wxConvUTF8));
+        }
+        else
+        {
+            xmlNewProp(e_node, BAD_CAST X_ATTR_DEADZONE, BAD_CAST (const char*) event->GetDeadZone().mb_str(wxConvUTF8));
+            xmlNewProp(e_node, BAD_CAST X_ATTR_MULTIPLIER, BAD_CAST (const char*) event->GetMultiplier().mb_str(wxConvUTF8));
+            xmlNewProp(e_node, BAD_CAST X_ATTR_EXPONENT, BAD_CAST (const char*) event->GetExponent().mb_str(wxConvUTF8));
+        }
     }
 }
 
@@ -104,7 +110,7 @@ void XmlWritter::CreateConfigurationNodes(xmlNodePtr parent_node)
 
         node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_CONFIGURATION, NULL);
 
-        snprintf(id, sizeof(id), "%hhu", i);
+        snprintf(id, sizeof(id), "%hhu", i+1);
 
         xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST id);
 
@@ -128,7 +134,7 @@ void XmlWritter::CreateControllerNodes(xmlNodePtr parent_node)
 
         node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_CONTROLLER, NULL);
 
-        snprintf(id, sizeof(id), "%hhu", i);
+        snprintf(id, sizeof(id), "%hhu", i+1);
 
         xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST id);
 

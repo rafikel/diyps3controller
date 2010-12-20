@@ -32,6 +32,8 @@ void ConfigurationFile::ReadConfigFile(wxString filePath)
     XmlReader reader(this);
 
     reader.ReadConfigFile(filePath);
+
+    m_FilePath = filePath;
 }
 
 void ConfigurationFile::WriteConfigFile()

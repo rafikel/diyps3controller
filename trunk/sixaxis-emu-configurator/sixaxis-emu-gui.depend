@@ -1885,7 +1885,7 @@
 	<wx/intl.h>
 	<wx/string.h>
 
-1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/AxisMapper.cpp
+1292879174 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/AxisMapper.cpp
 	"AxisMapper.h"
 
 1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/ButtonMapper.cpp
@@ -1894,7 +1894,7 @@
 1291670528 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/Configuration.cpp
 	"Configuration.h"
 
-1292877030 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/ConfigurationFile.cpp
+1292879997 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/ConfigurationFile.cpp
 	"ConfigurationFile.h"
 	<XmlReader.h>
 	<XmlWritter.h>
@@ -1920,7 +1920,7 @@
 	"event_catcher.h"
 	<SDL/SDL.h>
 
-1292874372 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
+1292878611 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
 	"XmlReader.h"
 	<stdexcept>
 
@@ -1939,7 +1939,7 @@
 1282900276 /usr/include/wx-2.8/wx/gtk/statline.h
 	"wx/defs.h"
 
-1292875456 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlWritter.cpp
+1292879905 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/XmlWritter.cpp
 	"XmlWritter.h"
 
 1292874829 /home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/include/XmlWritter.h
