@@ -49,7 +49,7 @@ s_arg_key arg_key_table[] = {
         {"DOLLAR",             SDLK_DOLLAR         },
         {"AMPERSAND",         SDLK_AMPERSAND      },
         {"QUOTE",             SDLK_QUOTE          },
-        {"LEFTPAREN",         SDLK_AMPERSAND      },
+        {"LEFTPAREN",         SDLK_LEFTPAREN      },
         {"RIGHTPAREN",         SDLK_RIGHTPAREN     },
         {"ASTERISK",         SDLK_ASTERISK       },
         {"PLUS",             SDLK_PLUS           },
