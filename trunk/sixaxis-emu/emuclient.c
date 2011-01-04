@@ -28,10 +28,13 @@
 #include "dump.h"
 #include "macros.h"
 
+#include <pthread.h>
+
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
 #define DEFAULT_DEAD_ZONE 18
-#define DEFAULT_MULTIPLIER 4
+#define DEFAULT_MULTIPLIER_X 4
+#define DEFAULT_MULTIPLIER_Y 9
 #define MULTIPLIER_STEP 0.25
 #define REFRESH_PERIOD 10000 //=10ms
 #define EVENT_BUFFER_SIZE 32
@@ -40,7 +43,8 @@
 
 static int debug = 0;
 static int done = 0;
-static double multiplier = DEFAULT_MULTIPLIER;
+static double multiplier_x = DEFAULT_MULTIPLIER_X;
+static double multiplier_y = DEFAULT_MULTIPLIER_Y;
 static int dead_zone = DEFAULT_DEAD_ZONE;
 static int dead_zone_calibration = 0;
 
@@ -150,9 +154,29 @@ void move_y(int y)
     state.user.axis[0].y = y;
 }
 
+void circle_test()
+{
+  int i;
+  const double pi = 3.14159265;
+  const int m = 256;
+  const int step = 1;
+  SDL_Event event;
+
+  for(i=1; i<360; i+=step)
+  {
+    event.type = SDL_MOUSEMOTION;
+    event.motion.xrel = m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360));
+    event.motion.yrel = m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360));
+    SDL_PushEvent(&event);
+    usleep(REFRESH_PERIOD);
+  }
+}
+
 void key(int sym, int down)
 {
     int index = -1;
+    pthread_t thread;
+    pthread_attr_t thread_attr;
 
     switch (sym) {
     case SDLK_RSHIFT:    index = sb_ps;        break;
@@ -186,10 +210,19 @@ void key(int sym, int down)
 #endif
     case SDLK_s:         down?move_y(127):move_y(0);    break;
     case SDLK_d:         down?move_x(127):move_x(0);    break;
+    
+    case SDLK_p:
+    if(down && dead_zone_calibration)
+      {
+        pthread_attr_init(&thread_attr);
+        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+        pthread_create( &thread, &thread_attr, (void*)circle_test, NULL);
+      }
+      break;
 
     case SDLK_ESCAPE:    if(down) done = 1; break;
-    case SDLK_KP_MINUS:    if(down) { multiplier -= MULTIPLIER_STEP; printf("multiplier: %e\n", multiplier); } break;
-    case SDLK_KP_PLUS:     if(down) { multiplier += MULTIPLIER_STEP; printf("multiplier: %e\n", multiplier); } break;
+    case SDLK_KP_MINUS:    if(down) { multiplier_x -= MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
+    case SDLK_KP_PLUS:     if(down) { multiplier_x += MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
     case SDLK_KP_DIVIDE:    if(down && dead_zone_calibration) { dead_zone -= 1; printf("dead_zone: %d\n", dead_zone); } break;
     case SDLK_KP_MULTIPLY:     if(down && dead_zone_calibration) { dead_zone += 1; printf("dead_zone: %d\n", dead_zone); } break;
     case SDLK_KP0:
@@ -425,8 +458,8 @@ int main(int argc, char *argv[])
                     key(event->key.keysym.sym, 0);
                     break;
                 case SDL_MOUSEMOTION:
-                    merge_x += multiplier*event->motion.xrel;
-                    merge_y += multiplier*event->motion.yrel;
+                    merge_x += multiplier_x*event->motion.xrel;
+                    merge_y += multiplier_y*event->motion.yrel;
                     nb_motion++;
                     cpt = 0;
                     break;
