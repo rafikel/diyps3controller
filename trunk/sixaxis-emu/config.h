@@ -8,32 +8,36 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#include <SDL/SDL.h>
+
 #define MAX_CONTROLLERS 7
-#define MAX_CONFIGURATIONS 4
+#define MAX_DEVICES 256
+#define POSTPONE_COUNT 3 //to be moved to config.c later
 
-#define CONFIG_DIR "./config"
+#define SDL_BUTTON_X3 8
 
-#define X_NODE_ROOT "root"
-#define X_NODE_CONTROLLER "controller"
-#define X_NODE_CONFIGURATION "configuration"
+typedef struct
+{
+  int changed;
+  int merge_x;
+  int merge_y;
+  int nb_motion;
+  int postpone_wheel_up;
+  int postpone_wheel_down;
+  int postpone_button_x1;
+  int postpone_button_x2;
+}s_mouse_control;
 
-#define X_NODE_TRIGGER "trigger"
-#define X_NODE_BUTTON_MAP "button_map"
-#define X_NODE_AXIS_MAP "axis_map"
+typedef struct
+{
+  int change;
+  int send_command;
+} s_controller;
 
-#define X_NODE_DEVICE "device"
-#define X_NODE_EVENT "event"
-#define X_NODE_AXIS "axis"
-#define X_NODE_BUTTON "button"
+void init_config();
 
-#define X_ATTR_ID "id"
-#define X_ATTR_TYPE "type"
-#define X_ATTR_NAME "name"
-#define X_ATTR_BUTTON_ID "button_id"
-#define X_ATTR_THRESHOLD "threshold"
-#define X_ATTR_DEADZONE "dead_zone"
-#define X_ATTR_MULTIPLIER "multiplier"
-#define X_ATTR_EXPONENT "exponent"
+void trigger_lookup(SDL_Event*);
+void process_event(SDL_Event*);
 
 int read_config_dir();
 
