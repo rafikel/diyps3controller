@@ -345,6 +345,7 @@ void event_catcher::run(wxString event_type)
     int num_evt;
     const char* event_id;
     int i = 0;
+    wxString joystickName[255];
 
     m_DeviceType = _("");
     m_DeviceId = _("");
@@ -371,6 +372,7 @@ void event_catcher::run(wxString event_type)
 
     while(SDL_JoystickOpen(i))
     {
+        joystickName[i] = wxString(SDL_JoystickName(i), wxConvUTF8);
         i++;
     }
 
@@ -433,8 +435,8 @@ void event_catcher::run(wxString event_type)
                         if(abs(event->motion.xrel) > 5 || abs(event->motion.yrel) > 5)
                         {
                             m_DeviceType = _("mouse");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
-                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
+                            m_DeviceName = wxString(SDL_JoystickName(event->motion.which), wxConvUTF8);
                             m_EventType = _("axis");
                             done = 1;
                             if(abs(event->motion.xrel) > abs(event->motion.yrel))
@@ -452,8 +454,8 @@ void event_catcher::run(wxString event_type)
                         if(event->motion.xrel > 5 || event->motion.yrel > 5)
                         {
                             m_DeviceType = _("mouse");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
-                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
+                            m_DeviceName = wxString(SDL_JoystickName(event->motion.which), wxConvUTF8);
                             m_EventType = _("axis");
                             done = 1;
                             if(event->motion.xrel > event->motion.yrel)
@@ -471,8 +473,8 @@ void event_catcher::run(wxString event_type)
                         if(event->motion.xrel < -5 || event->motion.yrel < -5)
                         {
                             m_DeviceType = _("mouse");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
-                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
+                            m_DeviceName = wxString(SDL_JoystickName(event->motion.which), wxConvUTF8);
                             m_EventType = _("axis");
                             done = 1;
                             if(event->motion.xrel < event->motion.yrel)
@@ -487,13 +489,20 @@ void event_catcher::run(wxString event_type)
                     }
                     break;
                 case SDL_JOYAXISMOTION:
+                    /*
+                     * Ugly patch for the sixaxis.
+                     */
+                    if(joystickName[event->jaxis.which] == _("Sony PLAYSTATION(R)3 Controller") && event->jaxis.axis > 3)
+                    {
+                        break;
+                    }
                     if(event_type == _("axis"))
                     {
                         if(abs(event->jaxis.value) > 10000)
                         {
                             m_DeviceType = _("joystick");
                             m_DeviceId = wxString::Format(wxT("%i"),event->jaxis.which);
-                            m_DeviceName = wxString(SDL_JoystickName(event->jaxis.which), wxConvUTF8);
+                            m_DeviceName = joystickName[event->jaxis.which];
                             m_EventType = _("axis");
                             m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
                             done = 1;
@@ -503,9 +512,9 @@ void event_catcher::run(wxString event_type)
                     {
                         if(event->jaxis.value > 10000)
                         {
-                            m_DeviceType = _("mouse");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
-                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_DeviceType = _("joystick");
+                            m_DeviceId = wxString::Format(wxT("%i"),event->jaxis.which);
+                            m_DeviceName = joystickName[event->jaxis.which];
                             m_EventType = _("axis");
                             m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
                             done = 1;
@@ -513,11 +522,11 @@ void event_catcher::run(wxString event_type)
                     }
                     else if(event_type == _("axis down"))
                     {
-                        if(abs(event->jaxis.value) < 10000)
+                        if(event->jaxis.value < -10000)
                         {
-                            m_DeviceType = _("mouse");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
-                            m_DeviceName = wxString(SDL_JoystickName(event->jbutton.which), wxConvUTF8);
+                            m_DeviceType = _("joystick");
+                            m_DeviceId = wxString::Format(wxT("%i"),event->jaxis.which);
+                            m_DeviceName = joystickName[event->jaxis.which];
                             m_EventType = _("axis");
                             m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
                             done = 1;
