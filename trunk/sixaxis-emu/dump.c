@@ -75,8 +75,8 @@ void sixaxis_dump_state(struct sixaxis_state *state)
 
     /* stick positions */
     printf(" axis (%d,%d) (%d,%d)",
-           user->axis[0].x, user->axis[0].y,
-           user->axis[1].x, user->axis[1].y);
+           user->axis[0][0], user->axis[0][1],
+           user->axis[1][0], user->axis[1][1]);
 
     /* accelerometer data */
     printf(" acc (%d,%d,%d,%d)",
