@@ -4,7 +4,7 @@
     <configuration id="1">
       <trigger type="keyboard" id="0" button_id="F1"/>
       <button_map>
-        <button id="circle">
+        <button id="l3">
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="LSHIFT"/>
         </button>
@@ -35,6 +35,14 @@
         <button id="right">
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="RIGHT"/>
+        </button>
+        <button id="PS">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="RSHIFT"/>
+        </button>
+        <button id="start">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="BACKSPACE"/>
         </button>
         <button id="r1">
           <device type="mouse" id="0" name=""/>
