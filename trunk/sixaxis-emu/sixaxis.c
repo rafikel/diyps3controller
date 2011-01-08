@@ -59,10 +59,10 @@ int assemble_input_01(uint8_t *buf, int maxlen, struct sixaxis_state *state)
     }
 
     /* Axes */
-    buf[5] = clamp(0, u->axis[0].x + 128, 255);
-    buf[6] = clamp(0, u->axis[0].y + 128, 255);
-    buf[7] = clamp(0, u->axis[1].x + 128, 255);
-    buf[8] = clamp(0, u->axis[1].y + 128, 255);
+    buf[5] = clamp(0, u->axis[0][0] + 128, 255);
+    buf[6] = clamp(0, u->axis[0][1] + 128, 255);
+    buf[7] = clamp(0, u->axis[1][0] + 128, 255);
+    buf[8] = clamp(0, u->axis[1][1] + 128, 255);
 
     /* Analog button state */
     for (i = 0; i < 12; i++)
@@ -115,10 +115,10 @@ int process_input_01(const uint8_t *buf, int len, struct sixaxis_state *state)
     }
 
     /* Axes */
-    u->axis[0].x = buf[5] - 128;
-    u->axis[0].y = buf[6] - 128;
-    u->axis[1].x = buf[7] - 128;
-    u->axis[1].y = buf[8] - 128;
+    u->axis[0][0] = buf[5] - 128;
+    u->axis[0][1] = buf[6] - 128;
+    u->axis[1][0] = buf[7] - 128;
+    u->axis[1][1] = buf[8] - 128;
 
     /* Analog button state */
     for (i = 0; i < 12; i++)
