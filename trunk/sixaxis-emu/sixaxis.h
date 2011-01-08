@@ -3,6 +3,9 @@
  
 #include <stdint.h>
 #include <stdbool.h>
+
+#define TS_MAX 2
+#define TS_AXIS_MAX 2
  
 #define HID_HANDSHAKE 0x0
 #define HID_GET_REPORT 0x4
@@ -36,7 +39,7 @@ struct sixaxis_accelerometer {
     int gyro;
 };
 
-enum sixaxis_button_index {
+typedef enum sixaxis_button_index {
     sb_select = 0, sb_start, sb_ps,
     sb_up, sb_right, sb_down, sb_left,
     sb_triangle, sb_circle, sb_cross, sb_square,
@@ -44,7 +47,7 @@ enum sixaxis_button_index {
     sb_l2, sb_r2,
     sb_l3, sb_r3,
     SB_MAX
-};
+} e_sixaxis_button_index;
 
 enum led_state_t { LED_OFF = 0, LED_FLASH, LED_ON };
 
@@ -62,7 +65,7 @@ struct sixaxis_state_sys {
 struct sixaxis_state_user {
     /*** Values provided by the user (controller): */
     struct sixaxis_button button[SB_MAX];
-    struct sixaxis_axis axis[2];
+    int axis[TS_MAX][TS_AXIS_MAX];
     struct sixaxis_accelerometer accel;
 };
 
@@ -88,5 +91,9 @@ extern struct sixaxis_process_t sixaxis_process[];
 
 void sixaxis_init(struct sixaxis_state *state);
 int sixaxis_periodic_report(struct sixaxis_state *state);
+
+int assemble_input_01(uint8_t*, int, struct sixaxis_state*);
+
+int get_button_index_from_name(const char*);
 
 #endif
