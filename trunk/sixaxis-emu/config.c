@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #include "sixaxis.h"
 #include <math.h>
-#include "macros.h"
+#include "conversion.h"
+#include <unistd.h>
 
 #define X_ATTR_VALUE_KEYBOARD "keyboard"
 #define X_ATTR_VALUE_MOUSE "mouse"
@@ -22,7 +23,7 @@
 #define MAX_CONFIGURATIONS 4
 #define MAX_CONTROLS 256
 
-#define CONFIG_DIR "./config"
+#define CONFIG_DIR ".emuclient/config/"
 
 #define X_NODE_ROOT "root"
 #define X_NODE_CONTROLLER "controller"
@@ -45,17 +46,6 @@
 #define X_ATTR_DEADZONE "dead_zone"
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
-
-#define MOUSE_AXIS_X "x"
-#define MOUSE_AXIS_Y "y"
-#define MOUSE_BUTTON_LEFT "BUTTON_LEFT"
-#define MOUSE_BUTTON_RIGHT "BUTTON_RIGHT"
-#define MOUSE_BUTTON_MIDDLE "BUTTON_MIDDLE"
-#define MOUSE_BUTTON_WHEELUP "BUTTON_WHEELUP"
-#define MOUSE_BUTTON_WHEELDOWN "BUTTON_WHEELDOWN"
-#define MOUSE_BUTTON_X1 "BUTTON_X1"
-#define MOUSE_BUTTON_X2 "BUTTON_X2"
-#define MOUSE_BUTTON_X3 "BUTTON_X3"
 
 typedef enum
 {
@@ -86,6 +76,7 @@ typedef struct
   int dead_zone;
 
   int controller_button;
+  int controller_button_axis;
   int controller_thumbstick;
   int controller_thumbstick_axis;
   int controller_thumbstick_axis_value; //only for button to axis mapping
@@ -130,17 +121,6 @@ static int current_config[MAX_CONTROLLERS];
  */
 static s_trigger triggers[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
-s_mapper kb_buttons_config1[] =
-{
-    {.nb_mappers = 2, .button = SDLK_e, .controller_button = sb_r1, .controller_thumbstick = -1},
-    {.button = SDLK_q, .controller_button = -1, .controller_thumbstick = 0, .controller_thumbstick_axis = 0, .controller_thumbstick_axis_value = -127}
-};
-
-s_mapper kb_buttons_config2[] =
-{
-    {.nb_mappers = 1, .button = SDLK_e, .controller_button = sb_l1, .controller_thumbstick = -1}
-};
-
 /*
  * This lists controls of each controller configuration for all keyboards.
  */
@@ -151,105 +131,18 @@ static s_mapper* keyboard_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIO
  */
 static s_mapper* mouse_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
-s_mapper m_axis_config1[] =
-{
-    {.nb_mappers = 2, .axis = 0, .multiplier = 4, .exponent = 1, .dead_zone = 18, .controller_button = -1, .controller_thumbstick = 1, .controller_thumbstick_axis = 0},
-    {.axis = 1, .multiplier = 8, .exponent = 1, .dead_zone = 20, .controller_button = -1, .controller_thumbstick = 1, .controller_thumbstick_axis = 1},
-};
-
-s_mapper m_axis_config2[] =
-{
-    {.nb_mappers = 1, .axis = 0, .multiplier = -4, .exponent = 1, .dead_zone = 18, .controller_button = -1, .controller_thumbstick = 1, .controller_thumbstick_axis = 0},
-};
-
 static s_mapper* mouse_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
  * Used to tweak mouse controls.
  */
 s_mouse_control mouse_control[MAX_DEVICES];
+
 /*
  * This lists controls of each controller configuration for all joysticks.
  */
 static s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 static s_mapper* joystick_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-
-void init_config()
-{
-  int i, j, k;
-  for (i = 0; i < MAX_DEVICES; ++i)
-  {
-    for (j = 0; j < MAX_CONTROLLERS; ++j)
-    {
-      for (k = 0; k < MAX_CONFIGURATIONS; ++k)
-      {
-        keyboard_buttons[i][j][k] = malloc(sizeof(s_mapper));
-        memset(keyboard_buttons[i][j][k], -1, sizeof(s_mapper));
-        keyboard_buttons[i][j][k]->nb_mappers = 1;
-        mouse_buttons[i][j][k] = malloc(sizeof(s_mapper));
-        memset(mouse_buttons[i][j][k], -1, sizeof(s_mapper));
-        mouse_buttons[i][j][k]->nb_mappers = 1;
-        mouse_axis[i][j][k] = malloc(sizeof(s_mapper));
-        memset(mouse_axis[i][j][k], -1, sizeof(s_mapper));
-        mouse_axis[i][j][k]->nb_mappers = 1;
-        joystick_buttons[i][j][k] = malloc(sizeof(s_mapper));
-        memset(joystick_buttons[i][j][k], -1, sizeof(s_mapper));
-        joystick_buttons[i][j][k]->nb_mappers = 1;
-        joystick_axis[i][j][k] = malloc(sizeof(s_mapper));
-        memset(joystick_axis[i][j][k], -1, sizeof(s_mapper));
-        joystick_axis[i][j][k]->nb_mappers = 1;
-      }
-    }
-  }
-}
-
-static unsigned int get_mouse_event_id_from_buffer(char* event_id)
-{
-  unsigned int r_event_id = 0;
-
-  if (!strncmp(event_id, MOUSE_AXIS_X, sizeof(MOUSE_AXIS_X)))
-  {
-    r_event_id = 0;
-  }
-  else if (!strncmp(event_id, MOUSE_AXIS_Y, sizeof(MOUSE_AXIS_Y)))
-  {
-    r_event_id = 1;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_LEFT, sizeof(MOUSE_BUTTON_LEFT)))
-  {
-    r_event_id = SDL_BUTTON_LEFT;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_RIGHT, sizeof(MOUSE_BUTTON_RIGHT)))
-  {
-    r_event_id = SDL_BUTTON_RIGHT;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_MIDDLE, sizeof(MOUSE_BUTTON_MIDDLE)))
-  {
-    r_event_id = SDL_BUTTON_MIDDLE;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_WHEELUP, sizeof(MOUSE_BUTTON_WHEELUP)))
-  {
-    r_event_id = SDL_BUTTON_WHEELUP;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_WHEELDOWN, sizeof(MOUSE_BUTTON_WHEELDOWN)))
-  {
-    r_event_id = SDL_BUTTON_WHEELDOWN;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_X1, sizeof(MOUSE_BUTTON_X1)))
-  {
-    r_event_id = SDL_BUTTON_X1;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_X2, sizeof(MOUSE_BUTTON_X2)))
-  {
-    r_event_id = SDL_BUTTON_X2;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_X3, sizeof(MOUSE_BUTTON_X3)))
-  {
-    r_event_id = SDL_BUTTON_X3;
-  }
-
-  return r_event_id;
-}
 
 /*
  * Clamp a value between a min and a max.
@@ -333,7 +226,7 @@ void trigger_lookup(SDL_Event* e)
  * that come too quickly after corresponding SDL_MOUSEBUTTONDOWN events.
  * If we don't do that, the PS3 will miss events.
  */
-int postpone_event(unsigned int device, SDL_Event* event)
+static int postpone_event(unsigned int device, SDL_Event* event)
 {
   int ret = 0;
   if (event->button.button == SDL_BUTTON_WHEELUP)
@@ -393,7 +286,7 @@ int postpone_event(unsigned int device, SDL_Event* event)
 
 extern int calibration;
 
-void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, int ts, int ts_axis, double exponent, double multiplier, int dead_zone)
+static void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, int ts, int ts_axis, double exponent, double multiplier, int dead_zone)
 {
   double z = 0;
 
@@ -798,9 +691,6 @@ void process_event(SDL_Event* event)
             state[c_id].user.axis[ts][ts_axis] = 0;
           }
           break;
-        case SDL_QUIT:
-          done = 1;
-          break;
       }
     }
   }
@@ -968,13 +858,72 @@ static int ProcessDeviceElement(xmlNode * a_node)
   return ret;
 }
 
+static s_mapper** get_mapper_table()
+{
+  s_mapper** pp_mapper = NULL;
+  switch(r_device_type)
+  {
+    case E_DEVICE_TYPE_KEYBOARD:
+      pp_mapper = &(keyboard_buttons[r_device_id][r_controller_id][r_config_id]);
+      break;
+    case E_DEVICE_TYPE_MOUSE:
+      switch(r_event_type)
+      {
+        case E_EVENT_TYPE_BUTTON:
+          pp_mapper = &(mouse_buttons[r_device_id][r_controller_id][r_config_id]);
+          break;
+        case E_EVENT_TYPE_AXIS:
+          pp_mapper = &(mouse_axis[r_device_id][r_controller_id][r_config_id]);
+          break;
+        default:
+          break;
+      }
+      break;
+    case E_DEVICE_TYPE_JOYSTICK:
+      switch(r_event_type)
+      {
+        case E_EVENT_TYPE_BUTTON:
+          pp_mapper = &(joystick_buttons[r_device_id][r_controller_id][r_config_id]);
+          break;
+        case E_EVENT_TYPE_AXIS:
+          pp_mapper = &(joystick_axis[r_device_id][r_controller_id][r_config_id]);
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+  return pp_mapper;
+}
+
+static void allocate_mapper(s_mapper** pp_mapper)
+{
+  if(*pp_mapper)
+  {
+    *pp_mapper = realloc(*pp_mapper, ((*pp_mapper)->nb_mappers+1)*sizeof(s_mapper));
+    memset(*pp_mapper+(*pp_mapper)->nb_mappers, 0x00, sizeof(s_mapper));
+  }
+  else
+  {
+    *pp_mapper = calloc(1, sizeof(s_mapper));
+  }
+  (*pp_mapper)->nb_mappers++;
+}
+
 static int ProcessAxisElement(xmlNode * a_node)
 {
   int ret = 0;
   xmlNode* cur_node = NULL;
-  unsigned int aid;
+  s_mapper** pp_mapper = NULL;
+  s_mapper* p_mapper = NULL;
+  s_axis_index aindex;
+  char* aid;
 
-  ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &aid);
+  aid = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
+
+  aindex = get_axis_index_from_name(aid);
 
   for (cur_node = a_node->children; cur_node && ret != -1; cur_node = cur_node->next)
   {
@@ -1022,9 +971,40 @@ static int ProcessAxisElement(xmlNode * a_node)
     ret = -1;
   }
 
-  //TODO: update config
+  if(ret != -1)
+  {
+    pp_mapper = get_mapper_table();
 
+    if(pp_mapper)
+    {
+      allocate_mapper(pp_mapper);
 
+      p_mapper = *pp_mapper;
+
+      p_mapper = p_mapper+p_mapper->nb_mappers-1;
+
+      p_mapper->controller_button = -1;
+      p_mapper->controller_button_axis = aindex.baindex;
+      p_mapper->controller_thumbstick_axis_value = aindex.tavalue;
+      p_mapper->controller_thumbstick = aindex.tindex;
+      p_mapper->controller_thumbstick_axis = aindex.taindex;
+
+      switch(r_event_type)
+      {
+        case E_EVENT_TYPE_BUTTON:
+          p_mapper->button = r_event_id;
+          break;
+        case E_EVENT_TYPE_AXIS:
+          p_mapper->axis = r_event_id;
+          p_mapper->dead_zone = r_deadZone;
+          p_mapper->multiplier = r_multiplier;
+          p_mapper->exponent = r_exponent;
+          break;
+        default:
+          break;
+      }
+    }
+  }
 
   return ret;
 }
@@ -1035,7 +1015,8 @@ static int ProcessButtonElement(xmlNode * a_node)
   xmlNode* cur_node = NULL;
   char* bid;
   e_sixaxis_button_index bindex;
-  s_mapper* mapper = NULL;
+  s_mapper* p_mapper = NULL;
+  s_mapper** pp_mapper = NULL;
 
   bid = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
 
@@ -1094,52 +1075,29 @@ static int ProcessButtonElement(xmlNode * a_node)
 
   if(ret != -1)
   {
-    switch(r_device_type)
+    pp_mapper = get_mapper_table();
+
+    if(pp_mapper)
     {
-      case E_DEVICE_TYPE_KEYBOARD:
-        mapper = keyboard_buttons[r_device_id][r_controller_id][r_config_id];
-        if(mapper)
-        {
-          mapper = realloc(mapper, (mapper->nb_mappers+1)*sizeof(s_mapper));
-          memset(mapper+mapper->nb_mappers, 0x00, sizeof(s_mapper));
-        }
-        else
-        {
-          mapper = calloc(1, sizeof(s_mapper));
-        }
-        keyboard_buttons[r_device_id][r_controller_id][r_config_id] = mapper;
-        mapper->nb_mappers++;
-        mapper[mapper->nb_mappers-1].controller_button = bindex;
-        mapper[mapper->nb_mappers-1].controller_thumbstick = -1;
-        break;
-      case E_DEVICE_TYPE_MOUSE:
-        mapper = mouse_buttons[r_device_id][r_controller_id][r_config_id];
-        if(mapper)
-        {
-          mapper = realloc(mapper, (mapper->nb_mappers+1)*sizeof(s_mapper));
-          memset(mapper+mapper->nb_mappers, 0x00, sizeof(s_mapper));
-        }
-        else
-        {
-          mapper = calloc(1, sizeof(s_mapper));
-        }
-        mouse_buttons[r_device_id][r_controller_id][r_config_id] = mapper;
-        mapper->nb_mappers++;
-        mapper[mapper->nb_mappers-1].controller_button = bindex;
-        mapper[mapper->nb_mappers-1].controller_thumbstick = -1;
-        break;
-        //TODO: other devices
-      default:
-        break;
-    }
-    if(mapper)
-    {
-      switch(r_event_type)
+      allocate_mapper(pp_mapper);
+
+      p_mapper = *pp_mapper;
+
+      p_mapper = p_mapper + p_mapper->nb_mappers - 1;
+
+      p_mapper->controller_button = bindex;
+      p_mapper->controller_thumbstick = -1;
+
+      switch (r_event_type)
       {
         case E_EVENT_TYPE_BUTTON:
-          mapper[mapper->nb_mappers-1].button = r_event_id;
+          p_mapper->button = r_event_id;
           break;
-          //TODO: other events
+        case E_EVENT_TYPE_AXIS_DOWN:
+        case E_EVENT_TYPE_AXIS_UP:
+          p_mapper->axis = r_event_id;
+          p_mapper->threshold = r_threshold;
+          break;
         default:
           break;
       }
@@ -1460,9 +1418,13 @@ int read_config_dir()
   unsigned int nb_filenames = 0;
   char** filenames = NULL;
 
-  dirp = opendir(CONFIG_DIR);
+  snprintf(file_path, sizeof(file_path), "/home/%s/%s", getlogin(), CONFIG_DIR);
+  dirp = opendir(file_path);
   if (dirp == NULL)
-    return 0;
+  {
+    printf("Warning: can't open config directory %s\n", file_path);
+    exit(-1);
+  }
 
   while ((d = readdir(dirp)))
   {
@@ -1498,7 +1460,7 @@ int read_config_dir()
 
   printf("Selected config file: %s\n", filenames[selected]);
 
-  sprintf(file_path, "%s/%s", CONFIG_DIR, filenames[selected]);
+  sprintf(file_path, "%s/%s", file_path, filenames[selected]);
   if(read_config_file(file_path) == -1)
   {
     printf("Bad config file: %s\n", filenames[selected]);
