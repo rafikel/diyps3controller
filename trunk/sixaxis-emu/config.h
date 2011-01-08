@@ -14,8 +14,6 @@
 #define MAX_DEVICES 256
 #define POSTPONE_COUNT 3 //to be moved to config.c later
 
-#define SDL_BUTTON_X3 8
-
 typedef struct
 {
   int changed;
@@ -33,8 +31,6 @@ typedef struct
   int change;
   int send_command;
 } s_controller;
-
-void init_config();
 
 void trigger_lookup(SDL_Event*);
 void process_event(SDL_Event*);
