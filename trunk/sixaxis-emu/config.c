@@ -11,6 +11,8 @@
 #include "conversion.h"
 #include <unistd.h>
 
+extern char *cuserid (char *);
+
 #define X_ATTR_VALUE_KEYBOARD "keyboard"
 #define X_ATTR_VALUE_MOUSE "mouse"
 #define X_ATTR_VALUE_JOYSTICK "joystick"
@@ -414,6 +416,7 @@ void process_event(SDL_Event* event)
           {
             state[c_id].user.axis[ts][ts_axis] = joystick_buttons[device][c_id][config][control].controller_thumbstick_axis_value;
           }
+          break;
         case SDL_JOYBUTTONUP:
           mapper = joystick_buttons[device][c_id][config]+control;
           /*
@@ -442,6 +445,7 @@ void process_event(SDL_Event* event)
           {
             state[c_id].user.axis[ts][ts_axis] = 0;
           }
+          break;
         case SDL_JOYAXISMOTION:
           mapper = joystick_axis[device][c_id][config]+control;
           /*
@@ -735,8 +739,10 @@ static inline int GetEventId(xmlNode * a_node)
       break;
     case E_DEVICE_TYPE_JOYSTICK:
       r_event_id = atoi(event_id);
+      break;
     case E_DEVICE_TYPE_MOUSE:
       r_event_id = get_mouse_event_id_from_buffer(event_id);
+      break;
     default:
       break;
   }
@@ -1418,7 +1424,7 @@ int read_config_dir()
   unsigned int nb_filenames = 0;
   char** filenames = NULL;
 
-  snprintf(file_path, sizeof(file_path), "/home/%s/%s", getlogin(), CONFIG_DIR);
+  snprintf(file_path, sizeof(file_path), "/home/%s/%s", cuserid(NULL), CONFIG_DIR);
   dirp = opendir(file_path);
   if (dirp == NULL)
   {
