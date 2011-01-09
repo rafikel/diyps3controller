@@ -1,6 +1,6 @@
 prefix=/usr
 bindir=$(prefix)/bin
-confdir=~/.emuclient
+confdir=${HOME}/.emuclient
 BINS=emu emuclient sixaddr bdaddr
 CC=gcc
 CFLAGS=-Wall -g
@@ -24,17 +24,15 @@ bdaddr: utils/bdaddr.c utils/oui.c
 
 %.o: %.c
 	$(CC) -o $@ -c $< $(CFLAGS) -I/usr/include/libxml2
-
+	
 install: all
 	mkdir -p $(prefix)
 	mkdir -p $(bindir)
 	for i in $(BINS); do cp $$i $(bindir)/; done
-
-install-config:
-	mkdir -p $(confdir)/config
-	mkdir -p $(confdir)/macros
-	cp config/* $(confdir)/config
-	cp macros/* $(confdir)/macros
+	sudo -u $(SUDO_USER) mkdir -p $(confdir)/config
+	sudo -u $(SUDO_USER) mkdir -p $(confdir)/macros
+	sudo -u $(SUDO_USER) cp config/* $(confdir)/config
+	sudo -u $(SUDO_USER) cp macros/* $(confdir)/macros
 
 uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
