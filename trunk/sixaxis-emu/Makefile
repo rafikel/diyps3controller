@@ -1,4 +1,4 @@
-prefix=/usr
+prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
 confdir=${HOME}/.emuclient
 BINS=emu emuclient sixaddr bdaddr
