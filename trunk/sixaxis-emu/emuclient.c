@@ -81,11 +81,7 @@ int initialize(int width, int height, const char *title)
   int i = 0;
 
   /* Init SDL */
-  if (SDL_Init(SDL_INIT_VIDEO
-#ifdef JOYSTICK
-      | SDL_INIT_JOYSTICK
-#endif
-  ) < 0)
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
   {
     fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
     return 0;
