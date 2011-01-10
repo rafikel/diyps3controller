@@ -10,6 +10,7 @@
 #include "wx_pch.h"
 #include "sixaxis_emu_guiMain.h"
 #include <wx/msgdlg.h>
+#include <stdio.h>
 
 //(*InternalHeaders(sixaxis_emu_guiFrame)
 #include <wx/intl.h>
@@ -459,6 +460,12 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 
     currentController = 0;
     currentConfiguration = 0;
+
+    wxString default_directory = _("/home/");
+    wxString user(cuserid(NULL), wxConvUTF8);
+    default_directory << user << _("/.emuclient/config");
+
+    FileDialog1->SetDirectory(default_directory);
 
     Grid1->AutoSizeColumns();
     Grid2->AutoSizeColumns();
