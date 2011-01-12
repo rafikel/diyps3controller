@@ -315,7 +315,7 @@ static void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, in
 void process_event(SDL_Event* event)
 {
   s_mapper* mapper;
-  unsigned int button;
+  int button;
   int ts;
   unsigned int ts_axis;
   unsigned int config;
@@ -463,7 +463,6 @@ void process_event(SDL_Event* event)
           threshold = mapper->threshold;
           if(button >= 0)
           {
-            //TODO: a sixaxis button is an axis too... value may have other values than 0 and 255!
             if(threshold > 0 && event->jaxis.value > threshold)
             {
               state[c_id].user.button[button].pressed = 1;
@@ -473,6 +472,32 @@ void process_event(SDL_Event* event)
             {
               state[c_id].user.button[button].pressed = 1;
               state[c_id].user.button[button].value = 255;
+            }
+            else
+            {
+              state[c_id].user.button[button].pressed = 0;
+              state[c_id].user.button[button].value = 0;
+            }
+          }
+          /*
+           * Axis to button axis.
+           */
+          button = mapper->controller_button_axis;
+          multiplier = mapper->multiplier;
+          exponent = mapper->exponent;
+          dead_zone = mapper->dead_zone;
+          if(button >= 0)
+          {
+            value = event->jaxis.value;
+            if(value)
+            {
+              value = value/abs(value)*multiplier*pow(abs(value), exponent);
+            }
+            if(value > 0)
+            {
+              value += dead_zone;
+              state[c_id].user.button[button].pressed = 1;
+              state[c_id].user.button[button].value = clamp(0, value , 255);
             }
             else
             {
