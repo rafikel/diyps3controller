@@ -35,23 +35,22 @@
 
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
-#define DEFAULT_DEAD_ZONE_X 18
-#define DEFAULT_DEAD_ZONE_Y 20
-#define DEFAULT_MULTIPLIER_X 4
-#define DEFAULT_MULTIPLIER_Y 9
-#define DEFAULT_EXPONENT 1
-#define MULTIPLIER_STEP 0.25
-#define EXPONENT_STEP 0.1
+//#define DEFAULT_DEAD_ZONE_X 18
+//#define DEFAULT_DEAD_ZONE_Y 20
+//#define DEFAULT_MULTIPLIER_X 4
+//#define DEFAULT_MULTIPLIER_Y 9
+//#define DEFAULT_EXPONENT 1
+//#define MULTIPLIER_STEP 0.25
+//#define EXPONENT_STEP 0.1
 #define REFRESH_PERIOD 10000 //=10ms
 #define EVENT_BUFFER_SIZE 32
 
-static int debug = 0;
 int done = 0;
-static double multiplier_x = DEFAULT_MULTIPLIER_X;
-static double multiplier_y = DEFAULT_MULTIPLIER_Y;
-static double exponent = DEFAULT_EXPONENT;
-static int dead_zone_x = DEFAULT_DEAD_ZONE_X;
-static int dead_zone_y = DEFAULT_DEAD_ZONE_Y;
+//static double multiplier_x = DEFAULT_MULTIPLIER_X;
+//static double multiplier_y = DEFAULT_MULTIPLIER_Y;
+//static double exponent = DEFAULT_EXPONENT;
+//static int dead_zone_x = DEFAULT_DEAD_ZONE_X;
+//static int dead_zone_y = DEFAULT_DEAD_ZONE_Y;
 int calibration = 0;
 static int lctrl = 0;
 static int rctrl = 0;
@@ -204,7 +203,7 @@ static void key(int sym, int down)
     case SDLK_RCTRL: rctrl = down ? 1 : 0; break;
 
     case SDLK_p:
-    if(down && lctrl)
+    if(down && rctrl)
       {
         pthread_attr_init(&thread_attr);
         pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
@@ -215,22 +214,22 @@ static void key(int sym, int down)
     case SDLK_ESCAPE: if(down) done = 1; break;
   }
 
-	if(calibration)
-	{
-	  switch (sym)
-	  {
-	    case SDLK_KP_MINUS: if(down) { multiplier_x -= MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
-	    case SDLK_KP_PLUS:  if(down) { multiplier_x += MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
-	    case SDLK_KP9: if(down) { multiplier_y -= MULTIPLIER_STEP; printf("multiplier_y: %e\n", multiplier_y); } break;
-	    case SDLK_KP6:  if(down) { multiplier_y += MULTIPLIER_STEP; printf("multiplier_y: %e\n", multiplier_y); } break;
-	    case SDLK_KP_DIVIDE:  if(down) { dead_zone_x -= 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
-	    case SDLK_KP_MULTIPLY:  if(down) { dead_zone_x += 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
-	    case SDLK_KP2:  if(down) { dead_zone_y -= 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
-	    case SDLK_KP3:  if(down) { dead_zone_y += 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
-	    case SDLK_KP7:  if(down) { exponent -= EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
-	    case SDLK_KP8:  if(down) { exponent += EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
-	  }
-	}
+//	if(calibration)
+//	{
+//	  switch (sym)
+//	  {
+//	    case SDLK_KP_MINUS: if(down) { multiplier_x -= MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
+//	    case SDLK_KP_PLUS:  if(down) { multiplier_x += MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
+//	    case SDLK_KP9: if(down) { multiplier_y -= MULTIPLIER_STEP; printf("multiplier_y: %e\n", multiplier_y); } break;
+//	    case SDLK_KP6:  if(down) { multiplier_y += MULTIPLIER_STEP; printf("multiplier_y: %e\n", multiplier_y); } break;
+//	    case SDLK_KP_DIVIDE:  if(down) { dead_zone_x -= 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
+//	    case SDLK_KP_MULTIPLY:  if(down) { dead_zone_x += 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
+//	    case SDLK_KP2:  if(down) { dead_zone_y -= 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
+//	    case SDLK_KP3:  if(down) { dead_zone_y += 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
+//	    case SDLK_KP7:  if(down) { exponent -= EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
+//	    case SDLK_KP8:  if(down) { exponent += EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
+//	  }
+//	}
 
 	if(lctrl && rctrl)
   {
@@ -343,7 +342,7 @@ int main(int argc, char *argv[])
 
             send(sockfd[i], buf, 48, MSG_DONTWAIT);
 
-            if (debug)
+            if (calibration)
             {
               sixaxis_dump_state(state+i);
             }
