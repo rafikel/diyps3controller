@@ -462,7 +462,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     currentConfiguration = 0;
 
     wxString default_directory = _("/home/");
-    wxString user(cuserid(NULL), wxConvUTF8);
+    wxString user(getlogin(), wxConvUTF8);
     default_directory << user << _("/.emuclient/config");
 
     FileDialog1->SetDirectory(default_directory);
