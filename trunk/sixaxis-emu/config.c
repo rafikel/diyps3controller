@@ -11,8 +11,6 @@
 #include "conversion.h"
 #include <unistd.h>
 
-extern char *cuserid (char *);
-
 #define X_ATTR_VALUE_KEYBOARD "keyboard"
 #define X_ATTR_VALUE_MOUSE "mouse"
 #define X_ATTR_VALUE_JOYSTICK "joystick"
@@ -1449,7 +1447,7 @@ int read_config_dir()
   unsigned int nb_filenames = 0;
   char** filenames = NULL;
 
-  snprintf(file_path, sizeof(file_path), "/home/%s/%s", cuserid(NULL), CONFIG_DIR);
+  snprintf(file_path, sizeof(file_path), "/home/%s/%s", getlogin(), CONFIG_DIR);
   dirp = opendir(file_path);
   if (dirp == NULL)
   {
