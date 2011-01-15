@@ -54,6 +54,9 @@ int done = 0;
 int calibration = 0;
 static int lctrl = 0;
 static int rctrl = 0;
+static int lalt = 0;
+static int ralt = 0;
+static int grab = 1;
 
 SDL_Surface *screen = NULL;
 
@@ -202,6 +205,9 @@ static void key(int sym, int down)
 	  case SDLK_LCTRL: lctrl = down ? 1 : 0; break;
     case SDLK_RCTRL: rctrl = down ? 1 : 0; break;
 
+    case SDLK_LALT: lalt = down ? 1 : 0; break;
+    case SDLK_MODE: ralt = down ? 1 : 0; break;
+
     case SDLK_p:
     if(down && rctrl)
       {
@@ -213,6 +219,20 @@ static void key(int sym, int down)
 
     case SDLK_ESCAPE: if(down) done = 1; break;
   }
+
+	if(lalt && ralt)
+	{
+	  if(grab)
+	  {
+	    SDL_WM_GrabInput(SDL_GRAB_OFF);
+	    grab = 0;
+	  }
+	  else
+	  {
+	    SDL_WM_GrabInput(SDL_GRAB_ON);
+      grab = 1;
+	  }
+	}
 
 //	if(calibration)
 //	{
