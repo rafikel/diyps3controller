@@ -306,6 +306,8 @@ static void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, in
   else state->user.axis[ts][ts_axis] = 0;
 }
 
+extern int joystickNbButton[255];
+
 /*
  * Updates the state table.
  * Too long function, but not hard to understand.
@@ -325,6 +327,7 @@ void process_event(SDL_Event* event)
   int dead_zone;
   int value;
   unsigned int nb_controls = 0;
+  SDL_Event event_jb;
 
   /*
    * 'which' should always be at that place
@@ -347,6 +350,57 @@ void process_event(SDL_Event* event)
 
     switch(event->type)
     {
+      case SDL_JOYHATMOTION:
+      event_jb.jbutton.which = event->jhat.which;
+      if(event->jhat.value & SDL_HAT_UP)
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat;
+        process_event(&event_jb);
+      }
+      else
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONUP;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat;
+        process_event(&event_jb);
+      }
+      if(event->jhat.value & SDL_HAT_RIGHT)
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+1;
+        process_event(&event_jb);
+      }
+      else
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONUP;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+1;
+        process_event(&event_jb);
+      }
+      if(event->jhat.value & SDL_HAT_DOWN)
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+2;
+        process_event(&event_jb);
+      }
+      else
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONUP;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+2;
+        process_event(&event_jb);
+      }
+      if(event->jhat.value & SDL_HAT_LEFT)
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+3;
+        process_event(&event_jb);
+      }
+      else
+      {
+        event_jb.jbutton.type = SDL_JOYBUTTONUP;
+        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+3;
+        process_event(&event_jb);
+      }
+      break;
       case SDL_JOYBUTTONDOWN:
       case SDL_JOYBUTTONUP:
       if(joystick_buttons[device][c_id][config])

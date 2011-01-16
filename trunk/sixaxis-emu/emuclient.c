@@ -78,9 +78,14 @@ static void warn(const char *fmt)
 }
 #endif
 
+
+const char* joystickName[255];
+int joystickNbButton[255];
+
 int initialize(int width, int height, const char *title)
 {
   int i = 0;
+  SDL_Joystick* joystick;
 
   /* Init SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
@@ -108,9 +113,11 @@ int initialize(int width, int height, const char *title)
   SDL_WM_GrabInput(SDL_GRAB_ON);
   SDL_ShowCursor(SDL_DISABLE);
 
-  while(SDL_JoystickOpen(i))
+  while((joystick = SDL_JoystickOpen(i)))
   {
-    i++;
+      joystickName[i] = SDL_JoystickName(i);
+      joystickNbButton[i] = SDL_JoystickNumButtons(joystick);
+      i++;
   }
 
   return 1;
