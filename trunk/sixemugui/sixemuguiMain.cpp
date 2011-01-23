@@ -16,8 +16,9 @@
 #include <wx/string.h>
 //*)
 
+#include <glib.h>
+
 #include <algorithm>
-#include <fstream>
 using namespace std;
 
 //helper functions
@@ -65,6 +66,9 @@ const long sixemuguiFrame::ID_STATICTEXT8 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON2 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT5 = wxNewId();
 const long sixemuguiFrame::ID_CHOICE4 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT10 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT9 = wxNewId();
+const long sixemuguiFrame::ID_TEXTCTRL1 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON1 = wxNewId();
 const long sixemuguiFrame::ID_PANEL1 = wxNewId();
 const long sixemuguiFrame::ID_MENUITEM1 = wxNewId();
@@ -116,94 +120,117 @@ int bachk(const char *str)
 	return 0;
 }
 
+static wxString readCommandValue(const char * argv[], wxString param)
+{
+    int exit_status = 0;
+    char* output = NULL;
+    char* err = NULL;
+    GError *error = NULL;
+    gboolean test;
+    char* line;
+    char* end;
+    wxString ret = _("");
+    char c_param[256];
+
+    test = g_spawn_sync(NULL, (gchar**)argv, NULL, (GSpawnFlags)G_SPAWN_SEARCH_PATH, NULL, NULL, &output, &err, &exit_status, &error);
+
+    if(test)
+    {
+        strncpy(c_param, param.mb_str(), sizeof(c_param));
+
+        if((line = strstr(output, c_param)))
+        {
+            if((end = strstr(line, "\n")))
+            {
+                *end = '\0';
+            }
+            ret = wxString(line+strlen(c_param), wxConvUTF8);
+        }
+    }
+
+    return ret;
+}
+
+static char hci[7];
+static char bad[18];
+static const char *bdaddr[] = { "bdaddr", "-i", hci, NULL };
+static const char *bdaddr_modify[] = { "sudo", "bdaddr", "-r", "-i", hci, bad, NULL };
+static const char *hciconfig_name[] = { "hciconfig", hci, "name", NULL };
+static const char *hciconfig_revision[] = { "sudo", "hciconfig", hci, "revision", NULL };
+static const char *sixaxis_device[] = { "sudo", "sixaddr", NULL };
+
 #define MASTER "Current Bluetooth master:"
 #define DEVICE "Current Bluetooth Device Address:"
 
 void sixemuguiFrame::readSixaxis()
 {
-    ifstream inFile;
-    char line[256];
+    int exit_status = 0;
+    char* output = NULL;
+    char* err = NULL;
+    GError *error = NULL;
+    gboolean test;
+    char* line;
+    wxString ret = _("");
 
-    system("sixaddr > /tmp/.sixaddr");
+    test = g_spawn_sync(NULL, (gchar**)sixaxis_device, NULL, (GSpawnFlags)G_SPAWN_SEARCH_PATH, NULL, NULL, &output, &err, &exit_status, &error);
 
-    inFile.open("/tmp/.sixaddr");
-
-    if (!inFile)
+    if(test)
     {
-        return;
-    }
+        line = output;
 
-    while (inFile.getline(line, 256))
-    {
-        if(strstr(line, MASTER) == line)
+        while((line = strstr(line, MASTER)))
         {
+            (line+sizeof(MASTER))[17] = '\0';
             if(bachk(line+sizeof(MASTER)) != -1)
             {
                 Choice2->Append(wxString(line+sizeof(MASTER), wxConvUTF8).MakeUpper());
             }
-        }
-        else if(strstr(line, DEVICE) == line)
-        {
-            if(bachk(line+sizeof(DEVICE)) != -1)
+            line+=sizeof(MASTER)+18;
+            if((line = strstr(line, DEVICE)))
             {
-                Choice1->Append(wxString(line+sizeof(DEVICE), wxConvUTF8).MakeUpper());
+                (line+sizeof(DEVICE))[17] = '\0';
+                if(bachk(line+sizeof(DEVICE)) != -1)
+                {
+                    Choice1->Append(wxString(line+sizeof(DEVICE), wxConvUTF8).MakeUpper());
+                }
+                line+=sizeof(DEVICE)+18;
+            }
+            else
+            {
+                break;
             }
         }
     }
-
-    inFile.close();
-
-    system("rm /tmp/.sixaddr");
 }
-
-#define DONGLE "Device address:"
 
 void sixemuguiFrame::readDongles()
 {
-    ifstream inFile;
-    char line[256];
-    char command[256];
+    wxString dev_bdaddr;
 
     for(int i=0; i<256; ++i)
     {
-        sprintf(command, "bdaddr -i hci%d 2&>> /tmp/.bdaddr", i);
-        if(system(command) != 0)
+        snprintf(hci, sizeof(hci), "hci%d", i);
+        dev_bdaddr = readCommandValue(bdaddr, _("Device address: "));
+
+        if(dev_bdaddr != _(""))
         {
-            break;
+            Choice3->Append(dev_bdaddr);
+
+            Choice5->Append(readCommandValue(hciconfig_name, _("Name: ")));
+
+            Choice6->Append(readCommandValue(bdaddr, _("Manufacturer: ")));
+
+            Choice7->Append(readCommandValue(hciconfig_revision, _("Chip version: ")));
         }
     }
-
-    inFile.open("/tmp/.bdaddr");
-
-    if (!inFile)
-    {
-        return;
-    }
-
-    while (inFile.getline(line, 256))
-    {
-        if(strstr(line, DONGLE) == line)
-        {
-            if(bachk(line+sizeof(DONGLE)) != -1)
-            {
-                Choice3->Append(wxString(line+sizeof(DONGLE), wxConvUTF8).MakeUpper());
-            }
-        }
-    }
-
-    inFile.close();
-
-    system("rm /tmp/.bdaddr");
 }
 
 void sixemuguiFrame::setDongleAddress()
 {
-    ifstream inFile;
-    char line[256];
-    char status[256];
-    char command[256];
-    char bdaddr[256];
-    int i, j, k;
+    int i;
+    int j = 0;
+    unsigned int k;
+    wxString res;
 
     if(Choice1->GetStringSelection() == _(""))
     {
@@ -226,84 +253,27 @@ void sixemuguiFrame::setDongleAddress()
     }
 
     i = Choice3->GetSelection();
-    strncpy( bdaddr, Choice1->GetStringSelection().mb_str(), 18 );
+    snprintf(hci, sizeof(hci), "hci%d", i);
+    strncpy( bad, Choice1->GetStringSelection().mb_str(), 18 );
 
-    snprintf(command, sizeof(command), "bdaddr -r -i hci%d %s 2&>> /tmp/.bdaddr", i, bdaddr);
+    res = readCommandValue(bdaddr_modify, _("Address changed - "));
 
-    if(system(command) != 0)
+    wxMessageBox( res, wxT("Success"), wxICON_INFORMATION);
+
+    while((res = readCommandValue(bdaddr, _("Device address: "))) == _("") && j<50)
     {
-        wxMessageBox( wxT("Dongle Address not changed!"), wxT("Error"), wxICON_ERROR);
-        return;
+        usleep(100000);
+        j++;
     }
 
-    inFile.open("/tmp/.bdaddr");
-
-    if (!inFile)
+    if(res !=  Choice1->GetStringSelection())
     {
-        wxMessageBox( wxT("Reading back Bluetooth Dongle Address failed!"), wxT("Error"), wxICON_ERROR);
-        return;
+        wxMessageBox( wxT("Read address after set: ko!"), wxT("Error"), wxICON_ERROR);
     }
-
-    while (inFile.getline(line, 256))
+    else
     {
-        strncpy(status, line, 256);
+        wxMessageBox( wxT("Read address after set: seems ok!"), wxT("Success"), wxICON_INFORMATION);
     }
-
-    wxMessageBox( wxString(status, wxConvUTF8), wxT("Success"), wxICON_INFORMATION);
-
-    inFile.close();
-
-    system("rm /tmp/.bdaddr");
-
-    snprintf(command, sizeof(command), "bdaddr -i hci%d 2&>> /dev/null", i);
-
-    for(j=0; j<10; ++j)
-    {
-        usleep(500000);
-        if(system(command) == 0)
-        {
-            break;
-        }
-    }
-
-    snprintf(command, sizeof(command), "bdaddr -i hci%d 2&>> /tmp/.bdaddr", i);
-
-    if(system(command) != 0)
-    {
-        wxMessageBox( wxT("Reading back Dongle Address failed!"), wxT("Error"), wxICON_ERROR);
-        return;
-    }
-
-    inFile.open("/tmp/.bdaddr");
-
-    if (!inFile)
-    {
-        wxMessageBox( wxT("Reading back Bluetooth Dongle Address failed!"), wxT("Error"), wxICON_ERROR);
-        return;
-    }
-
-    while (inFile.getline(line, 256))
-    {
-        if(strstr(line, DONGLE) == line)
-        {
-            if(bachk(line+sizeof(DONGLE)) != -1)
-            {
-                if(strstr(line+sizeof(DONGLE), bdaddr) != line+sizeof(DONGLE))
-                {
-                    wxMessageBox( wxT("Read address after set: ko!"), wxT("Error"), wxICON_ERROR);
-                }
-                else
-                {
-                    wxMessageBox( wxT("Read address after set: seems ok!"), wxT("Success"), wxICON_INFORMATION);
-                }
-            }
-            break;
-        }
-    }
-
-    inFile.close();
-
-    system("rm /tmp/.bdaddr");
 }
 
 void sixemuguiFrame::refresh()
@@ -311,11 +281,14 @@ void sixemuguiFrame::refresh()
     Choice1->Clear();
     Choice2->Clear();
     Choice3->Clear();
+    Choice5->Clear();
+    Choice6->Clear();
+    Choice7->Clear();
     readSixaxis();
     readDongles();
     if(Choice1->GetCount() == 0)
     {
-        wxMessageBox( wxT("No Sixaxis Detected!\nAre you root?\nSixaxis usb wire plugged?"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox( wxT("No Sixaxis Detected!\nSixaxis usb wire plugged?"), wxT("Error"), wxICON_ERROR);
     }
     else
     {
@@ -337,6 +310,9 @@ void sixemuguiFrame::refresh()
         if(Choice3->GetSelection() < 0)
         {
             Choice3->SetSelection(0);
+            Choice5->SetSelection(0);
+            Choice6->SetSelection(0);
+            Choice7->SetSelection(0);
         }
     }
     Panel1->Layout();
@@ -413,6 +389,12 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Choice4->Append(_("7"));
     Choice4->Disable();
     FlexGridSizer4->Add(Choice4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText10 = new wxStaticText(Panel1, ID_STATICTEXT10, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
+    FlexGridSizer4->Add(StaticText10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText9 = new wxStaticText(Panel1, ID_STATICTEXT9, _("Port"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
+    FlexGridSizer4->Add(StaticText9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("21313"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    FlexGridSizer4->Add(TextCtrl1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button1 = new wxButton(Panel1, ID_BUTTON1, _("Connect"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     FlexGridSizer4->Add(Button1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -444,8 +426,12 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectSixaxisBdaddr);
     Connect(ID_CHOICE2,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectPS3Bdaddr);
     Connect(ID_CHOICE3,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectBtDongle);
+    Connect(ID_CHOICE5,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnChoice5Select);
+    Connect(ID_CHOICE6,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnChoice6Select);
+    Connect(ID_CHOICE7,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnChoice7Select);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton2Click);
     Connect(ID_CHOICE4,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnChoice4Select);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton1Click);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectRefresh);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnAbout);
@@ -483,7 +469,9 @@ void sixemuguiFrame::OnSelectPS3Bdaddr(wxCommandEvent& event)
 
 void sixemuguiFrame::OnSelectBtDongle(wxCommandEvent& event)
 {
-
+    Choice5->SetSelection(Choice3->GetSelection());
+    Choice6->SetSelection(Choice3->GetSelection());
+    Choice7->SetSelection(Choice3->GetSelection());
 }
 
 void sixemuguiFrame::OnChoice4Select(wxCommandEvent& event)
@@ -508,4 +496,30 @@ void sixemuguiFrame::OnButton2Click(wxCommandEvent& event)
     {
         wxMessageBox(_("Please save it!"), _("Info"));
     }
+}
+
+void sixemuguiFrame::OnChoice5Select(wxCommandEvent& event)
+{
+    Choice3->SetSelection(Choice5->GetSelection());
+    Choice6->SetSelection(Choice5->GetSelection());
+    Choice7->SetSelection(Choice5->GetSelection());
+}
+
+void sixemuguiFrame::OnChoice6Select(wxCommandEvent& event)
+{
+    Choice3->SetSelection(Choice6->GetSelection());
+    Choice5->SetSelection(Choice6->GetSelection());
+    Choice7->SetSelection(Choice6->GetSelection());
+}
+
+void sixemuguiFrame::OnChoice7Select(wxCommandEvent& event)
+{
+    Choice3->SetSelection(Choice7->GetSelection());
+    Choice5->SetSelection(Choice7->GetSelection());
+    Choice6->SetSelection(Choice7->GetSelection());
+}
+
+void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
+{
+
 }
