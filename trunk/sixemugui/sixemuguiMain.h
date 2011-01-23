@@ -14,6 +14,7 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/menu.h>
+#include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/choice.h>
 #include <wx/button.h>
@@ -43,6 +44,10 @@ class sixemuguiFrame: public wxFrame
         void OnChoice4Select(wxCommandEvent& event);
         void OnSelectRefresh(wxCommandEvent& event);
         void OnButton2Click(wxCommandEvent& event);
+        void OnChoice5Select(wxCommandEvent& event);
+        void OnChoice6Select(wxCommandEvent& event);
+        void OnChoice7Select(wxCommandEvent& event);
+        void OnButton1Click(wxCommandEvent& event);
         //*)
 
         void readSixaxis();
@@ -67,6 +72,9 @@ class sixemuguiFrame: public wxFrame
         static const long ID_BUTTON2;
         static const long ID_STATICTEXT5;
         static const long ID_CHOICE4;
+        static const long ID_STATICTEXT10;
+        static const long ID_STATICTEXT9;
+        static const long ID_TEXTCTRL1;
         static const long ID_BUTTON1;
         static const long ID_PANEL1;
         static const long ID_MENUITEM1;
@@ -77,7 +85,9 @@ class sixemuguiFrame: public wxFrame
         //*)
 
         //(*Declarations(sixemuguiFrame)
+        wxStaticText* StaticText10;
         wxChoice* Choice5;
+        wxStaticText* StaticText9;
         wxMenuItem* MenuItem7;
         wxStaticText* StaticText2;
         wxChoice* Choice3;
@@ -95,6 +105,7 @@ class sixemuguiFrame: public wxFrame
         wxStatusBar* StatusBar1;
         wxChoice* Choice4;
         wxChoice* Choice6;
+        wxTextCtrl* TextCtrl1;
         wxStaticText* StaticText4;
         wxChoice* Choice1;
         wxChoice* Choice2;

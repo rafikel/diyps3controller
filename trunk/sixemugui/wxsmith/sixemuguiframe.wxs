@@ -95,6 +95,7 @@
 								<object class="sizeritem">
 									<object class="wxChoice" name="ID_CHOICE5" variable="Choice5" member="yes">
 										<size>160,-1</size>
+										<handler function="OnChoice5Select" entry="EVT_CHOICE" />
 									</object>
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
@@ -111,6 +112,7 @@
 								<object class="sizeritem">
 									<object class="wxChoice" name="ID_CHOICE6" variable="Choice6" member="yes">
 										<size>160,-1</size>
+										<handler function="OnChoice6Select" entry="EVT_CHOICE" />
 									</object>
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
@@ -127,6 +129,7 @@
 								<object class="sizeritem">
 									<object class="wxChoice" name="ID_CHOICE7" variable="Choice7" member="yes">
 										<size>160,-1</size>
+										<handler function="OnChoice7Select" entry="EVT_CHOICE" />
 									</object>
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
@@ -191,8 +194,33 @@
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
+										<label></label>
+									</object>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
+										<label>Port</label>
+									</object>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrl1" member="yes">
+										<value>21313</value>
+									</object>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
 									<object class="wxButton" name="ID_BUTTON1" variable="Button1" member="yes">
 										<label>Connect</label>
+										<handler function="OnButton1Click" entry="EVT_BUTTON" />
 									</object>
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
