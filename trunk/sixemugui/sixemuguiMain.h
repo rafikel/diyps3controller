@@ -15,7 +15,6 @@
 #include <wx/stattext.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
-#include <wx/panel.h>
 #include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/frame.h>
@@ -52,7 +51,7 @@ class sixemuguiFrame: public wxFrame
 
         void readSixaxis();
         void readDongles();
-        void setDongleAddress();
+        int setDongleAddress();
         void refresh();
 
         //(*Identifiers(sixemuguiFrame)
@@ -76,7 +75,6 @@ class sixemuguiFrame: public wxFrame
         static const long ID_STATICTEXT9;
         static const long ID_TEXTCTRL1;
         static const long ID_BUTTON1;
-        static const long ID_PANEL1;
         static const long ID_MENUITEM1;
         static const long ID_MENUITEM5;
         static const long idMenuQuit;
@@ -94,7 +92,6 @@ class sixemuguiFrame: public wxFrame
         wxButton* Button1;
         wxStaticText* StaticText6;
         wxStaticText* StaticText8;
-        wxPanel* Panel1;
         wxStaticText* StaticText1;
         wxStaticText* StaticText3;
         wxChoice* Choice7;
