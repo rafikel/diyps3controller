@@ -1533,11 +1533,11 @@
 1295654397 /home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiApp.h
 	<wx/app.h>
 
-1295910698 /home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.h
+1295997260 /home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.h
 	<wx/sizer.h>
 	<wx/stattext.h>
 	<wx/menu.h>
-	<wx/textctrl.h>
+	<wx/panel.h>
 	<wx/choice.h>
 	<wx/button.h>
 	<wx/frame.h>
@@ -1545,7 +1545,7 @@
 	<usb.h>
 	<list>
 
-1295909415 source:/home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.cpp
+1295978975 source:/home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.cpp
 	"wx_pch.h"
 	"sixemuguiMain.h"
 	<wx/msgdlg.h>

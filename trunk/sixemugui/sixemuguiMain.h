@@ -14,7 +14,7 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/menu.h>
-#include <wx/textctrl.h>
+#include <wx/panel.h>
 #include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/frame.h>
@@ -47,6 +47,7 @@ class sixemuguiFrame: public wxFrame
         void OnChoice6Select(wxCommandEvent& event);
         void OnChoice7Select(wxCommandEvent& event);
         void OnButton1Click(wxCommandEvent& event);
+        void OnButton3Click(wxCommandEvent& event);
         //*)
 
         void readSixaxis();
@@ -69,14 +70,11 @@ class sixemuguiFrame: public wxFrame
         static const long ID_CHOICE7;
         static const long ID_STATICTEXT8;
         static const long ID_BUTTON2;
-        static const long ID_STATICTEXT5;
-        static const long ID_CHOICE4;
         static const long ID_STATICTEXT10;
-        static const long ID_STATICTEXT9;
-        static const long ID_TEXTCTRL1;
         static const long ID_BUTTON1;
+        static const long ID_BUTTON3;
+        static const long ID_PANEL1;
         static const long ID_MENUITEM1;
-        static const long ID_MENUITEM5;
         static const long idMenuQuit;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
@@ -85,24 +83,21 @@ class sixemuguiFrame: public wxFrame
         //(*Declarations(sixemuguiFrame)
         wxStaticText* StaticText10;
         wxChoice* Choice5;
-        wxStaticText* StaticText9;
-        wxMenuItem* MenuItem7;
         wxStaticText* StaticText2;
         wxChoice* Choice3;
         wxButton* Button1;
         wxStaticText* StaticText6;
         wxStaticText* StaticText8;
+        wxPanel* Panel1;
         wxStaticText* StaticText1;
         wxStaticText* StaticText3;
         wxChoice* Choice7;
         wxButton* Button2;
         wxMenuItem* MenuItem3;
-        wxStaticText* StaticText5;
+        wxButton* Button3;
         wxStaticText* StaticText7;
         wxStatusBar* StatusBar1;
-        wxChoice* Choice4;
         wxChoice* Choice6;
-        wxTextCtrl* TextCtrl1;
         wxStaticText* StaticText4;
         wxChoice* Choice1;
         wxChoice* Choice2;
@@ -113,7 +108,7 @@ class sixemuguiFrame: public wxFrame
         wxString m_SelectedBtDongle;
         int m_SelectedController;
 
-        std::list<wxString> m_used_Sixaxis;
+        bool launched;
 
         DECLARE_EVENT_TABLE()
 };
