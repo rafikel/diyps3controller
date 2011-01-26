@@ -64,7 +64,8 @@ static const char *hid_report_name[] = {
     "reserved", "input", "output", "feature" };
 
 extern char bdaddr_src[18];
-extern int device_number;
+int device_number;
+extern int sixaxis_number;
 
 #define CTRL 17
 #define DATA 19
@@ -344,7 +345,7 @@ int main(int argc, char *argv[])
 
     if (bachk(bdaddr_dest) == -1) {
         fprintf(stderr, "bad mac address\n");
-        fprintf(stderr, "usage: %s <ps3-mac-address> <bt device number>\n", *argv);
+        fprintf(stderr, "usage: %s <ps3-mac-address> <bt device number> <sixaxis number>\n", *argv);
         return 1;
     }
 #ifndef WIN32
@@ -358,10 +359,20 @@ int main(int argc, char *argv[])
         printf("default bt device number 0 is used\n");
     }
 
+    if (argc > 3)
+    {
+        sixaxis_number = atoi(argv[3]);
+    }
+    else
+    {
+        sixaxis_number = 0;
+        printf("default sixaxis number 0 is used\n");
+    }
+
     if(device_number < 0 || get_device_bdaddr(device_number, bdaddr_src) < 0)
     {
         fprintf(stderr, "bad bt device number\n");
-        fprintf(stderr, "usage: %s <ps3-mac-address>  <bt device number>\n", *argv);
+        fprintf(stderr, "usage: %s <ps3-mac-address>  <bt device number> <sixaxis number>\n", *argv);
         return 1;
     }
 
@@ -400,7 +411,7 @@ int main(int argc, char *argv[])
 
         /* Listen for TCP control connections */
         if (tcps < 0 && tcpc < 0)
-            if ((tcps = tcplisten(TCPPORT+device_number)) < 0)
+            if ((tcps = tcplisten(TCPPORT+sixaxis_number)) < 0)
                 printf("tcp listen\n");
 
 #ifndef WIN32

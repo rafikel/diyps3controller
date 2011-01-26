@@ -133,7 +133,7 @@ int process_input_01(const uint8_t *buf, int len, struct sixaxis_state *state)
     return 0;
 }
 
-int device_number;
+int sixaxis_number;
 
 /* Unknown */
 int assemble_feature_01(uint8_t *buf, int maxlen, struct sixaxis_state *state)
@@ -146,7 +146,7 @@ int assemble_feature_01(uint8_t *buf, int maxlen, struct sixaxis_state *state)
         0x04, 0x04, 0x00, 0x00, 0x02, 0x01, 0x02, 0x00,
         0x64, 0x00, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00
     };
-    data[3] += device_number;
+    data[3] += sixaxis_number;
     int len = sizeof(data);
     if (len > maxlen) return -1;
     memcpy(buf, data, len);
