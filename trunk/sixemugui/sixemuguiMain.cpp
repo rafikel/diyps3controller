@@ -79,43 +79,6 @@ BEGIN_EVENT_TABLE(sixemuguiFrame,wxFrame)
     //*)
 END_EVENT_TABLE()
 
-/*
- * Copy-paste from bluez...
- */
-int bachk(const char *str)
-{
-	char tmp[18], *ptr = tmp;
-
-	if (!str)
-		return -1;
-
-	if (strlen(str) != 17)
-		return -1;
-
-	memcpy(tmp, str, 18);
-
-	while (*ptr) {
-		*ptr = toupper(*ptr);
-		if (*ptr < '0'|| (*ptr > '9' && *ptr < 'A') || *ptr > 'F')
-			return -1;
-		ptr++;
-
-		*ptr = toupper(*ptr);
-		if (*ptr < '0'|| (*ptr > '9' && *ptr < 'A') || *ptr > 'F')
-			return -1;
-		ptr++;
-
-		*ptr = toupper(*ptr);
-		if (*ptr == 0)
-			break;
-		if (*ptr != ':')
-			return -1;
-		ptr++;
-	}
-
-	return 0;
-}
-
 static int readCommandResults(const char * argv[], int nb_params, wxString params[], int nb_repeat, wxString results[])
 {
     int exit_status = 0;
@@ -174,10 +137,10 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
 static char hci[7];
 static char bad[18];
 
-static const char *sixaxis_device[] = { "sudo", "sixaddr", NULL };
+static const char *sixaxis_device[] = { "gksudo", "sixaddr", NULL };
 
 static const char *hciconfig_all[] = { "hciconfig", "-a", hci, NULL };
-static const char *hciconfig_revision[] = { "sudo", "hciconfig", hci, "revision", NULL };
+static const char *hciconfig_revision[] = { "gksudo", "hciconfig", hci, "revision", NULL };
 
 static const char *bdaddr[] = { "bdaddr", "-i", hci, NULL };
 static const char *bdaddr_modify[] = { "sudo", "bdaddr", "-r", "-i", hci, bad, NULL };
@@ -407,6 +370,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Button1 = new wxButton(Panel1, ID_BUTTON1, _("Start emu"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     FlexGridSizer4->Add(Button1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button3 = new wxButton(Panel1, ID_BUTTON3, _("Start emuclient"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
+    Button3->Disable();
     FlexGridSizer4->Add(Button3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -459,6 +423,19 @@ sixemuguiFrame::~sixemuguiFrame()
 
 void sixemuguiFrame::OnQuit(wxCommandEvent& event)
 {
+    int answer;
+    if(launched)
+    {
+        answer = wxMessageBox(_("Emu process will be killed!"), _("Confirm"), wxNO | wxCANCEL);
+        if (answer == wxYES)
+        {
+            g_spawn_command_line_sync ("killall emu", NULL, NULL, NULL, NULL);
+        }
+        else
+        {
+            return;
+        }
+    }
     Close();
 }
 
@@ -534,22 +511,39 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
 
     if(!launched)
     {
+        /*
+         * This allows not to launch the emu process as root.
+         */
+        snprintf(command, 64, "gksudo hciconfig hci%d class 0x508", Choice3->GetSelection());
+        g_spawn_command_line_sync (command, NULL, NULL, NULL, NULL);
+        /*
+         * Launches the emu process.
+         */
         strncpy(bdaddr, Choice2->GetStringSelection().mb_str(), 18 );
-        snprintf(command, 64, "%s%s %d%s", "gnome-terminal -e \"sudo emu ", bdaddr, Choice3->GetSelection(), "\"");
+        snprintf(command, 64, "%s%s %d %d", "emu ", bdaddr, Choice3->GetSelection(), 0);
         g_spawn_command_line_async (command, NULL);
         Button1->SetLabel(_("Stop emu"));
         launched = true;
+        Button3->Enable();
+        Button2->Disable();
     }
     else
     {
-        strcpy(command, "sudo killall emu");
-        g_spawn_command_line_async (command, NULL);
+        /*
+         * Kills the emu process.
+         */
+        g_spawn_command_line_sync ("killall emu", NULL, NULL, NULL, NULL);
         Button1->SetLabel(_("Start emu"));
         launched = false;
+        Button3->Disable();
+        Button2->Enable();
     }
 }
 
 void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
 {
+    /*
+     * Launches the emuclient in a terminal.
+     */
     g_spawn_command_line_async ("gnome-terminal -e emuclient", NULL);
 }
