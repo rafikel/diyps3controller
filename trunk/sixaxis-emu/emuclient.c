@@ -110,7 +110,10 @@ int initialize(int width, int height, const char *title)
     return 0;
   }
 
-  SDL_WM_GrabInput(SDL_GRAB_ON);
+  if(grab)
+  {
+    SDL_WM_GrabInput(SDL_GRAB_ON);
+  }
   SDL_ShowCursor(SDL_DISABLE);
 
   while((joystick = SDL_JoystickOpen(i)))
@@ -288,6 +291,14 @@ int main(int argc, char *argv[])
     int i;
     int num_evt;
     unsigned char buf[48];
+
+    if(argc > 1)
+    {
+      if(!strcmp(argv[1], "nograb"))
+      {
+        grab = 0;
+      }
+    }
 
     read_config_dir();
 
