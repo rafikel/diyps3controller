@@ -1,0 +1,188 @@
+/*
+ * Compile with: gcc -lm -o sixemulat sixemulat.c
+ */
+
+#include <stdio.h>
+#include <limits.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <signal.h>
+
+char mouse[6];
+char sixemu[6];
+char usbmon[] = "/sys/kernel/debug/usb/usbmon/0u";
+
+#define RECORDS 1024
+
+unsigned int tdiff[RECORDS] = {0};
+
+void results()
+{
+  int i;
+  int val;
+  int sum = 0;
+  int average;
+  int temp = 0;
+  int nbval;
+  
+  for (i = 0; i<RECORDS && tdiff[i]>0; i++)
+  {
+    sum = sum+tdiff[i];
+  }
+  
+  nbval = i;
+
+  printf("nb: %d\n", nbval);
+
+  if(nbval < 2)
+  {
+    return;
+  }
+
+  average = sum / nbval;
+
+  printf("average: %d\n", average);
+  
+  for (i = 0; i < nbval; i++)
+  {
+    temp = temp + pow(abs(tdiff[i]-average), 2);
+  }
+  
+  temp = pow(temp/(nbval-1), 0.5);
+
+  printf("standard deviation: %d\n", temp);
+}
+
+static int bexit = 0;
+
+void ex_program(int sig)
+{
+  bexit = 1;
+}
+
+void usage()
+{
+  printf("usage: ./sixemulat <bus id> <mouse id> <dongle id>\n");
+  exit(-1);
+}
+
+int main(int argc, char *argv[])
+{
+  int i = 0;
+  FILE* fp;
+  char line[LINE_MAX];
+  unsigned int tclic = 0;
+  unsigned int tr1 = 0;
+  char test[128];
+  unsigned char done = 0;
+  int bid;
+  int mid;
+  int did;
+  
+  (void) signal(SIGINT, ex_program);
+
+  if(argc > 1)
+  {
+    bid = atoi(argv[1]);
+    if(bid < 1 || bid > 9)
+    {
+      usage();
+    }   
+  }
+  else
+  {
+    usage();
+  }
+
+  if(argc > 2)
+  {
+    mid = atoi(argv[2]);
+    if(mid < 1 || did > 128)
+    {
+      usage();
+    }   
+  }
+  else
+  {
+    usage();
+  }
+
+  if(argc > 3)
+  {
+    did = atoi(argv[3]);
+    if(did < 1 || did > 128)
+    {
+      usage();
+    }   
+  }
+  else
+  {
+    usage();
+  }
+
+  sprintf(mouse, "%d:%03d", bid, mid);
+  sprintf(sixemu, "%d:%03d", bid, did);
+  sprintf(usbmon+29, "%du", bid);
+  
+  fp = fopen(usbmon, "r");
+  if (!fp)
+  {
+    fprintf(stderr, "Can not open file\n");
+  }
+  else
+  {
+    while (fgets(line, LINE_MAX, fp) && !bexit)
+    {
+      if(strstr(line, mouse))
+      {
+        /*
+         * Crude heuristic to find left clics.
+         */
+        if(strstr(line, "= 01"))
+        {
+          if(!tclic && !done)
+          {
+            sscanf(line, "%*[^ ]%*[ ]%10u", &tclic);
+          }
+        }
+        else if(strstr(line, "= 00"))
+        {
+          tclic = 0;
+          done = 0;
+        }
+      }
+      else if(strstr(line, sixemu))
+      {
+        /*
+         * Crude heuristic to find r1 button presses.
+         */
+        if(strstr(line, "0000ff00"))
+        {
+          if(tclic && !done)
+          {
+            sscanf(line, "%*[^ ]%*[ ]%10u", &tr1);
+            if(i < RECORDS)
+            {
+              tdiff[i] = tr1 - tclic;
+              printf("latency: %d\n", tdiff[i]);
+              i++;
+            }
+            else
+            {
+              printf("max records reached!\n");
+              break;
+            }
+            done = 1;
+          }
+        }
+      }
+    }
+    fclose(fp);
+  }
+
+  results();
+
+  return 0;
+}
+
