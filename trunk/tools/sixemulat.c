@@ -63,7 +63,7 @@ void ex_program(int sig)
 
 void usage()
 {
-  printf("usage: ./sixemulat <bus id> <mouse id> <dongle id>\n");
+  printf("usage: ./sixemulat <mouse bus id> <mouse device id> <dongle bus id> <dongle id>\n");
   exit(-1);
 }
 
@@ -76,7 +76,8 @@ int main(int argc, char *argv[])
   unsigned int tr1 = 0;
   char test[128];
   unsigned char done = 0;
-  int bid;
+  int mbid;
+  int dbid;
   int mid;
   int did;
   
@@ -84,8 +85,8 @@ int main(int argc, char *argv[])
 
   if(argc > 1)
   {
-    bid = atoi(argv[1]);
-    if(bid < 1 || bid > 9)
+    mbid = atoi(argv[1]);
+    if(mbid < 1 || mbid > 9)
     {
       usage();
     }   
@@ -101,7 +102,7 @@ int main(int argc, char *argv[])
     if(mid < 1 || did > 128)
     {
       usage();
-    }   
+    }
   }
   else
   {
@@ -110,20 +111,32 @@ int main(int argc, char *argv[])
 
   if(argc > 3)
   {
-    did = atoi(argv[3]);
-    if(did < 1 || did > 128)
+    dbid = atoi(argv[3]);
+    if(dbid < 1 || dbid > 9)
     {
       usage();
-    }   
+    }
   }
   else
   {
     usage();
   }
 
-  sprintf(mouse, "%d:%03d", bid, mid);
-  sprintf(sixemu, "%d:%03d", bid, did);
-  sprintf(usbmon+29, "%du", bid);
+  if(argc > 4)
+  {
+    did = atoi(argv[4]);
+    if(did < 1 || did > 128)
+    {
+      usage();
+    }
+  }
+  else
+  {
+    usage();
+  }
+
+  sprintf(mouse, "%d:%03d", mbid, mid);
+  sprintf(sixemu, "%d:%03d", dbid, did);
   
   fp = fopen(usbmon, "r");
   if (!fp)
