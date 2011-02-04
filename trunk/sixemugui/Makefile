@@ -68,6 +68,7 @@ clean_release:
 install: all
 	mkdir -p $(prefix)
 	mkdir -p $(bindir)
+	mkdir -p $(prefix)/share/applications
 	for i in $(BINS); do cp $$i $(bindir)/; done
 	cp sixemugui.desktop /usr/share/applications
 
