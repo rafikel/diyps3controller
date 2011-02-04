@@ -75,6 +75,6 @@ uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
 	-rmdir $(bindir)
 	-rmdir $(prefix)
-	-rm /usr/share/applications/sixemugui.desktop
+	-rm $(prefix)/share/applications/sixemugui.desktop
 
 really-clean: clean uninstall
