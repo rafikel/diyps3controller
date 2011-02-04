@@ -285,8 +285,13 @@ static int postpone_event(unsigned int device, SDL_Event* event)
 }
 
 extern int calibration;
+extern double multiplier_x;
+extern double multiplier_y;
+extern double exponent;
+extern int dead_zone_x;
+extern int dead_zone_y;
 
-static void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, int ts, int ts_axis, double exponent, double multiplier, int dead_zone)
+static void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, int ts, int ts_axis, double exp, double multiplier, int dead_zone)
 {
   double z = 0;
 
@@ -296,7 +301,7 @@ static void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, in
 
     if(z != 0)
     {
-      z = multiplier * (merge/abs(merge)) * pow(abs(z), exponent);
+      z = multiplier * (merge/abs(merge)) * pow(abs(z), exp);
     }
   }
 
@@ -323,7 +328,7 @@ void process_event(SDL_Event* event)
   unsigned int control;
   unsigned int threshold;
   double multiplier;
-  double exponent;
+  double exp;
   int dead_zone;
   int value;
   unsigned int nb_controls = 0;
@@ -536,14 +541,14 @@ void process_event(SDL_Event* event)
            */
           button = mapper->controller_button_axis;
           multiplier = mapper->multiplier;
-          exponent = mapper->exponent;
+          exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
           if(button >= 0)
           {
             value = event->jaxis.value;
             if(value)
             {
-              value = value/abs(value)*multiplier*pow(abs(value), exponent);
+              value = value/abs(value)*multiplier*pow(abs(value), exp);
             }
             if(value > 0)
             {
@@ -563,14 +568,14 @@ void process_event(SDL_Event* event)
           ts = mapper->controller_thumbstick;
           ts_axis = mapper->controller_thumbstick_axis;
           multiplier = mapper->multiplier;
-          exponent = mapper->exponent;
+          exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
           if(ts >= 0)
           {
             value = event->jaxis.value;
             if(value)
             {
-              value = value/abs(value)*multiplier*pow(abs(value), exponent);
+              value = value/abs(value)*multiplier*pow(abs(value), exp);
             }
             if(value > 0)
             {
@@ -689,21 +694,33 @@ void process_event(SDL_Event* event)
           ts = mapper->controller_thumbstick;
           ts_axis = mapper->controller_thumbstick_axis;
           multiplier = mapper->multiplier;
-          exponent = mapper->exponent;
+          exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
           if(ts >= 0)
           {
             if(mapper->axis == 0)
             {
+              if(calibration)
+              {
+                multiplier = multiplier_x;
+                exp = exponent;
+                dead_zone = dead_zone_x;
+              }
               mouse_control[device].changed = 1;
               mouse_control[device].merge_x+=value;
-              mouse2axis(state+device, mouse_control[device].merge_x, mouse_control[device].nb_motion, ts, ts_axis, exponent, multiplier, dead_zone);
+              mouse2axis(state+device, mouse_control[device].merge_x, mouse_control[device].nb_motion, ts, ts_axis, exp, multiplier, dead_zone);
             }
             else if(mapper->axis == 1)
             {
+              if(calibration)
+              {
+                multiplier = multiplier_y;
+                exp = exponent;
+                dead_zone = dead_zone_y;
+              }
               mouse_control[device].changed = 1;
               mouse_control[device].merge_y+=value;
-              mouse2axis(state+c_id, mouse_control[device].merge_y, mouse_control[device].nb_motion, ts, ts_axis, exponent, multiplier, dead_zone);
+              mouse2axis(state+c_id, mouse_control[device].merge_y, mouse_control[device].nb_motion, ts, ts_axis, exp, multiplier, dead_zone);
             }
           }
           break;
