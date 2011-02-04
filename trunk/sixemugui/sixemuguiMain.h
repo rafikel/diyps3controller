@@ -22,9 +22,6 @@
 #include <wx/statusbr.h>
 //*)
 
-#include <usb.h>
-#include <list>
-
 class sixemuguiFrame: public wxFrame
 {
     public:
