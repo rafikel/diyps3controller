@@ -117,5 +117,6 @@ uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
 	-rmdir $(bindir)
 	-rmdir $(prefix)
+	-rm /usr/share/applications/sixemuconf.desktop
 
 really-clean: clean uninstall
