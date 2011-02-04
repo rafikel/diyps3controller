@@ -18,8 +18,9 @@
 
 #include <glib.h>
 
-#include <algorithm>
-using namespace std;
+#include <pthread.h>
+#include <unistd.h>
+#include <errno.h>
 
 //helper functions
 enum wxbuildinfoformat
@@ -67,6 +68,7 @@ const long sixemuguiFrame::ID_BUTTON2 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT10 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON1 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON3 = wxNewId();
+const long sixemuguiFrame::ID_CHECKBOX1 = wxNewId();
 const long sixemuguiFrame::ID_PANEL1 = wxNewId();
 const long sixemuguiFrame::ID_MENUITEM1 = wxNewId();
 const long sixemuguiFrame::idMenuQuit = wxNewId();
@@ -82,7 +84,7 @@ END_EVENT_TABLE()
 static int readCommandResults(const char * argv[], int nb_params, wxString params[], int nb_repeat, wxString results[])
 {
     int exit_status = 0;
-    char* output = NULL;
+    char* out = NULL;
     char* err = NULL;
     GError *error = NULL;
     gboolean test;
@@ -91,13 +93,13 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
     int ret = 0;
     char c_param[256];
 
-    test = g_spawn_sync(NULL, (gchar**)argv, NULL, (GSpawnFlags)G_SPAWN_SEARCH_PATH, NULL, NULL, &output, &err, &exit_status, &error);
+    test = g_spawn_sync(NULL, (gchar**)argv, NULL, (GSpawnFlags)G_SPAWN_SEARCH_PATH, NULL, NULL, &out, &err, &exit_status, &error);
 
     if(test)
     {
-        line = output;
+        line = out;
 
-        printf("%s\n", output);
+        printf("%s\n", out);
 
         for(int i=0; i<nb_params*nb_repeat; ++i)
         {
@@ -127,7 +129,7 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
         ret = -1;
     }
 
-    if(output) g_free(output);
+    if(out) g_free(out);
     if(err) g_free(err);
     if(error) g_free(error);
 
@@ -312,8 +314,10 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxStaticBoxSizer* StaticBoxSizer2;
     wxFlexGridSizer* FlexGridSizer4;
     wxMenuItem* MenuItem2;
+    wxStaticBoxSizer* StaticBoxSizer4;
     wxFlexGridSizer* FlexGridSizer3;
     wxMenuItem* MenuItem1;
+    wxFlexGridSizer* FlexGridSizer5;
     wxFlexGridSizer* FlexGridSizer2;
     wxMenu* Menu1;
     wxStaticBoxSizer* StaticBoxSizer3;
@@ -323,10 +327,10 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxMenu* Menu2;
 
     Create(parent, wxID_ANY, _("Sixemugui"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
-    SetMinSize(wxSize(400,550));
+    SetMinSize(wxSize(400,575));
     SetMaxSize(wxSize(-1,-1));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-    FlexGridSizer1 = new wxFlexGridSizer(3, 1, 0, 0);
+    FlexGridSizer1 = new wxFlexGridSizer(4, 1, 0, 0);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Sixaxis"));
     FlexGridSizer2 = new wxFlexGridSizer(2, 2, 0, 0);
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Address"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
@@ -363,17 +367,24 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer3->Add(Button2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2->Add(FlexGridSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, wxEmptyString);
+    StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("emu"));
     FlexGridSizer4 = new wxFlexGridSizer(1, 3, 0, 0);
     StaticText10 = new wxStaticText(Panel1, ID_STATICTEXT10, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
     FlexGridSizer4->Add(StaticText10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    Button1 = new wxButton(Panel1, ID_BUTTON1, _("Start emu"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
-    FlexGridSizer4->Add(Button1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    Button3 = new wxButton(Panel1, ID_BUTTON3, _("Start emuclient"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    Button3->Disable();
-    FlexGridSizer4->Add(Button3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button1 = new wxButton(Panel1, ID_BUTTON1, _("Start"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
+    FlexGridSizer4->Add(Button1, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
     FlexGridSizer1->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("emuclient"));
+    FlexGridSizer5 = new wxFlexGridSizer(1, 3, 0, 0);
+    Button3 = new wxButton(Panel1, ID_BUTTON3, _("Start"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
+    Button3->Disable();
+    FlexGridSizer5->Add(Button3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("Grab mouse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    CheckBox1->SetValue(true);
+    FlexGridSizer5->Add(CheckBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4->Add(FlexGridSizer5, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(StaticBoxSizer4, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Panel1->SetSizer(FlexGridSizer1);
     FlexGridSizer1->Fit(Panel1);
     FlexGridSizer1->SetSizeHints(Panel1);
@@ -504,10 +515,75 @@ void sixemuguiFrame::OnChoice7Select(wxCommandEvent& event)
     Choice6->SetSelection(Choice7->GetSelection());
 }
 
+static char emu_bdaddr[18];
+static char bt_device[4];
+
+static const char *emu_command[] = { "emu", emu_bdaddr, bt_device, "0", NULL };
+
+typedef enum
+{
+    E_CONNECTING,
+    E_CONNECTED,
+    E_DISCONNECTED,
+    E_ERROR
+} e_emu_state;
+
+e_emu_state emu_state = E_DISCONNECTED;
+
+void* emu_thread(void* arg)
+{
+    GError *error = NULL;
+    gboolean test;
+    GPid child_pid;
+    int err = -1;
+    char tmp[1024];
+    int ret;
+
+    test = g_spawn_async_with_pipes(NULL, (gchar**)emu_command, NULL, (GSpawnFlags)(G_SPAWN_SEARCH_PATH), NULL, NULL, &child_pid, NULL, NULL, &err,  &error);
+
+    if(error)
+    {
+        printf("%s\n", error->message);
+    }
+
+    if(test)
+    {
+        while(1)
+        {
+            ret = read(err, tmp, 1024);
+            tmp[1023] = '\0';
+            if(ret == -1 && errno != EAGAIN)
+            {
+                emu_state = E_ERROR;
+                break;
+            }
+            if(ret > 0)
+            {
+                if(strstr(tmp, "connected"))
+                {
+                    emu_state = E_CONNECTED;
+                    break;
+                }
+                else if(strstr(tmp, "can't connect to"))
+                {
+                    emu_state = E_ERROR;
+                    break;
+                }
+            }
+            sleep(1);
+        }
+    }
+
+    if(error) g_free(error);
+    if(err > -1) close(err);
+    pthread_exit (0);
+}
+
 void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
 {
+    pthread_t thread;
+    pthread_attr_t thread_attr;
     char command[64];
-    char bdaddr[18];
 
     if(!launched)
     {
@@ -517,15 +593,37 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
         snprintf(command, 64, "gksudo hciconfig hci%d class 0x508", Choice3->GetSelection());
         g_spawn_command_line_sync (command, NULL, NULL, NULL, NULL);
         /*
+         * Update variables to be read by the thread.
+         */
+        strncpy(emu_bdaddr, Choice2->GetStringSelection().mb_str(), 18 );
+        snprintf(bt_device, 4, "%d", Choice3->GetSelection());
+        /*
          * Launches the emu process.
          */
-        strncpy(bdaddr, Choice2->GetStringSelection().mb_str(), 18 );
-        snprintf(command, 64, "%s%s %d %d", "emu ", bdaddr, Choice3->GetSelection(), 0);
-        g_spawn_command_line_async (command, NULL);
-        Button1->SetLabel(_("Stop emu"));
-        launched = true;
-        Button3->Enable();
-        Button2->Disable();
+        emu_state = E_CONNECTING;
+        pthread_attr_init(&thread_attr);
+        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+        pthread_create( &thread, &thread_attr, emu_thread, NULL);
+
+        while(emu_state == E_CONNECTING)
+        {
+            sleep(1);
+        }
+        if(emu_state == E_CONNECTED)
+        {
+            /*
+             * Update the GUI.
+             */
+            Button1->SetLabel(_("Stop"));
+            launched = true;
+            Button3->Enable();
+            Button2->Disable();
+            wxMessageBox(_("Connected!\nStart emuclient now."), _("Info"));
+        }
+        if(emu_state == E_ERROR)
+        {
+            wxMessageBox( wxT("Connection error!\nDid you set the dongle address?\nIf yes, try another dongle!"), wxT("Error"), wxICON_ERROR);
+        }
     }
     else
     {
@@ -533,7 +631,7 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
          * Kills the emu process.
          */
         g_spawn_command_line_sync ("killall emu", NULL, NULL, NULL, NULL);
-        Button1->SetLabel(_("Start emu"));
+        Button1->SetLabel(_("Start"));
         launched = false;
         Button3->Disable();
         Button2->Enable();
@@ -545,5 +643,17 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     /*
      * Launches the emuclient in a terminal.
      */
-    g_spawn_command_line_async ("gnome-terminal -e emuclient", NULL);
+    if(CheckBox1->IsChecked())
+    {
+        Button3->Disable();
+        g_spawn_command_line_sync ("gnome-terminal -e emuclient", NULL, NULL, NULL, NULL);
+        Button3->Enable();
+    }
+    else
+    {
+        Button3->Disable();
+        g_spawn_command_line_sync ("gnome-terminal -e \"emuclient nograb\"", NULL, NULL, NULL, NULL);
+        Button3->Enable();
+    }
 }
+
