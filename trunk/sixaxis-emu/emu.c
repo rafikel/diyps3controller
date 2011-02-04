@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
         close(ctrl);
         err(1, "can't connect to data psm");
     }
-    printf("connected\n");
+    fprintf(stderr, "connected\n");
 
     /* First report can be sent now */
     gettimeofday(&next_report, NULL);
@@ -570,7 +570,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    printf("cleaning up");
+    fprintf(stderr, "cleaning up");
     shutdown(ctrl, SHUT_RDWR);
     shutdown(data, SHUT_RDWR);
     close(ctrl);
