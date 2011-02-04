@@ -111,6 +111,7 @@ install: all
 	mkdir -p $(prefix)
 	mkdir -p $(bindir)
 	for i in $(BINS); do cp $$i $(bindir)/; done
+	cp sixemuconf.desktop /usr/share/applications
 
 uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
