@@ -14,6 +14,7 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/menu.h>
+#include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/choice.h>
 #include <wx/button.h>
@@ -48,6 +49,7 @@ class sixemuguiFrame: public wxFrame
         void OnChoice7Select(wxCommandEvent& event);
         void OnButton1Click(wxCommandEvent& event);
         void OnButton3Click(wxCommandEvent& event);
+        void OnCheckBox1Click(wxCommandEvent& event);
         //*)
 
         void readSixaxis();
@@ -73,6 +75,7 @@ class sixemuguiFrame: public wxFrame
         static const long ID_STATICTEXT10;
         static const long ID_BUTTON1;
         static const long ID_BUTTON3;
+        static const long ID_CHECKBOX1;
         static const long ID_PANEL1;
         static const long ID_MENUITEM1;
         static const long idMenuQuit;
@@ -93,6 +96,7 @@ class sixemuguiFrame: public wxFrame
         wxStaticText* StaticText3;
         wxChoice* Choice7;
         wxButton* Button2;
+        wxCheckBox* CheckBox1;
         wxMenuItem* MenuItem3;
         wxButton* Button3;
         wxStaticText* StaticText7;
