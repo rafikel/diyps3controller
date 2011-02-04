@@ -235,6 +235,12 @@ void read_macros() {
           fclose(fp);
       }
     }
+
+    for(i=0; i<nb_filenames; ++i)
+    {
+      free(filenames[i]);
+    }
+    free(filenames);
 }
 
 /*
@@ -260,6 +266,7 @@ void macro(s_macro_event_delay* p_table) {
             usleep(p_element->delay*1000);
         }
     }
+    pthread_exit (0);
 }
 
 /*
