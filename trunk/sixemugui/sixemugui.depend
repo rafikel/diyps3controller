@@ -1533,10 +1533,11 @@
 1295654397 /home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiApp.h
 	<wx/app.h>
 
-1295997260 /home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.h
+1296388713 /home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.h
 	<wx/sizer.h>
 	<wx/stattext.h>
 	<wx/menu.h>
+	<wx/checkbox.h>
 	<wx/panel.h>
 	<wx/choice.h>
 	<wx/button.h>
@@ -1545,14 +1546,19 @@
 	<usb.h>
 	<list>
 
-1295978975 source:/home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.cpp
+1296846281 source:/home/matlo/workspace/svn-diyps3controller/sixemugui/sixemuguiMain.cpp
 	"wx_pch.h"
 	"sixemuguiMain.h"
 	<wx/msgdlg.h>
 	<wx/intl.h>
 	<wx/string.h>
 	<glib.h>
-	<algorithm>
+	<pthread.h>
+	<sys/select.h>
+	<sys/time.h>
+	<sys/types.h>
+	<unistd.h>
+	<errno.h>
 
 1285628926 /usr/include/glib-2.0/glib.h
 	<glib/galloca.h>

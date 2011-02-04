@@ -43,8 +43,6 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add option="`pkg-config --libs glib-2.0`" />
-			<Add library="usb" />
-			<Add library="bluetooth" />
 		</Linker>
 		<Unit filename="sixemuguiApp.cpp" />
 		<Unit filename="sixemuguiApp.h" />
