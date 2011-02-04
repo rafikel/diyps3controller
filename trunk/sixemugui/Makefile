@@ -70,7 +70,7 @@ install: all
 	mkdir -p $(bindir)
 	mkdir -p $(prefix)/share/applications
 	for i in $(BINS); do cp $$i $(bindir)/; done
-	cp sixemugui.desktop /usr/share/applications
+	cp sixemugui.desktop $(prefix)/share/applications
 
 uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
