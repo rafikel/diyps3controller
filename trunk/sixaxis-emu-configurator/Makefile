@@ -110,8 +110,9 @@ clean_release:
 install: all
 	mkdir -p $(prefix)
 	mkdir -p $(bindir)
+	mkdir -p $(prefix)/share/applications
 	for i in $(BINS); do cp $$i $(bindir)/; done
-	cp sixemuconf.desktop /usr/share/applications
+	cp sixemuconf.desktop $(prefix)/share/applications
 
 uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
