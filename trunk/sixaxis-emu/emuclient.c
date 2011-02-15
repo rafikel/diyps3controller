@@ -291,7 +291,9 @@ int main(int argc, char *argv[])
     int i;
     int num_evt;
     unsigned char buf[48];
-
+    
+    system("if [ ! -d .emuclient ]; then cp -r /etc/emuclient ~/.emuclient; fi");
+    
     if(argc > 1)
     {
       if(!strcmp(argv[1], "nograb"))

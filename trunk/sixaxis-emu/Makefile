@@ -1,6 +1,6 @@
 prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
-confdir=${HOME}/.emuclient
+confdir=$(DESTDIR)/etc/emuclient
 BINS=emu emuclient sixaddr bdaddr
 CC=gcc
 CFLAGS=-Wall -g
