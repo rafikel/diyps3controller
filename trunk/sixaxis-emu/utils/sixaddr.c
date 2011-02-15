@@ -38,7 +38,7 @@ void show_sixaxis_bdaddr(usb_dev_handle *devh, int itfnum)
   printf("%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx\n", buf[4], buf[5], buf[6], buf[7], buf[8], buf[9]);
 }
 
-void process_device(int argc, char **argv, struct usb_device *dev,
+void process_device(struct usb_device *dev,
 		    struct usb_config_descriptor *cfg, int itfnum) {
 
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 	    if ( dev->descriptor.idVendor == VENDOR &&
 		 dev->descriptor.idProduct == PRODUCT &&
 		 alt->bInterfaceClass == 3 ) {
-	      process_device(argc, argv, dev, cfg, itfnum);
+	      process_device(dev, cfg, itfnum);
 	      ++found;
 	    }
 	  }
