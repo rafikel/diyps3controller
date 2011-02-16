@@ -65,6 +65,11 @@ int (*assemble)(uint8_t *buf, int len, struct sixaxis_state *state);
 static int sockfd[MAX_CONTROLLERS];
 s_controller controller[MAX_CONTROLLERS];
 
+/*
+ * to be deleted later
+ */
+extern s_mouse_control mouse_control[MAX_DEVICES];
+
 #ifdef WIN32
 static void err(int eval, const char *fmt)
 {
@@ -191,7 +196,7 @@ void circle_test()
 {
   int i;
   const double pi = 3.14159265;
-  const int m = 256;
+  const int m = 286;
   const int step = 1;
   SDL_Event event;
 
@@ -209,6 +214,7 @@ static void key(int sym, int down)
 {
 	pthread_t thread;
   pthread_attr_t thread_attr;
+  int i;
 
 	switch (sym)
   {
@@ -259,6 +265,10 @@ static void key(int sym, int down)
 	    case SDLK_KP1:  if(down) { exponent -= EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
 	    case SDLK_KP4:  if(down) { exponent += EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
 	  }
+	  for(i=0; i<MAX_DEVICES; ++i)
+    {
+      mouse_control[i].changed = 1;
+    }
 	}
 
 	if(lctrl && rctrl)
@@ -278,16 +288,11 @@ static void key(int sym, int down)
 	if(down) macro_lookup(sym);
 }
 
-/*
- * to be deleted later
- */
-extern s_mouse_control mouse_control[MAX_DEVICES];
-
 int main(int argc, char *argv[])
 {
     SDL_Event events[EVENT_BUFFER_SIZE];
     SDL_Event* event;
-    SDL_Event mouse_raz;
+    SDL_Event mouse_evt;
     int i;
     int num_evt;
     unsigned char buf[48];
@@ -328,7 +333,17 @@ int main(int argc, char *argv[])
 
         for(event=events; event<events+num_evt; ++event)
         {
-          process_event(event);
+          if(event->type != SDL_MOUSEMOTION)
+          {
+            process_event(event);
+          }
+          else
+          {
+            mouse_control[event->motion.which].merge_x += event->motion.xrel;
+            mouse_control[event->motion.which].merge_y += event->motion.yrel;
+            mouse_control[event->motion.which].nb_motion++;
+            mouse_control[event->motion.which].changed = 1;
+          }
 
           trigger_lookup(event);
 
@@ -346,22 +361,23 @@ int main(int argc, char *argv[])
           }
         }
 
-        /*
-         * This processes an extra event to stop axis movements.
-         */
         for(i=0; i<MAX_DEVICES; ++i)
         {
           if(mouse_control[i].changed)
           {
+            mouse_evt.motion.which = i;
+            mouse_evt.type = SDL_MOUSEMOTION;
             if(!mouse_control[i].nb_motion)
             {
-              mouse_raz.motion.which = i;
-              mouse_raz.type = SDL_MOUSEMOTION;
-              mouse_raz.motion.xrel = 0;
-              mouse_raz.motion.yrel = 0;
-              process_event(&mouse_raz);
+            	if(calibration)
+              {
+            	  mouse_control[i].merge_x = 1;
+                mouse_control[i].merge_y = 1;
+                mouse_control[i].nb_motion = 1;
+              }
               mouse_control[i].changed = 0;
             }
+            process_event(&mouse_evt);
           }
           mouse_control[i].merge_x = 0;
           mouse_control[i].merge_y = 0;
