@@ -47,6 +47,9 @@
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
 
+#define AXIS_X 0
+#define AXIS_Y 1
+
 typedef enum
 {
 	E_DEVICE_TYPE_UNKNOWN,
@@ -291,23 +294,38 @@ extern double exponent;
 extern int dead_zone_x;
 extern int dead_zone_y;
 
-static void mouse2axis(struct sixaxis_state* state, int merge, int nb_motion, int ts, int ts_axis, double exp, double multiplier, int dead_zone)
+static void mouse2axis(struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone)
 {
   double z = 0;
+  double dz = dead_zone;
 
-  if(nb_motion)
+  int val = 0;
+
+  if(which == AXIS_X)
   {
-    z = abs(merge/nb_motion);
-
-    if(z != 0)
+    val = x;
+    if(x && y)
     {
-      z = multiplier * (merge/abs(merge)) * pow(abs(z), exp);
+      dz = dz*cos(atan(fabs(y/x)));
+    }
+  }
+  else if(which == AXIS_Y)
+  {
+    val = y;
+    if(x && y)
+    {
+      dz = dz*sin(atan(fabs(y/x)));
     }
   }
 
-  if(z > 0) state->user.axis[ts][ts_axis] = dead_zone + z;
-  else if(z < 0) state->user.axis[ts][ts_axis] = z - dead_zone;
-  else if(calibration) state->user.axis[ts][ts_axis] = dead_zone;
+  if(val != 0)
+  {
+    z = multiplier * (val/fabs(val)) * pow(fabs(val), exp);
+  }
+
+  if(calibration && x == 1 && y == 1) state->user.axis[ts][ts_axis] = dz;
+  else if(z > 0) state->user.axis[ts][ts_axis] = dz + z;
+  else if(z < 0) state->user.axis[ts][ts_axis] = z - dz;
   else state->user.axis[ts][ts_axis] = 0;
 }
 
@@ -333,19 +351,14 @@ void process_event(SDL_Event* event)
   int value;
   unsigned int nb_controls = 0;
   SDL_Event event_jb;
+  double mx;
+  double my;
 
   /*
    * 'which' should always be at that place
    * There is no need to check the value, since it's stored as an uint8_t, and MAX_CONTROLLERS is 256.
    */
   unsigned int device = ((SDL_KeyboardEvent*)event)->which;
-
-  switch(event->type)
-  {
-    case SDL_MOUSEMOTION:
-    mouse_control[device].nb_motion++;
-    break;
-  }
 
   for(c_id=0; c_id<MAX_CONTROLLERS; ++c_id)
   {
@@ -696,6 +709,16 @@ void process_event(SDL_Event* event)
           multiplier = mapper->multiplier;
           exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
+          if(mouse_control[device].nb_motion)
+          {
+            mx = (double) mouse_control[device].merge_x / (double) mouse_control[device].nb_motion;
+            my = (double) mouse_control[device].merge_y / (double) mouse_control[device].nb_motion;
+          }
+          else
+          {
+            mx = 0;
+            my = 0;
+          }
           if(ts >= 0)
           {
             if(mapper->axis == 0)
@@ -706,9 +729,7 @@ void process_event(SDL_Event* event)
                 exp = exponent;
                 dead_zone = dead_zone_x;
               }
-              mouse_control[device].changed = 1;
-              mouse_control[device].merge_x+=value;
-              mouse2axis(state+device, mouse_control[device].merge_x, mouse_control[device].nb_motion, ts, ts_axis, exp, multiplier, dead_zone);
+              mouse2axis(state+c_id, AXIS_X, mx, my, ts, ts_axis, exp, multiplier, dead_zone);
             }
             else if(mapper->axis == 1)
             {
@@ -718,9 +739,7 @@ void process_event(SDL_Event* event)
                 exp = exponent;
                 dead_zone = dead_zone_y;
               }
-              mouse_control[device].changed = 1;
-              mouse_control[device].merge_y+=value;
-              mouse2axis(state+c_id, mouse_control[device].merge_y, mouse_control[device].nb_motion, ts, ts_axis, exp, multiplier, dead_zone);
+              mouse2axis(state+c_id, AXIS_Y, mx, my, ts, ts_axis, exp, multiplier, dead_zone);
             }
           }
           break;
