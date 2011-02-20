@@ -331,6 +331,8 @@ int main(int argc, char *argv[])
     int recv_flags = MSG_DONTWAIT;
 #endif
 
+    setlinebuf(stdout);
+
     sixaxis_init(&state);
 
     /* Catch signals so we can do proper cleanup */
@@ -397,7 +399,7 @@ int main(int argc, char *argv[])
         close(ctrl);
         err(1, "can't connect to data psm");
     }
-    fprintf(stderr, "connected\n");
+    printf("connected\n");
 
     /* First report can be sent now */
     gettimeofday(&next_report, NULL);
