@@ -21,6 +21,17 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <errno.h>
+#include <dirent.h>
+#include <pwd.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+using namespace std;
+
+#define CONFIG_DIR ".emuclient/config/"
+
+char* username;
 
 //helper functions
 enum wxbuildinfoformat
@@ -67,10 +78,14 @@ const long sixemuguiFrame::ID_STATICTEXT8 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON2 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT10 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON1 = wxNewId();
-const long sixemuguiFrame::ID_BUTTON3 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX1 = wxNewId();
+const long sixemuguiFrame::ID_CHECKBOX2 = wxNewId();
+const long sixemuguiFrame::ID_CHECKBOX3 = wxNewId();
+const long sixemuguiFrame::ID_CHOICE4 = wxNewId();
+const long sixemuguiFrame::ID_BUTTON3 = wxNewId();
 const long sixemuguiFrame::ID_PANEL1 = wxNewId();
 const long sixemuguiFrame::ID_MENUITEM1 = wxNewId();
+const long sixemuguiFrame::ID_MENUITEM2 = wxNewId();
 const long sixemuguiFrame::idMenuQuit = wxNewId();
 const long sixemuguiFrame::idMenuAbout = wxNewId();
 const long sixemuguiFrame::ID_STATUSBAR1 = wxNewId();
@@ -85,7 +100,6 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
 {
     int exit_status = 0;
     char* out = NULL;
-    char* err = NULL;
     GError *error = NULL;
     gboolean test;
     char* line;
@@ -93,7 +107,7 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
     int ret = 0;
     char c_param[256];
 
-    test = g_spawn_sync(NULL, (gchar**)argv, NULL, (GSpawnFlags)G_SPAWN_SEARCH_PATH, NULL, NULL, &out, &err, &exit_status, &error);
+    test = g_spawn_sync(NULL, (gchar**)argv, NULL, (GSpawnFlags)G_SPAWN_SEARCH_PATH, NULL, NULL, &out, NULL, &exit_status, &error);
 
     if(test)
     {
@@ -130,7 +144,6 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
     }
 
     if(out) g_free(out);
-    if(err) g_free(err);
     if(error) g_free(error);
 
     return ret;
@@ -267,6 +280,71 @@ int sixemuguiFrame::setDongleAddress()
     return 0;
 }
 
+static void read_filenames(const char* dir, wxChoice* choice)
+{
+    DIR *dirp;
+    char dir_path[PATH_MAX];
+    char file_path[PATH_MAX];
+    struct dirent *d;
+
+    choice->Clear();
+
+    snprintf(dir_path, sizeof(dir_path), "/home/%s/%s", username, dir);
+    dirp = opendir(dir_path);
+    if (dirp == NULL)
+    {
+      printf("Warning: can't open config directory %s\n", file_path);
+      return;
+    }
+
+    while ((d = readdir(dirp)))
+    {
+      if (d->d_type == DT_REG)
+      {
+        choice->Append(wxString(d->d_name, wxConvUTF8));
+      }
+    }
+
+    closedir(dirp);
+}
+
+static int read_sixaxis_config(wxChoice* cdevice, wxChoice* cmaster)
+{
+    string filename;
+    string line;
+    string device;
+    string master;
+    int ret = -1;
+
+    filename.append("/home/");
+    filename.append(username);
+    filename.append("/.sixemugui/config");
+
+    ifstream myfile(filename.c_str());
+    if(myfile.is_open())
+    {
+        while ( myfile.good() )
+        {
+            getline (myfile,line);
+            if(!line.empty())
+            {
+                stringstream parser(line);
+                parser >> device;
+                parser >> master;
+                cdevice->Append(wxString(device.c_str(), wxConvUTF8));
+                cmaster->Append(wxString(master.c_str(), wxConvUTF8));
+                ret = 0;
+            }
+        }
+        myfile.close();
+    }
+    else
+    {
+        wxMessageBox( wxT("Cannot open config file."), wxT("Info"), wxICON_INFORMATION);
+    }
+    return ret;
+}
+
 void sixemuguiFrame::refresh()
 {
     Choice1->Clear();
@@ -275,8 +353,12 @@ void sixemuguiFrame::refresh()
     Choice5->Clear();
     Choice6->Clear();
     Choice7->Clear();
-    readSixaxis();
+    if(read_sixaxis_config(Choice1, Choice2) == -1)
+    {
+        readSixaxis();
+    }
     readDongles();
+    read_filenames(CONFIG_DIR, Choice4);
     if(Choice1->GetCount() == 0)
     {
         wxMessageBox( wxT("No Sixaxis Detected!\nSixaxis usb wire plugged?"), wxT("Error"), wxICON_ERROR);
@@ -306,6 +388,17 @@ void sixemuguiFrame::refresh()
             Choice7->SetSelection(0);
         }
     }
+    if(Choice4->GetCount() == 0)
+    {
+        wxMessageBox( wxT("No Config Files Detected!"), wxT("Error"), wxICON_ERROR);
+    }
+    else
+    {
+        if(Choice4->GetSelection() < 0)
+        {
+            Choice4->SetSelection(0);
+        }
+    }
 }
 
 sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
@@ -320,17 +413,20 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer5;
     wxFlexGridSizer* FlexGridSizer2;
     wxMenu* Menu1;
+    wxFlexGridSizer* FlexGridSizer7;
     wxStaticBoxSizer* StaticBoxSizer3;
+    wxFlexGridSizer* FlexGridSizer8;
     wxMenuBar* MenuBar1;
+    wxFlexGridSizer* FlexGridSizer6;
     wxStaticBoxSizer* StaticBoxSizer1;
     wxFlexGridSizer* FlexGridSizer1;
     wxMenu* Menu2;
 
     Create(parent, wxID_ANY, _("Sixemugui"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
-    SetMinSize(wxSize(400,575));
-    SetMaxSize(wxSize(-1,-1));
-    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-    FlexGridSizer1 = new wxFlexGridSizer(4, 1, 0, 0);
+    SetClientSize(wxSize(675,475));
+    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
+    FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
+    FlexGridSizer7 = new wxFlexGridSizer(1, 2, 0, 0);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Sixaxis"));
     FlexGridSizer2 = new wxFlexGridSizer(2, 2, 0, 0);
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Address"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
@@ -342,7 +438,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Choice2 = new wxChoice(Panel1, ID_CHOICE2, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE2"));
     FlexGridSizer2->Add(Choice2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(FlexGridSizer2, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Dongle"));
     FlexGridSizer3 = new wxFlexGridSizer(5, 2, 0, 0);
     StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("Address"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
@@ -366,7 +462,9 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Button2 = new wxButton(Panel1, ID_BUTTON2, _("Set Dongle Address"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
     FlexGridSizer3->Add(Button2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2->Add(FlexGridSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer1->Add(StaticBoxSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7->Add(StaticBoxSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(FlexGridSizer7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer6 = new wxFlexGridSizer(1, 2, 0, 0);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("emu"));
     FlexGridSizer4 = new wxFlexGridSizer(1, 3, 0, 0);
     StaticText10 = new wxStaticText(Panel1, ID_STATICTEXT10, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
@@ -374,24 +472,36 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Button1 = new wxButton(Panel1, ID_BUTTON1, _("Start"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     FlexGridSizer4->Add(Button1, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-    FlexGridSizer1->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer6->Add(StaticBoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("emuclient"));
-    FlexGridSizer5 = new wxFlexGridSizer(1, 3, 0, 0);
+    FlexGridSizer5 = new wxFlexGridSizer(3, 1, 0, 0);
+    FlexGridSizer8 = new wxFlexGridSizer(0, 3, 0, 0);
+    CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("grab"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    CheckBox1->SetValue(true);
+    FlexGridSizer8->Add(CheckBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CheckBox2 = new wxCheckBox(Panel1, ID_CHECKBOX2, _("status"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
+    CheckBox2->SetValue(false);
+    FlexGridSizer8->Add(CheckBox2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CheckBox3 = new wxCheckBox(Panel1, ID_CHECKBOX3, _("terminal"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
+    CheckBox3->SetValue(false);
+    FlexGridSizer8->Add(CheckBox3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer5->Add(FlexGridSizer8, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Choice4 = new wxChoice(Panel1, ID_CHOICE4, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE4"));
+    FlexGridSizer5->Add(Choice4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button3 = new wxButton(Panel1, ID_BUTTON3, _("Start"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
     Button3->Disable();
     FlexGridSizer5->Add(Button3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("Grab mouse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
-    CheckBox1->SetValue(true);
-    FlexGridSizer5->Add(CheckBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4->Add(FlexGridSizer5, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer1->Add(StaticBoxSizer4, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer6->Add(StaticBoxSizer4, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(FlexGridSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Panel1->SetSizer(FlexGridSizer1);
-    FlexGridSizer1->Fit(Panel1);
     FlexGridSizer1->SetSizeHints(Panel1);
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
     MenuItem3 = new wxMenuItem(Menu1, ID_MENUITEM1, _("Refresh\tF5"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem3);
+    MenuItem4 = new wxMenuItem(Menu1, ID_MENUITEM2, _("Save"), wxEmptyString, wxITEM_NORMAL);
+    Menu1->Append(MenuItem4);
     MenuItem1 = new wxMenuItem(Menu1, idMenuQuit, _("Quit\tAlt-F4"), _("Quit the application"), wxITEM_NORMAL);
     Menu1->Append(MenuItem1);
     MenuBar1->Append(Menu1, _("&File"));
@@ -417,11 +527,25 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton1Click);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton3Click);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectRefresh);
+    Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSave);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnAbout);
     //*)
 
     launched = false;
+
+    username = getpwuid(getuid())->pw_name;
+
+    string cmd;
+
+    cmd.append("mkdir -p ");
+    cmd.append("/home/");
+    cmd.append(username);
+    cmd.append("/.sixemugui");
+    if(system(cmd.c_str()) < 0)
+    {
+        wxMessageBox( wxT("Cannot open config directory!"), wxT("Error"), wxICON_ERROR);
+    }
 
     refresh();
 }
@@ -535,11 +659,11 @@ void* emu_thread(void* arg)
     GError *error = NULL;
     gboolean test;
     GPid child_pid;
-    int err = -1;
+    int out = -1;
     char tmp[1024];
     int ret;
 
-    test = g_spawn_async_with_pipes(NULL, (gchar**)emu_command, NULL, (GSpawnFlags)(G_SPAWN_SEARCH_PATH), NULL, NULL, &child_pid, NULL, NULL, &err,  &error);
+    test = g_spawn_async_with_pipes(NULL, (gchar**)emu_command, NULL, (GSpawnFlags)(G_SPAWN_SEARCH_PATH), NULL, NULL, &child_pid, NULL, &out, NULL,  &error);
 
     if(error)
     {
@@ -550,8 +674,9 @@ void* emu_thread(void* arg)
     {
         while(1)
         {
-            ret = read(err, tmp, 1024);
+            ret = read(out, tmp, 1024);
             tmp[1023] = '\0';
+            cout << tmp << endl;
             if(ret == -1 && errno != EAGAIN)
             {
                 emu_state = E_ERROR;
@@ -575,7 +700,8 @@ void* emu_thread(void* arg)
     }
 
     if(error) g_free(error);
-    if(err > -1) close(err);
+    //if(out > -1) close(out);
+    printf("emu_thread: end\n");
     pthread_exit (0);
 }
 
@@ -638,22 +764,86 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
     }
 }
 
+#define GTERM "gnome-terminal -e \""
+#define INTER "/bin/bash -c \""
+#define NOGRAB " --nograb "
+#define CONFIG " --config "
+#define EMUCLIENT " emuclient "
+#define STATUS " --status | sixstatus"
+
 void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
 {
-    /*
-     * Launches the emuclient in a terminal.
-     */
-    if(CheckBox1->IsChecked())
+    char command[PATH_MAX];
+    char* cmd = command;
+    char file[PATH_MAX];
+
+    if(CheckBox3->IsChecked())
     {
-        Button3->Disable();
-        g_spawn_command_line_sync ("gnome-terminal -e emuclient", NULL, NULL, NULL, NULL);
-        Button3->Enable();
+        sprintf(cmd, GTERM);
+        cmd += sizeof(GTERM)-1;
     }
     else
     {
-        Button3->Disable();
-        g_spawn_command_line_sync ("gnome-terminal -e \"emuclient nograb\"", NULL, NULL, NULL, NULL);
-        Button3->Enable();
+        sprintf(cmd, INTER);
+        cmd += sizeof(INTER)-1;
     }
+    strcpy(cmd, EMUCLIENT);
+    cmd += sizeof(EMUCLIENT)-1;
+    if(!CheckBox1->IsChecked())
+    {
+        sprintf(cmd, NOGRAB);
+        cmd += sizeof(NOGRAB)-1;
+    }
+    strcpy(cmd, CONFIG);
+    cmd += sizeof(CONFIG)-1;
+    strncpy(file, Choice4->GetStringSelection().mb_str(), sizeof(file));
+    if(strlen(file) > 128)
+    {
+        exit(-1);
+    }
+    strcpy(cmd, file);
+    cmd += strlen(file);
+    if(CheckBox2->IsChecked())
+    {
+        sprintf(cmd, STATUS);
+        cmd += sizeof(STATUS)-1;
+    }
+
+    sprintf(cmd, "\"");
+
+    printf("%s\n", command);
+    Button3->Disable();
+    g_spawn_command_line_sync (command, NULL, NULL, NULL, NULL);
+    Button3->Enable();
 }
 
+
+void sixemuguiFrame::OnSave(wxCommandEvent& event)
+{
+    string filename;
+    string line;
+    string device;
+    string master;
+    unsigned int i;
+
+    filename.append("/home/");
+    filename.append(username);
+    filename.append("/.sixemugui/config");
+
+    ofstream outfile (filename.c_str(), ios_base::trunc);
+
+    if(outfile.is_open())
+    {
+        for(i=0; i<Choice1->GetCount(); ++i)
+        {
+            device = string(Choice1->GetString(i).mb_str());
+            master = string(Choice2->GetString(i).mb_str());
+            outfile << device << " " << master << endl;
+        }
+        outfile.close();
+    }
+    else
+    {
+        wxMessageBox( wxT("Cannot open config directory!"), wxT("Error"), wxICON_ERROR);
+    }
+}
