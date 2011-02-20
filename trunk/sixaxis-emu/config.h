@@ -35,6 +35,7 @@ typedef struct
 void trigger_lookup(SDL_Event*);
 void process_event(SDL_Event*);
 
+void read_config_file(const char* file);
 int read_config_dir();
 
 #endif /* CONFIG_H_ */
