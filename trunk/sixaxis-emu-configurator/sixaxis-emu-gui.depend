@@ -1878,10 +1878,11 @@
 	<Device.h>
 	<Event.h>
 
-1292879141 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.cpp
+1295907413 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.cpp
 	"wx_pch.h"
 	"sixaxis_emu_guiMain.h"
 	<wx/msgdlg.h>
+	<stdio.h>
 	<wx/intl.h>
 	<wx/string.h>
 
@@ -1916,7 +1917,7 @@
 1292881307 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/Trigger.cpp
 	"Trigger.h"
 
-1292784781 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/event_catcher.cpp
+1295213601 source:/home/matlo/workspace/svn-diyps3controller/sixaxis-emu-configurator/src/event_catcher.cpp
 	"event_catcher.h"
 	<SDL/SDL.h>
 
