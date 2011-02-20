@@ -32,6 +32,8 @@ typedef struct {
     char macro[MAX_NAME_LENGTH];
 } s_macro_event_delay;
 
+extern char* username;
+
 /*
  * This table is used to store all the macros that are read from script files at the initialization of the process.
  */
@@ -188,7 +190,6 @@ void dump_scripts() {
 void read_macros() {
 
     SDLKey macro = SDLK_UNKNOWN;
-    char file[LINE_MAX];
     char line[LINE_MAX];
     DIR *dirp;
     FILE* fp;
@@ -199,7 +200,7 @@ void read_macros() {
     unsigned int nb_filenames = 0;
     char** filenames = NULL;
 
-    snprintf(dir_path, sizeof(dir_path), "/home/%s/%s", getlogin(), MACRO_DIR);
+    snprintf(dir_path, sizeof(dir_path), "/home/%s/%s", username, MACRO_DIR);
     dirp = opendir(dir_path);
     if (dirp == NULL)
     {
@@ -225,7 +226,7 @@ void read_macros() {
       snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, filenames[i]);
       fp = fopen(file_path, "r");
       if (!fp) {
-          fprintf(stderr, "Can not find '%s'\n", file);
+          fprintf(stderr, "Can not find '%s'\n", file_path);
       } else {
           while (fgets(line, LINE_MAX, fp)) {
               if (line[0] != '#') {
