@@ -30,6 +30,7 @@
 #include "macros.h"
 #include "config.h"
 #include <math.h>
+#include <pwd.h>
 
 #include <pthread.h>
 
@@ -45,6 +46,8 @@
 #define REFRESH_PERIOD 10000 //=10ms
 #define EVENT_BUFFER_SIZE 32
 
+char* username;
+
 int done = 0;
 double multiplier_x = DEFAULT_MULTIPLIER_X;
 double multiplier_y = DEFAULT_MULTIPLIER_Y;
@@ -52,8 +55,12 @@ double exponent = DEFAULT_EXPONENT;
 int dead_zone_x = DEFAULT_DEAD_ZONE_X;
 int dead_zone_y = DEFAULT_DEAD_ZONE_Y;
 int calibration = 0;
+int shape = 0;
+int display = 0;
 static int lctrl = 0;
 static int rctrl = 0;
+static int lshift = 0;
+static int rshift = 0;
 static int lalt = 0;
 static int ralt = 0;
 static int grab = 1;
@@ -196,15 +203,49 @@ void circle_test()
 {
   int i;
   const double pi = 3.14159265;
-  const int m = 286;
+  const int m = 296;
   const int step = 1;
-  SDL_Event event;
+  SDL_Event event = {};
 
   for(i=1; i<360; i+=step)
   {
     event.type = SDL_MOUSEMOTION;
     event.motion.xrel = m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360));
     event.motion.yrel = m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360));
+    SDL_PushEvent(&event);
+    usleep(REFRESH_PERIOD);
+  }
+}
+
+void dz_test()
+{
+  int i;
+  SDL_Event event = {};
+  printf("toto\n");
+
+  for(i=0; i<200; ++i)
+  {
+    event.type = SDL_MOUSEMOTION;
+    event.motion.xrel = 1;
+    event.motion.yrel = 0;
+    SDL_PushEvent(&event);
+    usleep(REFRESH_PERIOD);
+  }
+
+  for(i=0; i<200; ++i)
+  {
+    event.type = SDL_MOUSEMOTION;
+    event.motion.xrel = 1;
+    event.motion.yrel = 1;
+    SDL_PushEvent(&event);
+    usleep(REFRESH_PERIOD);
+  }
+
+  for(i=0; i<200; ++i)
+  {
+    event.type = SDL_MOUSEMOTION;
+    event.motion.xrel = 0;
+    event.motion.yrel = 1;
     SDL_PushEvent(&event);
     usleep(REFRESH_PERIOD);
   }
@@ -220,6 +261,9 @@ static void key(int sym, int down)
   {
 	  case SDLK_LCTRL: lctrl = down ? 1 : 0; break;
     case SDLK_RCTRL: rctrl = down ? 1 : 0; break;
+
+    case SDLK_LSHIFT: lshift = down ? 1 : 0; break;
+    case SDLK_RSHIFT: rshift = down ? 1 : 0; break;
 
     case SDLK_LALT: lalt = down ? 1 : 0; break;
     case SDLK_MODE: ralt = down ? 1 : 0; break;
@@ -264,6 +308,26 @@ static void key(int sym, int down)
 	    case SDLK_KP_MULTIPLY:  if(down) { dead_zone_y += 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
 	    case SDLK_KP1:  if(down) { exponent -= EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
 	    case SDLK_KP4:  if(down) { exponent += EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
+	    case SDLK_KP0:
+	      if(down)
+	      {
+	        shape = 0;
+	        printf("circular dead zone test\n");
+	        pthread_attr_init(&thread_attr);
+          pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+          pthread_create( &thread, &thread_attr, (void*)dz_test, NULL);
+	      }
+	      break;
+      case SDLK_KP_PERIOD:
+        if(down)
+        {
+          shape = 1;
+          printf("rectangular dead zone test\n");
+          pthread_attr_init(&thread_attr);
+          pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+          pthread_create( &thread, &thread_attr, (void*)dz_test, NULL);
+        }
+        break;
 	  }
 	  for(i=0; i<MAX_DEVICES; ++i)
     {
@@ -285,6 +349,18 @@ static void key(int sym, int down)
     }
   }
 
+	if(lshift && rshift)
+  {
+    if(display)
+    {
+      display = 0;
+    }
+    else
+    {
+      display = 1;
+    }
+  }
+
 	if(down) macro_lookup(sym);
 }
 
@@ -292,22 +368,39 @@ int main(int argc, char *argv[])
 {
     SDL_Event events[EVENT_BUFFER_SIZE];
     SDL_Event* event;
-    SDL_Event mouse_evt;
+    SDL_Event mouse_evt = {};
     int i;
     int num_evt;
     unsigned char buf[48];
+    int read = 0;
     
-    system("if [ ! -d .emuclient ]; then cp -r /etc/emuclient ~/.emuclient; fi");
+    setlinebuf(stdout);
+
+    username = getpwuid(getuid())->pw_name;
+
+    system("if [ ! -d ~/.emuclient ]; then cp -r /etc/emuclient ~/.emuclient; fi");
     
-    if(argc > 1)
+    for(i=1; i<argc; ++i)
     {
-      if(!strcmp(argv[1], "nograb"))
+      if(!strcmp(argv[i], "--nograb"))
       {
         grab = 0;
       }
+      else if(!strcmp(argv[i], "--config") && i<argc)
+      {
+        read_config_file(argv[++i]);
+        read = 1;
+      }
+      else if(!strcmp(argv[i], "--status"))
+      {
+        display = 1;
+      }
     }
 
-    read_config_dir();
+    if(grab == 1)
+    {
+      sleep(1);//ugly stuff that needs to be cleared...
+    }
 
     initialize_macros();
 
@@ -335,7 +428,13 @@ int main(int argc, char *argv[])
         {
           if(event->type != SDL_MOUSEMOTION)
           {
-            process_event(event);
+            /*
+             * Don't process events except mouse events if calibration is on.
+             */
+            if(!calibration)
+            {
+              process_event(event);
+            }
           }
           else
           {
@@ -369,12 +468,6 @@ int main(int argc, char *argv[])
             mouse_evt.type = SDL_MOUSEMOTION;
             if(!mouse_control[i].nb_motion)
             {
-            	if(calibration)
-              {
-            	  mouse_control[i].merge_x = 1;
-                mouse_control[i].merge_y = 1;
-                mouse_control[i].nb_motion = 1;
-              }
               mouse_control[i].changed = 0;
             }
             process_event(&mouse_evt);
@@ -398,7 +491,7 @@ int main(int argc, char *argv[])
 
             send(sockfd[i], buf, 48, MSG_DONTWAIT);
 
-            if (calibration)
+            if (display)
             {
               sixaxis_dump_state(state+i);
             }
