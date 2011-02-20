@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1297980286 source:/home/matlo/sixstatus/wx_pch.h
+1297980286 source:/home/matlo/workspace/svn-diyps3controller/sixstatus/wx_pch.h
 	<wx/wxprec.h>
 	<wx/wx.h>
 
@@ -1467,20 +1467,20 @@
 1282900276 /usr/include/wx-2.8/wx/gtk/filedlg.h
 	"wx/generic/filedlgg.h"
 
-1297983141 source:/home/matlo/sixstatus/sixstatusApp.cpp
+1297983141 source:/home/matlo/workspace/svn-diyps3controller/sixstatus/sixstatusApp.cpp
 	"wx_pch.h"
 	"sixstatusApp.h"
 	"sixstatusMain.h"
 	<wx/image.h>
 
-1297980286 /home/matlo/sixstatus/wx_pch.h
+1297980286 /home/matlo/workspace/svn-diyps3controller/sixstatus/wx_pch.h
 	<wx/wxprec.h>
 	<wx/wx.h>
 
-1297980285 /home/matlo/sixstatus/sixstatusApp.h
+1297980285 /home/matlo/workspace/svn-diyps3controller/sixstatus/sixstatusApp.h
 	<wx/app.h>
 
-1298076656 /home/matlo/sixstatus/sixstatusMain.h
+1298222543 /home/matlo/workspace/svn-diyps3controller/sixstatus/sixstatusMain.h
 	<wx/sizer.h>
 	<wx/stattext.h>
 	<wx/menu.h>
@@ -1488,7 +1488,7 @@
 	<wx/gauge.h>
 	<wx/statusbr.h>
 
-1298071001 source:/home/matlo/sixstatus/sixstatusMain.cpp
+1298144562 source:/home/matlo/workspace/svn-diyps3controller/sixstatus/sixstatusMain.cpp
 	"wx_pch.h"
 	"sixstatusMain.h"
 	<wx/msgdlg.h>
@@ -1496,5 +1496,4 @@
 	<wx/string.h>
 	<sstream>
 	<wx/timer.h>
-	<poll.h>
 
