@@ -23,7 +23,7 @@
 #define MAX_CONFIGURATIONS 4
 #define MAX_CONTROLS 256
 
-#define CONFIG_DIR ".emuclient/config/"
+#define CONFIG_DIR ".emuclient/config"
 
 #define X_NODE_ROOT "root"
 #define X_NODE_CONTROLLER "controller"
@@ -95,6 +95,7 @@ typedef struct
 extern int done;
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
+extern char* username;
 
 /*
  * These variables are used to read the configuration.
@@ -288,6 +289,7 @@ static int postpone_event(unsigned int device, SDL_Event* event)
 }
 
 extern int calibration;
+extern int shape;
 extern double multiplier_x;
 extern double multiplier_y;
 extern double exponent;
@@ -318,14 +320,21 @@ static void mouse2axis(struct sixaxis_state* state, int which, double x, double 
     }
   }
 
-  if(val != 0)
+  if(calibration)
+  {
+    z = val;
+    if(shape)
+    {
+      dz = dead_zone;
+    }
+  }
+  else if(val != 0)
   {
     z = multiplier * (val/fabs(val)) * pow(fabs(val), exp);
   }
 
-  if(calibration && x == 1 && y == 1) state->user.axis[ts][ts_axis] = dz;
-  else if(z > 0) state->user.axis[ts][ts_axis] = dz + z;
-  else if(z < 0) state->user.axis[ts][ts_axis] = z - dz;
+  if(z > 0) state->user.axis[ts][ts_axis] = round(dz + z);
+  else if(z < 0) state->user.axis[ts][ts_axis] = round(z - dz);
   else state->user.axis[ts][ts_axis] = 0;
 }
 
@@ -1472,7 +1481,7 @@ static int ProcessRootElement(xmlNode * a_node)
 /*
  * This function loads a config file.
  */
-static int read_config_file(char* file_path)
+static int read_file(char* file_path)
 {
   xmlDoc *doc = NULL;
   xmlNode *root_element = NULL;
@@ -1523,6 +1532,22 @@ static int read_config_file(char* file_path)
 }
 
 /*
+ * This function loads a config file.
+ */
+void read_config_file(const char* file)
+{
+  char file_path[PATH_MAX];
+
+  snprintf(file_path, sizeof(file_path), "/home/%s/%s/%s", username, CONFIG_DIR, file);
+
+  if(read_file(file_path) == -1)
+  {
+    printf("Bad config file: %s\n", file_path);
+    exit(-1);
+  }
+}
+
+/*
  * This function reads all filenames in the config directory
  * and ask the user which one he wants to load.
  */
@@ -1537,7 +1562,7 @@ int read_config_dir()
   unsigned int nb_filenames = 0;
   char** filenames = NULL;
 
-  snprintf(file_path, sizeof(file_path), "/home/%s/%s", getlogin(), CONFIG_DIR);
+  snprintf(file_path, sizeof(file_path), "/home/%s/%s", username, CONFIG_DIR);
   dirp = opendir(file_path);
   if (dirp == NULL)
   {
@@ -1579,12 +1604,7 @@ int read_config_dir()
 
   printf("Selected config file: %s\n", filenames[selected]);
 
-  sprintf(file_path, "%s/%s", file_path, filenames[selected]);
-  if(read_config_file(file_path) == -1)
-  {
-    printf("Bad config file: %s\n", filenames[selected]);
-    exit(-1);
-  }
+  read_config_file(filenames[selected]);
 
   for(i=0; i<nb_filenames; ++i)
   {
