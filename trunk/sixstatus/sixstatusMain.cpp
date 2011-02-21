@@ -90,11 +90,17 @@ const long sixstatusFrame::ID_GAUGE32 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT33 = wxNewId();
 const long sixstatusFrame::ID_GAUGE33 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT19 = wxNewId();
-const long sixstatusFrame::ID_STATICTEXT20 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT21 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT20 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT22 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT23 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT24 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT25 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT26 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT27 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT28 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT29 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT30 = wxNewId();
 const long sixstatusFrame::idMenuQuit = wxNewId();
 const long sixstatusFrame::idMenuAbout = wxNewId();
 const long sixstatusFrame::ID_STATUSBAR1 = wxNewId();
@@ -127,6 +133,12 @@ int bstart = 0;
 int bselect = 0;
 int bps = 0;
 
+string dz_x;
+string dz_y;
+string mul_x;
+string mul_y;
+string exponent;
+
 void read_status(void)
 {
     string s;
@@ -136,6 +148,32 @@ void read_status(void)
     {
         //cout << s << endl;
         stringstream parser(s);
+
+        if(!s.compare(0, 13, "multiplier_x:"))
+        {
+            parser >> s;
+            parser >> mul_x;
+        }
+        else if(!s.compare(0, 13, "multiplier_y:"))
+        {
+            parser >> s;
+            parser >> mul_y;
+        }
+        else if(!s.compare(0, 12, "dead_zone_x:"))
+        {
+            parser >> s;
+            parser >> dz_x;
+        }
+        else if(!s.compare(0, 12, "dead_zone_y:"))
+        {
+            parser >> s;
+            parser >> dz_y;
+        }
+        else if(!s.compare(0, 9, "exponent:"))
+        {
+            parser >> s;
+            parser >> exponent;
+        }
 
         while(parser >> s)
         {
@@ -308,14 +346,15 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
 {
     //(*Initialize(sixstatusFrame)
     wxStaticBoxSizer* StaticBoxSizer2;
+    wxFlexGridSizer* FlexGridSizer4;
     wxMenuItem* MenuItem2;
     wxStaticBoxSizer* StaticBoxSizer4;
+    wxFlexGridSizer* FlexGridSizer3;
     wxMenuItem* MenuItem1;
+    wxFlexGridSizer* FlexGridSizer2;
     wxMenu* Menu1;
     wxStaticBoxSizer* StaticBoxSizer3;
     wxGridSizer* GridSizer1;
-    wxStaticBoxSizer* StaticBoxSizer6;
-    wxBoxSizer* BoxSizer1;
     wxMenuBar* MenuBar1;
     wxStaticBoxSizer* StaticBoxSizer1;
     wxFlexGridSizer* FlexGridSizer1;
@@ -417,28 +456,42 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     StaticBoxSizer5->Add(GridSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Mouse calibration"));
-    BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-    StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Dead zone"));
-    StaticText19 = new wxStaticText(this, ID_STATICTEXT19, _("x: 0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
-    StaticBoxSizer1->Add(StaticText19, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText20 = new wxStaticText(this, ID_STATICTEXT20, _("y: 0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT20"));
-    StaticBoxSizer1->Add(StaticText20, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Multiplier"));
-    StaticText21 = new wxStaticText(this, ID_STATICTEXT21, _("x: 0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT21"));
-    StaticBoxSizer3->Add(StaticText21, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText22 = new wxStaticText(this, ID_STATICTEXT22, _("y: 0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT22"));
-    StaticBoxSizer3->Add(StaticText22, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Multiplier"));
+    FlexGridSizer3 = new wxFlexGridSizer(2, 2, 0, 0);
+    StaticText19 = new wxStaticText(this, ID_STATICTEXT19, _("x:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
+    FlexGridSizer3->Add(StaticText19, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText21 = new wxStaticText(this, ID_STATICTEXT21, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT21"));
+    FlexGridSizer3->Add(StaticText21, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText20 = new wxStaticText(this, ID_STATICTEXT20, _("y:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT20"));
+    FlexGridSizer3->Add(StaticText20, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText22 = new wxStaticText(this, ID_STATICTEXT22, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT22"));
+    FlexGridSizer3->Add(StaticText22, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(FlexGridSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Dead zone"));
+    FlexGridSizer4 = new wxFlexGridSizer(2, 2, 0, 0);
+    StaticText23 = new wxStaticText(this, ID_STATICTEXT23, _("x:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
+    FlexGridSizer4->Add(StaticText23, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText24 = new wxStaticText(this, ID_STATICTEXT24, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT24"));
+    FlexGridSizer4->Add(StaticText24, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText25 = new wxStaticText(this, ID_STATICTEXT25, _("y:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT25"));
+    FlexGridSizer4->Add(StaticText25, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText26 = new wxStaticText(this, ID_STATICTEXT26, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT26"));
+    FlexGridSizer4->Add(StaticText26, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(StaticBoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Exponent"));
-    StaticText23 = new wxStaticText(this, ID_STATICTEXT23, _("x: 0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
-    StaticBoxSizer4->Add(StaticText23, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText24 = new wxStaticText(this, ID_STATICTEXT24, _("y: 0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT24"));
-    StaticBoxSizer4->Add(StaticText24, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(StaticBoxSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer6 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Label"));
-    BoxSizer1->Add(StaticBoxSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(BoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2 = new wxFlexGridSizer(2, 2, 0, 0);
+    StaticText27 = new wxStaticText(this, ID_STATICTEXT27, _("x:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT27"));
+    FlexGridSizer2->Add(StaticText27, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText28 = new wxStaticText(this, ID_STATICTEXT28, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT28"));
+    FlexGridSizer2->Add(StaticText28, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText29 = new wxStaticText(this, ID_STATICTEXT29, _("y:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT29"));
+    FlexGridSizer2->Add(StaticText29, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText30 = new wxStaticText(this, ID_STATICTEXT30, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT30"));
+    FlexGridSizer2->Add(StaticText30, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4->Add(FlexGridSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(StaticBoxSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer2, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(FlexGridSizer1);
     MenuBar1 = new wxMenuBar();
@@ -574,6 +627,13 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
     clamp(Gauge31, bstart, StaticText31);
     clamp(Gauge32, bselect, StaticText32);
     clamp(Gauge33, bps, StaticText33);
+
+    StaticText21->SetLabel(wxString(mul_x.c_str(), wxConvUTF8));
+    StaticText22->SetLabel(wxString(mul_y.c_str(), wxConvUTF8));
+    StaticText24->SetLabel(wxString(dz_x.c_str(), wxConvUTF8));
+    StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
+    StaticText28->SetLabel(wxString(exponent.c_str(), wxConvUTF8));
+    StaticText30->SetLabel(wxString(exponent.c_str(), wxConvUTF8));
 
     //cout << 127+lstick_x << " " << 127-lstick_y << " " << 127+rstick_x << " " << 127-rstick_y << endl;
 
