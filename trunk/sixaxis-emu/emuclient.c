@@ -42,7 +42,7 @@
 #define DEFAULT_MULTIPLIER_Y 9
 #define DEFAULT_EXPONENT 1
 #define MULTIPLIER_STEP 0.25
-#define EXPONENT_STEP 0.1
+#define EXPONENT_STEP 0.01
 #define REFRESH_PERIOD 10000 //=10ms
 #define EVENT_BUFFER_SIZE 32
 
@@ -55,6 +55,7 @@ double exponent = DEFAULT_EXPONENT;
 int dead_zone_x = DEFAULT_DEAD_ZONE_X;
 int dead_zone_y = DEFAULT_DEAD_ZONE_Y;
 int calibration = 0;
+int testing = 0;
 int shape = 0;
 int display = 0;
 static int lctrl = 0;
@@ -221,7 +222,8 @@ void dz_test()
 {
   int i;
   SDL_Event event = {};
-  printf("toto\n");
+
+  testing = 1;
 
   for(i=0; i<200; ++i)
   {
@@ -249,6 +251,10 @@ void dz_test()
     SDL_PushEvent(&event);
     usleep(REFRESH_PERIOD);
   }
+
+  sleep(1);//give time to purge events
+
+  testing = 0;
 }
 
 static void key(int sym, int down)
@@ -298,16 +304,16 @@ static void key(int sym, int down)
 	{
 	  switch (sym)
 	  {
-	    case SDLK_KP2: if(down) { multiplier_x -= MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
-	    case SDLK_KP5:  if(down) { multiplier_x += MULTIPLIER_STEP; printf("multiplier_x: %e\n", multiplier_x); } break;
-	    case SDLK_KP8: if(down) { multiplier_y -= MULTIPLIER_STEP; printf("multiplier_y: %e\n", multiplier_y); } break;
-	    case SDLK_KP_DIVIDE:  if(down) { multiplier_y += MULTIPLIER_STEP; printf("multiplier_y: %e\n", multiplier_y); } break;
+	    case SDLK_KP2: if(down) { multiplier_x -= MULTIPLIER_STEP; printf("multiplier_x: %.2f\n", multiplier_x); } break;
+	    case SDLK_KP5:  if(down) { multiplier_x += MULTIPLIER_STEP; printf("multiplier_x: %.2f\n", multiplier_x); } break;
+	    case SDLK_KP8: if(down) { multiplier_y -= MULTIPLIER_STEP; printf("multiplier_y: %.2f\n", multiplier_y); } break;
+	    case SDLK_KP_DIVIDE:  if(down) { multiplier_y += MULTIPLIER_STEP; printf("multiplier_y: %.2f\n", multiplier_y); } break;
 	    case SDLK_KP3:  if(down) { dead_zone_x -= 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
 	    case SDLK_KP6:  if(down) { dead_zone_x += 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
 	    case SDLK_KP9:  if(down) { dead_zone_y -= 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
 	    case SDLK_KP_MULTIPLY:  if(down) { dead_zone_y += 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
-	    case SDLK_KP1:  if(down) { exponent -= EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
-	    case SDLK_KP4:  if(down) { exponent += EXPONENT_STEP; printf("exponent: %e\n", exponent); } break;
+	    case SDLK_KP1:  if(down) { exponent -= EXPONENT_STEP; printf("exponent: %.2f\n", exponent); } break;
+	    case SDLK_KP4:  if(down) { exponent += EXPONENT_STEP; printf("exponent: %.2f\n", exponent); } break;
 	    case SDLK_KP0:
 	      if(down)
 	      {
@@ -395,11 +401,20 @@ int main(int argc, char *argv[])
       {
         display = 1;
       }
+      else if(!strcmp(argv[i], "--calibrate"))
+      {
+        calibration = 1;
+        printf("multiplier_x: %.2f\n", multiplier_x);
+        printf("multiplier_y: %.2f\n", multiplier_y);
+        printf("dead_zone_x: %d\n", dead_zone_x);
+        printf("dead_zone_y: %d\n", dead_zone_y);
+        printf("exponent: %.2f\n", exponent);
+      }
     }
 
     if(grab == 1)
     {
-      sleep(1);//ugly stuff that needs to be cleared...
+      sleep(1);//ugly stuff that needs to be cleaned...
     }
 
     initialize_macros();
