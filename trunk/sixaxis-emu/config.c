@@ -289,6 +289,7 @@ static int postpone_event(unsigned int device, SDL_Event* event)
 }
 
 extern int calibration;
+extern int testing;
 extern int shape;
 extern double multiplier_x;
 extern double multiplier_y;
@@ -322,11 +323,14 @@ static void mouse2axis(struct sixaxis_state* state, int which, double x, double 
 
   if(calibration)
   {
-    z = val;
     if(shape)
     {
       dz = dead_zone;
     }
+  }
+  if(testing)
+  {
+    z = val;
   }
   else if(val != 0)
   {
