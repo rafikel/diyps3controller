@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
 
     username = getpwuid(getuid())->pw_name;
 
-    system("if [ ! -d ~/.emuclient ]; then cp -r /etc/emuclient ~/.emuclient; fi");
+    system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient");
     
     for(i=1; i<argc; ++i)
     {
