@@ -565,7 +565,11 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     cmd.append("/.sixemugui");
     if(system(cmd.c_str()) < 0)
     {
-        wxMessageBox( wxT("Cannot open config directory!"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox( wxT("Cannot open sixemugui config directory!"), wxT("Error"), wxICON_ERROR);
+    }
+    if(system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient") < 0)
+    {
+        wxMessageBox( wxT("Cannot open emuclient config directory!"), wxT("Error"), wxICON_ERROR);
     }
 
     refresh();
