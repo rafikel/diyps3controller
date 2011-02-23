@@ -391,15 +391,17 @@ int main(int argc, char *argv[])
     /* Connect to PS3 */
     printf("connecting with hci%d = %s to %s psm %d\n", device_number, bdaddr_src, bdaddr_dest, CTRL);
     if ((ctrl = l2cap_connect(bdaddr_src, bdaddr_dest, CTRL)) < 0) {
+        printf("can't connect to control psm\n");//needed by sixemugui
         err(1, "can't connect to control psm");
     }
     printf("connecting with hci%d = %s to %s psm %d\n", device_number, bdaddr_src, bdaddr_dest, DATA);
     if ((data = l2cap_connect(bdaddr_src, bdaddr_dest, DATA)) < 0) {
         shutdown(ctrl, SHUT_RDWR);
         close(ctrl);
+        printf("can't connect to data psm\n");//needed by sixemugui
         err(1, "can't connect to data psm");
     }
-    printf("connected\n");
+    printf("connected\n");//needed by sixemugui
 
     /* First report can be sent now */
     gettimeofday(&next_report, NULL);
