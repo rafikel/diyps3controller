@@ -92,12 +92,14 @@ static void warn(const char *fmt)
 #endif
 
 
-const char* joystickName[255];
-int joystickNbButton[255];
+char* joystickName[MAX_DEVICES] = {};
+int joystickVirtualIndex[MAX_DEVICES] = {};
+int joystickNbButton[MAX_DEVICES] = {};
 
 int initialize(int width, int height, const char *title)
 {
   int i = 0;
+  int j;
   SDL_Joystick* joystick;
 
   /* Init SDL */
@@ -131,7 +133,19 @@ int initialize(int width, int height, const char *title)
 
   while((joystick = SDL_JoystickOpen(i)))
   {
-      joystickName[i] = SDL_JoystickName(i);
+      joystickName[i] = strdup(SDL_JoystickName(i));
+      for(j=i-1; j>=0; --j)
+      {
+        if(!strcmp(joystickName[i], joystickName[j]))
+        {
+          joystickVirtualIndex[i] = joystickVirtualIndex[j]+1;
+          break;
+        }
+      }
+      if(j < 0)
+      {
+        joystickVirtualIndex[i] = 0;
+      }
       joystickNbButton[i] = SDL_JoystickNumButtons(joystick);
       i++;
   }
@@ -379,6 +393,7 @@ int main(int argc, char *argv[])
     int num_evt;
     unsigned char buf[48];
     int read = 0;
+    char* file = NULL;
     
     setlinebuf(stdout);
 
@@ -394,7 +409,7 @@ int main(int argc, char *argv[])
       }
       else if(!strcmp(argv[i], "--config") && i<argc)
       {
-        read_config_file(argv[++i]);
+        file = argv[++i];
         read = 1;
       }
       else if(!strcmp(argv[i], "--status"))
@@ -427,6 +442,11 @@ int main(int argc, char *argv[])
 
     if (!initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Sixaxis Control"))
         err(1, "can't init sdl");
+
+    if(read == 1)
+    {
+      read_config_file(file);
+    }
 
     if(tcpconnect() < 0)
     {
@@ -521,6 +541,11 @@ int main(int argc, char *argv[])
     SDL_Quit();
 
     free_macros();
+
+    for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
+    {
+      free(joystickName[i]);
+    }
 
     return 0;
 }

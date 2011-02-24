@@ -990,9 +990,13 @@ static int ProcessDeviceElement(xmlNode * a_node)
   return ret;
 }
 
+extern const char* joystickName[MAX_DEVICES];
+extern int joystickVirtualIndex[MAX_DEVICES];
+
 static s_mapper** get_mapper_table()
 {
   s_mapper** pp_mapper = NULL;
+  int i;
   switch(r_device_type)
   {
     case E_DEVICE_TYPE_KEYBOARD:
@@ -1012,6 +1016,17 @@ static s_mapper** get_mapper_table()
       }
       break;
     case E_DEVICE_TYPE_JOYSTICK:
+      for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
+      {
+        if(!strcmp(r_device_name, joystickName[i]))
+        {
+          if(r_device_id == joystickVirtualIndex[i])
+          {
+            r_device_id = i;
+            break;
+          }
+        }
+      }
       switch(r_event_type)
       {
         case E_EVENT_TYPE_BUTTON:
