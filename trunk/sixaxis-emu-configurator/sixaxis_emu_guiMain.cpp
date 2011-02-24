@@ -465,6 +465,11 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     currentController = 0;
     currentConfiguration = 0;
 
+    if(system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient") < 0)
+    {
+        wxMessageBox( wxT("Cannot open emuclient config directory!"), wxT("Error"), wxICON_ERROR);
+    }
+
     username = getpwuid(getuid())->pw_name;
 
     wxString default_directory = _("/home/");
