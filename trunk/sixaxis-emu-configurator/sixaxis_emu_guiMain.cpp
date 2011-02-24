@@ -11,6 +11,8 @@
 #include "sixaxis_emu_guiMain.h"
 #include <wx/msgdlg.h>
 #include <stdio.h>
+ #include <sys/types.h>
+ #include <pwd.h>
 
 //(*InternalHeaders(sixaxis_emu_guiFrame)
 #include <wx/intl.h>
@@ -174,6 +176,8 @@ void sixaxis_emu_guiFrame::fillAxisAxisChoice(wxChoice* choice)
     choice->Append(_("cross"));
     choice->Append(_("triangle"));
 }
+
+char* username;
 
 sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 {
@@ -461,8 +465,10 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     currentController = 0;
     currentConfiguration = 0;
 
+    username = getpwuid(getuid())->pw_name;
+
     wxString default_directory = _("/home/");
-    wxString user(getlogin(), wxConvUTF8);
+    wxString user(username, wxConvUTF8);
     default_directory << user << _("/.emuclient/config");
 
     FileDialog1->SetDirectory(default_directory);
