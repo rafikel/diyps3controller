@@ -345,8 +345,10 @@ void event_catcher::run(wxString event_type)
     int num_evt;
     const char* event_id;
     int i = 0;
-    wxString joystickName[255];
-    int joystickNbButton[255];
+    int j;
+    wxString joystickName[256];
+    int joystickVirtualIndex[256];
+    int joystickNbButton[256];
     SDL_Joystick* joystick;
 
     m_DeviceType = _("");
@@ -376,6 +378,18 @@ void event_catcher::run(wxString event_type)
     while((joystick = SDL_JoystickOpen(i)))
     {
         joystickName[i] = wxString(SDL_JoystickName(i), wxConvUTF8);
+        for(j=i-1; j>=0; --j)
+        {
+          if(joystickName[i] == joystickName[j])
+          {
+            joystickVirtualIndex[i] = joystickVirtualIndex[j]+1;
+            break;
+          }
+        }
+        if(j < 0)
+        {
+          joystickVirtualIndex[i] = 0;
+        }
         joystickNbButton[i] = SDL_JoystickNumButtons(joystick);
         i++;
     }
@@ -426,7 +440,7 @@ void event_catcher::run(wxString event_type)
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("joystick");
-                        m_DeviceId = wxString::Format(wxT("%i"),event->jbutton.which);
+                        m_DeviceId = wxString::Format(wxT("%i"),joystickVirtualIndex[event->jbutton.which]);
                         m_DeviceName = joystickName[event->jbutton.which];
                         m_EventType = _("button");
                         m_EventId = wxString::Format(wxT("%i"),event->jbutton.button);
@@ -437,7 +451,7 @@ void event_catcher::run(wxString event_type)
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("joystick");
-                        m_DeviceId = wxString::Format(wxT("%i"),event->jhat.which);
+                        m_DeviceId = wxString::Format(wxT("%i"),joystickVirtualIndex[event->jhat.which]);
                         m_DeviceName = joystickName[event->jhat.which];
                         m_EventType = _("button");
                         if(event->jhat.value & SDL_HAT_UP)
@@ -531,7 +545,7 @@ void event_catcher::run(wxString event_type)
                         if(abs(event->jaxis.value) > 10000)
                         {
                             m_DeviceType = _("joystick");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jaxis.which);
+                            m_DeviceId = wxString::Format(wxT("%i"),joystickVirtualIndex[event->jaxis.which]);
                             m_DeviceName = joystickName[event->jaxis.which];
                             m_EventType = _("axis");
                             m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
@@ -543,7 +557,7 @@ void event_catcher::run(wxString event_type)
                         if(event->jaxis.value > 10000)
                         {
                             m_DeviceType = _("joystick");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jaxis.which);
+                            m_DeviceId = wxString::Format(wxT("%i"),joystickVirtualIndex[event->jaxis.which]);
                             m_DeviceName = joystickName[event->jaxis.which];
                             m_EventType = _("axis");
                             m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
@@ -555,7 +569,7 @@ void event_catcher::run(wxString event_type)
                         if(event->jaxis.value < -10000)
                         {
                             m_DeviceType = _("joystick");
-                            m_DeviceId = wxString::Format(wxT("%i"),event->jaxis.which);
+                            m_DeviceId = wxString::Format(wxT("%i"),joystickVirtualIndex[event->jaxis.which]);
                             m_DeviceName = joystickName[event->jaxis.which];
                             m_EventType = _("axis");
                             m_EventId = wxString::Format(wxT("%i"),event->jaxis.axis);
