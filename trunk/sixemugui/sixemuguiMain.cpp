@@ -164,6 +164,7 @@ void sixemuguiFrame::readSixaxis()
 {
     wxString params[2] = {_("Current Bluetooth master: "), _("Current Bluetooth Device Address: ")};
     wxString results[14];
+    unsigned int j;
 
     int res = readCommandResults(sixaxis_device, 2, params, 7, results);
 
@@ -175,8 +176,18 @@ void sixemuguiFrame::readSixaxis()
             {
                 break;
             }
-            Choice2->Append(results[i].MakeUpper());
-            Choice1->Append(results[i+1].MakeUpper());
+            for(j=0; j<Choice1->GetCount(); ++j)
+            {
+              if(Choice1->GetString(j) == results[i+1].MakeUpper())
+              {
+                break;
+              }
+            }
+            if(j == Choice1->GetCount())
+            {
+              Choice2->Append(results[i].MakeUpper());
+              Choice1->Append(results[i+1].MakeUpper());
+            }
         }
     }
 }
@@ -347,16 +358,11 @@ static int read_sixaxis_config(wxChoice* cdevice, wxChoice* cmaster)
 
 void sixemuguiFrame::refresh()
 {
-    Choice1->Clear();
-    Choice2->Clear();
     Choice3->Clear();
     Choice5->Clear();
     Choice6->Clear();
     Choice7->Clear();
-    if(read_sixaxis_config(Choice1, Choice2) == -1)
-    {
-        readSixaxis();
-    }
+    readSixaxis();
     readDongles();
     read_filenames(CONFIG_DIR, Choice4);
     if(Choice1->GetCount() == 0)
@@ -571,6 +577,8 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     {
         wxMessageBox( wxT("Cannot open emuclient config directory!"), wxT("Error"), wxICON_ERROR);
     }
+
+    read_sixaxis_config(Choice1, Choice2);
 
     refresh();
 }
