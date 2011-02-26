@@ -56,7 +56,7 @@ int dead_zone_x = DEFAULT_DEAD_ZONE_X;
 int dead_zone_y = DEFAULT_DEAD_ZONE_Y;
 int calibration = 0;
 int testing = 0;
-int shape = 0;
+e_shape test_shape;
 int display = 0;
 static int lctrl = 0;
 static int rctrl = 0;
@@ -271,9 +271,20 @@ void dz_test()
   testing = 0;
 }
 
+void display_calibration()
+{
+  printf("multiplier_x: %.2f\n", multiplier_x);
+  printf("multiplier_y: %.2f\n", multiplier_y);
+  printf("dead_zone_x: %d\n", dead_zone_x);
+  printf("dead_zone_y: %d\n", dead_zone_y);
+  printf("exponent: %.2f\n", exponent);
+  if(test_shape == E_SHAPE_CIRCLE) printf("shape: Circle\n");
+  else printf("shape: Rectangle\n");
+}
+
 static void key(int sym, int down)
 {
-	pthread_t thread;
+  pthread_t thread;
   pthread_attr_t thread_attr;
   int i;
 
@@ -331,23 +342,27 @@ static void key(int sym, int down)
 	    case SDLK_KP0:
 	      if(down)
 	      {
-	        shape = 0;
-	        printf("circular dead zone test\n");
 	        pthread_attr_init(&thread_attr);
-          pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-          pthread_create( &thread, &thread_attr, (void*)dz_test, NULL);
+            pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+            pthread_create( &thread, &thread_attr, (void*)dz_test, NULL);
 	      }
 	      break;
-      case SDLK_KP_PERIOD:
-        if(down)
-        {
-          shape = 1;
-          printf("rectangular dead zone test\n");
-          pthread_attr_init(&thread_attr);
-          pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-          pthread_create( &thread, &thread_attr, (void*)dz_test, NULL);
-        }
-        break;
+
+	    case SDLK_KP_PERIOD:
+	      if(down)
+	      {
+	        if(test_shape == E_SHAPE_CIRCLE)
+	        {
+	          test_shape = E_SHAPE_RECTANGLE;
+	          printf("shape: Rectangle\n");
+	        }
+	        else
+	        {
+	          test_shape = E_SHAPE_CIRCLE;
+	          printf("shape: Circle\n");
+	        }
+	      }
+	      break;
 	  }
 	  for(i=0; i<MAX_DEVICES; ++i)
     {
@@ -366,6 +381,7 @@ static void key(int sym, int down)
     {
       calibration = 1;
       printf("calibration mode enabled\n");
+      display_calibration();
     }
   }
 
@@ -419,11 +435,7 @@ int main(int argc, char *argv[])
       else if(!strcmp(argv[i], "--calibrate"))
       {
         calibration = 1;
-        printf("multiplier_x: %.2f\n", multiplier_x);
-        printf("multiplier_y: %.2f\n", multiplier_y);
-        printf("dead_zone_x: %d\n", dead_zone_x);
-        printf("dead_zone_y: %d\n", dead_zone_y);
-        printf("exponent: %.2f\n", exponent);
+        display_calibration();
       }
     }
 

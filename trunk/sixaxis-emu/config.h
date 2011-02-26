@@ -14,6 +14,12 @@
 #define MAX_DEVICES 256
 #define POSTPONE_COUNT 3 //to be moved to config.c later
 
+typedef enum
+{
+    E_SHAPE_CIRCLE,
+    E_SHAPE_RECTANGLE
+}e_shape;
+
 typedef struct
 {
   int changed;

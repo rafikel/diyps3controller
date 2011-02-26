@@ -20,6 +20,9 @@
 #define X_ATTR_VALUE_AXIS_DOWN "axis_down"
 #define X_ATTR_VALUE_AXIS_UP "axis_up"
 
+#define X_ATTR_VALUE_CIRCLE "Circle"
+#define X_ATTR_VALUE_RECTANGLE "Rectangle"
+
 #define MAX_CONFIGURATIONS 4
 #define MAX_CONTROLS 256
 
@@ -46,6 +49,7 @@
 #define X_ATTR_DEADZONE "dead_zone"
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
+#define X_ATTR_SHAPE "shape"
 
 #define AXIS_X 0
 #define AXIS_Y 1
@@ -76,6 +80,7 @@ typedef struct
   int threshold;
   double multiplier;
   double exponent;
+  e_shape shape;
   int dead_zone;
 
   int controller_button;
@@ -110,6 +115,7 @@ static int r_threshold;
 static unsigned int r_deadZone;
 static double r_multiplier;
 static double r_exponent;
+static e_shape r_shape;
 
 static e_device_type r_device_type;
 static unsigned int r_device_id;
@@ -290,14 +296,14 @@ static int postpone_event(unsigned int device, SDL_Event* event)
 
 extern int calibration;
 extern int testing;
-extern int shape;
+extern int test_shape;
 extern double multiplier_x;
 extern double multiplier_y;
 extern double exponent;
 extern int dead_zone_x;
 extern int dead_zone_y;
 
-static void mouse2axis(struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone)
+static void mouse2axis(struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone, e_shape shape)
 {
   double z = 0;
   double dz = dead_zone;
@@ -307,7 +313,7 @@ static void mouse2axis(struct sixaxis_state* state, int which, double x, double 
   if(which == AXIS_X)
   {
     val = x;
-    if(x && y)
+    if(x && y && shape == E_SHAPE_CIRCLE)
     {
       dz = dz*cos(atan(fabs(y/x)));
     }
@@ -315,19 +321,12 @@ static void mouse2axis(struct sixaxis_state* state, int which, double x, double 
   else if(which == AXIS_Y)
   {
     val = y;
-    if(x && y)
+    if(x && y && shape == E_SHAPE_CIRCLE)
     {
       dz = dz*sin(atan(fabs(y/x)));
     }
   }
 
-  if(calibration)
-  {
-    if(shape)
-    {
-      dz = dead_zone;
-    }
-  }
   if(testing)
   {
     z = val;
@@ -361,6 +360,7 @@ void process_event(SDL_Event* event)
   double multiplier;
   double exp;
   int dead_zone;
+  e_shape shape;
   int value;
   unsigned int nb_controls = 0;
   SDL_Event event_jb;
@@ -722,6 +722,7 @@ void process_event(SDL_Event* event)
           multiplier = mapper->multiplier;
           exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
+          shape = mapper->shape;
           if(mouse_control[device].nb_motion)
           {
             mx = (double) mouse_control[device].merge_x / (double) mouse_control[device].nb_motion;
@@ -741,8 +742,9 @@ void process_event(SDL_Event* event)
                 multiplier = multiplier_x;
                 exp = exponent;
                 dead_zone = dead_zone_x;
+                shape = test_shape;
               }
-              mouse2axis(state+c_id, AXIS_X, mx, my, ts, ts_axis, exp, multiplier, dead_zone);
+              mouse2axis(state+c_id, AXIS_X, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
             }
             else if(mapper->axis == 1)
             {
@@ -751,8 +753,9 @@ void process_event(SDL_Event* event)
                 multiplier = multiplier_y;
                 exp = exponent;
                 dead_zone = dead_zone_y;
+                shape = test_shape;
               }
-              mouse2axis(state+c_id, AXIS_Y, mx, my, ts, ts_axis, exp, multiplier, dead_zone);
+              mouse2axis(state+c_id, AXIS_Y, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
             }
           }
           break;
@@ -946,6 +949,7 @@ static int ProcessEventElement(xmlNode * a_node)
 {
   int ret = 0;
   char* type;
+  char* shape;
 
   type = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
   if (!strncmp(type, X_ATTR_VALUE_BUTTON, strlen(X_ATTR_VALUE_BUTTON)))
@@ -972,6 +976,16 @@ static int ProcessEventElement(xmlNode * a_node)
       r_exponent = 1;
       ret = 0;
     }
+    shape = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_SHAPE);
+    r_shape = E_SHAPE_CIRCLE;//default value
+    if(shape)
+    {
+      if (!strncmp(shape, X_ATTR_VALUE_RECTANGLE, strlen(X_ATTR_VALUE_RECTANGLE)))
+	  {
+	    r_shape = E_SHAPE_RECTANGLE;
+	  }
+    }
+    xmlFree(shape);
   }
   else if (!strncmp(type, X_ATTR_VALUE_AXIS_DOWN, strlen(X_ATTR_VALUE_AXIS_DOWN)))
   {
@@ -1170,6 +1184,7 @@ static int ProcessAxisElement(xmlNode * a_node)
           p_mapper->dead_zone = r_deadZone;
           p_mapper->multiplier = r_multiplier;
           p_mapper->exponent = r_exponent;
+          p_mapper->shape = r_shape;
           break;
         default:
           break;
