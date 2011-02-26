@@ -68,11 +68,11 @@
       <axis_map>
         <axis id="rstick x">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="x" dead_zone="8" multiplier="10" exponent="1"/>
+          <event type="axis" id="x" dead_zone="14" multiplier="10" exponent="1"/>
         </axis>
         <axis id="rstick y">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="y" dead_zone="8" multiplier="12" exponent="1"/>
+          <event type="axis" id="y" dead_zone="14" multiplier="12" exponent="1"/>
         </axis>
         <axis id="lstick left">
           <device type="keyboard" id="0" name=""/>
