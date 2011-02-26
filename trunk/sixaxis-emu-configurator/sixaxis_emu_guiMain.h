@@ -151,6 +151,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_STATICTEXT15;
         static const long ID_STATICTEXT17;
         static const long ID_STATICTEXT18;
+        static const long ID_STATICTEXT22;
         static const long ID_STATICTEXT41;
         static const long ID_STATICTEXT32;
         static const long ID_STATICTEXT42;
@@ -161,6 +162,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_TEXTCTRL8;
         static const long ID_TEXTCTRL9;
         static const long ID_TEXTCTRL10;
+        static const long ID_CHOICE1;
         static const long ID_GRID2;
         static const long ID_BUTTON3;
         static const long ID_BUTTON7;
@@ -189,6 +191,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         //(*Declarations(sixaxis_emu_guiFrame)
         wxChoice* Choice5;
         wxStaticText* StaticText10;
+        wxStaticText* StaticText22;
         wxStaticText* StaticText9;
         wxMenuItem* MenuItem8;
         wxStaticText* StaticText20;
@@ -260,6 +263,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText36;
         wxTextCtrl* TextCtrl3;
         wxTextCtrl* TextCtrl10;
+        wxChoice* Choice1;
         wxStaticText* StaticText16;
         wxButton* Button8;
         wxMenu* Menu4;
