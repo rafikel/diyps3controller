@@ -334,7 +334,7 @@
 								<growablerows>1</growablerows>
 								<object class="sizeritem">
 									<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
-										<cols>10</cols>
+										<cols>11</cols>
 										<rows>2</rows>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText11" member="yes">
@@ -412,6 +412,14 @@
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT18" variable="StaticText18" member="yes">
 												<label>Exponent</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT22" variable="StaticText22" member="yes">
+												<label>Shape</label>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -503,6 +511,18 @@
 											<border>5</border>
 											<option>1</option>
 										</object>
+										<object class="sizeritem">
+											<object class="wxChoice" name="ID_CHOICE1" variable="Choice1" member="yes">
+												<content>
+													<item>Circle</item>
+													<item>Rectangle</item>
+												</content>
+												<selection>0</selection>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
 									</object>
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
@@ -514,7 +534,7 @@
 										<rows>1</rows>
 										<object class="sizeritem">
 											<object class="wxGrid" name="ID_GRID2" variable="Grid2" member="yes">
-												<cols>9</cols>
+												<cols>10</cols>
 												<readonly>1</readonly>
 												<defaultcolsize>100</defaultcolsize>
 												<collabels>
@@ -527,6 +547,7 @@
 													<item>Dead zone</item>
 													<item>Multiplier</item>
 													<item>Exponent</item>
+													<item>Shape</item>
 												</collabels>
 											</object>
 											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

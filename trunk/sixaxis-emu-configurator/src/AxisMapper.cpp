@@ -5,8 +5,8 @@ AxisMapper::AxisMapper()
     //ctor
 }
 
-AxisMapper::AxisMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString axis, wxString deadZone, wxString multiplier, wxString exponent):
-m_Device(dtype, did, dname), m_Event(etype, eid, deadZone, multiplier, exponent), m_Axis(axis)
+AxisMapper::AxisMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString axis, wxString deadZone, wxString multiplier, wxString exponent, wxString shape):
+m_Device(dtype, did, dname), m_Event(etype, eid, deadZone, multiplier, exponent, shape), m_Axis(axis)
 {
     //ctor
 }

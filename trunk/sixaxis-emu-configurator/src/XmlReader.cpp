@@ -27,6 +27,7 @@ void XmlReader::ProcessEventElement(xmlNode * a_node)
     wxString deadZone;
     wxString multiplier;
     wxString exponent;
+    wxString shape;
     char* prop;
 
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
@@ -47,6 +48,23 @@ void XmlReader::ProcessEventElement(xmlNode * a_node)
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_EXPONENT);
     exponent = wxString(prop, wxConvUTF8);
     xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_SHAPE);
+    if(type == _("axis"))
+    {
+        if(prop)
+        {
+            shape = wxString(prop, wxConvUTF8);
+        }
+        else
+        {
+            shape = _("Circle");
+        }
+    }
+    else
+    {
+        shape = _("");
+    }
+    xmlFree(prop);
 
     m_TempEvent.SetType(type);
     m_TempEvent.SetId(id);
@@ -54,6 +72,7 @@ void XmlReader::ProcessEventElement(xmlNode * a_node)
     m_TempEvent.SetDeadZone(deadZone);
     m_TempEvent.SetMultiplier(multiplier);
     m_TempEvent.SetExponent(exponent);
+    m_TempEvent.SetShape(shape);
 }
 
 void XmlReader::ProcessDeviceElement(xmlNode * a_node)
