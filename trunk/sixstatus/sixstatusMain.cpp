@@ -101,6 +101,7 @@ const long sixstatusFrame::ID_STATICTEXT27 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT28 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT29 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT30 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT34 = wxNewId();
 const long sixstatusFrame::idMenuQuit = wxNewId();
 const long sixstatusFrame::idMenuAbout = wxNewId();
 const long sixstatusFrame::ID_STATUSBAR1 = wxNewId();
@@ -138,6 +139,7 @@ string dz_y;
 string mul_x;
 string mul_y;
 string exponent;
+string shape;
 
 void read_status(void)
 {
@@ -173,6 +175,11 @@ void read_status(void)
         {
             parser >> s;
             parser >> exponent;
+        }
+        else if(!s.compare(0, 6, "shape:"))
+        {
+            parser >> s;
+            parser >> shape;
         }
 
         while(parser >> s)
@@ -351,16 +358,18 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     wxStaticBoxSizer* StaticBoxSizer4;
     wxFlexGridSizer* FlexGridSizer3;
     wxMenuItem* MenuItem1;
+    wxFlexGridSizer* FlexGridSizer5;
     wxFlexGridSizer* FlexGridSizer2;
     wxMenu* Menu1;
     wxStaticBoxSizer* StaticBoxSizer3;
     wxGridSizer* GridSizer1;
+    wxStaticBoxSizer* StaticBoxSizer6;
     wxMenuBar* MenuBar1;
     wxStaticBoxSizer* StaticBoxSizer1;
     wxFlexGridSizer* FlexGridSizer1;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixstatus"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Sixaxis status"));
@@ -492,6 +501,12 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer2->Add(StaticText30, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4->Add(FlexGridSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2->Add(StaticBoxSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer6 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Shape"));
+    FlexGridSizer5 = new wxFlexGridSizer(2, 2, 0, 0);
+    StaticText34 = new wxStaticText(this, ID_STATICTEXT34, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT34"));
+    FlexGridSizer5->Add(StaticText34, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer6->Add(FlexGridSizer5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(StaticBoxSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer2, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(FlexGridSizer1);
     MenuBar1 = new wxMenuBar();
@@ -512,7 +527,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     SetStatusBar(StatusBar1);
     FlexGridSizer1->Fit(this);
     FlexGridSizer1->SetSizeHints(this);
-
+    
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnAbout);
     //*)
@@ -634,6 +649,7 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
     StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
     StaticText28->SetLabel(wxString(exponent.c_str(), wxConvUTF8));
     StaticText30->SetLabel(wxString(exponent.c_str(), wxConvUTF8));
+    StaticText34->SetLabel(wxString(shape.c_str(), wxConvUTF8));
 
     //cout << 127+lstick_x << " " << 127-lstick_y << " " << 127+rstick_x << " " << 127-rstick_y << endl;
 

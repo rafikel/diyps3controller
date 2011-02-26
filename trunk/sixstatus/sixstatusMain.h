@@ -92,6 +92,7 @@ class sixstatusFrame: public wxFrame
         static const long ID_STATICTEXT28;
         static const long ID_STATICTEXT29;
         static const long ID_STATICTEXT30;
+        static const long ID_STATICTEXT34;
         static const long idMenuQuit;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
@@ -134,6 +135,7 @@ class sixstatusFrame: public wxFrame
         wxStaticText* StaticText24;
         wxGauge* Gauge11;
         wxGauge* Gauge33;
+        wxStaticText* StaticText34;
         wxStaticText* StaticText5;
         wxStaticText* StaticText7;
         wxStatusBar* StatusBar1;
