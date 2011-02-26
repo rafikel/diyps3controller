@@ -1002,7 +1002,10 @@ static int ProcessDeviceElement(xmlNode * a_node)
     ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_device_id);
 
     prop = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
-    strncpy(r_device_name, prop, sizeof(r_device_name));
+    if(prop)
+    {
+      strncpy(r_device_name, prop, sizeof(r_device_name));
+    }
     xmlFree(prop);
   }
 
@@ -1335,7 +1338,10 @@ static int ProcessTriggerElement(xmlNode * a_node)
   if(ret != -1)
   {
     device_name = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
-    strncpy(r_device_name, device_name, sizeof(r_device_name));
+    if(device_name)
+    {
+      strncpy(r_device_name, device_name, sizeof(r_device_name));
+    }
     xmlFree(device_name);
 
     ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_device_id);
