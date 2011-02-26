@@ -46,7 +46,7 @@
 #define REFRESH_PERIOD 10000 //=10ms
 #define EVENT_BUFFER_SIZE 32
 
-char* username;
+char* homedir;
 
 int done = 0;
 double multiplier_x = DEFAULT_MULTIPLIER_X;
@@ -218,15 +218,15 @@ void circle_test()
 {
   int i;
   const double pi = 3.14159265;
-  const int m = 296;
+  const int m = 294;
   const int step = 1;
   SDL_Event event = {};
 
   for(i=1; i<360; i+=step)
   {
     event.type = SDL_MOUSEMOTION;
-    event.motion.xrel = m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360));
-    event.motion.yrel = m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360));
+    event.motion.xrel = round(m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
+    event.motion.yrel = round(m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
     SDL_PushEvent(&event);
     usleep(REFRESH_PERIOD);
   }
@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
     
     setlinebuf(stdout);
 
-    username = getpwuid(getuid())->pw_name;
+    homedir = getpwuid(getuid())->pw_dir;
 
     system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient");
     

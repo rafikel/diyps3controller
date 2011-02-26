@@ -32,7 +32,7 @@ typedef struct {
     char macro[MAX_NAME_LENGTH];
 } s_macro_event_delay;
 
-extern char* username;
+extern char* homedir;
 
 /*
  * This table is used to store all the macros that are read from script files at the initialization of the process.
@@ -200,7 +200,7 @@ void read_macros() {
     unsigned int nb_filenames = 0;
     char** filenames = NULL;
 
-    snprintf(dir_path, sizeof(dir_path), "/home/%s/%s", username, MACRO_DIR);
+    snprintf(dir_path, sizeof(dir_path), "%s/%s", homedir, MACRO_DIR);
     dirp = opendir(dir_path);
     if (dirp == NULL)
     {

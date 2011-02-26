@@ -31,7 +31,7 @@ using namespace std;
 
 #define CONFIG_DIR ".emuclient/config/"
 
-char* username;
+char* homedir;
 
 //helper functions
 enum wxbuildinfoformat
@@ -300,7 +300,7 @@ static void read_filenames(const char* dir, wxChoice* choice)
 
     choice->Clear();
 
-    snprintf(dir_path, sizeof(dir_path), "/home/%s/%s", username, dir);
+    snprintf(dir_path, sizeof(dir_path), "%s/%s", homedir, dir);
     dirp = opendir(dir_path);
     if (dirp == NULL)
     {
@@ -327,8 +327,7 @@ static int read_sixaxis_config(wxChoice* cdevice, wxChoice* cmaster)
     string master;
     int ret = -1;
 
-    filename.append("/home/");
-    filename.append(username);
+    filename.append(homedir);
     filename.append("/.sixemugui/config");
 
     ifstream myfile(filename.c_str());
@@ -561,19 +560,32 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
 
     launched = false;
 
-    username = getpwuid(getuid())->pw_name;
+    if(!getuid())
+    {
+    	int answer = wxMessageBox(_("It's not recommended to run as root user. Continue?"), _("Confirm"), wxYES_NO);
+		if (answer == wxNO)
+		{
+			exit(0);
+		}
+    }
+
+    homedir = getpwuid(getuid())->pw_dir;
 
     string cmd;
-
     cmd.append("mkdir -p ");
-    cmd.append("/home/");
-    cmd.append(username);
+    cmd.append(homedir);
     cmd.append("/.sixemugui");
     if(system(cmd.c_str()) < 0)
     {
         wxMessageBox( wxT("Cannot open sixemugui config directory!"), wxT("Error"), wxICON_ERROR);
     }
-    if(system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient") < 0)
+    cmd.erase();
+    cmd.append("test -d ");
+	cmd.append(homedir);
+	cmd.append("/.emuclient || cp -r /etc/emuclient ");
+	cmd.append(homedir);
+	cmd.append("/.emuclient");
+    if(system(cmd.c_str()) < 0)
     {
         wxMessageBox( wxT("Cannot open emuclient config directory!"), wxT("Error"), wxICON_ERROR);
     }
@@ -850,8 +862,7 @@ void sixemuguiFrame::OnSave(wxCommandEvent& event)
     string master;
     unsigned int i;
 
-    filename.append("/home/");
-    filename.append(username);
+    filename.append(homedir);
     filename.append("/.sixemugui/config");
 
     ofstream outfile (filename.c_str(), ios_base::trunc);

@@ -95,7 +95,7 @@ typedef struct
 extern int done;
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
-extern char* username;
+extern char* homedir;
 
 /*
  * These variables are used to read the configuration.
@@ -1557,7 +1557,7 @@ void read_config_file(const char* file)
 {
   char file_path[PATH_MAX];
 
-  snprintf(file_path, sizeof(file_path), "/home/%s/%s/%s", username, CONFIG_DIR, file);
+  snprintf(file_path, sizeof(file_path), "%s/%s/%s", homedir, CONFIG_DIR, file);
 
   if(read_file(file_path) == -1)
   {
@@ -1581,7 +1581,7 @@ int read_config_dir()
   unsigned int nb_filenames = 0;
   char** filenames = NULL;
 
-  snprintf(file_path, sizeof(file_path), "/home/%s/%s", username, CONFIG_DIR);
+  snprintf(file_path, sizeof(file_path), "%s/%s", homedir, CONFIG_DIR);
   dirp = opendir(file_path);
   if (dirp == NULL)
   {

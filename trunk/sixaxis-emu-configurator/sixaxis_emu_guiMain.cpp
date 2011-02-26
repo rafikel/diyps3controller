@@ -19,6 +19,8 @@
 #include <wx/string.h>
 //*)
 
+using namespace std;
+
 //helper functions
 enum wxbuildinfoformat {
     short_f, long_f };
@@ -177,7 +179,7 @@ void sixaxis_emu_guiFrame::fillAxisAxisChoice(wxChoice* choice)
     choice->Append(_("triangle"));
 }
 
-char* username;
+char* homedir;
 
 sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 {
@@ -464,17 +466,33 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 
     currentController = 0;
     currentConfiguration = 0;
-
-    if(system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient") < 0)
+    
+    if(!getuid())
+    {
+    	int answer = wxMessageBox(_("It's not recommended to run as root user. Continue?"), _("Confirm"), wxYES_NO);
+		if (answer == wxNO)
+		{
+			exit(0);
+		}
+    }
+    
+    homedir = getpwuid(getuid())->pw_dir;
+    
+    string cmd;
+    cmd.append("test -d ");
+	cmd.append(homedir);
+	cmd.append("/.emuclient || cp -r /etc/emuclient ");
+	cmd.append(homedir);
+	cmd.append("/.emuclient");
+    if(system(cmd.c_str()) < 0)
     {
         wxMessageBox( wxT("Cannot open emuclient config directory!"), wxT("Error"), wxICON_ERROR);
-    }
+    }    
 
-    username = getpwuid(getuid())->pw_name;
-
-    wxString default_directory = _("/home/");
-    wxString user(username, wxConvUTF8);
-    default_directory << user << _("/.emuclient/config");
+	cmd.erase();
+	cmd.append(homedir);
+	cmd.append("/.emuclient/config");
+    wxString default_directory = wxString(cmd.c_str(), wxConvUTF8);
 
     FileDialog1->SetDirectory(default_directory);
 
