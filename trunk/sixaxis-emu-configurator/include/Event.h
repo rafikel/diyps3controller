@@ -6,10 +6,10 @@ class Event
 {
     public:
         Event();
-        Event(wxString type, wxString id, wxString threshold, wxString deadZone, wxString multiplier, wxString exponent);
+        Event(wxString type, wxString id, wxString threshold, wxString deadZone, wxString multiplier, wxString exponent, wxString shape);
         Event(wxString type, wxString id, wxString threshold);
         Event(wxString type, wxString id);
-        Event(wxString type, wxString id, wxString deadZone, wxString multiplier, wxString exponent);
+        Event(wxString type, wxString id, wxString deadZone, wxString multiplier, wxString exponent, wxString shape);
         Event(wxString id);
         virtual ~Event();
         Event(const Event& other);
@@ -26,6 +26,8 @@ class Event
         void SetMultiplier(wxString val) { m_Multiplier = val; }
         wxString GetExponent() { return m_Exponent; }
         void SetExponent(wxString val) { m_Exponent = val; }
+        wxString GetShape() { return m_Shape; }
+        void SetShape(wxString val) { m_Shape = val; }
     protected:
     private:
         wxString m_Type;
@@ -34,6 +36,7 @@ class Event
         wxString m_DeadZone;
         wxString m_Multiplier;
         wxString m_Exponent;
+        wxString m_Shape;
 };
 
 #endif // EVENT_H

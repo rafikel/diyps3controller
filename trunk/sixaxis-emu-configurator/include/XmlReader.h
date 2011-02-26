@@ -26,6 +26,7 @@
 #define X_ATTR_DEADZONE "dead_zone"
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
+#define X_ATTR_SHAPE "shape"
 
 class XmlReader
 {
