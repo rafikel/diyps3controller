@@ -437,6 +437,8 @@ int main(int argc, char *argv[])
 					printf("Reset device manually\n");
 				} else {
 					ioctl(dd, HCIDEVRESET, dev);
+					ioctl(dd, HCIDEVDOWN, dev);
+					ioctl(dd, HCIDEVUP, dev);
 					printf("Device reset successully\n");
 				}
 			} else {
