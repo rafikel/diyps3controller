@@ -113,7 +113,7 @@ static double r_exponent;
 
 static e_device_type r_device_type;
 static unsigned int r_device_id;
-static char* r_device_name;
+static char r_device_name[128];
 
 /*
  * This tells what's the current config of each controller.
@@ -849,6 +849,8 @@ static inline int GetDeviceTypeProp(xmlNode * a_node)
   {
     r_device_type = E_DEVICE_TYPE_UNKNOWN;
   }
+
+  xmlFree(type);
   return ret;
 }
 
@@ -873,58 +875,71 @@ static inline int GetEventId(xmlNode * a_node)
       break;
   }
 
+  xmlFree(event_id);
   return 0;
 }
 
 static inline int GetIntProp(xmlNode * a_node, char* a_attr, int* a_int)
 {
   char* val;
+  int ret;
 
   val = (char*)xmlGetProp(a_node, (xmlChar*) a_attr);
 
   if(val)
   {
     *a_int = atoi(val);
-    return 0;
+    ret = 0;
   }
   else
   {
-    return -1;
+    ret = -1;
   }
+
+  xmlFree(val);
+  return ret;
 }
 
 static inline int GetUnsignedIntProp(xmlNode * a_node, char* a_attr, unsigned int* a_uint)
 {
   char* val;
+  int ret;
 
   val = (char*)xmlGetProp(a_node, (xmlChar*) a_attr);
 
   if(val)
   {
     *a_uint = atoi(val);
-    return 0;
+    ret = 0;
   }
   else
   {
-    return -1;
+	ret = -1;
   }
+
+  xmlFree(val);
+  return ret;
 }
 
 static inline int GetDoubleProp(xmlNode * a_node, char* a_attr, double* a_double)
 {
   char* val;
+  int ret;
 
   val = (char*)xmlGetProp(a_node, (xmlChar*) a_attr);
 
   if(val)
   {
     *a_double = strtod(val, NULL);
-    return 0;
+    ret = 0;
   }
   else
   {
-    return -1;
+	ret = -1;
   }
+
+  xmlFree(val);
+  return ret;
 }
 
 static int ProcessEventElement(xmlNode * a_node)
@@ -971,12 +986,14 @@ static int ProcessEventElement(xmlNode * a_node)
 
   ret = GetEventId(a_node);
 
+  xmlFree(type);
   return ret;
 }
 
 static int ProcessDeviceElement(xmlNode * a_node)
 {
   int ret = 0;
+  char* prop;
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -984,7 +1001,9 @@ static int ProcessDeviceElement(xmlNode * a_node)
   {
     ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_device_id);
 
-    r_device_name = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    prop = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    strncpy(r_device_name, prop, sizeof(r_device_name));
+    xmlFree(prop);
   }
 
   return ret;
@@ -1071,6 +1090,8 @@ static int ProcessAxisElement(xmlNode * a_node)
   aid = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
 
   aindex = get_axis_index_from_name(aid);
+
+  xmlFree(aid);
 
   for (cur_node = a_node->children; cur_node && ret != -1; cur_node = cur_node->next)
   {
@@ -1168,6 +1189,8 @@ static int ProcessButtonElement(xmlNode * a_node)
   bid = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
 
   ret = get_button_index_from_name(bid);
+
+  xmlFree(bid);
 
   if(ret != -1)
   {
@@ -1305,13 +1328,15 @@ static int ProcessTriggerElement(xmlNode * a_node)
   int ret = 0;
   char* device_name;
   char* event_id;
+  int i;
 
   ret = GetDeviceTypeProp(a_node);
 
   if(ret != -1)
   {
-    //TODO: manage device name
     device_name = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    strncpy(r_device_name, device_name, sizeof(r_device_name));
+    xmlFree(device_name);
 
     ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_device_id);
 
@@ -1321,6 +1346,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
       {
         event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
         r_event_id = get_key_from_buffer(event_id);
+        xmlFree(event_id);
       }
     }
   }
@@ -1328,7 +1354,25 @@ static int ProcessTriggerElement(xmlNode * a_node)
   if(ret != -1)
   {
     triggers[r_controller_id][r_config_id].button = r_event_id;
-    triggers[r_controller_id][r_config_id].device_id = r_device_id;
+    if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+    {
+      for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
+	  {
+		if(!strcmp(r_device_name, joystickName[i]))
+		{
+		  if(r_device_id == joystickVirtualIndex[i])
+		  {
+			r_device_id = i;
+			break;
+		  }
+		}
+	  }
+      triggers[r_controller_id][r_config_id].device_id = r_device_id;
+    }
+    else
+    {
+      triggers[r_controller_id][r_config_id].device_id = r_device_id;
+    }
     triggers[r_controller_id][r_config_id].device_type = r_device_type;
   }
 
