@@ -1963,7 +1963,7 @@
 1298323931 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiApp.h
 	<wx/app.h>
 
-1298737234 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.h
+1298765619 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.h
 	<wx/notebook.h>
 	<wx/sizer.h>
 	<wx/stattext.h>
@@ -2013,7 +2013,7 @@
 	<Device.h>
 	<Event.h>
 
-1298738924 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.cpp
+1298764084 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.cpp
 	"wx_pch.h"
 	"sixaxis_emu_guiMain.h"
 	<wx/msgdlg.h>
@@ -2063,4 +2063,8 @@
 1298587775 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/event_catcher.cpp
 	"event_catcher.h"
 	<SDL/SDL.h>
+
+1298765461 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
+	"XmlReader.h"
+	<stdexcept>
 

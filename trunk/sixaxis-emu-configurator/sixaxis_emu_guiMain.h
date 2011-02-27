@@ -96,16 +96,17 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnMenuItemExpert(wxCommandEvent& event);
         void OnMenuSave(wxCommandEvent& event);
         void OnMenuSaveAs(wxCommandEvent& event);
+        void OnButtonModifyButton(wxCommandEvent& event);
+        void OnGrid1CellLeftClick5(wxGridEvent& event);
+        void OnButtonModifyAxis(wxCommandEvent& event);
+        void OnChoice1Select(wxCommandEvent& event);
+        void OnChoice8Select1(wxCommandEvent& event);
+        void OnChoice8Select2(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
-        void fillDeviceTypeButtonChoice(wxChoice* choice);
-        void fillDeviceIdButtonChoice(wxChoice* choice);
-        void fillMouseAxisChoice(wxChoice* choice);
-        void fillMouseButtonChoice(wxChoice* choice);
-        void fillJoystickChoice(wxChoice* choice);
         void fillButtonAxisChoice(wxChoice* choice);
         void fillAxisAxisChoice(wxChoice* choice);
-        void fillKeyboardButtonChoice(wxChoice* choice);
+        void fillButtonChoice(wxChoice* choice);
         void auto_detect(event_catcher* evcatch, wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id);
 
         //(*Identifiers(sixaxis_emu_guiFrame)
@@ -140,6 +141,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_GRID1;
         static const long ID_BUTTON4;
         static const long ID_BUTTON6;
+        static const long ID_BUTTON2;
         static const long ID_PANEL2;
         static const long ID_STATICTEXT11;
         static const long ID_STATICTEXT31;
@@ -166,6 +168,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_GRID2;
         static const long ID_BUTTON3;
         static const long ID_BUTTON7;
+        static const long ID_BUTTON5;
         static const long ID_PANEL3;
         static const long ID_NOTEBOOK1;
         static const long idMenuNew;
@@ -233,11 +236,13 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxChoice* Choice7;
         wxChoice* Choice8;
         wxMenuItem* MenuItem10;
+        wxButton* Button2;
         wxPanel* Panel3;
         wxStaticText* StaticText21;
         wxStaticText* StaticText39;
         wxButton* Button6;
         wxMenuItem* MenuItem12;
+        wxButton* Button5;
         wxGrid* Grid2;
         wxMenuItem* MenuItem3;
         wxButton* Button3;
@@ -273,6 +278,9 @@ class sixaxis_emu_guiFrame: public wxFrame
         ConfigurationFile configFile;
         unsigned int currentController;
         unsigned int currentConfiguration;
+
+        unsigned int grid1mod;
+        unsigned int grid2mod;
 
         DECLARE_EVENT_TABLE()
 };

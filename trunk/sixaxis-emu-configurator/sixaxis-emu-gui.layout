@@ -2,7 +2,7 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="include/AxisMapper.h" open="0" top="0" tabpos="11">
-		<Cursor position="310" topLine="0" />
+		<Cursor position="877" topLine="0" />
 	</File>
 	<File name="include/ButtonMapper.h" open="0" top="0" tabpos="0">
 		<Cursor position="854" topLine="0" />
@@ -37,14 +37,14 @@
 	<File name="sixaxis_emu_guiApp.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="488" topLine="0" />
 	</File>
-	<File name="sixaxis_emu_guiMain.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="41289" topLine="741" />
+	<File name="sixaxis_emu_guiMain.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="56302" topLine="1172" />
 	</File>
 	<File name="sixaxis_emu_guiMain.h" open="0" top="0" tabpos="2">
-		<Cursor position="9163" topLine="223" />
+		<Cursor position="4316" topLine="66" />
 	</File>
 	<File name="src/AxisMapper.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="782" topLine="0" />
+		<Cursor position="536" topLine="0" />
 	</File>
 	<File name="src/ButtonMapper.cpp" open="0" top="0" tabpos="10">
 		<Cursor position="216" topLine="0" />
@@ -68,7 +68,7 @@
 		<Cursor position="153" topLine="0" />
 	</File>
 	<File name="src/XmlReader.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="6382" topLine="198" />
+		<Cursor position="3978" topLine="124" />
 	</File>
 	<File name="src/XmlWritter.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="4012" topLine="103" />
