@@ -312,6 +312,15 @@
 													<border>5</border>
 													<option>1</option>
 												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="ID_BUTTON2" variable="Button2" member="yes">
+														<label>Modify</label>
+														<handler function="OnButtonModifyButton" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
 											</object>
 											<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
 											<border>5</border>
@@ -482,6 +491,7 @@
 										<object class="sizeritem">
 											<object class="wxChoice" name="ID_CHOICE8" variable="Choice8" member="yes">
 												<selection>0</selection>
+												<handler function="OnChoice8Select2" entry="EVT_CHOICE" />
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -514,10 +524,12 @@
 										<object class="sizeritem">
 											<object class="wxChoice" name="ID_CHOICE1" variable="Choice1" member="yes">
 												<content>
+													<item></item>
 													<item>Circle</item>
 													<item>Rectangle</item>
 												</content>
-												<selection>0</selection>
+												<selection>1</selection>
+												<handler function="OnChoice1Select" entry="EVT_CHOICE" />
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -569,6 +581,15 @@
 													<object class="wxButton" name="ID_BUTTON7" variable="Button7" member="yes">
 														<label>Remove</label>
 														<handler function="OnButton7Click" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="ID_BUTTON5" variable="Button5" member="yes">
+														<label>Modify</label>
+														<handler function="OnButtonModifyAxis" entry="EVT_BUTTON" />
 													</object>
 													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
