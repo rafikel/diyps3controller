@@ -1110,8 +1110,6 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
     wxArrayInt array = Grid2->GetSelectedRows();
     int count = array.GetCount();
 
-    cout << count << endl;
-
     if(Button5->GetLabel() == _("Modify"))
     {
         if(count == 0)
