@@ -157,6 +157,7 @@ void XmlReader::ProcessAxisElement(xmlNode * a_node)
     {
         m_TempEvent.SetShape(wxEmptyString);
     }
+
     m_TempAxisMapper.SetAxis(id);
     m_TempAxisMapper.SetDevice(m_TempDevice);
     m_TempAxisMapper.SetEvent(m_TempEvent);
