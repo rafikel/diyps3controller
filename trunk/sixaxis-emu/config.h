@@ -9,6 +9,7 @@
 #define CONFIG_H_
 
 #include <SDL/SDL.h>
+#include "sixaxis.h"
 
 #define MAX_CONTROLLERS 7
 #define MAX_DEVICES 256
@@ -36,6 +37,7 @@ typedef struct
 {
   int change;
   int send_command;
+  int ts_axis[TS_MAX][TS_AXIS_MAX][2];
 } s_controller;
 
 void trigger_lookup(SDL_Event*);

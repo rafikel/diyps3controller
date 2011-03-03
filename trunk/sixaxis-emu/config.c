@@ -23,6 +23,9 @@
 #define X_ATTR_VALUE_CIRCLE "Circle"
 #define X_ATTR_VALUE_RECTANGLE "Rectangle"
 
+#define X_ATTR_VALUE_YES "yes"
+#define X_ATTR_VALUE_NO "no"
+
 #define MAX_CONFIGURATIONS 4
 #define MAX_CONTROLS 256
 
@@ -50,25 +53,26 @@
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
 #define X_ATTR_SHAPE "shape"
+#define X_ATTR_SWITCH_BACK "switch_back"
 
 #define AXIS_X 0
 #define AXIS_Y 1
 
 typedef enum
 {
-	E_DEVICE_TYPE_UNKNOWN,
-	E_DEVICE_TYPE_KEYBOARD,
-	E_DEVICE_TYPE_MOUSE,
-	E_DEVICE_TYPE_JOYSTICK
+  E_DEVICE_TYPE_UNKNOWN,
+  E_DEVICE_TYPE_KEYBOARD,
+  E_DEVICE_TYPE_MOUSE,
+  E_DEVICE_TYPE_JOYSTICK
 }e_device_type;
 
 typedef enum
 {
-	E_EVENT_TYPE_UNKNOWN,
-	E_EVENT_TYPE_BUTTON,
-	E_EVENT_TYPE_AXIS,
-	E_EVENT_TYPE_AXIS_DOWN,
-	E_EVENT_TYPE_AXIS_UP
+  E_EVENT_TYPE_UNKNOWN,
+  E_EVENT_TYPE_BUTTON,
+  E_EVENT_TYPE_AXIS,
+  E_EVENT_TYPE_AXIS_DOWN,
+  E_EVENT_TYPE_AXIS_UP
 }e_event_type;
 
 typedef struct
@@ -95,12 +99,24 @@ typedef struct
   int device_type;
   int device_id;
   int button;
+  int switch_back;;
 }s_trigger;
 
-extern int done;
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
 extern char* homedir;
+extern int calibration;
+extern int testing;
+extern int test_shape;
+extern double multiplier_x;
+extern double multiplier_y;
+extern double exponent;
+extern int dead_zone_x;
+extern int dead_zone_y;
+extern int display;
+extern int joystickNbButton[255];
+extern const char* joystickName[MAX_DEVICES];
+extern int joystickVirtualIndex[MAX_DEVICES];
 
 /*
  * These variables are used to read the configuration.
@@ -125,6 +141,13 @@ static char r_device_name[128];
  * This tells what's the current config of each controller.
  */
 static int current_config[MAX_CONTROLLERS];
+
+/*
+ * This tells what's the previous config of each controller.
+ * Hackish way to switch back to previous config.
+ * Only used with left mouse clic.
+ */
+static int previous_config[MAX_CONTROLLERS];
 
 /*
  * This lists config triggers for all controllers.
@@ -170,62 +193,59 @@ static int clamp(int min, int val, int max)
 void trigger_lookup(SDL_Event* e)
 {
   int i, j;
-
-  unsigned int device = ((SDL_KeyboardEvent*)e)->which;
+  int device_type;
+  int up = 0;
+  unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
 
   switch( e->type )
   {
+    case SDL_JOYBUTTONUP:
+      up = 1;
     case SDL_JOYBUTTONDOWN:
+      device_type = E_DEVICE_TYPE_JOYSTICK;
+      break;
+    case SDL_KEYUP:
+      up = 1;
     case SDL_KEYDOWN:
+      device_type = E_DEVICE_TYPE_KEYBOARD;
+      break;
+    case SDL_MOUSEBUTTONUP:
+      up = 1;
     case SDL_MOUSEBUTTONDOWN:
+      device_type = E_DEVICE_TYPE_MOUSE;
       break;
     default:
       return;
   }
+
   for(i=0; i<MAX_CONTROLLERS; ++i)
   {
     for(j=0; j<MAX_CONFIGURATIONS; ++j)
     {
-      switch( e->type )
+      if (triggers[i][j].device_type != device_type || device_id
+          != triggers[i][j].device_id)
       {
-        case SDL_JOYBUTTONDOWN:
-          if(triggers[i][j].device_type != E_DEVICE_TYPE_JOYSTICK
-              || device != triggers[i][j].device_id)
-          {
-            continue;
-          }
-          if(e->jbutton.button == triggers[i][j].button)
-          {
-            printf("controller %d is switched to configuration %d\n", i, j);
-            current_config[i] = j;
-          }
-          break;
-        case SDL_KEYDOWN:
-          if(triggers[i][j].device_type != E_DEVICE_TYPE_KEYBOARD
-              || device != triggers[i][j].device_id)
-          {
-            continue;
-          }
-          if(e->key.keysym.sym == triggers[i][j].button)
-          {
-            printf("controller %d is switched to configuration %d\n", i, j);
-            current_config[i] = j;
-          }
-          break;
-        case SDL_MOUSEBUTTONDOWN:
-          if(triggers[i][j].device_type != E_DEVICE_TYPE_MOUSE
-              || device != triggers[i][j].device_id)
-          {
-            continue;
-          }
-          if(e->button.button == triggers[i][j].button)
-          {
-            printf("controller %d is switched to configuration %d\n", i, j);
-            current_config[i] = j;
-          }
-          break;
-        default:
-          break;
+        continue;
+      }
+      if (e->jbutton.button == triggers[i][j].button)
+      {
+        if (display)
+        {
+          printf("controller %d is switched from configuration %d", i, current_config[i]);
+        }
+        if (!up)
+        {
+          previous_config[i] = current_config[i];
+          current_config[i] = j;
+        }
+        else
+        {
+          current_config[i] = previous_config[i];
+        }
+        if (display)
+        {
+          printf(" to %d\n", current_config[i]);
+        }
       }
     }
   }
@@ -294,15 +314,6 @@ static int postpone_event(unsigned int device, SDL_Event* event)
   return ret;
 }
 
-extern int calibration;
-extern int testing;
-extern int test_shape;
-extern double multiplier_x;
-extern double multiplier_y;
-extern double exponent;
-extern int dead_zone_x;
-extern int dead_zone_y;
-
 static void mouse2axis(struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone, e_shape shape)
 {
   double z = 0;
@@ -340,8 +351,6 @@ static void mouse2axis(struct sixaxis_state* state, int which, double x, double 
   else if(z < 0) state->user.axis[ts][ts_axis] = round(z - dz);
   else state->user.axis[ts][ts_axis] = 0;
 }
-
-extern int joystickNbButton[255];
 
 /*
  * Updates the state table.
@@ -641,6 +650,17 @@ void process_event(SDL_Event* event)
           if(ts >= 0)
           {
             state[c_id].user.axis[ts][ts_axis] = mapper->controller_thumbstick_axis_value;
+            /*
+             * Specific code for issue 15.
+             */
+            if(mapper->controller_thumbstick_axis_value == 127)
+            {
+              controller[c_id].ts_axis[ts][ts_axis][0] = 1;
+            }
+            else if(mapper->controller_thumbstick_axis_value == -127)
+            {
+              controller[c_id].ts_axis[ts][ts_axis][1] = 1;
+            }
           }
           break;
         case SDL_KEYUP:
@@ -670,6 +690,25 @@ void process_event(SDL_Event* event)
           if(ts >= 0)
           {
             state[c_id].user.axis[ts][ts_axis] = 0;
+            /*
+             * Specific code for issue 15.
+             */
+            if(mapper->controller_thumbstick_axis_value == 127)
+            {
+              controller[c_id].ts_axis[ts][ts_axis][0] = 0;
+              if(controller[c_id].ts_axis[ts][ts_axis][1] == 1)
+              {
+                state[c_id].user.axis[ts][ts_axis] = -mapper->controller_thumbstick_axis_value;
+              }
+            }
+            else if(mapper->controller_thumbstick_axis_value == -127)
+            {
+              controller[c_id].ts_axis[ts][ts_axis][1] = 0;
+              if(controller[c_id].ts_axis[ts][ts_axis][0] == 1)
+              {
+                state[c_id].user.axis[ts][ts_axis] = -mapper->controller_thumbstick_axis_value;
+              }
+            }
           }
           break;
         case SDL_MOUSEMOTION:
@@ -917,7 +956,7 @@ static inline int GetUnsignedIntProp(xmlNode * a_node, char* a_attr, unsigned in
   }
   else
   {
-	ret = -1;
+    ret = -1;
   }
 
   xmlFree(val);
@@ -938,7 +977,7 @@ static inline int GetDoubleProp(xmlNode * a_node, char* a_attr, double* a_double
   }
   else
   {
-	ret = -1;
+    ret = -1;
   }
 
   xmlFree(val);
@@ -981,9 +1020,9 @@ static int ProcessEventElement(xmlNode * a_node)
     if(shape)
     {
       if (!strncmp(shape, X_ATTR_VALUE_RECTANGLE, strlen(X_ATTR_VALUE_RECTANGLE)))
-	  {
-	    r_shape = E_SHAPE_RECTANGLE;
-	  }
+    {
+      r_shape = E_SHAPE_RECTANGLE;
+    }
     }
     xmlFree(shape);
   }
@@ -1008,6 +1047,7 @@ static int ProcessDeviceElement(xmlNode * a_node)
 {
   int ret = 0;
   char* prop;
+  int i;
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -1021,18 +1061,29 @@ static int ProcessDeviceElement(xmlNode * a_node)
       strncpy(r_device_name, prop, sizeof(r_device_name));
     }
     xmlFree(prop);
+
+    if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+    {
+      for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
+      {
+        if (!strcmp(r_device_name, joystickName[i]))
+        {
+          if (r_device_id == joystickVirtualIndex[i])
+          {
+            r_device_id = i;
+            break;
+          }
+        }
+      }
+    }
   }
 
   return ret;
 }
 
-extern const char* joystickName[MAX_DEVICES];
-extern int joystickVirtualIndex[MAX_DEVICES];
-
 static s_mapper** get_mapper_table()
 {
   s_mapper** pp_mapper = NULL;
-  int i;
   switch(r_device_type)
   {
     case E_DEVICE_TYPE_KEYBOARD:
@@ -1052,17 +1103,6 @@ static s_mapper** get_mapper_table()
       }
       break;
     case E_DEVICE_TYPE_JOYSTICK:
-      for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
-      {
-        if(!strcmp(r_device_name, joystickName[i]))
-        {
-          if(r_device_id == joystickVirtualIndex[i])
-          {
-            r_device_id = i;
-            break;
-          }
-        }
-      }
       switch(r_event_type)
       {
         case E_EVENT_TYPE_BUTTON:
@@ -1345,8 +1385,9 @@ static int ProcessTriggerElement(xmlNode * a_node)
 {
   int ret = 0;
   char* device_name;
+  char* r_switch_back;
   char* event_id;
-  int i;
+  int switch_back = 0;
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -1369,32 +1410,31 @@ static int ProcessTriggerElement(xmlNode * a_node)
         r_event_id = get_key_from_buffer(event_id);
         xmlFree(event_id);
       }
+      else if(r_device_type == E_DEVICE_TYPE_MOUSE)
+      {
+        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+        r_event_id = get_mouse_event_id_from_buffer(event_id);
+        xmlFree(event_id);
+      }
     }
+
+    r_switch_back = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    if(r_switch_back)
+    {
+      if(!strncmp(r_switch_back, X_ATTR_VALUE_YES, sizeof(X_ATTR_VALUE_YES)))
+      {
+        switch_back = 1;
+      }
+    }
+    xmlFree(r_switch_back);
   }
 
   if(ret != -1)
   {
     triggers[r_controller_id][r_config_id].button = r_event_id;
-    if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
-    {
-      for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
-	  {
-		if(!strcmp(r_device_name, joystickName[i]))
-		{
-		  if(r_device_id == joystickVirtualIndex[i])
-		  {
-			r_device_id = i;
-			break;
-		  }
-		}
-	  }
-      triggers[r_controller_id][r_config_id].device_id = r_device_id;
-    }
-    else
-    {
-      triggers[r_controller_id][r_config_id].device_id = r_device_id;
-    }
+    triggers[r_controller_id][r_config_id].device_id = r_device_id;
     triggers[r_controller_id][r_config_id].device_type = r_device_type;
+    triggers[r_controller_id][r_config_id].switch_back = switch_back;
   }
 
   return ret;
@@ -1409,7 +1449,7 @@ static int ProcessConfigurationElement(xmlNode * a_node)
 
   if(ret != -1)
   {
-	  r_config_id--;
+    r_config_id--;
 
     if (r_config_id >= MAX_CONFIGURATIONS || r_config_id < 0)
     {
@@ -1501,7 +1541,7 @@ static int ProcessControllerElement(xmlNode * a_node)
 
   if(ret != -1)
   {
-	r_controller_id--;
+    r_controller_id--;
 
     if (r_controller_id >= MAX_CONTROLLERS || r_controller_id < 0)
     {

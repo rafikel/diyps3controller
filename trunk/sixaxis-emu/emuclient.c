@@ -71,7 +71,7 @@ SDL_Surface *screen = NULL;
 struct sixaxis_state state[MAX_CONTROLLERS];
 int (*assemble)(uint8_t *buf, int len, struct sixaxis_state *state);
 static int sockfd[MAX_CONTROLLERS];
-s_controller controller[MAX_CONTROLLERS];
+s_controller controller[MAX_CONTROLLERS] = {};
 
 /*
  * to be deleted later
