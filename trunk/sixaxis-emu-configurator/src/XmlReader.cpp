@@ -276,6 +276,7 @@ void XmlReader::ProcessTriggerElement(xmlNode * a_node)
     wxString device_id;
     wxString device_name;
     wxString button_id;
+    wxString switch_back;
     char * prop;
 
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
@@ -291,8 +292,20 @@ void XmlReader::ProcessTriggerElement(xmlNode * a_node)
     button_id = wxString(prop, wxConvUTF8);
     xmlFree(prop);
 
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_SWITCH_BACK);
+    if(prop)
+    {
+        switch_back = wxString(prop, wxConvUTF8);
+    }
+    else
+    {
+        switch_back = _("no");
+    }
+    xmlFree(prop);
+
     m_TempTrigger.SetDevice(Device(device_type, device_id, device_name));
     m_TempTrigger.SetEvent(Event(button_id));
+    m_TempTrigger.SetSwitchBack(switch_back);
 
     m_TempConfiguration.SetTrigger(m_TempTrigger);
 }
