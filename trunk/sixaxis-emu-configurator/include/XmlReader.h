@@ -27,6 +27,7 @@
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
 #define X_ATTR_SHAPE "shape"
+#define X_ATTR_SWITCH_BACK "switch_back"
 
 class XmlReader
 {
