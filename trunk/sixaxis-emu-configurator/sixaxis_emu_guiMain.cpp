@@ -805,15 +805,32 @@ void sixaxis_emu_guiFrame::OnButton9Click(wxCommandEvent& event)
     }
     else
     {
+      if(evcatch.GetDeviceType() == _("mouse"))
+      {
         TextCtrl8->Enable();
         TextCtrl8->SetValue(_("8"));
         TextCtrl9->Enable();
         TextCtrl9->SetValue(_("4"));
-        TextCtrl10->Enable();
-        TextCtrl10->SetValue(_("1"));
-        Choice1->SetSelection(1);
-        Choice1->Enable();
-        fillAxisAxisChoice(Choice8);
+      }
+      else if(evcatch.GetDeviceType() == _("joystick"))
+      {
+        TextCtrl8->Enable();
+        TextCtrl8->SetValue(_("0"));
+        TextCtrl9->Enable();
+        if(!Choice8->GetStringSelection().Contains(_("stick")))
+        {
+          TextCtrl9->SetValue(_("0.008"));
+        }
+        else
+        {
+          TextCtrl9->SetValue(_("0.004"));
+        }
+      }
+      TextCtrl10->Enable();
+      TextCtrl10->SetValue(_("1"));
+      Choice1->SetSelection(1);
+      Choice1->Enable();
+      fillAxisAxisChoice(Choice8);
     }
 
     Panel3->Layout();
@@ -1231,5 +1248,22 @@ void sixaxis_emu_guiFrame::OnChoice8Select2(wxCommandEvent& event)
         {
             Choice1->SetSelection(0);
         }
+    }
+    if(StaticText41->GetLabel() == _("mouse"))
+    {
+      TextCtrl8->SetValue(_("8"));
+      TextCtrl9->SetValue(_("4"));
+    }
+    else if(StaticText41->GetLabel() == _("joystick"))
+    {
+      TextCtrl8->SetValue(_("0"));
+      if(!Choice8->GetStringSelection().Contains(_("stick")))
+      {
+        TextCtrl9->SetValue(_("0.008"));
+      }
+      else
+      {
+        TextCtrl9->SetValue(_("0.004"));
+      }
     }
 }
