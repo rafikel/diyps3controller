@@ -117,6 +117,7 @@ extern int display;
 extern int joystickNbButton[255];
 extern const char* joystickName[MAX_DEVICES];
 extern int joystickVirtualIndex[MAX_DEVICES];
+extern int joystickSixaxis[MAX_DEVICES];
 
 /*
  * These variables are used to read the configuration.
@@ -449,6 +450,10 @@ void process_event(SDL_Event* event)
       }
       break;
       case SDL_JOYAXISMOTION:
+      if(joystickSixaxis[device] && event->jaxis.axis > 3)
+      {
+        event->jaxis.value = (event->jaxis.value + 32767) / 2;
+      }
       if(joystick_axis[device][c_id][config])
       {
         nb_controls = joystick_axis[device][c_id][config]->nb_mappers;

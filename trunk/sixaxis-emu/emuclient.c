@@ -95,6 +95,7 @@ static void warn(const char *fmt)
 char* joystickName[MAX_DEVICES] = {};
 int joystickVirtualIndex[MAX_DEVICES] = {};
 int joystickNbButton[MAX_DEVICES] = {};
+int joystickSixaxis[MAX_DEVICES] = {};
 
 int initialize(int width, int height, const char *title)
 {
@@ -147,6 +148,10 @@ int initialize(int width, int height, const char *title)
         joystickVirtualIndex[i] = 0;
       }
       joystickNbButton[i] = SDL_JoystickNumButtons(joystick);
+      if(!strcmp(joystickName[i], "Sony PLAYSTATION(R)3 Controller"))
+      {
+        joystickSixaxis[i] = 1;
+      }
       i++;
   }
 
