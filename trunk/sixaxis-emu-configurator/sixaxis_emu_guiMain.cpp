@@ -52,12 +52,14 @@ const long sixaxis_emu_guiFrame::ID_STATICTEXT1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT19 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT9 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT3 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT23 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT35 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT27 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT36 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT37 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON1 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_CHECKBOX1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_PANEL1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT4 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT29 = wxNewId();
@@ -114,6 +116,7 @@ const long sixaxis_emu_guiFrame::idMenuOpen = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuSave = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuSaveAs = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuQuit = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM12 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM3 = wxNewId();
@@ -239,7 +242,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,480), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     FlexGridSizer10 = new wxFlexGridSizer(1, 1, 0, 0);
-    FlexGridSizer13 = new wxFlexGridSizer(2, 5, 0, 0);
+    FlexGridSizer13 = new wxFlexGridSizer(2, 6, 0, 0);
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Device type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     FlexGridSizer13->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText19 = new wxStaticText(Panel1, ID_STATICTEXT19, _("Device name"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
@@ -248,6 +251,8 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer13->Add(StaticText9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("Button id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
     FlexGridSizer13->Add(StaticText3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText23 = new wxStaticText(Panel1, ID_STATICTEXT23, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
+    FlexGridSizer13->Add(StaticText23, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
     FlexGridSizer13->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText35 = new wxStaticText(Panel1, ID_STATICTEXT35, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT35"));
@@ -260,6 +265,9 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer13->Add(StaticText37, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button1 = new wxButton(Panel1, ID_BUTTON1, _("Auto detect"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     FlexGridSizer13->Add(Button1, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
+    CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("Switch back"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    CheckBox1->SetValue(false);
+    FlexGridSizer13->Add(CheckBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer10->Add(FlexGridSizer13, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Panel1->SetSizer(FlexGridSizer10);
     FlexGridSizer10->Fit(Panel1);
@@ -440,6 +448,10 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     MenuItem1 = new wxMenuItem(Menu1, idMenuQuit, _("Quit\tAlt-F4"), _("Quit the application"), wxITEM_NORMAL);
     Menu1->Append(MenuItem1);
     MenuBar1->Append(Menu1, _("&File"));
+    Menu5 = new wxMenu();
+    MenuItem18 = new wxMenuItem(Menu5, ID_MENUITEM12, _("Copy Configuration"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem18);
+    MenuBar1->Append(Menu5, _("Edit"));
     Menu3 = new wxMenu();
     MenuItem7 = new wxMenuItem(Menu3, ID_MENUITEM1, _("1"), wxEmptyString, wxITEM_RADIO);
     Menu3->Append(MenuItem7);
@@ -816,6 +828,7 @@ void sixaxis_emu_guiFrame::save_current()
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->SetName(StaticText27->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->SetId(StaticText36->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetEvent()->SetId(StaticText37->GetLabel());
+    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->SetSwitchBack(CheckBox1->GetValue()?_("yes"):_("no"));
     //Save ButtonMappers
     buttonMappers = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetButtonMapperList();
     for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it = buttonMappers->erase(it)) {}
@@ -844,6 +857,14 @@ void sixaxis_emu_guiFrame::load_current()
     StaticText27->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->GetName());
     StaticText36->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->GetId());
     StaticText37->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetEvent()->GetId());
+    if(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetSwitchBack() == _("yes"))
+    {
+        CheckBox1->SetValue(true);
+    }
+    else
+    {
+        CheckBox1->SetValue(false);
+    }
     //Load ButtonMappers
     Grid1->DeleteRows(0, Grid1->GetNumberRows());
     buttonMappers = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetButtonMapperList();

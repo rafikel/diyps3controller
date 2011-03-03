@@ -1963,12 +1963,13 @@
 1298323931 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiApp.h
 	<wx/app.h>
 
-1298765619 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.h
+1299001396 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.h
 	<wx/notebook.h>
 	<wx/sizer.h>
 	<wx/stattext.h>
 	<wx/menu.h>
 	<wx/textctrl.h>
+	<wx/checkbox.h>
 	<wx/statline.h>
 	<wx/panel.h>
 	<wx/grid.h>
@@ -2001,7 +2002,7 @@
 
 1298736886 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/include/Event.h
 
-1298323930 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/include/Trigger.h
+1299003286 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/include/Trigger.h
 	<Device.h>
 	<Event.h>
 
@@ -2013,7 +2014,7 @@
 	<Device.h>
 	<Event.h>
 
-1298764084 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.cpp
+1299005469 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/sixaxis_emu_guiMain.cpp
 	"wx_pch.h"
 	"sixaxis_emu_guiMain.h"
 	<wx/msgdlg.h>
@@ -2037,7 +2038,7 @@
 	<XmlReader.h>
 	<XmlWritter.h>
 
-1298737591 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/include/XmlReader.h
+1299002470 /home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/include/XmlReader.h
 	<ConfigurationFile.h>
 	<libxml/xmlreader.h>
 	<libxml/xmlstring.h>
@@ -2054,17 +2055,17 @@
 1298737014 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/Event.cpp
 	"Event.h"
 
-1298323931 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/Trigger.cpp
+1299002710 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/Trigger.cpp
 	"Trigger.h"
 
-1298737716 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/XmlWritter.cpp
+1299005612 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/XmlWritter.cpp
 	"XmlWritter.h"
 
 1298587775 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/event_catcher.cpp
 	"event_catcher.h"
 	<SDL/SDL.h>
 
-1298765461 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
+1299003310 source:/home/matlo/workspace/diyps3controller/sixaxis-emu-configurator/src/XmlReader.cpp
 	"XmlReader.h"
 	<stdexcept>
 

@@ -16,6 +16,7 @@
 #include <wx/stattext.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
 #include <wx/statline.h>
 #include <wx/panel.h>
 #include <wx/grid.h>
@@ -114,12 +115,14 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_STATICTEXT19;
         static const long ID_STATICTEXT9;
         static const long ID_STATICTEXT3;
+        static const long ID_STATICTEXT23;
         static const long ID_STATICTEXT2;
         static const long ID_STATICTEXT35;
         static const long ID_STATICTEXT27;
         static const long ID_STATICTEXT36;
         static const long ID_STATICTEXT37;
         static const long ID_BUTTON1;
+        static const long ID_CHECKBOX1;
         static const long ID_PANEL1;
         static const long ID_STATICTEXT4;
         static const long ID_STATICTEXT29;
@@ -176,6 +179,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long idMenuSave;
         static const long idMenuSaveAs;
         static const long idMenuQuit;
+        static const long ID_MENUITEM12;
         static const long ID_MENUITEM1;
         static const long ID_MENUITEM2;
         static const long ID_MENUITEM3;
@@ -240,8 +244,10 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxPanel* Panel3;
         wxStaticText* StaticText21;
         wxStaticText* StaticText39;
+        wxCheckBox* CheckBox1;
         wxButton* Button6;
         wxMenuItem* MenuItem12;
+        wxStaticText* StaticText23;
         wxButton* Button5;
         wxGrid* Grid2;
         wxMenuItem* MenuItem3;
@@ -267,10 +273,12 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText4;
         wxStaticText* StaticText36;
         wxTextCtrl* TextCtrl3;
+        wxMenuItem* MenuItem18;
         wxTextCtrl* TextCtrl10;
         wxChoice* Choice1;
         wxStaticText* StaticText16;
         wxButton* Button8;
+        wxMenu* Menu5;
         wxMenu* Menu4;
         //*)
 
