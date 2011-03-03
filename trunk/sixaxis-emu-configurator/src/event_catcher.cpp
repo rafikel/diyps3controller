@@ -538,7 +538,7 @@ void event_catcher::run(wxString event_type)
                      */
                     if(joystickName[event->jaxis.which] == _("Sony PLAYSTATION(R)3 Controller") && event->jaxis.axis > 3)
                     {
-                        break;
+                        event->jaxis.value = (event->jaxis.value + 32767) / 2;
                     }
                     if(event_type == _("axis"))
                     {
