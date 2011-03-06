@@ -141,7 +141,6 @@ int initialize(int width, int height, const char *title)
       if(!strncmp(joystickName[i], BT_SIXAXIS_NAME, sizeof(BT_SIXAXIS_NAME)-1))
       {
         joystickName[i][sizeof(BT_SIXAXIS_NAME)-1] = '\0';
-        printf("%s\n", joystickName[i]);
       }
 
       for(j=i-1; j>=0; --j)
