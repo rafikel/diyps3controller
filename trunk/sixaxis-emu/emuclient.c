@@ -97,6 +97,8 @@ int joystickVirtualIndex[MAX_DEVICES] = {};
 int joystickNbButton[MAX_DEVICES] = {};
 int joystickSixaxis[MAX_DEVICES] = {};
 
+#define BT_SIXAXIS_NAME "PLAYSTATION(R)3 Controller"
+
 int initialize(int width, int height, const char *title)
 {
   int i = 0;
@@ -135,6 +137,13 @@ int initialize(int width, int height, const char *title)
   while((joystick = SDL_JoystickOpen(i)))
   {
       joystickName[i] = strdup(SDL_JoystickName(i));
+
+      if(!strncmp(joystickName[i], BT_SIXAXIS_NAME, sizeof(BT_SIXAXIS_NAME)-1))
+      {
+        joystickName[i][sizeof(BT_SIXAXIS_NAME)-1] = '\0';
+        printf("%s\n", joystickName[i]);
+      }
+
       for(j=i-1; j>=0; --j)
       {
         if(!strcmp(joystickName[i], joystickName[j]))
