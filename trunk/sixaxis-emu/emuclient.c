@@ -197,11 +197,11 @@ int tcpconnect(void)
       if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
       {
         fd = 0;
-        warn("can't connect to emu %d", i);
       }
       else
       {
         ret = 1;
+        printf("connected to emu %d\n", i);
       }
 
 #ifdef WIN32
