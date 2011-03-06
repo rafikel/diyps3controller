@@ -197,7 +197,7 @@ int tcpconnect(void)
       if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
       {
         fd = 0;
-        warn("can't connect to port %d", i+TCP_PORT);
+        warn("can't connect to emu %d", i);
       }
       else
       {
