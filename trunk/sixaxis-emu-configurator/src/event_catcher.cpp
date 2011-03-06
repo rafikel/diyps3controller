@@ -336,6 +336,10 @@ event_catcher::~event_catcher()
     //dtor
 }
 
+#define MAX_DEVICES 256
+
+#define BT_SIXAXIS_NAME "PLAYSTATION(R)3 Controller"
+
 void event_catcher::run(wxString event_type)
 {
     done = 0;
@@ -346,9 +350,10 @@ void event_catcher::run(wxString event_type)
     const char* event_id;
     int i = 0;
     int j;
-    wxString joystickName[256];
-    int joystickVirtualIndex[256];
-    int joystickNbButton[256];
+    wxString joystickName[MAX_DEVICES];
+    int joystickVirtualIndex[MAX_DEVICES] = {};
+    int joystickNbButton[MAX_DEVICES] = {};
+    int joystickSixaxis[MAX_DEVICES] = {};
     SDL_Joystick* joystick;
 
     m_DeviceType = _("");
@@ -378,6 +383,10 @@ void event_catcher::run(wxString event_type)
     while((joystick = SDL_JoystickOpen(i)))
     {
         joystickName[i] = wxString(SDL_JoystickName(i), wxConvUTF8);
+        if(joystickName[i].StartsWith(_(BT_SIXAXIS_NAME)))
+        {
+          joystickName[i] = _(BT_SIXAXIS_NAME);
+        }
         for(j=i-1; j>=0; --j)
         {
           if(joystickName[i] == joystickName[j])
@@ -391,6 +400,10 @@ void event_catcher::run(wxString event_type)
           joystickVirtualIndex[i] = 0;
         }
         joystickNbButton[i] = SDL_JoystickNumButtons(joystick);
+        if(joystickName[i] == _("Sony PLAYSTATION(R)3 Controller"))
+        {
+          joystickSixaxis[i] = 1;
+        }
         i++;
     }
 
@@ -536,7 +549,7 @@ void event_catcher::run(wxString event_type)
                     /*
                      * Ugly patch for the sixaxis.
                      */
-                    if(joystickName[event->jaxis.which] == _("Sony PLAYSTATION(R)3 Controller") && event->jaxis.axis > 3)
+                    if(joystickSixaxis[event->jaxis.which] && event->jaxis.axis > 3)
                     {
                         event->jaxis.value = (event->jaxis.value + 32767) / 2;
                     }
