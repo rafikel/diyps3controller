@@ -11,11 +11,13 @@
 #define SIXEMUGUIAPP_H
 
 #include <wx/app.h>
+#include "sixemuguiMain.h"
 
 class sixemuguiApp : public wxApp
 {
     public:
         virtual bool OnInit();
+        virtual int OnExit();
 };
 
 #endif // SIXEMUGUIAPP_H

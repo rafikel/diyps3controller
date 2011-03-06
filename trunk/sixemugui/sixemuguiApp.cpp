@@ -15,6 +15,8 @@
 #include <wx/image.h>
 //*)
 
+#include <glib.h>
+
 IMPLEMENT_APP(sixemuguiApp);
 
 bool sixemuguiApp::OnInit()
@@ -31,4 +33,10 @@ bool sixemuguiApp::OnInit()
     //*)
     return wxsOK;
 
+}
+
+int sixemuguiApp::OnExit()
+{
+    g_spawn_command_line_sync ("killall emu", NULL, NULL, NULL, NULL);
+    return 0;
 }
