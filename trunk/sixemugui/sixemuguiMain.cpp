@@ -76,7 +76,15 @@ const long sixemuguiFrame::ID_STATICTEXT7 = wxNewId();
 const long sixemuguiFrame::ID_CHOICE7 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT8 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON2 = wxNewId();
+const long sixemuguiFrame::ID_CHOICE8 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON1 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT5 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT9 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT10 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT11 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT12 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT13 = wxNewId();
+const long sixemuguiFrame::ID_STATICTEXT14 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX1 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX4 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX2 = wxNewId();
@@ -152,10 +160,10 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
 static char hci[7];
 static char bad[18];
 
-static const char *sixaxis_device[] = { "gksudo", "sixaddr", NULL };
+static const char *sixaxis_device[] = { "gksudo",  "--description", "Sixemugui", "sixaddr", NULL };
 
 static const char *hciconfig_all[] = { "hciconfig", "-a", hci, NULL };
-static const char *hciconfig_revision[] = { "gksudo", "hciconfig", hci, "revision", NULL };
+static const char *hciconfig_revision[] = { "gksudo", "--description", "Sixemugui", "hciconfig", hci, "revision", NULL };
 
 static const char *bdaddr[] = { "bdaddr", "-i", hci, NULL };
 static const char *bdaddr_modify[] = { "sudo", "bdaddr", "-r", "-i", hci, bad, NULL };
@@ -266,6 +274,9 @@ int sixemuguiFrame::setDongleAddress()
     snprintf(hci, sizeof(hci), "hci%d", i);
     strncpy( bad, Choice1->GetStringSelection().mb_str(), 18 );
 
+    //this is to avoid readCommandResults from asking password in the terminal.
+    g_spawn_command_line_sync ("gksudo --description Sixemugui bdaddr", NULL, NULL, NULL, NULL);
+
     res = readCommandResults(bdaddr_modify, 1, params1, 1, results1);
 
     if(res != -1)
@@ -273,6 +284,7 @@ int sixemuguiFrame::setDongleAddress()
         wxMessageBox( results1[0], wxT("Success"), wxICON_INFORMATION);
     }
 
+    //wait up to 5s for the device to come back
     while(readCommandResults(bdaddr, 1, params2, 1, results2) == -1 && j<50)
     {
         usleep(100000);
@@ -408,8 +420,11 @@ void sixemuguiFrame::refresh()
 
 sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
 {
+    unsigned int i;
+
     //(*Initialize(sixemuguiFrame)
     wxStaticBoxSizer* StaticBoxSizer2;
+    wxFlexGridSizer* FlexGridSizer4;
     wxMenuItem* MenuItem2;
     wxStaticBoxSizer* StaticBoxSizer4;
     wxFlexGridSizer* FlexGridSizer10;
@@ -476,11 +491,44 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer7->Add(StaticBoxSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(FlexGridSizer7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer6 = new wxFlexGridSizer(1, 2, 0, 0);
-    StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("emu"));
+    StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL, Panel1, _("emu"));
     FlexGridSizer12 = new wxFlexGridSizer(0, 3, 0, 0);
+    Choice8 = new wxChoice(Panel1, ID_CHOICE8, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE8"));
+    Choice8->SetSelection( Choice8->Append(_("0")) );
+    Choice8->Append(_("1"));
+    Choice8->Append(_("2"));
+    Choice8->Append(_("3"));
+    Choice8->Append(_("4"));
+    Choice8->Append(_("5"));
+    Choice8->Append(_("6"));
+    FlexGridSizer12->Add(Choice8, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button1 = new wxButton(Panel1, ID_BUTTON1, _("Start"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     FlexGridSizer12->Add(Button1, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(FlexGridSizer12, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer4 = new wxFlexGridSizer(1, 7, 0, 0);
+    StaticText5 = new wxStaticText(Panel1, ID_STATICTEXT5, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
+    StaticText5->Disable();
+    FlexGridSizer4->Add(StaticText5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText9 = new wxStaticText(Panel1, ID_STATICTEXT9, _("1"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
+    StaticText9->Disable();
+    FlexGridSizer4->Add(StaticText9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText10 = new wxStaticText(Panel1, ID_STATICTEXT10, _("2"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
+    StaticText10->Disable();
+    FlexGridSizer4->Add(StaticText10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText11 = new wxStaticText(Panel1, ID_STATICTEXT11, _("3"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
+    StaticText11->Disable();
+    FlexGridSizer4->Add(StaticText11, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText12 = new wxStaticText(Panel1, ID_STATICTEXT12, _("4"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT12"));
+    StaticText12->Disable();
+    FlexGridSizer4->Add(StaticText12, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText13 = new wxStaticText(Panel1, ID_STATICTEXT13, _("5"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT13"));
+    StaticText13->Disable();
+    FlexGridSizer4->Add(StaticText13, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText14 = new wxStaticText(Panel1, ID_STATICTEXT14, _("6"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT14"));
+    StaticText14->Disable();
+    StaticText14->SetForegroundColour(wxColour(0,0,0));
+    FlexGridSizer4->Add(StaticText14, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer6->Add(StaticBoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("emuclient"));
     FlexGridSizer5 = new wxFlexGridSizer(3, 1, 0, 0);
@@ -540,6 +588,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetFieldsCount(2,__wxStatusBarWidths_1);
     StatusBar1->SetStatusStyles(2,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
+    SingleInstanceChecker1.Create(_T("Sixemugui_") + wxGetUserId() + _T("_Guard"));
 
     Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectSixaxisBdaddr);
     Connect(ID_CHOICE2,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectPS3Bdaddr);
@@ -548,6 +597,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_CHOICE6,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnChoice6Select);
     Connect(ID_CHOICE7,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnChoice7Select);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton2Click);
+    Connect(ID_CHOICE8,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnChoice8Select);
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton1Click);
     Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox2Click);
     Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox3Click);
@@ -558,7 +608,22 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnAbout);
     //*)
 
-    launched = false;
+    if(SingleInstanceChecker1.IsAnotherRunning())
+    {
+        wxMessageBox( wxT("Sixemugui is already running!"), wxT("Error"), wxICON_ERROR);
+        exit(-1);
+    }
+
+    for(i=0; i<7; ++i)
+    {
+        dongle[i] = -1;
+        pid[i] = -1;
+    }
+
+    for(i=0; i<256; ++i)
+    {
+        dongleInUse[i] = false;
+    }
 
     if(!getuid())
     {
@@ -604,9 +669,16 @@ sixemuguiFrame::~sixemuguiFrame()
 void sixemuguiFrame::OnQuit(wxCommandEvent& event)
 {
     int answer;
-    if(launched)
+    int i;
+
+    for(i=0; i<7; ++i)
     {
-        answer = wxMessageBox(_("Emu process will be killed!"), _("Confirm"), wxNO | wxCANCEL);
+        if(dongle[i] >= 0) break;
+    }
+
+    if(i < 7)
+    {
+        answer = wxMessageBox(_("Emu processes will be killed!"), _("Confirm"), wxNO | wxCANCEL);
         if (answer == wxYES)
         {
             g_spawn_command_line_sync ("killall emu", NULL, NULL, NULL, NULL);
@@ -649,7 +721,15 @@ void sixemuguiFrame::OnSelectRefresh(wxCommandEvent& event)
 
 void sixemuguiFrame::OnButton2Click(wxCommandEvent& event)
 {
-    int answer = wxMessageBox(_("Did you saved your dongle address?"), _("Confirm"), wxYES_NO | wxCANCEL);
+    int answer;
+
+    if(dongleInUse[Choice3->GetSelection()])
+    {
+        wxMessageBox( wxT("This dongle is in use!"), wxT("Error"), wxICON_ERROR);
+        return;
+    }
+
+    answer = wxMessageBox(_("Did you saved your dongle address?"), _("Confirm"), wxYES_NO | wxCANCEL);
     if (answer == wxYES)
     {
         if(setDongleAddress() != -1)
@@ -686,8 +766,9 @@ void sixemuguiFrame::OnChoice7Select(wxCommandEvent& event)
 
 static char emu_bdaddr[18];
 static char bt_device[4];
+static char controller[2];
 
-static const char *emu_command[] = { "emu", emu_bdaddr, bt_device, "0", NULL };
+static const char *emu_command[] = { "emu", emu_bdaddr, bt_device, controller, NULL };
 
 typedef enum
 {
@@ -717,11 +798,10 @@ void* emu_thread(void* arg)
 
     if(test)
     {
+        *(int*)arg = child_pid;
         while(1)
         {
             ret = read(out, tmp, 1024);
-            tmp[1023] = '\0';
-            cout << tmp << endl;
             if(ret == -1 && errno != EAGAIN)
             {
                 emu_state = E_ERROR;
@@ -729,6 +809,15 @@ void* emu_thread(void* arg)
             }
             if(ret > 0)
             {
+                if(ret == 1024)
+                {
+                    tmp[1023] = '\0';
+                }
+                else
+                {
+                    tmp[ret] = '\0';
+                }
+                cout << tmp << endl;
                 if(strstr(tmp, "connected"))
                 {
                     emu_state = E_CONNECTED;
@@ -755,49 +844,95 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
     pthread_t thread;
     pthread_attr_t thread_attr;
     string command;
+    unsigned char c_id = Choice8->GetSelection();
+    unsigned char d_id = Choice3->GetSelection();
+    char kill_command[32];
+    int i;
 
-    if(!launched)
+    if(dongle[c_id] < 0)
     {
-        /*
-         * This allows not to launch the emu process as root.
-         */
-        command.append("gksudo hciconfig hci");
-        stringstream stream;
-        stream << Choice3->GetSelection();
-        command.append(stream.str());
-        command.append(" class 0x508");
-        g_spawn_command_line_sync (command.c_str(), NULL, NULL, NULL, NULL);
-        /*
-         * Update variables to be read by the thread.
-         */
-        strncpy(emu_bdaddr, Choice2->GetStringSelection().mb_str(), 18 );
-        snprintf(bt_device, 4, "%d", Choice3->GetSelection());
-        /*
-         * Launches the emu process.
-         */
-        emu_state = E_CONNECTING;
-        pthread_attr_init(&thread_attr);
-        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-        pthread_create( &thread, &thread_attr, emu_thread, NULL);
-
-        while(emu_state == E_CONNECTING)
-        {
-            sleep(1);
-        }
-        if(emu_state == E_CONNECTED)
+        if(!dongleInUse[d_id])
         {
             /*
-             * Update the GUI.
+             * This allows not to launch the emu process as root.
              */
-            Button1->SetLabel(_("Stop"));
-            launched = true;
-            Button3->Enable();
-            Button2->Disable();
-            wxMessageBox(_("Connected!\nStart emuclient now."), _("Info"));
+            command.append("gksudo --description Sixemugui hciconfig hci");
+            stringstream stream;
+            stream << Choice3->GetSelection();
+            command.append(stream.str());
+            command.append(" class 0x508");
+            g_spawn_command_line_sync (command.c_str(), NULL, NULL, NULL, NULL);
+            /*
+             * Update variables to be read by the thread.
+             */
+            strncpy(emu_bdaddr, Choice2->GetStringSelection().mb_str(), 18 );
+            snprintf(bt_device, 4, "%d", d_id);
+            snprintf(controller, 2, "%d", c_id);
+            /*
+             * Launches the emu process.
+             */
+            emu_state = E_CONNECTING;
+            pthread_attr_init(&thread_attr);
+            pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+            pthread_create( &thread, &thread_attr, emu_thread, pid+c_id);
+
+            while(emu_state == E_CONNECTING)
+            {
+                usleep(100000);
+            }
+            if(emu_state == E_CONNECTED)
+            {
+                /*
+                 * Update the GUI.
+                 */
+                Button1->SetLabel(_("Stop"));
+                dongleInUse[d_id] = true;
+                dongle[c_id] = d_id;
+                switch(c_id)
+                {
+                    case 0:
+                    StaticText5->Enable();
+                    StaticText5->SetForegroundColour( wxColour(255, 0, 0) );
+                    break;
+                    case 1:
+                    StaticText9->Enable();
+                    StaticText9->SetForegroundColour( wxColour(255, 0, 0) );
+                    break;
+                    case 2:
+                    StaticText10->Enable();
+                    StaticText10->SetForegroundColour( wxColour(255, 0, 0) );
+                    break;
+                    case 3:
+                    StaticText11->Enable();
+                    StaticText11->SetForegroundColour( wxColour(255, 0, 0) );
+                    break;
+                    case 4:
+                    StaticText12->Enable();
+                    StaticText12->SetForegroundColour( wxColour(255, 0, 0) );
+                    break;
+                    case 5:
+                    StaticText13->Enable();
+                    StaticText13->SetForegroundColour( wxColour(255, 0, 0) );
+                    break;
+                    case 6:
+                    StaticText14->Enable();
+                    StaticText14->SetForegroundColour( wxColour(255, 0, 0) );
+                    break;
+                    default:
+                    break;
+                }
+                Button3->Enable();
+                wxMessageBox(_("Connected!\nStart emuclient now."), _("Info"));
+            }
+            else if(emu_state == E_ERROR)
+            {
+                pid[c_id] = -1;
+                wxMessageBox( wxT("Connection error!\nDid you set the dongle address?\nIf yes, try another dongle!"), wxT("Error"), wxICON_ERROR);
+            }
         }
-        if(emu_state == E_ERROR)
+        else
         {
-            wxMessageBox( wxT("Connection error!\nDid you set the dongle address?\nIf yes, try another dongle!"), wxT("Error"), wxICON_ERROR);
+            wxMessageBox( wxT("This dongle is already used!"), wxT("Error"), wxICON_ERROR);
         }
     }
     else
@@ -805,11 +940,49 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
         /*
          * Kills the emu process.
          */
-        g_spawn_command_line_sync ("killall emu", NULL, NULL, NULL, NULL);
+        sprintf(kill_command, "kill %d", pid[c_id]);
+        cout << kill_command << endl;
+        g_spawn_command_line_sync (kill_command, NULL, NULL, NULL, NULL);
         Button1->SetLabel(_("Start"));
-        launched = false;
-        Button3->Disable();
-        Button2->Enable();
+        dongleInUse[dongle[c_id]] = false;
+        dongle[c_id] = -1;
+        switch(c_id)
+        {
+            case 0:
+            StaticText5->Disable();
+            break;
+            case 1:
+            StaticText9->Disable();
+            break;
+            case 2:
+            StaticText10->Disable();
+            break;
+            case 3:
+            StaticText11->Disable();
+            break;
+            case 4:
+            StaticText12->Disable();
+            break;
+            case 5:
+            StaticText13->Disable();
+            break;
+            case 6:
+            StaticText14->Disable();
+            break;
+            default:
+            break;
+        }
+        for(i=0; i<7; ++i)
+        {
+            if(dongle[i] >= 0)
+            {
+                break;
+            }
+        }
+        if(i == 7)
+        {
+            Button3->Disable();
+        }
     }
 }
 
@@ -891,4 +1064,16 @@ void sixemuguiFrame::OnCheckBox2Click(wxCommandEvent& event)
 void sixemuguiFrame::OnCheckBox3Click(wxCommandEvent& event)
 {
     CheckBox2->SetValue(false);
+}
+
+void sixemuguiFrame::OnChoice8Select(wxCommandEvent& event)
+{
+    if(dongle[Choice8->GetSelection()] >= 0)
+    {
+        Button1->SetLabel(_("Stop"));
+    }
+    else
+    {
+        Button1->SetLabel(_("Start"));
+    }
 }
