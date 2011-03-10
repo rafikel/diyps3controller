@@ -619,6 +619,15 @@ int main(int argc, char *argv[])
     {
       free(joystickName[i]);
     }
-
+#ifdef MULTIPLE_MICE_KB
+    for(i=0; i<MAX_DEVICES && mouseName[i]; ++i)
+    {
+      free(mouseName[i]);
+    }
+    for(i=0; i<MAX_DEVICES && keyboardName[i]; ++i)
+    {
+      free(keyboardName[i]);
+    }
+#endif
     return 0;
 }
