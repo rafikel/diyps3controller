@@ -547,7 +547,7 @@ int main(int argc, char *argv[])
                Otherwise, if we can't send it, just skip to the next one */
             //if (pfd[1].revents & POLLOUT) {
                 if (debug >= 1)
-                    sixaxis_dump_state(&state);
+                    sixaxis_dump_state(&state, 0);
                 if (sixaxis_periodic_report(&state)) {
 
                     if (debug >= 2) {

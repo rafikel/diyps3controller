@@ -601,7 +601,7 @@ int main(int argc, char *argv[])
 
             if (display)
             {
-              sixaxis_dump_state(state+i);
+              sixaxis_dump_state(state+i, i);
             }
 
             controller[i].send_command = 0;

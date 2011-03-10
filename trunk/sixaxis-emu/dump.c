@@ -24,7 +24,7 @@ static const char *sixaxis_button_name[SB_MAX] = {
     [sb_r3] = "r3"
 };
 
-void sixaxis_dump_state(struct sixaxis_state *state)
+void sixaxis_dump_state(struct sixaxis_state *state, int id)
 {
     int i;
     int ledmap = 0;
@@ -33,7 +33,7 @@ void sixaxis_dump_state(struct sixaxis_state *state)
     struct sixaxis_state_sys *sys = &state->sys;
     struct sixaxis_state_user *user = &state->user;
 
-    printf("%ld.%06ld %c %02x ", tv.tv_sec, tv.tv_usec,
+    printf("%d %ld.%06ld %c %02x ", id, tv.tv_sec, tv.tv_usec,
            sys->reporting_enabled ? 'R' : 'N',
            sys->feature_ef_byte_6);
 

@@ -3,6 +3,6 @@
 
 #include "sixaxis.h"
 
-void sixaxis_dump_state(struct sixaxis_state *state);
+void sixaxis_dump_state(struct sixaxis_state *state, int id);
 
 #endif
