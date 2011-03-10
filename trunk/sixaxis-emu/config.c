@@ -118,6 +118,12 @@ extern int joystickNbButton[255];
 extern const char* joystickName[MAX_DEVICES];
 extern int joystickVirtualIndex[MAX_DEVICES];
 extern int joystickSixaxis[MAX_DEVICES];
+#ifdef MULTIPLE_MICE_KB
+extern const char* mouseName[MAX_DEVICES];
+extern int mouseVirtualIndex[MAX_DEVICES];
+extern const char* keyboardName[MAX_DEVICES];
+extern int keyboardVirtualIndex[MAX_DEVICES];
+#endif
 
 /*
  * These variables are used to read the configuration.
@@ -1081,6 +1087,36 @@ static int ProcessDeviceElement(xmlNode * a_node)
         }
       }
     }
+#ifdef MULTIPLE_MICE_KB
+    else if(r_device_type == E_DEVICE_TYPE_MOUSE)
+    {
+      for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+      {
+        if (!strcmp(r_device_name, mouseName[i]))
+        {
+          if (r_device_id == mouseVirtualIndex[i])
+          {
+            r_device_id = i;
+            break;
+          }
+        }
+      }
+    }
+    else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
+    {
+      for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+      {
+        if (!strcmp(r_device_name, keyboardName[i]))
+        {
+          if (r_device_id == keyboardVirtualIndex[i])
+          {
+            r_device_id = i;
+            break;
+          }
+        }
+      }
+    }
+#endif
   }
 
   return ret;
