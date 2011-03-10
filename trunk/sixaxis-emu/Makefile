@@ -4,6 +4,7 @@ confdir=$(DESTDIR)/etc/emuclient
 BINS=emu emuclient sixaddr bdaddr
 CC=gcc
 CFLAGS=-Wall -g
+#CFLAGS+= -DMULTIPLE_MICE_KB -L/usr/local/lib
 
 all: $(BINS)
 
