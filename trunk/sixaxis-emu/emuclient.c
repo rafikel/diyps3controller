@@ -96,6 +96,12 @@ char* joystickName[MAX_DEVICES] = {};
 int joystickVirtualIndex[MAX_DEVICES] = {};
 int joystickNbButton[MAX_DEVICES] = {};
 int joystickSixaxis[MAX_DEVICES] = {};
+#ifdef MULTIPLE_MICE_KB
+char* mouseName[MAX_DEVICES] = {};
+int mouseVirtualIndex[MAX_DEVICES] = {};
+char* keyboardName[MAX_DEVICES] = {};
+int keyboardVirtualIndex[MAX_DEVICES] = {};
+#endif
 
 #define BT_SIXAXIS_NAME "PLAYSTATION(R)3 Controller"
 
@@ -104,6 +110,9 @@ int initialize(int width, int height, const char *title)
   int i = 0;
   int j;
   SDL_Joystick* joystick;
+#ifdef MULTIPLE_MICE_KB
+  const char* name;
+#endif
 
   /* Init SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
@@ -162,7 +171,46 @@ int initialize(int width, int height, const char *title)
       }
       i++;
   }
+#ifdef MULTIPLE_MICE_KB
+  i = 0;
+  while ((name = SDL_GetMouseName(i)))
+  {
+    mouseName[i] = strdup(name);
 
+    for (j = i - 1; j >= 0; --j)
+    {
+      if (!strcmp(mouseName[i], mouseName[j]))
+      {
+        mouseVirtualIndex[i] = mouseVirtualIndex[j] + 1;
+        break;
+      }
+    }
+    if (j < 0)
+    {
+      mouseVirtualIndex[i] = 0;
+    }
+    i++;
+  }
+  i = 0;
+  while ((name = SDL_GetKeyboardName(i)))
+  {
+    keyboardName[i] = strdup(name);
+
+    for (j = i - 1; j >= 0; --j)
+    {
+      if (!strcmp(keyboardName[i], keyboardName[j]))
+      {
+        keyboardVirtualIndex[i] = keyboardVirtualIndex[j] + 1;
+        break;
+      }
+    }
+    if (j < 0)
+    {
+      keyboardVirtualIndex[i] = 0;
+    }
+    i++;
+  }
+#endif
   return 1;
 }
 
