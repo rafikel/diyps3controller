@@ -1,0 +1,522 @@
+diff -uNr orig//include/SDL_events.h modif//include/SDL_events.h
+--- orig//include/SDL_events.h	2011-03-11 00:13:20.000000000 +0100
++++ modif//include/SDL_events.h	2011-03-10 22:35:45.000000000 +0100
+@@ -347,6 +347,10 @@
+ */
+ extern DECLSPEC Uint8 SDLCALL SDL_EventState(Uint8 type, int state);
+ 
++/* matlo */
++extern DECLSPEC const char* SDLCALL SDL_GetMouseName(int id);
++extern DECLSPEC const char* SDLCALL SDL_GetKeyboardName(int id);
++
+ /* Ends C function definitions when using C++ */
+ #ifdef __cplusplus
+ }
+diff -uNr orig//src/events/SDL_events_c.h modif//src/events/SDL_events_c.h
+--- orig//src/events/SDL_events_c.h	2011-03-11 00:13:20.000000000 +0100
++++ modif//src/events/SDL_events_c.h	2011-03-10 18:52:47.000000000 +0100
+@@ -55,10 +55,10 @@
+    (from SDL_active.c, SDL_mouse.c, SDL_keyboard.c, SDL_quit.c, SDL_events.c)
+  */
+ extern int SDL_PrivateAppActive(Uint8 gain, Uint8 state);
+-extern int SDL_PrivateMouseMotion(Uint8 buttonstate, int relative,
++extern int SDL_PrivateMouseMotion(int device, Uint8 buttonstate, int relative,
+ 						Sint16 x, Sint16 y);
+-extern int SDL_PrivateMouseButton(Uint8 state, Uint8 button,Sint16 x,Sint16 y);
+-extern int SDL_PrivateKeyboard(Uint8 state, SDL_keysym *key);
++extern int SDL_PrivateMouseButton(int device, Uint8 state, Uint8 button,Sint16 x,Sint16 y);
++extern int SDL_PrivateKeyboard(int device, Uint8 state, SDL_keysym *key);
+ extern int SDL_PrivateResize(int w, int h);
+ extern int SDL_PrivateExpose(void);
+ extern int SDL_PrivateQuit(void);
+diff -uNr orig//src/events/SDL_keyboard.c modif//src/events/SDL_keyboard.c
+--- orig//src/events/SDL_keyboard.c	2011-03-11 00:13:20.000000000 +0100
++++ modif//src/events/SDL_keyboard.c	2011-03-10 18:25:35.000000000 +0100
+@@ -29,6 +29,7 @@
+ #include "SDL_sysevents.h"
+ 
+ 
++
+ /* Global keystate information */
+ static Uint8  SDL_KeyState[SDLK_LAST];
+ static SDLMod SDL_ModState;
+@@ -348,7 +349,7 @@
+ 	for ( key=SDLK_FIRST; key<SDLK_LAST; ++key ) {
+ 		if ( SDL_KeyState[key] == SDL_PRESSED ) {
+ 			keysym.sym = key;
+-			SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++			SDL_PrivateKeyboard(0, SDL_RELEASED, &keysym);
+ 		}
+ 	}
+ 	SDL_KeyRepeat.timestamp = 0;
+@@ -396,7 +397,7 @@
+ }
+ 
+ /* These are global for SDL_eventloop.c */
+-int SDL_PrivateKeyboard(Uint8 state, SDL_keysym *keysym)
++int SDL_PrivateKeyboard(int device, Uint8 state, SDL_keysym *keysym)
+ {
+ 	SDL_Event event;
+ 	int posted, repeatable;
+@@ -404,6 +405,8 @@
+ 
+ 	SDL_memset(&event, 0, sizeof(event));
+ 
++	event.key.which = device;
++
+ #if 0
+ printf("The '%s' key has been %s\n", SDL_GetKeyName(keysym->sym), 
+ 				state == SDL_PRESSED ? "pressed" : "released");
+diff -uNr orig//src/events/SDL_mouse.c modif//src/events/SDL_mouse.c
+--- orig//src/events/SDL_mouse.c	2011-03-11 00:13:20.000000000 +0100
++++ modif//src/events/SDL_mouse.c	2011-03-10 21:47:10.000000000 +0100
+@@ -64,7 +64,7 @@
+ 	Uint8 i;
+ 	for ( i = 0; i < sizeof(SDL_ButtonState)*8; ++i ) {
+ 		if ( SDL_ButtonState & SDL_BUTTON(i) ) {
+-			SDL_PrivateMouseButton(SDL_RELEASED, i, 0, 0);
++			SDL_PrivateMouseButton(0, SDL_RELEASED, i, 0, 0);
+ 		}
+ 	}
+ }
+@@ -110,7 +110,7 @@
+ }
+ 
+ /* These are global for SDL_eventloop.c */
+-int SDL_PrivateMouseMotion(Uint8 buttonstate, int relative, Sint16 x, Sint16 y)
++int SDL_PrivateMouseMotion(int device, Uint8 buttonstate, int relative, Sint16 x, Sint16 y)
+ {
+ 	int posted;
+ 	Uint16 X, Y;
+@@ -181,6 +181,7 @@
+ 		SDL_Event event;
+ 		SDL_memset(&event, 0, sizeof(event));
+ 		event.type = SDL_MOUSEMOTION;
++		event.motion.which = device;
+ 		event.motion.state = buttonstate;
+ 		event.motion.x = X;
+ 		event.motion.y = Y;
+@@ -194,7 +195,7 @@
+ 	return(posted);
+ }
+ 
+-int SDL_PrivateMouseButton(Uint8 state, Uint8 button, Sint16 x, Sint16 y)
++int SDL_PrivateMouseButton(int device, Uint8 state, Uint8 button, Sint16 x, Sint16 y)
+ {
+ 	SDL_Event event;
+ 	int posted;
+@@ -254,6 +255,7 @@
+ 	/* Post the event, if desired */
+ 	posted = 0;
+ 	if ( SDL_ProcessEvents[event.type] == SDL_ENABLE ) {
++	  event.button.which = device;
+ 		event.button.state = state;
+ 		event.button.button = button;
+ 		event.button.x = x;
+@@ -266,3 +268,4 @@
+ 	return(posted);
+ }
+ 
++
+diff -uNr orig//src/video/dga/SDL_dgaevents.c modif//src/video/dga/SDL_dgaevents.c
+--- orig//src/video/dga/SDL_dgaevents.c	2011-03-11 00:13:19.000000000 +0100
++++ modif//src/video/dga/SDL_dgaevents.c	2011-03-08 23:37:01.000000000 +0100
+@@ -55,7 +55,7 @@
+ 	    /* Mouse motion? */
+ 	    case MotionNotify: {
+ 		if ( SDL_VideoSurface ) {
+-			posted = SDL_PrivateMouseMotion(0, 1,
++			posted = SDL_PrivateMouseMotion(0, 0, 1,
+ 					xevent.xmotion.dx, xevent.xmotion.dy);
+ 		}
+ 	    }
+@@ -63,14 +63,14 @@
+ 
+ 	    /* Mouse button press? */
+ 	    case ButtonPress: {
+-		posted = SDL_PrivateMouseButton(SDL_PRESSED, 
++		posted = SDL_PrivateMouseButton(0, SDL_PRESSED,
+ 					xevent.xbutton.button, 0, 0);
+ 	    }
+ 	    break;
+ 
+ 	    /* Mouse button release? */
+ 	    case ButtonRelease: {
+-		posted = SDL_PrivateMouseButton(SDL_RELEASED, 
++		posted = SDL_PrivateMouseButton(0, SDL_RELEASED,
+ 					xevent.xbutton.button, 0, 0);
+ 	    }
+ 	    break;
+@@ -107,7 +107,7 @@
+ 				keysym.unicode = (Uint8)keybuf[0];
+ 			}
+ 		}
+-		posted = SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++		posted = SDL_PrivateKeyboard(0, SDL_PRESSED, &keysym);
+ 	    }
+ 	    break;
+ 
+@@ -127,7 +127,7 @@
+ 		keysym.sym = X11_TranslateKeycode(DGA_Display, keycode);
+ 		keysym.mod = KMOD_NONE;
+ 		keysym.unicode = 0;
+-		posted = SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++		posted = SDL_PrivateKeyboard(0, SDL_RELEASED, &keysym);
+ 	    }
+ 	    break;
+ 	}
+diff -uNr orig//src/video/fbcon/SDL_fbevents.c modif//src/video/fbcon/SDL_fbevents.c
+--- orig//src/video/fbcon/SDL_fbevents.c	2011-03-11 00:13:20.000000000 +0100
++++ modif//src/video/fbcon/SDL_fbevents.c	2011-03-08 23:37:20.000000000 +0100
+@@ -712,7 +712,7 @@
+ 	Uint8 state;
+ 
+ 	if ( dx || dy ) {
+-		posted += SDL_PrivateMouseMotion(0, relative, dx, dy);
++		posted += SDL_PrivateMouseMotion(0, 0, relative, dx, dy);
+ 	}
+ 
+ 	/* Swap button 1 and 3 */
+@@ -731,7 +731,7 @@
+ 			} else {
+ 				state = SDL_RELEASED;
+ 			}
+-			posted += SDL_PrivateMouseButton(state, i+1, 0, 0);
++			posted += SDL_PrivateMouseButton(0, state, i+1, 0, 0);
+ 		}
+ 	}
+ }
+@@ -1022,7 +1022,7 @@
+ 			}
+ 			/* Fall through to normal processing */
+ 		    default:
+-			posted += SDL_PrivateKeyboard(pressed, &keysym);
++			posted += SDL_PrivateKeyboard(0, pressed, &keysym);
+ 			break;
+ 		}
+ 	}
+diff -uNr orig//src/video/SDL_cursor.c modif//src/video/SDL_cursor.c
+--- orig//src/video/SDL_cursor.c	2011-03-11 00:13:19.000000000 +0100
++++ modif//src/video/SDL_cursor.c	2011-03-08 23:16:35.000000000 +0100
+@@ -314,7 +314,7 @@
+ 	if ( video->WarpWMCursor ) {
+ 		video->WarpWMCursor(this, x, y);
+ 	} else {
+-		SDL_PrivateMouseMotion(0, 0, x, y);
++		SDL_PrivateMouseMotion(0, 0, 0, x, y);
+ 	}
+ }
+ 
+diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events.c
+--- orig//src/video/x11/SDL_x11events.c	2011-03-11 00:13:18.000000000 +0100
++++ modif//src/video/x11/SDL_x11events.c	2011-03-11 00:26:59.849833001 +0100
+@@ -34,6 +34,9 @@
+ #include <sys/time.h>
+ #include <unistd.h>
+ 
++/* matlo */
++#include <X11/extensions/XInput2.h>
++
+ #include "SDL_timer.h"
+ #include "SDL_syswm.h"
+ #include "../SDL_sysvideo.h"
+@@ -339,7 +342,7 @@
+ #endif
+ 	mouse_last.x = xevent->xmotion.x;
+ 	mouse_last.y = xevent->xmotion.y;
+-	posted = SDL_PrivateMouseMotion(0, 1, deltax, deltay);
++	posted = SDL_PrivateMouseMotion(0, 0, 1, deltax, deltay);
+ 
+ 	if ( (xevent->xmotion.x < MOUSE_FUDGE_FACTOR) ||
+ 	     (xevent->xmotion.x > (w-MOUSE_FUDGE_FACTOR)) ||
+@@ -354,7 +357,7 @@
+ #endif
+ 			mouse_last.x = xevent->xmotion.x;
+ 			mouse_last.y = xevent->xmotion.y;
+-			posted += SDL_PrivateMouseMotion(0, 1, deltax, deltay);
++			posted += SDL_PrivateMouseMotion(0, 0, 1, deltax, deltay);
+ 		}
+ 		mouse_last.x = w/2;
+ 		mouse_last.y = h/2;
+@@ -385,30 +388,100 @@
+ 	return(posted);
+ }
+ 
++static int kb_id[256] = {};
++static int ms_id[256] = {};
++
+ static int X11_DispatchEvent(_THIS)
+ {
+-	int posted;
+-	XEvent xevent;
++  int posted = 0;
++  XEvent xevent;
+ 
+-	SDL_memset(&xevent, '\0', sizeof (XEvent));  /* valgrind fix. --ryan. */
+-	XNextEvent(SDL_Display, &xevent);
++  SDL_memset(&xevent, '\0', sizeof(XEvent)); /* valgrind fix. --ryan. */
++  XNextEvent(SDL_Display, &xevent);
+ 
+-	/* Discard KeyRelease and KeyPress events generated by auto-repeat.
+-	   We need to do it before passing event to XFilterEvent.  Otherwise,
+-	   KeyRelease aware IMs are confused...  */
+-	if ( xevent.type == KeyRelease
+-	     && X11_KeyRepeat(SDL_Display, &xevent) ) {
+-		return 0;
+-	}
++  /* matlo */
++  int opcode, event, error;
++  if (!XQueryExtension(SDL_Display, "XInputExtension", &opcode, &event, &error))
++  {
++    printf("X Input extension not available.\n");
++    return 1;
++  }
++
++  if (xevent.xcookie.type == GenericEvent && xevent.xcookie.extension == opcode
++      && XGetEventData(SDL_Display, &xevent.xcookie))
++  {
++    XIRawEvent *ev = xevent.xcookie.data;
++
++    int ndevices;
++    XIDeviceInfo* device;
++    device = XIQueryDevice(SDL_Display, ev->deviceid, &ndevices);
++    if(device && (device->use == XIMasterKeyboard || device->use == XIMasterPointer)) return 1;
++
++    switch(ev->evtype)
++    {
++      case XI_RawMotion:
++        posted = SDL_PrivateMouseMotion(ms_id[ev->deviceid], 0, 1, ev->raw_values[0], ev->raw_values[1]);
++        break;
++      case XI_RawButtonPress:
++        posted = SDL_PrivateMouseButton(ms_id[ev->deviceid], SDL_PRESSED, ev->detail, 0, 0);
++        break;
++      case XI_RawButtonRelease:
++        posted = SDL_PrivateMouseButton(ms_id[ev->deviceid], SDL_RELEASED, ev->detail, 0, 0);
++        break;
++      case XI_RawKeyPress:
++      {
++        SDL_keysym keysym;
++        KeyCode keycode = ev->detail;
++        keysym.scancode = keycode;
++        keysym.sym = X11_TranslateKeycode(SDL_Display, keycode);
++        keysym.mod = KMOD_NONE;
++        keysym.unicode = 0;
++        posted = SDL_PrivateKeyboard(kb_id[ev->deviceid], SDL_PRESSED, &keysym);
++        break;
++      }
++      case XI_RawKeyRelease:
++      {
++        SDL_keysym keysym;
++        KeyCode keycode = ev->detail;
++        keysym.scancode = keycode;
++        keysym.sym = X11_TranslateKeycode(SDL_Display, keycode);
++        keysym.mod = KMOD_NONE;
++        keysym.unicode = 0;
++        posted = SDL_PrivateKeyboard(kb_id[ev->deviceid], SDL_RELEASED, &keysym);
++        break;
++      }
++    }
++
++    return posted;
++  }
++  else
++  {
++    switch (xevent.type)
++    {
++      case MotionNotify:
++      case ButtonPress:
++      case ButtonRelease:
++      case KeyPress:
++      case KeyRelease:
++        return 1;
++    }
++  }
++
++  /* Discard KeyRelease and KeyPress events generated by auto-repeat.
++   We need to do it before passing event to XFilterEvent.  Otherwise,
++   KeyRelease aware IMs are confused...  */
++  if (xevent.type == KeyRelease && X11_KeyRepeat(SDL_Display, &xevent))
++  {
++    return 0;
++  }
+ 
+ #ifdef X_HAVE_UTF8_STRING
+-	/* If we are translating with IM, we need to pass all events
+-	   to XFilterEvent, and discard those filtered events immediately.  */
+-	if ( SDL_TranslateUNICODE
+-	     && SDL_IM != NULL
+-	     && XFilterEvent(&xevent, None) ) {
+-		return 0;
+-	}
++  /* If we are translating with IM, we need to pass all events
++   to XFilterEvent, and discard those filtered events immediately.  */
++  if (SDL_TranslateUNICODE && SDL_IM != NULL && XFilterEvent(&xevent, None))
++  {
++    return 0;
++  }
+ #endif
+ 
+ 	posted = 0;
+@@ -1394,3 +1467,66 @@
+ 	X11_InitKeymap();
+ }
+ 
++extern Display* hack_dpy;
++
++/* matlo */
++static char keyboardName[256] = {};
++static char mouseName[256] = {};
++
++const char* SDL_GetKeyboardName(int id)
++{
++  int ndevices;
++  XIDeviceInfo *devices, *device;
++  int nb_keyboard = 0;
++
++  devices = XIQueryDevice(hack_dpy, XIAllDevices, &ndevices);
++
++  for (device = devices; device < devices + ndevices; device++)
++  {
++    switch (device->use)
++    {
++      case XISlaveKeyboard:
++        if(id == nb_keyboard)
++        {
++          strncpy(keyboardName, device->name, sizeof(keyboardName));
++          kb_id[device->deviceid] = id;
++          return keyboardName;
++        }
++        else
++        {
++          nb_keyboard++;
++        }
++        break;
++    }
++  }
++  return NULL;
++}
++
++const char* SDL_GetMouseName(int id)
++{
++  int ndevices;
++  XIDeviceInfo *devices, *device;
++  int nb_mouse = 0;
++
++  devices = XIQueryDevice(hack_dpy, XIAllDevices, &ndevices);
++
++  for (device = devices; device < devices + ndevices; device++)
++  {
++    switch (device->use)
++    {
++      case XISlavePointer:
++        if(id == nb_mouse)
++        {
++          strncpy(mouseName, device->name, sizeof(mouseName));
++          ms_id[device->deviceid] = id;
++          return mouseName;
++        }
++        else
++        {
++          nb_mouse++;
++        }
++        break;
++    }
++  }
++  return NULL;
++}
+diff -uNr orig//src/video/x11/SDL_x11mouse.c modif//src/video/x11/SDL_x11mouse.c
+--- orig//src/video/x11/SDL_x11mouse.c	2011-03-11 00:13:18.000000000 +0100
++++ modif//src/video/x11/SDL_x11mouse.c	2011-03-10 17:57:19.000000000 +0100
+@@ -170,12 +170,12 @@
+ void X11_WarpWMCursor(_THIS, Uint16 x, Uint16 y)
+ {
+ 	if ( using_dga & DGA_MOUSE ) {
+-		SDL_PrivateMouseMotion(0, 0, x, y);
++		SDL_PrivateMouseMotion(0, 0, 0, x, y);
+ 	} else if ( mouse_relative) {
+ 		/*	RJR: March 28, 2000
+ 			leave physical cursor at center of screen if
+ 			mouse hidden and grabbed */
+-		SDL_PrivateMouseMotion(0, 0, x, y);
++		SDL_PrivateMouseMotion(0, 0, 0, x, y);
+ 	} else {
+ 		SDL_Lock_EventThread();
+ 		XWarpPointer(SDL_Display, None, SDL_Window, 0, 0, 0, 0, x, y);
+diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
+--- orig//src/video/x11/SDL_x11video.c	2011-03-11 00:13:18.000000000 +0100
++++ modif//src/video/x11/SDL_x11video.c	2011-03-10 18:39:28.000000000 +0100
+@@ -58,6 +58,9 @@
+ #include <locale.h>
+ #endif
+ 
++/* matlo */
++#include <X11/extensions/XInput2.h>
++
+ /* Initialization/Query functions */
+ static int X11_VideoInit(_THIS, SDL_PixelFormat *vformat);
+ static SDL_Surface *X11_SetVideoMode(_THIS, SDL_Surface *current, int width, int height, int bpp, Uint32 flags);
+@@ -315,6 +318,9 @@
+ 	return classname;
+ }
+ 
++/* matlo */
++Display* hack_dpy;
++
+ /* Create auxiliary (toplevel) windows with the current visual */
+ static void create_aux_windows(_THIS)
+ {
+@@ -400,10 +406,24 @@
+     XFree(hints);
+     X11_SetCaptionNoLock(this, this->wm_title, this->wm_icon);
+ 
+-    app_event_mask = FocusChangeMask | KeyPressMask | KeyReleaseMask
++    app_event_mask = FocusChangeMask //matlo | KeyPressMask | KeyReleaseMask
+ 	| PropertyChangeMask | StructureNotifyMask | KeymapStateMask;
+     XSelectInput(SDL_Display, WMwindow, app_event_mask);
+ 
++    /* matlo */
++    hack_dpy = SDL_Display;
++    XIEventMask eventmask;
++    eventmask.deviceid = XIAllDevices;
++    eventmask.mask_len = XIMaskLen(XI_RawMotion);
++    eventmask.mask = calloc(eventmask.mask_len, sizeof(char));
++    XISetMask(eventmask.mask, XI_RawButtonPress);
++    XISetMask(eventmask.mask, XI_RawButtonRelease);
++    XISetMask(eventmask.mask, XI_RawKeyPress);
++    XISetMask(eventmask.mask, XI_RawKeyRelease);
++    XISetMask(eventmask.mask, XI_RawMotion);
++
++    XISelectEvents(SDL_Display, DefaultRootWindow(SDL_Display), &eventmask, 1);
++
+     /* Set the class hints so we can get an icon (AfterStep) */
+     get_classname(classname, sizeof(classname));
+     {
+@@ -1264,7 +1284,7 @@
+ 		if ( (x >= 0) && (x < SDL_VideoSurface->w) &&
+ 		     (y >= 0) && (y < SDL_VideoSurface->h) ) {
+ 			SDL_PrivateAppActive(1, SDL_APPMOUSEFOCUS);
+-			SDL_PrivateMouseMotion(0, 0, x, y);
++			SDL_PrivateMouseMotion(0, 0, 0, x, y);
+ 		} else {
+ 			SDL_PrivateAppActive(0, SDL_APPMOUSEFOCUS);
+ 		}
+@@ -1546,4 +1566,3 @@
+     XiGMiscDestroy();
+ #endif
+ }
+-
+diff -uNr orig//src/video/x11/SDL_x11wm.c modif//src/video/x11/SDL_x11wm.c
+--- orig//src/video/x11/SDL_x11wm.c	2011-03-11 00:13:18.000000000 +0100
++++ modif//src/video/x11/SDL_x11wm.c	2011-03-10 00:32:55.000000000 +0100
+@@ -369,9 +369,9 @@
+ 			XRaiseWindow(SDL_Display, WMwindow);
+ 
+ 		/* Make sure we register input focus */
+-		SDL_PrivateAppActive(1, SDL_APPINPUTFOCUS);
++		//SDL_PrivateAppActive(1, SDL_APPINPUTFOCUS);
+ 		/* Since we grabbed the pointer, we have mouse focus, too. */
+-		SDL_PrivateAppActive(1, SDL_APPMOUSEFOCUS);
++		//SDL_PrivateAppActive(1, SDL_APPMOUSEFOCUS);
+ 	}
+ 	XSync(SDL_Display, False);
+ 
