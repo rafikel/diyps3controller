@@ -209,7 +209,7 @@ diff -uNr orig//src/video/SDL_cursor.c modif//src/video/SDL_cursor.c
  
 diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events.c
 --- orig//src/video/x11/SDL_x11events.c	2011-03-11 00:13:18.000000000 +0100
-+++ modif//src/video/x11/SDL_x11events.c	2011-03-11 00:26:59.849833001 +0100
++++ modif//src/video/x11/SDL_x11events.c	2011-03-11 11:22:59.786632001 +0100
 @@ -34,6 +34,9 @@
  #include <sys/time.h>
  #include <unistd.h>
@@ -357,6 +357,42 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
  #endif
  
  	posted = 0;
+@@ -426,7 +499,7 @@
+ 		if ( this->input_grab == SDL_GRAB_OFF ) {
+ 			posted = SDL_PrivateAppActive(1, SDL_APPMOUSEFOCUS);
+ 		}
+-		posted = SDL_PrivateMouseMotion(0, 0,
++		posted = SDL_PrivateMouseMotion(0, 0, 0,
+ 				xevent.xcrossing.x,
+ 				xevent.xcrossing.y);
+ 	    }
+@@ -445,7 +518,7 @@
+ 			if ( this->input_grab == SDL_GRAB_OFF ) {
+ 				posted = SDL_PrivateAppActive(0, SDL_APPMOUSEFOCUS);
+ 			} else {
+-				posted = SDL_PrivateMouseMotion(0, 0,
++				posted = SDL_PrivateMouseMotion(0, 0, 0,
+ 						xevent.xcrossing.x,
+ 						xevent.xcrossing.y);
+ 			}
+@@ -515,7 +588,7 @@
+ #ifdef DEBUG_MOTION
+   printf("DGA motion: %d,%d\n", xevent.xmotion.x_root, xevent.xmotion.y_root);
+ #endif
+-					posted = SDL_PrivateMouseMotion(0, 1,
++					posted = SDL_PrivateMouseMotion(0, 0, 1,
+ 							xevent.xmotion.x_root,
+ 							xevent.xmotion.y_root);
+ 				} else {
+@@ -525,7 +598,7 @@
+ #ifdef DEBUG_MOTION
+   printf("X11 motion: %d,%d\n", xevent.xmotion.x, xevent.xmotion.y);
+ #endif
+-				posted = SDL_PrivateMouseMotion(0, 0,
++				posted = SDL_PrivateMouseMotion(0, 0, 0,
+ 						xevent.xmotion.x,
+ 						xevent.xmotion.y);
+ 			}
 @@ -1394,3 +1467,66 @@
  	X11_InitKeymap();
  }
