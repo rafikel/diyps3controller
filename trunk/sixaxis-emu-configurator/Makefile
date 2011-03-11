@@ -21,7 +21,7 @@ WINDRES = windres
 
 INC = -Iinclude -I/usr/include/libxml2
 CFLAGS = -Wall `wx-config --cflags` -Winvalid-pch -include wx_pch.h -DWX_PRECOMP
-CFLAGS += -DMULTIPLE_MICE_KB -L/usr/local/lib
+CFLAGS += -DMULTIPLE_MICE_KB -L$(DESTDIR)/usr/local/lib
 RESINC = 
 RCFLAGS = 
 LIBDIR =
