@@ -209,7 +209,7 @@ diff -uNr orig//src/video/SDL_cursor.c modif//src/video/SDL_cursor.c
  
 diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events.c
 --- orig//src/video/x11/SDL_x11events.c	2011-03-11 00:13:18.000000000 +0100
-+++ modif//src/video/x11/SDL_x11events.c	2011-03-11 11:22:59.786632001 +0100
++++ modif//src/video/x11/SDL_x11events.c	2011-03-11 11:39:18.428632001 +0100
 @@ -34,6 +34,9 @@
  #include <sys/time.h>
  #include <unistd.h>
@@ -393,6 +393,77 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
  						xevent.xmotion.x,
  						xevent.xmotion.y);
  			}
+@@ -535,14 +608,14 @@
+ 
+ 	    /* Mouse button press? */
+ 	    case ButtonPress: {
+-		posted = SDL_PrivateMouseButton(SDL_PRESSED, 
++		posted = SDL_PrivateMouseButton(0, SDL_PRESSED,
+ 					xevent.xbutton.button, 0, 0);
+ 	    }
+ 	    break;
+ 
+ 	    /* Mouse button release? */
+ 	    case ButtonRelease: {
+-		posted = SDL_PrivateMouseButton(SDL_RELEASED, 
++		posted = SDL_PrivateMouseButton(0, SDL_RELEASED,
+ 					xevent.xbutton.button, 0, 0);
+ 	    }
+ 	    break;
+@@ -562,7 +635,7 @@
+ 			keysym.sym = X11_TranslateKeycode(SDL_Display, keycode);
+ 			keysym.mod = KMOD_NONE;
+ 			keysym.unicode = 0;
+-			posted = SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++			posted = SDL_PrivateKeyboard(0, SDL_PRESSED, &keysym);
+ 			break;
+ 		}
+ 
+@@ -660,7 +733,7 @@
+ 			    keysym.sym = SDLK_UNKNOWN;
+ 			    keysym.mod = KMOD_NONE;
+ 			    keysym.unicode = utf16data[i];
+-			    posted = SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++			    posted = SDL_PrivateKeyboard(0, SDL_PRESSED, &keysym);
+ 			  }
+ 			  /* The keysym for the last character carries the
+ 			     scancode and symbol that corresponds to the X11
+@@ -670,7 +743,7 @@
+ 			    keysym.sym = (keycode ? X11_TranslateKeycode(SDL_Display, keycode) : 0);
+ 			    keysym.mod = KMOD_NONE;
+ 			    keysym.unicode = utf16data[utf16length - 1];
+-			    posted = SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++			    posted = SDL_PrivateKeyboard(0, SDL_PRESSED, &keysym);
+ 			  }
+ 			  break;
+ 			}
+@@ -690,7 +763,7 @@
+ 			    keysym.sym = X11_TranslateKeycode(SDL_Display, keycode);
+ 			    keysym.mod = KMOD_NONE;
+ 			    keysym.unicode = 0;
+-			    posted = SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++			    posted = SDL_PrivateKeyboard(0, SDL_PRESSED, &keysym);
+ 			  }
+ 			  break;
+ 			}
+@@ -735,7 +808,7 @@
+ 				keysym.unicode = (Uint8)keybuf[0];
+ 			}
+ 
+-			posted = SDL_PrivateKeyboard(SDL_PRESSED, &keysym);
++			posted = SDL_PrivateKeyboard(0, SDL_PRESSED, &keysym);
+ 		}
+ 	    }
+ 	    break;
+@@ -763,7 +836,7 @@
+ 		keysym.mod = KMOD_NONE;
+ 		keysym.unicode = 0;
+ 
+-		posted = SDL_PrivateKeyboard(SDL_RELEASED, &keysym);
++		posted = SDL_PrivateKeyboard(0, SDL_RELEASED, &keysym);
+ 	    }
+ 	    break;
+ 
 @@ -1394,3 +1467,66 @@
  	X11_InitKeymap();
  }
