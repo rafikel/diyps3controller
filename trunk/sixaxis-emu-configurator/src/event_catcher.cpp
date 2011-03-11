@@ -478,8 +478,12 @@ void event_catcher::run(wxString event_type)
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("keyboard");
+#ifndef MULTIPLE_MICE_KB
+                        m_DeviceId = _("0");
+#else
                         m_DeviceId = wxString::Format(wxT("%i"),keyboardVirtualIndex[event->key.which]);
                         m_DeviceName = keyboardName[event->key.which];
+#endif
                         m_EventType = _("button");
                         event_id = get_chars_from_key(event->key.keysym.sym);
                         m_EventId = wxString(event_id, wxConvUTF8);
@@ -490,8 +494,12 @@ void event_catcher::run(wxString event_type)
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("mouse");
+#ifndef MULTIPLE_MICE_KB
+                        m_DeviceId = _("0");
+#else
                         m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->button.which]);
                         m_DeviceName = mouseName[event->button.which];
+#endif
                         m_EventType = _("button");
                         event_id = get_chars_from_mouse_button(event->button.button);
                         m_EventId = wxString(event_id, wxConvUTF8);
@@ -544,8 +552,12 @@ void event_catcher::run(wxString event_type)
                         if(abs(event->motion.xrel) > 5 || abs(event->motion.yrel) > 5)
                         {
                             m_DeviceType = _("mouse");
+#ifndef MULTIPLE_MICE_KB
+                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
+#else
                             m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->motion.which]);
                             m_DeviceName = mouseName[event->button.which];
+#endif
                             m_EventType = _("axis");
                             done = 1;
                             if(abs(event->motion.xrel) > abs(event->motion.yrel))
@@ -563,8 +575,12 @@ void event_catcher::run(wxString event_type)
                         if(event->motion.xrel > 5 || event->motion.yrel > 5)
                         {
                             m_DeviceType = _("mouse");
+#ifndef MULTIPLE_MICE_KB
+                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
+#else
                             m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->motion.which]);
                             m_DeviceName = mouseName[event->button.which];
+#endif
                             m_EventType = _("axis");
                             done = 1;
                             if(event->motion.xrel > event->motion.yrel)
@@ -582,8 +598,12 @@ void event_catcher::run(wxString event_type)
                         if(event->motion.xrel < -5 || event->motion.yrel < -5)
                         {
                             m_DeviceType = _("mouse");
+#ifndef MULTIPLE_MICE_KB
+                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
+#else
                             m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->motion.which]);
                             m_DeviceName = mouseName[event->button.which];
+#endif
                             m_EventType = _("axis");
                             done = 1;
                             if(event->motion.xrel < event->motion.yrel)
