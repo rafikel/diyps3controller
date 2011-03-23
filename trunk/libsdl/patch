@@ -14,7 +14,7 @@ diff -uNr orig//include/SDL_events.h modif//include/SDL_events.h
  }
 diff -uNr orig//src/events/SDL_keyboard.c modif//src/events/SDL_keyboard.c
 --- orig//src/events/SDL_keyboard.c	2009-10-13 01:07:14.000000000 +0200
-+++ modif//src/events/SDL_keyboard.c	2011-03-20 19:10:36.773462002 +0100
++++ modif//src/events/SDL_keyboard.c	2011-03-23 22:13:32.428997001 +0100
 @@ -395,6 +395,8 @@
  	return (char *)(keyname);
  }
@@ -33,9 +33,31 @@ diff -uNr orig//src/events/SDL_keyboard.c modif//src/events/SDL_keyboard.c
  #if 0
  printf("The '%s' key has been %s\n", SDL_GetKeyName(keysym->sym), 
  				state == SDL_PRESSED ? "pressed" : "released");
+@@ -533,13 +537,14 @@
+ 	}
+ 
+ 	if ( keysym->sym != SDLK_UNKNOWN ) {
+-		/* Drop events that don't change state */
+-		if ( SDL_KeyState[keysym->sym] == state ) {
+-#if 0
+-printf("Keyboard event didn't change state - dropped!\n");
+-#endif
+-			return(0);
+-		}
++/* matlo */
++//		/* Drop events that don't change state */
++//		if ( SDL_KeyState[keysym->sym] == state ) {
++//#if 0
++//printf("Keyboard event didn't change state - dropped!\n");
++//#endif
++//			return(0);
++//		}
+ 
+ 		/* Update internal keyboard state */
+ 		SDL_ModState = (SDLMod)modstate;
 diff -uNr orig//src/events/SDL_mouse.c modif//src/events/SDL_mouse.c
 --- orig//src/events/SDL_mouse.c	2009-10-13 01:07:14.000000000 +0200
-+++ modif//src/events/SDL_mouse.c	2011-03-20 19:39:09.812462002 +0100
++++ modif//src/events/SDL_mouse.c	2011-03-23 22:13:40.763997001 +0100
 @@ -109,6 +109,8 @@
  	SDL_MouseMaxY = (Sint16)maxY;
  }
@@ -45,7 +67,15 @@ diff -uNr orig//src/events/SDL_mouse.c modif//src/events/SDL_mouse.c
  /* These are global for SDL_eventloop.c */
  int SDL_PrivateMouseMotion(Uint8 buttonstate, int relative, Sint16 x, Sint16 y)
  {
-@@ -202,6 +204,8 @@
+@@ -180,6 +182,7 @@
+ 	if ( SDL_ProcessEvents[SDL_MOUSEMOTION] == SDL_ENABLE ) {
+ 		SDL_Event event;
+ 		SDL_memset(&event, 0, sizeof(event));
++	  event.motion.which = mouse_id; /* matlo */
+ 		event.type = SDL_MOUSEMOTION;
+ 		event.motion.state = buttonstate;
+ 		event.motion.x = X;
+@@ -202,6 +205,8 @@
  	Uint8 buttonstate;
  
  	SDL_memset(&event, 0, sizeof(event));
@@ -232,7 +262,7 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
 +}
 diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
 --- orig//src/video/x11/SDL_x11video.c	2009-10-13 01:07:15.000000000 +0200
-+++ modif//src/video/x11/SDL_x11video.c	2011-03-20 19:44:01.736462002 +0100
++++ modif//src/video/x11/SDL_x11video.c	2011-03-23 22:13:50.589997001 +0100
 @@ -58,6 +58,9 @@
  #include <locale.h>
  #endif
@@ -279,6 +309,11 @@ diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
      /* Set the class hints so we can get an icon (AfterStep) */
      get_classname(classname, sizeof(classname));
      {
+@@ -1546,4 +1566,3 @@
+     XiGMiscDestroy();
+ #endif
+ }
+-
 diff -uNr orig//src/video/x11/SDL_x11wm.c modif//src/video/x11/SDL_x11wm.c
 --- orig//src/video/x11/SDL_x11wm.c	2009-10-13 01:07:15.000000000 +0200
 +++ modif//src/video/x11/SDL_x11wm.c	2011-03-10 00:32:55.683378502 +0100
