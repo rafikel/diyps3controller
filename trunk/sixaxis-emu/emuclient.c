@@ -278,6 +278,9 @@ void move_y(int y)
 void circle_test()
 {
   int i;
+#ifdef MULTIPLE_MICE_KB
+  int j;
+#endif
   const double pi = 3.14159265;
   const int m = 294;
   const int step = 1;
@@ -285,10 +288,21 @@ void circle_test()
 
   for(i=1; i<360; i+=step)
   {
+#ifdef MULTIPLE_MICE_KB
+    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
+    {
+      event.motion.which = j;
+      event.type = SDL_MOUSEMOTION;
+      event.motion.xrel = round(m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
+      event.motion.yrel = round(m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
+      SDL_PushEvent(&event);
+    }
+#else
     event.type = SDL_MOUSEMOTION;
     event.motion.xrel = round(m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
     event.motion.yrel = round(m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
     SDL_PushEvent(&event);
+#endif
     usleep(REFRESH_PERIOD);
   }
 }
