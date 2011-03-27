@@ -1429,6 +1429,9 @@ static int ProcessTriggerElement(xmlNode * a_node)
   char* r_switch_back;
   char* event_id;
   int switch_back = 0;
+#ifdef MULTIPLE_MICE_KB
+  int i;
+#endif
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -1445,6 +1448,58 @@ static int ProcessTriggerElement(xmlNode * a_node)
 
     if(ret != -1)
     {
+#ifdef MULTIPLE_MICE_KB
+      if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+      {
+        for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
+        {
+          if (!strcmp(r_device_name, joystickName[i]))
+          {
+            if (r_device_id == joystickVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
+          }
+        }
+      }
+      else if(r_device_type == E_DEVICE_TYPE_MOUSE)
+      {
+        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+        r_event_id = get_mouse_event_id_from_buffer(event_id);
+        xmlFree(event_id);
+
+        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+        {
+          if (!strcmp(r_device_name, mouseName[i]))
+          {
+            if (r_device_id == mouseVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
+          }
+        }
+      }
+      else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
+      {
+        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+        r_event_id = get_key_from_buffer(event_id);
+        xmlFree(event_id);
+
+        for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+        {
+          if (!strcmp(r_device_name, keyboardName[i]))
+          {
+            if (r_device_id == keyboardVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
+          }
+        }
+      }
+#else
       if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
       {
         event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
@@ -1457,6 +1512,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
         r_event_id = get_mouse_event_id_from_buffer(event_id);
         xmlFree(event_id);
       }
+#endif
     }
 
     r_switch_back = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
