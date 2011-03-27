@@ -310,10 +310,53 @@ void circle_test()
 void dz_test()
 {
   int i;
+#ifdef MULTIPLE_MICE_KB
+  int j;
+#endif
   SDL_Event event = {};
 
   testing = 1;
 
+#ifdef MULTIPLE_MICE_KB
+  for(i=0; i<200; ++i)
+  {
+    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
+    {
+      event.motion.which = j;
+      event.type = SDL_MOUSEMOTION;
+      event.motion.xrel = 1;
+      event.motion.yrel = 0;
+      SDL_PushEvent(&event);
+    }
+    usleep(REFRESH_PERIOD);
+  }
+
+  for(i=0; i<200; ++i)
+  {
+    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
+    {
+      event.motion.which = j;
+      event.type = SDL_MOUSEMOTION;
+      event.motion.xrel = 1;
+      event.motion.yrel = 1;
+      SDL_PushEvent(&event);
+    }
+    usleep(REFRESH_PERIOD);
+  }
+
+  for(i=0; i<200; ++i)
+  {
+    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
+    {
+      event.motion.which = j;
+      event.type = SDL_MOUSEMOTION;
+      event.motion.xrel = 0;
+      event.motion.yrel = 1;
+      SDL_PushEvent(&event);
+    }
+    usleep(REFRESH_PERIOD);
+  }
+#else
   for(i=0; i<200; ++i)
   {
     event.type = SDL_MOUSEMOTION;
@@ -340,6 +383,7 @@ void dz_test()
     SDL_PushEvent(&event);
     usleep(REFRESH_PERIOD);
   }
+#endif
 
   sleep(1);//give time to purge events
 
