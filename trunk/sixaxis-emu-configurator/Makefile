@@ -19,13 +19,13 @@ AR = ar
 RANLIB = ranlib
 WINDRES = windres
 
-INC = -Iinclude -I/usr/include/libxml2
+INC = -Iinclude -I/usr/include/libxml2 -I../libsdl/include
 CFLAGS = -Wall `wx-config --cflags` -Winvalid-pch -include wx_pch.h -DWX_PRECOMP
-#CFLAGS += -DMULTIPLE_MICE_KB -L$(DESTDIR)/usr/local/lib
+CFLAGS += -DMULTIPLE_MICE_KB
 RESINC = 
 RCFLAGS = 
 LIBDIR =
-LIB = -lSDL -lxml2
+LIB = -L../libsdl/lib -lSDL -lxml2
 LDFLAGS = `wx-config --libs`
 
 INC_RELEASE = $(INC)
