@@ -1,7 +1,27 @@
+diff -uNr orig//configure modif//configure
+--- orig//configure	2009-10-17 19:35:13.000000000 +0200
++++ modif//configure	2011-03-30 19:45:40.377591584 +0200
+@@ -4046,7 +4046,7 @@
+ # if backwards compatibility has been broken,
+ # set SDL_BINARY_AGE and SDL_INTERFACE_AGE to 0.
+ #
+-SDL_MAJOR_VERSION=1
++SDL_MAJOR_VERSION=9
+ SDL_MINOR_VERSION=2
+ SDL_MICRO_VERSION=14
+ SDL_INTERFACE_AGE=3
 diff -uNr orig//include/SDL_events.h modif//include/SDL_events.h
 --- orig//include/SDL_events.h	2009-10-13 01:07:19.000000000 +0200
-+++ modif//include/SDL_events.h	2011-03-20 19:11:10.932462002 +0100
-@@ -347,6 +347,10 @@
++++ modif//include/SDL_events.h	2011-03-30 19:28:25.962591584 +0200
+@@ -138,6 +138,7 @@
+ 	Uint16 x, y;	/**< The X/Y coordinates of the mouse */
+ 	Sint16 xrel;	/**< The relative motion in the X direction */
+ 	Sint16 yrel;	/**< The relative motion in the Y direction */
++	Uint32 timestamp; /* matlo */
+ } SDL_MouseMotionEvent;
+ 
+ /** Mouse button event structure */
+@@ -347,6 +348,10 @@
  */
  extern DECLSPEC Uint8 SDLCALL SDL_EventState(Uint8 type, int state);
  
@@ -57,25 +77,28 @@ diff -uNr orig//src/events/SDL_keyboard.c modif//src/events/SDL_keyboard.c
  		SDL_ModState = (SDLMod)modstate;
 diff -uNr orig//src/events/SDL_mouse.c modif//src/events/SDL_mouse.c
 --- orig//src/events/SDL_mouse.c	2009-10-13 01:07:14.000000000 +0200
-+++ modif//src/events/SDL_mouse.c	2011-03-23 22:13:40.763997001 +0100
-@@ -109,6 +109,8 @@
++++ modif//src/events/SDL_mouse.c	2011-03-30 19:29:16.309591584 +0200
+@@ -109,6 +109,10 @@
  	SDL_MouseMaxY = (Sint16)maxY;
  }
  
-+Uint8 mouse_id; /* matlo */
++/* matlo */
++Uint8 mouse_id;
++Uint32 timestamp;
 +
  /* These are global for SDL_eventloop.c */
  int SDL_PrivateMouseMotion(Uint8 buttonstate, int relative, Sint16 x, Sint16 y)
  {
-@@ -180,6 +182,7 @@
+@@ -180,6 +184,8 @@
  	if ( SDL_ProcessEvents[SDL_MOUSEMOTION] == SDL_ENABLE ) {
  		SDL_Event event;
  		SDL_memset(&event, 0, sizeof(event));
 +	  event.motion.which = mouse_id; /* matlo */
++	  event.motion.timestamp = timestamp;
  		event.type = SDL_MOUSEMOTION;
  		event.motion.state = buttonstate;
  		event.motion.x = X;
-@@ -202,6 +205,8 @@
+@@ -202,6 +208,8 @@
  	Uint8 buttonstate;
  
  	SDL_memset(&event, 0, sizeof(event));
@@ -86,7 +109,7 @@ diff -uNr orig//src/events/SDL_mouse.c modif//src/events/SDL_mouse.c
  	if ( x || y ) {
 diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events.c
 --- orig//src/video/x11/SDL_x11events.c	2009-10-13 01:07:15.000000000 +0200
-+++ modif//src/video/x11/SDL_x11events.c	2011-03-20 19:18:12.415462002 +0100
++++ modif//src/video/x11/SDL_x11events.c	2011-03-30 19:30:40.280591584 +0200
 @@ -34,6 +34,9 @@
  #include <sys/time.h>
  #include <unistd.h>
@@ -97,7 +120,7 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
  #include "SDL_timer.h"
  #include "SDL_syswm.h"
  #include "../SDL_sysvideo.h"
-@@ -385,14 +388,94 @@
+@@ -385,14 +388,89 @@
  	return(posted);
  }
  
@@ -105,7 +128,9 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
 +static int kb_id[256] = {};
 +static int ms_id[256] = {};
 +extern Uint8 mouse_id;
++extern Uint32 timestamp;
 +extern Uint8 keyboard_id;
++extern int opcode;
 +
 +
  static int X11_DispatchEvent(_THIS)
@@ -118,40 +143,32 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
  	SDL_memset(&xevent, '\0', sizeof (XEvent));  /* valgrind fix. --ryan. */
  	XNextEvent(SDL_Display, &xevent);
  
-+  /* matlo */
-+  int opcode, event, error;
-+  if (!XQueryExtension(SDL_Display, "XInputExtension", &opcode, &event, &error))
-+  {
-+    printf("X Input extension not available.\n");
-+    return 1;
-+  }
-+
 +  if (xevent.xcookie.type == GenericEvent && xevent.xcookie.extension == opcode
 +      && XGetEventData(SDL_Display, &xevent.xcookie))
 +  {
 +    XIRawEvent *ev = xevent.xcookie.data;
 +
-+    int ndevices;
-+    XIDeviceInfo* device;
-+    device = XIQueryDevice(SDL_Display, ev->deviceid, &ndevices);
-+    if(device && (device->use == XIMasterKeyboard || device->use == XIMasterPointer)) return 1;
-+
 +    switch(ev->evtype)
 +    {
 +      case XI_RawMotion:
++        if(ms_id[ev->deviceid] < 0) return 1;
 +        mouse_id = ms_id[ev->deviceid];
++        timestamp = ev->time;
 +        posted = SDL_PrivateMouseMotion(0, 1, ev->raw_values[0], ev->raw_values[1]);
 +        break;
 +      case XI_RawButtonPress:
++        if(ms_id[ev->deviceid] < 0) return 1;
 +        mouse_id = ms_id[ev->deviceid];
 +        posted = SDL_PrivateMouseButton(SDL_PRESSED, ev->detail, 0, 0);
 +        break;
 +      case XI_RawButtonRelease:
++        if(ms_id[ev->deviceid] < 0) return 1;
 +        mouse_id = ms_id[ev->deviceid];
 +        posted = SDL_PrivateMouseButton(SDL_RELEASED, ev->detail, 0, 0);
 +        break;
 +      case XI_RawKeyPress:
 +      {
++        if(kb_id[ev->deviceid] < 0) return 1;
 +        SDL_keysym keysym;
 +        KeyCode keycode = ev->detail;
 +        keysym.scancode = keycode;
@@ -164,6 +181,7 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
 +      }
 +      case XI_RawKeyRelease:
 +      {
++        if(kb_id[ev->deviceid] < 0) return 1;
 +        SDL_keysym keysym;
 +        KeyCode keycode = ev->detail;
 +        keysym.scancode = keycode;
@@ -194,7 +212,7 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
  	/* Discard KeyRelease and KeyPress events generated by auto-repeat.
  	   We need to do it before passing event to XFilterEvent.  Otherwise,
  	   KeyRelease aware IMs are confused...  */
-@@ -1394,3 +1477,65 @@
+@@ -1394,3 +1472,71 @@
  	X11_InitKeymap();
  }
  
@@ -227,6 +245,9 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
 +          nb_keyboard++;
 +        }
 +        break;
++      default:
++        kb_id[device->deviceid] = -1;
++        break;
 +    }
 +  }
 +  return NULL;
@@ -256,13 +277,16 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
 +          nb_mouse++;
 +        }
 +        break;
++      default:
++        ms_id[device->deviceid] = -1;
++        break;
 +    }
 +  }
 +  return NULL;
 +}
 diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
 --- orig//src/video/x11/SDL_x11video.c	2009-10-13 01:07:15.000000000 +0200
-+++ modif//src/video/x11/SDL_x11video.c	2011-03-23 22:13:50.589997001 +0100
++++ modif//src/video/x11/SDL_x11video.c	2011-03-30 19:31:03.145591584 +0200
 @@ -58,6 +58,9 @@
  #include <locale.h>
  #endif
@@ -273,17 +297,18 @@ diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
  /* Initialization/Query functions */
  static int X11_VideoInit(_THIS, SDL_PixelFormat *vformat);
  static SDL_Surface *X11_SetVideoMode(_THIS, SDL_Surface *current, int width, int height, int bpp, Uint32 flags);
-@@ -315,6 +318,9 @@
+@@ -315,6 +318,10 @@
  	return classname;
  }
  
 +/* matlo */
 +Display* hack_dpy;
++int opcode;
 +
  /* Create auxiliary (toplevel) windows with the current visual */
  static void create_aux_windows(_THIS)
  {
-@@ -400,10 +406,24 @@
+@@ -400,10 +407,32 @@
      XFree(hints);
      X11_SetCaptionNoLock(this, this->wm_title, this->wm_icon);
  
@@ -306,10 +331,18 @@ diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
 +
 +    XISelectEvents(SDL_Display, DefaultRootWindow(SDL_Display), &eventmask, 1);
 +
++    /* matlo */
++    int event, error;
++    if (!XQueryExtension(SDL_Display, "XInputExtension", &opcode, &event, &error))
++    {
++      printf("X Input extension not available.\n");
++      exit(-1);
++    }
++
      /* Set the class hints so we can get an icon (AfterStep) */
      get_classname(classname, sizeof(classname));
      {
-@@ -1546,4 +1566,3 @@
+@@ -1546,4 +1575,3 @@
      XiGMiscDestroy();
  #endif
  }
