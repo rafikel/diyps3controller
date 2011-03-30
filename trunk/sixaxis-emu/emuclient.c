@@ -33,7 +33,7 @@
 #include <pwd.h>
 
 #include <pthread.h>
-#include <time.h>
+#include <sys/time.h>
 
 #define SCREEN_WIDTH  8
 #define SCREEN_HEIGHT 8
