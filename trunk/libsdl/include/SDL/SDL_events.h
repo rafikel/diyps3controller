@@ -138,6 +138,7 @@ typedef struct SDL_MouseMotionEvent {
 	Uint16 x, y;	/**< The X/Y coordinates of the mouse */
 	Sint16 xrel;	/**< The relative motion in the X direction */
 	Sint16 yrel;	/**< The relative motion in the Y direction */
+	Uint32 timestamp; /* matlo */
 } SDL_MouseMotionEvent;
 
 /** Mouse button event structure */
