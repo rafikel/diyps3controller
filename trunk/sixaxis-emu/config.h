@@ -24,13 +24,14 @@ typedef enum
 typedef struct
 {
   int changed;
-  int merge_x;
-  int merge_y;
+  double merge_x;
+  double merge_y;
   int nb_motion;
   int postpone_wheel_up;
   int postpone_wheel_down;
   int postpone_button_x1;
   int postpone_button_x2;
+  unsigned int last_timestamp;
 }s_mouse_control;
 
 typedef struct
