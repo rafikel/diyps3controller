@@ -3,8 +3,9 @@ bindir=$(prefix)/bin
 confdir=$(DESTDIR)/etc/emuclient
 BINS=emu emuclient sixaddr bdaddr
 CC=gcc
-CFLAGS=-Wall -g
-#CFLAGS+= -DMULTIPLE_MICE_KB -L$(DESTDIR)/usr/local/lib
+CFLAGS=-Wall -g -DMULTIPLE_MICE_KB
+LIB=-L../libsdl/lib -lSDL -lxml2 -lXi
+INC=-I../libsdl/include -I/usr/include/libxml2
 
 all: $(BINS)
 
@@ -12,19 +13,19 @@ clean:
 	rm -f $(BINS) *~ *.o
 
 emu: emu.o sixaxis.o dump.o l2cap_con.o bt_utils.o
-	$(CC) $(CFLAGS) -lbluetooth -o $@ $^
+	$(CC) -o $@ $^ -lbluetooth
 
 emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o
-	$(CC) $(CFLAGS) -lSDL -lxml2 -o $@ $^
+	$(CC) -o $@ $^ $(LIB)
 
 sixaddr: utils/sixaddr.c
-	$(CC) $(CFLAGS) -lusb -o $@ $^
+	$(CC) -o $@ $^ -lusb
 
 bdaddr: utils/bdaddr.c utils/oui.c
-	$(CC) $(CFLAGS) -lbluetooth -o $@ $^
+	$(CC) -o $@ $^ -lbluetooth
 
 %.o: %.c
-	$(CC) -o $@ -c $< $(CFLAGS) -I/usr/include/libxml2
+	$(CC) $(CFLAGS) $(INC) -o $@ -c $< 
 	
 install: all
 	mkdir -p $(prefix)
