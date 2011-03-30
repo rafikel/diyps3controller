@@ -34,8 +34,8 @@
 
 #include <pthread.h>
 
-#define SCREEN_WIDTH  320
-#define SCREEN_HEIGHT 240
+#define SCREEN_WIDTH  8
+#define SCREEN_HEIGHT 8
 #define DEFAULT_DEAD_ZONE_X 18
 #define DEFAULT_DEAD_ZONE_Y 20
 #define DEFAULT_MULTIPLIER_X 4
@@ -275,6 +275,40 @@ void move_y(int y)
     state[0].user.axis[0][1] = y;
 }
 
+void auto_test()
+{
+
+  state[0].user.axis[1][0] = 48;
+  controller[0].send_command = 1;
+
+  sleep(18);
+
+  state[0].user.axis[1][0] = 0;
+  controller[0].send_command = 1;
+
+  sleep(2);
+
+  state[0].user.axis[1][0] = 88;
+  controller[0].send_command = 1;
+
+  sleep(5);
+
+  state[0].user.axis[1][0] = 0;
+  controller[0].send_command = 1;
+
+  sleep(2);
+
+  state[0].user.axis[1][0] = 128;
+  controller[0].send_command = 1;
+
+  sleep(2);
+
+  state[0].user.axis[1][0] = 0;
+  controller[0].send_command = 1;
+
+  sleep(2);
+}
+
 void circle_test()
 {
   int i;
@@ -427,6 +461,15 @@ static void key(int sym, int down)
       }
       break;
 
+    case SDLK_o:
+    if(down && rctrl)
+      {
+        pthread_attr_init(&thread_attr);
+        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+        pthread_create( &thread, &thread_attr, (void*)auto_test, NULL);
+      }
+      break;
+
     case SDLK_ESCAPE: if(down) done = 1; break;
   }
 
@@ -529,6 +572,9 @@ int main(int argc, char *argv[])
     unsigned char buf[48];
     int read = 0;
     char* file = NULL;
+    double ratio;
+    struct timeval t0, t1;
+    int time_to_sleep;
     
     setlinebuf(stdout);
 
@@ -587,8 +633,15 @@ int main(int argc, char *argv[])
     done = 0;
     while(!done)
     {
+        gettimeofday(&t0, NULL);
+
         SDL_PumpEvents();
         num_evt = SDL_PeepEvents(events, sizeof(events)/sizeof(events[0]), SDL_GETEVENT, SDL_ALLEVENTS);
+
+        if(num_evt > EVENT_BUFFER_SIZE)
+        {
+          printf("buffer too small!!!\n");
+        }
 
         for(event=events; event<events+num_evt; ++event)
         {
@@ -604,10 +657,18 @@ int main(int argc, char *argv[])
           }
           else
           {
-            mouse_control[event->motion.which].merge_x += event->motion.xrel;
-            mouse_control[event->motion.which].merge_y += event->motion.yrel;
-            mouse_control[event->motion.which].nb_motion++;
+            ratio = (double)(event->motion.timestamp - mouse_control[event->motion.which].last_timestamp)/10;
+            if(ratio <= 0) ratio = 1;//mouse calibration
+            if(ratio > 1) ratio = 0.5;//average
+            mouse_control[event->motion.which].merge_x += (event->motion.xrel*ratio);
+            /*printf("x: %d\n", event->motion.xrel);
+            printf("ratio: %.4f\n", ratio);
+            printf("add: %.4f\n", event->motion.xrel*ratio);
+            printf("merge_x: %.4f\n", mouse_control[event->motion.which].merge_x);*/
+            mouse_control[event->motion.which].merge_y += (event->motion.yrel*ratio);
+            mouse_control[event->motion.which].nb_motion = 1;
             mouse_control[event->motion.which].changed = 1;
+            mouse_control[event->motion.which].last_timestamp = event->motion.timestamp;
           }
 
           trigger_lookup(event);
@@ -665,7 +726,19 @@ int main(int argc, char *argv[])
             controller[i].send_command = 0;
           }
         }
-        usleep(REFRESH_PERIOD);
+
+        gettimeofday(&t1, NULL);
+
+        time_to_sleep = REFRESH_PERIOD - ((t1.tv_sec-t0.tv_sec)*1000000+t1.tv_usec-t0.tv_usec);
+
+        if(time_to_sleep > 0)
+        {
+          usleep(time_to_sleep);
+        }
+        else
+        {
+          printf("processing time higher than 10ms!!\n");
+        }
     }
 
     printf("Exiting\n");
