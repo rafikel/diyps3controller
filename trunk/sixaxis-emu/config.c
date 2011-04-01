@@ -26,7 +26,7 @@
 #define X_ATTR_VALUE_YES "yes"
 #define X_ATTR_VALUE_NO "no"
 
-#define MAX_CONFIGURATIONS 4
+#define MAX_CONFIGURATIONS 8
 #define MAX_CONTROLS 256
 
 #define CONFIG_DIR ".emuclient/config"
