@@ -17,6 +17,8 @@
 #define HID_TYPE_OUTPUT 2
 #define HID_TYPE_FEATURE 3
 
+#define REFRESH_PERIOD 10000 //=10ms
+
 struct sixaxis_button {
     /* It's possible for a button to report as being pressed
           but still have a zero value */
