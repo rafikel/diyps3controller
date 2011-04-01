@@ -3,7 +3,7 @@
 
 #include <Configuration.h>
 
-#define MAX_CONFIGURATIONS 4
+#define MAX_CONFIGURATIONS 8
 
 class Controller
 {
