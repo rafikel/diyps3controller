@@ -542,20 +542,20 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 
     homedir = getpwuid(getuid())->pw_dir;
 
-    string cmd;
+    string cmd = "";
     cmd.append("test -d ");
-	cmd.append(homedir);
-	cmd.append("/.emuclient || cp -r /etc/emuclient ");
-	cmd.append(homedir);
-	cmd.append("/.emuclient");
+    cmd.append(homedir);
+    cmd.append("/.emuclient || cp -r /etc/emuclient ");
+    cmd.append(homedir);
+    cmd.append("/.emuclient");
     if(system(cmd.c_str()) < 0)
     {
         wxMessageBox( wxT("Cannot open emuclient config directory!"), wxT("Error"), wxICON_ERROR);
     }
 
-	cmd.erase();
-	cmd.append(homedir);
-	cmd.append("/.emuclient/config");
+    cmd.erase();
+    cmd.append(homedir);
+    cmd.append("/.emuclient/config");
     wxString default_directory = wxString(cmd.c_str(), wxConvUTF8);
 
     FileDialog1->SetDirectory(default_directory);
@@ -1078,9 +1078,18 @@ void sixaxis_emu_guiFrame::OnMenuSave(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnMenuSaveAs(wxCommandEvent& event)
 {
-    if ( FileDialog1->ShowModal() != wxID_OK ) return;
+    wxFileDialog saveFileDialog(this, _T("Save Config file"), _T(""), _T(""), _T("XML files (*.xml)|*.xml"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 
-    wxString FileName = FileDialog1->GetPath();
+    string cmd = "";
+    cmd.append(homedir);
+    cmd.append("/.emuclient/config");
+    wxString default_directory = wxString(cmd.c_str(), wxConvUTF8);
+    saveFileDialog.SetDirectory(default_directory);
+
+    if ( saveFileDialog.ShowModal() == wxID_CANCEL ) return;
+
+    wxString FileName = saveFileDialog.GetPath();
+
     if ( FileName.IsEmpty() ) return;
 
     configFile.SetFilePath(FileName);
