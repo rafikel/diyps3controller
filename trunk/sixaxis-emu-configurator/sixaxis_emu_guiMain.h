@@ -94,6 +94,10 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnMenuItemConfiguration2(wxCommandEvent& event);
         void OnMenuItemConfiguration3(wxCommandEvent& event);
         void OnMenuItemConfiguration4(wxCommandEvent& event);
+        void OnMenuItemConfiguration5(wxCommandEvent& event);
+        void OnMenuItemConfiguration6(wxCommandEvent& event);
+        void OnMenuItemConfiguration7(wxCommandEvent& event);
+        void OnMenuItemConfiguration8(wxCommandEvent& event);
         void OnMenuItemExpert(wxCommandEvent& event);
         void OnMenuSave(wxCommandEvent& event);
         void OnMenuSaveAs(wxCommandEvent& event);
@@ -103,6 +107,10 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnChoice1Select(wxCommandEvent& event);
         void OnChoice8Select1(wxCommandEvent& event);
         void OnChoice8Select2(wxCommandEvent& event);
+        void OnMenuItemCopyConfiguration(wxCommandEvent& event);
+        void OnMenuItemPasteConfiguration(wxCommandEvent& event);
+        void OnMenuItemCopyController(wxCommandEvent& event);
+        void OnMenuItemPasteController(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
         void fillButtonAxisChoice(wxChoice* choice);
@@ -180,6 +188,9 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long idMenuSaveAs;
         static const long idMenuQuit;
         static const long ID_MENUITEM12;
+        static const long ID_MENUITEM18;
+        static const long ID_MENUITEM17;
+        static const long ID_MENUITEM19;
         static const long ID_MENUITEM1;
         static const long ID_MENUITEM2;
         static const long ID_MENUITEM3;
@@ -191,6 +202,10 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_MENUITEM9;
         static const long ID_MENUITEM10;
         static const long ID_MENUITEM11;
+        static const long ID_MENUITEM13;
+        static const long ID_MENUITEM14;
+        static const long ID_MENUITEM15;
+        static const long ID_MENUITEM16;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
         //*)
@@ -204,6 +219,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText20;
         wxMenuItem* MenuItem7;
         wxButton* Button4;
+        wxMenuItem* MenuItem25;
         wxStaticText* StaticText29;
         wxNotebook* Notebook1;
         wxStaticText* StaticText37;
@@ -227,6 +243,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText11;
         wxStaticText* StaticText18;
         wxMenuItem* MenuItem15;
+        wxMenuItem* MenuItem22;
         wxStaticText* StaticText31;
         wxPanel* Panel1;
         wxStaticText* StaticText1;
@@ -247,10 +264,12 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxCheckBox* CheckBox1;
         wxButton* Button6;
         wxMenuItem* MenuItem12;
+        wxMenuItem* MenuItem24;
         wxStaticText* StaticText23;
         wxButton* Button5;
         wxGrid* Grid2;
         wxMenuItem* MenuItem3;
+        wxMenuItem* MenuItem20;
         wxButton* Button3;
         wxStaticText* StaticText5;
         wxButton* Button7;
@@ -260,6 +279,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxButton* Button9;
         wxTextCtrl* TextCtrl8;
         wxStaticLine* StaticLine1;
+        wxMenuItem* MenuItem23;
         wxStaticText* StaticText43;
         wxStaticText* StaticText41;
         wxStaticText* StaticText15;
@@ -267,6 +287,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxTextCtrl* TextCtrl9;
         wxStaticText* StaticText35;
         wxPanel* Panel2;
+        wxMenuItem* MenuItem21;
         wxMenuItem* MenuItem16;
         wxMenuItem* MenuItem9;
         wxStaticText* StaticText17;
@@ -280,12 +301,16 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxButton* Button8;
         wxMenu* Menu5;
         wxMenu* Menu4;
+        wxMenuItem* MenuItem19;
         //*)
 
         event_catcher evcatch;
         ConfigurationFile configFile;
         unsigned int currentController;
         unsigned int currentConfiguration;
+
+        Configuration tempConfiguration;
+        Controller tempController;
 
         unsigned int grid1mod;
         unsigned int grid2mod;
