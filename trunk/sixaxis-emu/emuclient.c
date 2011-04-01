@@ -573,7 +573,7 @@ int main(int argc, char *argv[])
     unsigned char buf[48];
     int read = 0;
     char* file = NULL;
-    double ratio;
+    //double ratio;
     struct timeval t0, t1;
     int time_to_sleep;
     
@@ -631,11 +631,11 @@ int main(int argc, char *argv[])
       err(1, "tcpconnect");
     }
 
+    gettimeofday(&t0, NULL);
+
     done = 0;
     while(!done)
     {
-        gettimeofday(&t0, NULL);
-
         SDL_PumpEvents();
         num_evt = SDL_PeepEvents(events, sizeof(events)/sizeof(events[0]), SDL_GETEVENT, SDL_ALLEVENTS);
 
@@ -658,18 +658,20 @@ int main(int argc, char *argv[])
           }
           else
           {
-            ratio = (double)(event->motion.timestamp - mouse_control[event->motion.which].last_timestamp)/10;
-            if(ratio <= 0) ratio = 1;//mouse calibration
-            if(ratio > 1) ratio = 0.5;//average
-            mouse_control[event->motion.which].merge_x += (event->motion.xrel*ratio);
+            //ratio = (double)(event->motion.timestamp - mouse_control[event->motion.which].last_timestamp)/10;
+            //if(ratio <= 0) ratio = 1;//mouse calibration
+            //if(ratio > 1) ratio = 0.5;//average
+            //mouse_control[event->motion.which].merge_x += (event->motion.xrel*ratio);
+            mouse_control[event->motion.which].merge_x += event->motion.xrel;
             /*printf("x: %d\n", event->motion.xrel);
             printf("ratio: %.4f\n", ratio);
             printf("add: %.4f\n", event->motion.xrel*ratio);
             printf("merge_x: %.4f\n", mouse_control[event->motion.which].merge_x);*/
-            mouse_control[event->motion.which].merge_y += (event->motion.yrel*ratio);
+            //mouse_control[event->motion.which].merge_y += (event->motion.yrel*ratio);
+            mouse_control[event->motion.which].merge_y += event->motion.yrel;
             mouse_control[event->motion.which].nb_motion = 1;
             mouse_control[event->motion.which].changed = 1;
-            mouse_control[event->motion.which].last_timestamp = event->motion.timestamp;
+            //mouse_control[event->motion.which].last_timestamp = event->motion.timestamp;
           }
 
           trigger_lookup(event);
@@ -740,6 +742,8 @@ int main(int argc, char *argv[])
         {
           printf("processing time higher than 10ms!!\n");
         }
+
+        gettimeofday(&t0, NULL);
     }
 
     printf("Exiting\n");
