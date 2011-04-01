@@ -117,6 +117,9 @@ const long sixaxis_emu_guiFrame::idMenuSave = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuSaveAs = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuQuit = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM12 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM18 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM17 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM19 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM3 = wxNewId();
@@ -128,6 +131,10 @@ const long sixaxis_emu_guiFrame::ID_MENUITEM8 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM9 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM10 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM11 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM13 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM14 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM15 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM16 = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuAbout = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATUSBAR1 = wxNewId();
 //*)
@@ -451,6 +458,13 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Menu5 = new wxMenu();
     MenuItem18 = new wxMenuItem(Menu5, ID_MENUITEM12, _("Copy Configuration"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem18);
+    MenuItem24 = new wxMenuItem(Menu5, ID_MENUITEM18, _("Copy Controller"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem24);
+    Menu5->AppendSeparator();
+    MenuItem23 = new wxMenuItem(Menu5, ID_MENUITEM17, _("Paste Configuration"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem23);
+    MenuItem25 = new wxMenuItem(Menu5, ID_MENUITEM19, _("Paste Controller"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem25);
     MenuBar1->Append(Menu5, _("Edit"));
     Menu3 = new wxMenu();
     MenuItem7 = new wxMenuItem(Menu3, ID_MENUITEM1, _("1"), wxEmptyString, wxITEM_RADIO);
@@ -477,6 +491,14 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Menu4->Append(MenuItem17);
     MenuItem16 = new wxMenuItem(Menu4, ID_MENUITEM11, _("4"), wxEmptyString, wxITEM_RADIO);
     Menu4->Append(MenuItem16);
+    MenuItem19 = new wxMenuItem(Menu4, ID_MENUITEM13, _("5"), wxEmptyString, wxITEM_RADIO);
+    Menu4->Append(MenuItem19);
+    MenuItem20 = new wxMenuItem(Menu4, ID_MENUITEM14, _("6"), wxEmptyString, wxITEM_RADIO);
+    Menu4->Append(MenuItem20);
+    MenuItem21 = new wxMenuItem(Menu4, ID_MENUITEM15, _("7"), wxEmptyString, wxITEM_RADIO);
+    Menu4->Append(MenuItem21);
+    MenuItem22 = new wxMenuItem(Menu4, ID_MENUITEM16, _("8"), wxEmptyString, wxITEM_RADIO);
+    Menu4->Append(MenuItem22);
     MenuBar1->Append(Menu4, _("Configuration"));
     Menu2 = new wxMenu();
     MenuItem2 = new wxMenuItem(Menu2, idMenuAbout, _("About\tF1"), _("Show info about this application"), wxITEM_NORMAL);
@@ -489,7 +511,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetFieldsCount(1,__wxStatusBarWidths_1);
     StatusBar1->SetStatusStyles(1,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
-    FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+    FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), wxFD_DEFAULT_STYLE|wxFD_OPEN, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     GridSizer1->Fit(this);
     GridSizer1->SetSizeHints(this);
 
@@ -511,6 +533,10 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(idMenuSave,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuSave);
     Connect(idMenuSaveAs,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuSaveAs);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnQuit);
+    Connect(ID_MENUITEM12,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemCopyConfiguration);
+    Connect(ID_MENUITEM18,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemCopyController);
+    Connect(ID_MENUITEM17,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteConfiguration);
+    Connect(ID_MENUITEM19,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteController);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController1);
     Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController2);
     Connect(ID_MENUITEM3,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController3);
@@ -522,6 +548,10 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_MENUITEM9,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemConfiguration2);
     Connect(ID_MENUITEM10,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemConfiguration3);
     Connect(ID_MENUITEM11,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemConfiguration4);
+    Connect(ID_MENUITEM13,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemConfiguration5);
+    Connect(ID_MENUITEM14,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemConfiguration6);
+    Connect(ID_MENUITEM15,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemConfiguration7);
+    Connect(ID_MENUITEM16,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemConfiguration8);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnAbout);
     //*)
 
@@ -1068,6 +1098,46 @@ void sixaxis_emu_guiFrame::OnMenuItemConfiguration4(wxCommandEvent& event)
     refresh_gui();
 }
 
+void sixaxis_emu_guiFrame::OnMenuItemConfiguration5(wxCommandEvent& event)
+{
+    save_current();
+    currentConfiguration = 4;
+    load_current();
+    Button2->SetLabel(_("Modify"));
+    Button5->SetLabel(_("Modify"));
+    refresh_gui();
+}
+
+void sixaxis_emu_guiFrame::OnMenuItemConfiguration6(wxCommandEvent& event)
+{
+    save_current();
+    currentConfiguration = 5;
+    load_current();
+    Button2->SetLabel(_("Modify"));
+    Button5->SetLabel(_("Modify"));
+    refresh_gui();
+}
+
+void sixaxis_emu_guiFrame::OnMenuItemConfiguration7(wxCommandEvent& event)
+{
+    save_current();
+    currentConfiguration = 6;
+    load_current();
+    Button2->SetLabel(_("Modify"));
+    Button5->SetLabel(_("Modify"));
+    refresh_gui();
+}
+
+void sixaxis_emu_guiFrame::OnMenuItemConfiguration8(wxCommandEvent& event)
+{
+    save_current();
+    currentConfiguration = 7;
+    load_current();
+    Button2->SetLabel(_("Modify"));
+    Button5->SetLabel(_("Modify"));
+    refresh_gui();
+}
+
 void sixaxis_emu_guiFrame::OnMenuSave(wxCommandEvent& event)
 {
     save_current();
@@ -1275,4 +1345,34 @@ void sixaxis_emu_guiFrame::OnChoice8Select2(wxCommandEvent& event)
         TextCtrl9->SetValue(_("0.004"));
       }
     }
+}
+
+void sixaxis_emu_guiFrame::OnMenuItemCopyConfiguration(wxCommandEvent& event)
+{
+  save_current();
+  tempConfiguration = *configFile.GetController(currentController)->GetConfiguration(currentConfiguration);
+}
+
+void sixaxis_emu_guiFrame::OnMenuItemPasteConfiguration(wxCommandEvent& event)
+{
+  configFile.GetController(currentController)->SetConfiguration(tempConfiguration, currentConfiguration);
+  load_current();
+  refresh_gui();
+  Button2->SetLabel(_("Modify"));
+  Button5->SetLabel(_("Modify"));
+}
+
+void sixaxis_emu_guiFrame::OnMenuItemCopyController(wxCommandEvent& event)
+{
+  save_current();
+  tempController = *configFile.GetController(currentController);
+}
+
+void sixaxis_emu_guiFrame::OnMenuItemPasteController(wxCommandEvent& event)
+{
+  configFile.SetController(tempController, currentController);
+  load_current();
+  refresh_gui();
+  Button2->SetLabel(_("Modify"));
+  Button5->SetLabel(_("Modify"));
 }
