@@ -25,15 +25,21 @@ void results()
   int average;
   int temp = 0;
   int nbval;
+  int worst = 0;
   
   for (i = 0; i<RECORDS && tdiff[i]>0; i++)
   {
     sum = sum+tdiff[i];
+    if(tdiff[i] > worst)
+    {
+      worst = tdiff[i];
+    }
   }
   
   nbval = i;
 
   printf("nb: %d\n", nbval);
+  printf("worst: %d\n", worst);
 
   if(nbval < 2)
   {
