@@ -775,8 +775,8 @@ void process_event(SDL_Event* event)
           shape = mapper->shape;
           if(mouse_control[device].nb_motion)
           {
-            mx = mouse_control[device].merge_x;
-            my = mouse_control[device].merge_y;
+            mx = mouse_control[device].merge_x / 5;
+            my = mouse_control[device].merge_y / 5;
           }
           else
           {
