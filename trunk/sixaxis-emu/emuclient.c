@@ -572,7 +572,6 @@ int main(int argc, char *argv[])
     unsigned char buf[48];
     int read = 0;
     char* file = NULL;
-    double ratio;
     struct timeval t0, t1;
     int time_to_sleep;
     
@@ -657,14 +656,10 @@ int main(int argc, char *argv[])
           }
           else
           {
-            ratio = (double)(event->motion.timestamp - mouse_control[event->motion.which].last_timestamp)/10;
-            if(ratio <= 0) ratio = 1;//mouse calibration
-            if(ratio > 1) ratio = 0.5;//average
-            mouse_control[event->motion.which].merge_x += (event->motion.xrel*ratio);
-            mouse_control[event->motion.which].merge_y += (event->motion.yrel*ratio);
+            mouse_control[event->motion.which].merge_x += event->motion.xrel;
+            mouse_control[event->motion.which].merge_y += event->motion.yrel;
             mouse_control[event->motion.which].nb_motion++;
             mouse_control[event->motion.which].changed = 1;
-            mouse_control[event->motion.which].last_timestamp = event->motion.timestamp;
           }
 
           trigger_lookup(event);
