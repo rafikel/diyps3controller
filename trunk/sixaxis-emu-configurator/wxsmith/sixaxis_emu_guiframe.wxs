@@ -16,7 +16,7 @@
 								<rows>1</rows>
 								<object class="sizeritem">
 									<object class="wxFlexGridSizer" variable="FlexGridSizer13" member="no">
-										<cols>6</cols>
+										<cols>7</cols>
 										<rows>2</rows>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
@@ -45,6 +45,14 @@
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
 												<label>Button id</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT24" variable="StaticText24" member="yes">
+												<label></label>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -110,6 +118,15 @@
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBox1" member="yes">
 												<label>Switch back</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="ID_BUTTON10" variable="Button10" member="yes">
+												<label>Delete</label>
+												<handler function="OnButton10Click1" entry="EVT_BUTTON" />
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>

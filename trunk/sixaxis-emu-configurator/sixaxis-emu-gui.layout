@@ -37,8 +37,8 @@
 	<File name="sixaxis_emu_guiApp.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="488" topLine="0" />
 	</File>
-	<File name="sixaxis_emu_guiMain.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="54203" topLine="1109" />
+	<File name="sixaxis_emu_guiMain.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="63520" topLine="1326" />
 	</File>
 	<File name="sixaxis_emu_guiMain.h" open="0" top="0" tabpos="2">
 		<Cursor position="4316" topLine="66" />
@@ -67,8 +67,8 @@
 	<File name="src/Trigger.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="77" topLine="0" />
 	</File>
-	<File name="src/XmlReader.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="8909" topLine="304" />
+	<File name="src/XmlReader.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="8909" topLine="286" />
 	</File>
 	<File name="src/XmlWritter.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="4012" topLine="103" />

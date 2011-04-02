@@ -52,6 +52,7 @@ const long sixaxis_emu_guiFrame::ID_STATICTEXT1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT19 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT9 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT3 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT24 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT23 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT35 = wxNewId();
@@ -60,6 +61,7 @@ const long sixaxis_emu_guiFrame::ID_STATICTEXT36 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT37 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_CHECKBOX1 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_BUTTON10 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_PANEL1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT4 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT29 = wxNewId();
@@ -249,7 +251,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,480), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     FlexGridSizer10 = new wxFlexGridSizer(1, 1, 0, 0);
-    FlexGridSizer13 = new wxFlexGridSizer(2, 6, 0, 0);
+    FlexGridSizer13 = new wxFlexGridSizer(2, 7, 0, 0);
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Device type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     FlexGridSizer13->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText19 = new wxStaticText(Panel1, ID_STATICTEXT19, _("Device name"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
@@ -258,6 +260,8 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer13->Add(StaticText9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("Button id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
     FlexGridSizer13->Add(StaticText3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText24 = new wxStaticText(Panel1, ID_STATICTEXT24, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT24"));
+    FlexGridSizer13->Add(StaticText24, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText23 = new wxStaticText(Panel1, ID_STATICTEXT23, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
     FlexGridSizer13->Add(StaticText23, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
@@ -275,6 +279,8 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("Switch back"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     CheckBox1->SetValue(false);
     FlexGridSizer13->Add(CheckBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button10 = new wxButton(Panel1, ID_BUTTON10, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON10"));
+    FlexGridSizer13->Add(Button10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer10->Add(FlexGridSizer13, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Panel1->SetSizer(FlexGridSizer10);
     FlexGridSizer10->Fit(Panel1);
@@ -516,6 +522,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     GridSizer1->SetSizeHints(this);
 
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton1Click1);
+    Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton10Click1);
     Connect(ID_CHOICE4,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnChoice4Select1);
     Connect(ID_BUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton8Click);
     Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButtonAdd1Click);
@@ -1375,4 +1382,15 @@ void sixaxis_emu_guiFrame::OnMenuItemPasteController(wxCommandEvent& event)
   refresh_gui();
   Button2->SetLabel(_("Modify"));
   Button5->SetLabel(_("Modify"));
+}
+
+void sixaxis_emu_guiFrame::OnButton10Click1(wxCommandEvent& event)
+{
+    StaticText35->SetLabel(_(""));
+    StaticText27->SetLabel(_(""));
+    StaticText36->SetLabel(_(""));
+    StaticText37->SetLabel(_(""));
+    CheckBox1->SetValue(false);
+
+    Panel1->Layout();
 }
