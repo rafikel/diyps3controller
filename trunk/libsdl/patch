@@ -286,7 +286,7 @@ diff -uNr orig//src/video/x11/SDL_x11events.c modif//src/video/x11/SDL_x11events
 +}
 diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
 --- orig//src/video/x11/SDL_x11video.c	2009-10-13 01:07:15.000000000 +0200
-+++ modif//src/video/x11/SDL_x11video.c	2011-03-30 19:31:03.145591584 +0200
++++ modif//src/video/x11/SDL_x11video.c	2011-04-02 22:57:20.401702001 +0200
 @@ -58,6 +58,9 @@
  #include <locale.h>
  #endif
@@ -342,6 +342,17 @@ diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
      /* Set the class hints so we can get an icon (AfterStep) */
      get_classname(classname, sizeof(classname));
      {
+@@ -1037,8 +1066,8 @@
+ 		/* Only manage our input if we own the window */
+ 		XSelectInput(SDL_Display, SDL_Window,
+ 					( EnterWindowMask | LeaveWindowMask
+-					| ButtonPressMask | ButtonReleaseMask
+-					| PointerMotionMask | ExposureMask ));
++					/* matlo | ButtonPressMask | ButtonReleaseMask
++					| PointerMotionMask*/ | ExposureMask ));
+ 	}
+ 	/* Create the graphics context here, once we have a window */
+ 	if ( flags & SDL_OPENGL ) {
 @@ -1546,4 +1575,3 @@
      XiGMiscDestroy();
  #endif
@@ -349,13 +360,10 @@ diff -uNr orig//src/video/x11/SDL_x11video.c modif//src/video/x11/SDL_x11video.c
 -
 diff -uNr orig//src/video/x11/SDL_x11wm.c modif//src/video/x11/SDL_x11wm.c
 --- orig//src/video/x11/SDL_x11wm.c	2009-10-13 01:07:15.000000000 +0200
-+++ modif//src/video/x11/SDL_x11wm.c	2011-03-10 00:32:55.683378502 +0100
-@@ -369,9 +369,9 @@
- 			XRaiseWindow(SDL_Display, WMwindow);
- 
++++ modif//src/video/x11/SDL_x11wm.c	2011-04-02 22:57:26.013702001 +0200
+@@ -371,7 +371,7 @@
  		/* Make sure we register input focus */
--		SDL_PrivateAppActive(1, SDL_APPINPUTFOCUS);
-+		//SDL_PrivateAppActive(1, SDL_APPINPUTFOCUS);
+ 		SDL_PrivateAppActive(1, SDL_APPINPUTFOCUS);
  		/* Since we grabbed the pointer, we have mouse focus, too. */
 -		SDL_PrivateAppActive(1, SDL_APPMOUSEFOCUS);
 +		//SDL_PrivateAppActive(1, SDL_APPMOUSEFOCUS);
