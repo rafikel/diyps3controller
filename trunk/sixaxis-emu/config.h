@@ -31,7 +31,7 @@ typedef struct
   int postpone_wheel_down;
   int postpone_button_x1;
   int postpone_button_x2;
-  //unsigned int last_timestamp;
+  unsigned int last_timestamp;
 }s_mouse_control;
 
 typedef struct
