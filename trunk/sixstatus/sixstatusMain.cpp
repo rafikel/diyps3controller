@@ -344,7 +344,7 @@ void read_status(void)
                 converter >> hex >> bps;
             }
         }
-        usleep(10000);
+        usleep(1000);
         //cout << lstick_x << " " << lstick_y << " " << rstick_x << " " << rstick_y << endl;
     }
 }
@@ -535,9 +535,9 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     monTimer.SetOwner(this, 1);
     monTimer.Start(10);
 
-    Connect(1, wxEVT_TIMER,(wxObjectEventFunction)&sixstatusFrame::OnTimer);
+    //Connect(1, wxEVT_TIMER,(wxObjectEventFunction)&sixstatusFrame::OnTimer);
 
-    //Connect( wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(sixstatusFrame::OnIdle) );
+    Connect( wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(sixstatusFrame::OnIdle) );
 
     pthread_t thread;
     pthread_attr_t thread_attr;
