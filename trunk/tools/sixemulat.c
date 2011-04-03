@@ -9,8 +9,8 @@
 #include <math.h>
 #include <signal.h>
 
-char mouse[6];
-char sixemu[6];
+char mouse[32];
+char sixemu[32];
 char usbmon[] = "/sys/kernel/debug/usb/usbmon/0u";
 
 #define RECORDS 1024
@@ -141,9 +141,12 @@ int main(int argc, char *argv[])
     usage();
   }
 
-  sprintf(mouse, "%d:%03d", mbid, mid);
-  sprintf(sixemu, "%d:%03d", dbid, did);
+  sprintf(mouse, "Ii:%d:%03d", mbid, mid);
+  sprintf(sixemu, "Bo:%d:%03d", dbid, did);
   
+  printf("%s\n", mouse);
+  printf("%s\n", sixemu);
+
   fp = fopen(usbmon, "r");
   if (!fp)
   {
