@@ -702,6 +702,15 @@
 					<label>Paste Controller</label>
 					<handler function="OnMenuItemPasteController" entry="EVT_MENU" />
 				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM20" variable="MenuItem26" member="yes">
+					<label>Replace Mouse</label>
+					<handler function="OnMenuReplaceMouse" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM21" variable="MenuItem27" member="yes">
+					<label>Replace Keyboard</label>
+					<handler function="OnMenuReplaceKeyboard" entry="EVT_MENU" />
+				</object>
 			</object>
 			<object class="wxMenu" variable="Menu3" member="yes">
 				<label>Controller</label>

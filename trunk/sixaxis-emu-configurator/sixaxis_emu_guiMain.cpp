@@ -13,6 +13,7 @@
 #include <stdio.h>
  #include <sys/types.h>
  #include <pwd.h>
+#include <SDL/SDL.h>
 
 //(*InternalHeaders(sixaxis_emu_guiFrame)
 #include <wx/intl.h>
@@ -122,6 +123,8 @@ const long sixaxis_emu_guiFrame::ID_MENUITEM12 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM18 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM17 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM19 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM20 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM21 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM3 = wxNewId();
@@ -471,6 +474,11 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Menu5->Append(MenuItem23);
     MenuItem25 = new wxMenuItem(Menu5, ID_MENUITEM19, _("Paste Controller"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem25);
+    Menu5->AppendSeparator();
+    MenuItem26 = new wxMenuItem(Menu5, ID_MENUITEM20, _("Replace Mouse"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem26);
+    MenuItem27 = new wxMenuItem(Menu5, ID_MENUITEM21, _("Replace Keyboard"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem27);
     MenuBar1->Append(Menu5, _("Edit"));
     Menu3 = new wxMenu();
     MenuItem7 = new wxMenuItem(Menu3, ID_MENUITEM1, _("1"), wxEmptyString, wxITEM_RADIO);
@@ -544,6 +552,8 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_MENUITEM18,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemCopyController);
     Connect(ID_MENUITEM17,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteConfiguration);
     Connect(ID_MENUITEM19,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteController);
+    Connect(ID_MENUITEM20,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceMouse);
+    Connect(ID_MENUITEM21,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceKeyboard);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController1);
     Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController2);
     Connect(ID_MENUITEM3,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController3);
@@ -1393,4 +1403,174 @@ void sixaxis_emu_guiFrame::OnButton10Click1(wxCommandEvent& event)
     CheckBox1->SetValue(false);
 
     Panel1->Layout();
+}
+
+#define MAX_DEVICES 256
+
+void sixaxis_emu_guiFrame::OnMenuReplaceMouse(wxCommandEvent& event)
+{
+    int i = 0;
+    int j, k;
+    wxString mouseName[MAX_DEVICES] = {};
+    int mouseVirtualIndex[MAX_DEVICES] = {};
+    const char* name;
+    int i_selected;
+    wxString str_selected;
+
+    std::list<ButtonMapper>* buttonMappers;
+    std::list<AxisMapper>* axisMappers;
+
+    SDL_Init(SDL_INIT_VIDEO);
+
+    while ((name = SDL_GetMouseName(i)))
+    {
+      mouseName[i] = wxString(name, wxConvUTF8);
+
+      for (j = i - 1; j >= 0; --j)
+      {
+        if (mouseName[i] == mouseName[j])
+        {
+          mouseVirtualIndex[i] = mouseVirtualIndex[j] + 1;
+          break;
+        }
+      }
+      if (j < 0)
+      {
+        mouseVirtualIndex[i] = 0;
+      }
+      i++;
+    }
+
+    wxSingleChoiceDialog SingleChoiceDialog1(this, _("Select the mouse to use for the current controller"), _("Replace Mouse"), i, mouseName, 0, wxCHOICEDLG_STYLE, wxDefaultPosition);
+
+    int res = SingleChoiceDialog1.ShowModal();
+
+    if(res == wxID_OK)
+    {
+        i_selected = SingleChoiceDialog1.GetSelection();
+        str_selected = SingleChoiceDialog1.GetStringSelection();
+
+        Controller* controller = configFile.GetController(currentController);
+
+        for(k=0; k<MAX_CONFIGURATIONS; ++k)
+        {
+          Configuration* config = controller->GetConfiguration(k);
+
+          Trigger* trigger = config->GetTrigger();
+
+          if(trigger->GetDevice()->GetType() == _("mouse"))
+          {
+            trigger->GetDevice()->SetId(wxString::Format(wxT("%i"),mouseVirtualIndex[i_selected]));
+            trigger->GetDevice()->SetName(str_selected);
+          }
+
+          buttonMappers = config->GetButtonMapperList();
+          for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
+          {
+              if(it->GetDevice()->GetType() == _("mouse"))
+              {
+                  it->GetDevice()->SetId(wxString::Format(wxT("%i"),mouseVirtualIndex[i_selected]));
+                  it->GetDevice()->SetName(str_selected);
+              }
+          }
+          axisMappers = config->GetAxisMapperList();
+          for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
+          {
+            if(it->GetDevice()->GetType() == _("mouse"))
+            {
+                it->GetDevice()->SetId(wxString::Format(wxT("%i"),mouseVirtualIndex[i_selected]));
+                it->GetDevice()->SetName(str_selected);
+            }
+          }
+        }
+    }
+
+    load_current();
+    refresh_gui();
+
+    SDL_Quit();
+}
+
+void sixaxis_emu_guiFrame::OnMenuReplaceKeyboard(wxCommandEvent& event)
+{
+  int i = 0;
+  int j, k;
+  wxString keyboardName[MAX_DEVICES] = {};
+  int keyboardVirtualIndex[MAX_DEVICES] = {};
+  const char* name;
+  int i_selected;
+  wxString str_selected;
+
+  std::list<ButtonMapper>* buttonMappers;
+  std::list<AxisMapper>* axisMappers;
+
+  SDL_Init(SDL_INIT_VIDEO);
+
+  while ((name = SDL_GetKeyboardName(i)))
+  {
+    keyboardName[i] = wxString(name, wxConvUTF8);
+
+    for (j = i - 1; j >= 0; --j)
+    {
+      if (keyboardName[i] == keyboardName[j])
+      {
+        keyboardVirtualIndex[i] = keyboardVirtualIndex[j] + 1;
+        break;
+      }
+    }
+    if (j < 0)
+    {
+      keyboardVirtualIndex[i] = 0;
+    }
+    i++;
+  }
+
+  wxSingleChoiceDialog SingleChoiceDialog1(this, _("Select the keyboard to use for the current controller"), _("Replace Keyboard"), i, keyboardName, 0, wxCHOICEDLG_STYLE, wxDefaultPosition);
+
+  int res = SingleChoiceDialog1.ShowModal();
+
+  if(res == wxID_OK)
+  {
+      i_selected = SingleChoiceDialog1.GetSelection();
+      str_selected = SingleChoiceDialog1.GetStringSelection();
+
+      Controller* controller = configFile.GetController(currentController);
+
+      for(k=0; k<MAX_CONFIGURATIONS; ++k)
+      {
+        Configuration* config = controller->GetConfiguration(k);
+
+        Trigger* trigger = config->GetTrigger();
+
+        if(trigger->GetDevice()->GetType() == _("keyboard"))
+        {
+          trigger->GetDevice()->SetId(wxString::Format(wxT("%i"),keyboardVirtualIndex[i_selected]));
+          trigger->GetDevice()->SetName(str_selected);
+        }
+
+        buttonMappers = config->GetButtonMapperList();
+        for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
+        {
+            if(it->GetDevice()->GetType() == _("keyboard"))
+            {
+                it->GetDevice()->SetId(wxString::Format(wxT("%i"),keyboardVirtualIndex[i_selected]));
+                it->GetDevice()->SetName(str_selected);
+            }
+        }
+        axisMappers = config->GetAxisMapperList();
+        for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
+        {
+          if(it->GetDevice()->GetType() == _("keyboard"))
+          {
+              it->GetDevice()->SetId(wxString::Format(wxT("%i"),keyboardVirtualIndex[i_selected]));
+              it->GetDevice()->SetName(str_selected);
+          }
+        }
+      }
+  }
+
+  load_current();
+  refresh_gui();
+
+  SDL_Quit();
 }

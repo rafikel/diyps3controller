@@ -112,6 +112,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnMenuItemCopyController(wxCommandEvent& event);
         void OnMenuItemPasteController(wxCommandEvent& event);
         void OnButton10Click1(wxCommandEvent& event);
+        void OnMenuReplaceMouse(wxCommandEvent& event);
+        void OnMenuReplaceKeyboard(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
         void fillButtonAxisChoice(wxChoice* choice);
@@ -194,6 +196,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_MENUITEM18;
         static const long ID_MENUITEM17;
         static const long ID_MENUITEM19;
+        static const long ID_MENUITEM20;
+        static const long ID_MENUITEM21;
         static const long ID_MENUITEM1;
         static const long ID_MENUITEM2;
         static const long ID_MENUITEM3;
@@ -221,6 +225,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxMenuItem* MenuItem8;
         wxStaticText* StaticText20;
         wxMenuItem* MenuItem7;
+        wxMenuItem* MenuItem26;
         wxButton* Button4;
         wxMenuItem* MenuItem25;
         wxStaticText* StaticText29;
@@ -270,6 +275,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxMenuItem* MenuItem24;
         wxStaticText* StaticText23;
         wxStaticText* StaticText24;
+        wxMenuItem* MenuItem27;
         wxButton* Button10;
         wxButton* Button5;
         wxGrid* Grid2;
