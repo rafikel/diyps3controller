@@ -2,7 +2,7 @@
 <root>
   <controller id="1">
     <configuration id="1">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map>
         <button id="left">
           <device type="joystick" id="0" name="Sony PLAYSTATION(R)3 Controller"/>
@@ -93,149 +93,289 @@
       </axis_map>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="5">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="6">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="7">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="8">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="2">
     <configuration id="1">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="5">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="6">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="7">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="8">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="3">
     <configuration id="1">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="5">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="6">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="7">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="8">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="4">
     <configuration id="1">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="5">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="6">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="7">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="8">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="5">
     <configuration id="1">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="5">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="6">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="7">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="8">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="6">
     <configuration id="1">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="5">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="6">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="7">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="8">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="7">
     <configuration id="1">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="5">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="6">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="7">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <button_map/>
+      <axis_map/>
+    </configuration>
+    <configuration id="8">
+      <trigger type="" id="" name="" button_id="" switch_back=""/>
       <button_map/>
       <axis_map/>
     </configuration>
