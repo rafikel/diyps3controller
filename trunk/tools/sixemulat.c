@@ -69,7 +69,7 @@ void ex_program(int sig)
 
 void usage()
 {
-  printf("usage: ./sixemulat <mouse bus id> <mouse device id> <dongle bus id> <dongle id>\n");
+  printf("usage: ./sixemulat <mouse bus id> <mouse device id> <dongle bus id> <dongle device id>\n");
   exit(-1);
 }
 
@@ -143,9 +143,6 @@ int main(int argc, char *argv[])
 
   sprintf(mouse, "Ii:%d:%03d", mbid, mid);
   sprintf(sixemu, "Bo:%d:%03d", dbid, did);
-  
-  printf("%s\n", mouse);
-  printf("%s\n", sixemu);
 
   fp = fopen(usbmon, "r");
   if (!fp)
