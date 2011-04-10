@@ -290,6 +290,7 @@ static const char* get_chars_from_key(SDLKey key)
 
 const char* buttons[] =
 {
+    "UNDEFINED",
     "BUTTON_LEFT",
     "BUTTON_MIDDLE",
     "BUTTON_RIGHT",
@@ -298,32 +299,22 @@ const char* buttons[] =
     "BUTTON_X1",
     "BUTTON_X2",
     "BUTTON_X3",
-    "UNKNOWN"
+    "BUTTON_X4",
+    "BUTTON_X5",
+    "BUTTON_X6",
+    "BUTTON_X7",
+    "BUTTON_X8",
+    "BUTTON_X9"
 };
-
 
 static const char* get_chars_from_mouse_button(Uint8 button)
 {
-    switch(button)
+    if(button > 0 && button < sizeof(buttons)/sizeof(buttons[0]))
     {
-        case SDL_BUTTON_LEFT:
-        return buttons[0];
-        case SDL_BUTTON_MIDDLE:
-        return buttons[1];
-        case SDL_BUTTON_RIGHT:
-        return buttons[2];
-        case SDL_BUTTON_WHEELUP:
-        return buttons[3];
-        case SDL_BUTTON_WHEELDOWN:
-        return buttons[4];
-        case SDL_BUTTON_X1:
-        return buttons[5];
-        case SDL_BUTTON_X2:
-        return buttons[6];
-        case SDL_BUTTON_X2+1:
-        return buttons[7];
+        return buttons[button];
     }
-    return buttons[8];
+
+    return buttons[0];
 }
 
 event_catcher::event_catcher()
@@ -336,57 +327,15 @@ event_catcher::~event_catcher()
     //dtor
 }
 
-#define MAX_DEVICES 256
-
 #define BT_SIXAXIS_NAME "PLAYSTATION(R)3 Controller"
 
-void event_catcher::run(wxString event_type)
+void event_catcher::init()
 {
-    done = 0;
-    SDL_Surface *screen = NULL;
-    SDL_Event events[EVENT_BUFFER_SIZE];
-    SDL_Event* event;
-    int num_evt;
-    const char* event_id;
-    int i = 0;
-    int j;
-    wxString joystickName[MAX_DEVICES];
-    int joystickVirtualIndex[MAX_DEVICES] = {};
-    int joystickNbButton[MAX_DEVICES] = {};
-    int joystickSixaxis[MAX_DEVICES] = {};
-#ifdef MULTIPLE_MICE_KB
-    wxString mouseName[MAX_DEVICES] = {};
-    int mouseVirtualIndex[MAX_DEVICES] = {};
-    wxString keyboardName[MAX_DEVICES] = {};
-    int keyboardVirtualIndex[MAX_DEVICES] = {};
+    int i, j;
     const char* name;
-#endif
     SDL_Joystick* joystick;
 
-    m_DeviceType = _("");
-    m_DeviceId = _("");
-    m_DeviceName = _("");
-    m_EventType = _("");
-    m_EventId = _("");
-
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
-    {
-        fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
-        return;
-    }
-
-    SDL_WM_SetCaption("Event Catcher", "Event Catcher");
-
-    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_ANYFORMAT);
-    if (screen == NULL)
-    {
-        fprintf(stderr, "Unable to create video surface: %s\n", SDL_GetError());
-        return;
-    }
-
-    SDL_WM_GrabInput(SDL_GRAB_ON);
-    SDL_ShowCursor(SDL_DISABLE);
-
+    i = 0;
     while((joystick = SDL_JoystickOpen(i)))
     {
         joystickName[i] = wxString(SDL_JoystickName(i), wxConvUTF8);
@@ -413,7 +362,7 @@ void event_catcher::run(wxString event_type)
         }
         i++;
     }
-#ifdef MULTIPLE_MICE_KB
+
     i = 0;
     while ((name = SDL_GetMouseName(i)))
     {
@@ -433,6 +382,7 @@ void event_catcher::run(wxString event_type)
       }
       i++;
     }
+
     i = 0;
     while ((name = SDL_GetKeyboardName(i)))
     {
@@ -452,7 +402,43 @@ void event_catcher::run(wxString event_type)
       }
       i++;
     }
-#endif
+}
+
+void event_catcher::run(wxString device_type, wxString event_type)
+{
+    done = 0;
+    SDL_Surface *screen = NULL;
+    SDL_Event events[EVENT_BUFFER_SIZE];
+    SDL_Event* event;
+    int num_evt;
+    const char* event_id;
+
+    m_DeviceType = wxEmptyString;
+    m_DeviceId = wxEmptyString;
+    m_DeviceName = wxEmptyString;
+    m_EventType = wxEmptyString;
+    m_EventId = wxEmptyString;
+
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+    {
+        fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+        return;
+    }
+
+    SDL_WM_SetCaption("Event Catcher", "Event Catcher");
+
+    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_ANYFORMAT);
+    if (screen == NULL)
+    {
+        fprintf(stderr, "Unable to create video surface: %s\n", SDL_GetError());
+        return;
+    }
+
+    SDL_WM_GrabInput(SDL_GRAB_ON);
+
+    SDL_ShowCursor(SDL_DISABLE);
+
+    init();
 
     done = 0;
 
@@ -475,15 +461,15 @@ void event_catcher::run(wxString event_type)
                 switch (event->type)
                 {
                 case SDL_KEYDOWN:
+                    if(device_type != wxEmptyString && device_type != _("keyboard"))
+                    {
+                        break;
+                    }
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("keyboard");
-#ifndef MULTIPLE_MICE_KB
-                        m_DeviceId = _("0");
-#else
                         m_DeviceId = wxString::Format(wxT("%i"),keyboardVirtualIndex[event->key.which]);
                         m_DeviceName = keyboardName[event->key.which];
-#endif
                         m_EventType = _("button");
                         event_id = get_chars_from_key(event->key.keysym.sym);
                         m_EventId = wxString(event_id, wxConvUTF8);
@@ -491,15 +477,15 @@ void event_catcher::run(wxString event_type)
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
+                    if(device_type != wxEmptyString && device_type != _("mouse"))
+                    {
+                        break;
+                    }
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("mouse");
-#ifndef MULTIPLE_MICE_KB
-                        m_DeviceId = _("0");
-#else
                         m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->button.which]);
                         m_DeviceName = mouseName[event->button.which];
-#endif
                         m_EventType = _("button");
                         event_id = get_chars_from_mouse_button(event->button.button);
                         m_EventId = wxString(event_id, wxConvUTF8);
@@ -507,6 +493,10 @@ void event_catcher::run(wxString event_type)
                     }
                     break;
                 case SDL_JOYBUTTONDOWN:
+                    if(device_type != wxEmptyString && device_type != _("joystick"))
+                    {
+                        break;
+                    }
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("joystick");
@@ -518,6 +508,10 @@ void event_catcher::run(wxString event_type)
                     }
                     break;
                 case SDL_JOYHATMOTION:
+                    if(device_type != wxEmptyString && device_type != _("joystick"))
+                    {
+                        break;
+                    }
                     if(event_type == _("button"))
                     {
                         m_DeviceType = _("joystick");
@@ -547,17 +541,17 @@ void event_catcher::run(wxString event_type)
                     }
                     break;
                 case SDL_MOUSEMOTION:
+                    if(device_type != wxEmptyString && device_type != _("mouse"))
+                    {
+                        break;
+                    }
                     if(event_type == _("axis"))
                     {
                         if(abs(event->motion.xrel) > 5 || abs(event->motion.yrel) > 5)
                         {
                             m_DeviceType = _("mouse");
-#ifndef MULTIPLE_MICE_KB
-                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
-#else
                             m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->motion.which]);
                             m_DeviceName = mouseName[event->button.which];
-#endif
                             m_EventType = _("axis");
                             done = 1;
                             if(abs(event->motion.xrel) > abs(event->motion.yrel))
@@ -575,12 +569,8 @@ void event_catcher::run(wxString event_type)
                         if(event->motion.xrel > 5 || event->motion.yrel > 5)
                         {
                             m_DeviceType = _("mouse");
-#ifndef MULTIPLE_MICE_KB
-                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
-#else
                             m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->motion.which]);
                             m_DeviceName = mouseName[event->button.which];
-#endif
                             m_EventType = _("axis");
                             done = 1;
                             if(event->motion.xrel > event->motion.yrel)
@@ -598,12 +588,8 @@ void event_catcher::run(wxString event_type)
                         if(event->motion.xrel < -5 || event->motion.yrel < -5)
                         {
                             m_DeviceType = _("mouse");
-#ifndef MULTIPLE_MICE_KB
-                            m_DeviceId = wxString::Format(wxT("%i"),event->motion.which);
-#else
                             m_DeviceId = wxString::Format(wxT("%i"),mouseVirtualIndex[event->motion.which]);
                             m_DeviceName = mouseName[event->button.which];
-#endif
                             m_EventType = _("axis");
                             done = 1;
                             if(event->motion.xrel < event->motion.yrel)
@@ -618,6 +604,10 @@ void event_catcher::run(wxString event_type)
                     }
                     break;
                 case SDL_JOYAXISMOTION:
+                    if(device_type != wxEmptyString && device_type != _("joystick"))
+                    {
+                        break;
+                    }
                     /*
                      * Ugly patch for the sixaxis.
                      */
@@ -665,6 +655,7 @@ void event_catcher::run(wxString event_type)
                 }
             }
         }
+        usleep(10000);
     }
 
     SDL_Quit();
