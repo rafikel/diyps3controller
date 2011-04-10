@@ -308,7 +308,7 @@
 											<object class="wxGrid" name="ID_GRID1" variable="Grid1" member="yes">
 												<cols>7</cols>
 												<readonly>1</readonly>
-												<defaultcolsize>125</defaultcolsize>
+												<labelcolwidth>25</labelcolwidth>
 												<collabels>
 													<item>Device type</item>
 													<item>Device name</item>
@@ -373,7 +373,6 @@
 							<object class="wxFlexGridSizer" variable="FlexGridSizer5" member="no">
 								<cols>1</cols>
 								<rows>2</rows>
-								<growablerows>1</growablerows>
 								<object class="sizeritem">
 									<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
 										<cols>11</cols>
@@ -581,6 +580,7 @@
 											<object class="wxGrid" name="ID_GRID2" variable="Grid2" member="yes">
 												<cols>10</cols>
 												<readonly>1</readonly>
+												<labelcolwidth>25</labelcolwidth>
 												<defaultcolsize>100</defaultcolsize>
 												<collabels>
 													<item>Device type</item>

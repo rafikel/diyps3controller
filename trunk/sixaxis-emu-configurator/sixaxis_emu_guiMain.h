@@ -119,7 +119,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         void fillButtonAxisChoice(wxChoice* choice);
         void fillAxisAxisChoice(wxChoice* choice);
         void fillButtonChoice(wxChoice* choice);
-        void auto_detect(event_catcher* evcatch, wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id);
+        void replaceDevice(wxString device_type);
+        void auto_detect(wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id);
 
         //(*Identifiers(sixaxis_emu_guiFrame)
         static const long ID_STATICTEXT1;

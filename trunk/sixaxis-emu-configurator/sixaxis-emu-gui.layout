@@ -31,17 +31,17 @@
 	<File name="include/XmlWritter.h" open="0" top="0" tabpos="4">
 		<Cursor position="238" topLine="0" />
 	</File>
-	<File name="include/event_catcher.h" open="0" top="0" tabpos="2">
-		<Cursor position="469" topLine="0" />
+	<File name="include/event_catcher.h" open="1" top="0" tabpos="4">
+		<Cursor position="482" topLine="0" />
 	</File>
 	<File name="sixaxis_emu_guiApp.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="488" topLine="0" />
 	</File>
-	<File name="sixaxis_emu_guiMain.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="63520" topLine="1326" />
+	<File name="sixaxis_emu_guiMain.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="65726" topLine="1400" />
 	</File>
-	<File name="sixaxis_emu_guiMain.h" open="0" top="0" tabpos="2">
-		<Cursor position="4316" topLine="66" />
+	<File name="sixaxis_emu_guiMain.h" open="1" top="0" tabpos="5">
+		<Cursor position="5362" topLine="90" />
 	</File>
 	<File name="src/AxisMapper.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="536" topLine="0" />
@@ -73,7 +73,7 @@
 	<File name="src/XmlWritter.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="4012" topLine="103" />
 	</File>
-	<File name="src/event_catcher.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="17651" topLine="361" />
+	<File name="src/event_catcher.cpp" open="1" top="1" tabpos="3">
+		<Cursor position="16100" topLine="407" />
 	</File>
 </CodeBlocks_layout_file>

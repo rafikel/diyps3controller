@@ -336,7 +336,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Grid1->CreateGrid(0,7);
     Grid1->EnableEditing(false);
     Grid1->EnableGridLines(true);
-    Grid1->SetDefaultColSize(125, true);
+    Grid1->SetRowLabelSize(25);
     Grid1->SetColLabelValue(0, _("Device type"));
     Grid1->SetColLabelValue(1, _("Device name"));
     Grid1->SetColLabelValue(2, _("Device id"));
@@ -361,7 +361,6 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer9->SetSizeHints(Panel2);
     Panel3 = new wxPanel(Notebook1, ID_PANEL3, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL3"));
     FlexGridSizer5 = new wxFlexGridSizer(2, 1, 0, 0);
-    FlexGridSizer5->AddGrowableRow(1);
     FlexGridSizer3 = new wxFlexGridSizer(2, 11, 0, 0);
     StaticText11 = new wxStaticText(Panel3, ID_STATICTEXT11, _("Device type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
     FlexGridSizer3->Add(StaticText11, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -418,6 +417,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Grid2->CreateGrid(0,10);
     Grid2->EnableEditing(false);
     Grid2->EnableGridLines(true);
+    Grid2->SetRowLabelSize(25);
     Grid2->SetDefaultColSize(100, true);
     Grid2->SetColLabelValue(0, _("Device type"));
     Grid2->SetColLabelValue(1, _("Device name"));
@@ -794,29 +794,29 @@ void sixaxis_emu_guiFrame::OnChoice4Select1(wxCommandEvent& event)
     Panel2->Layout();
 }
 
-void sixaxis_emu_guiFrame::auto_detect(event_catcher* evcatch, wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id)
+void sixaxis_emu_guiFrame::auto_detect(wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id)
 {
-    evcatch->run(event_type);
+    evcatch.run(wxEmptyString, event_type);
 
-    device_type->SetLabel(wxString(evcatch->GetDeviceType()));
+    device_type->SetLabel(wxString(evcatch.GetDeviceType()));
 
-    device_name->SetLabel(wxString(evcatch->GetDeviceName()));
+    device_name->SetLabel(wxString(evcatch.GetDeviceName()));
 
-    device_id->SetLabel( wxString(evcatch->GetDeviceId()));
+    device_id->SetLabel( wxString(evcatch.GetDeviceId()));
 
-    event_id->SetLabel( wxString(evcatch->GetEventId()));
+    event_id->SetLabel( wxString(evcatch.GetEventId()));
 }
 
 void sixaxis_emu_guiFrame::OnButton1Click1(wxCommandEvent& event)
 {
-    auto_detect(&evcatch, StaticText35, StaticText27, StaticText36, _("button"), StaticText37);
+    auto_detect(StaticText35, StaticText27, StaticText36, _("button"), StaticText37);
 
     Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnButton8Click(wxCommandEvent& event)
 {
-    auto_detect(&evcatch, StaticText38, StaticText30, StaticText39, Choice4->GetStringSelection(), StaticText40);
+    auto_detect(StaticText38, StaticText30, StaticText39, Choice4->GetStringSelection(), StaticText40);
 
     if(evcatch.GetEventType() == _("button"))
     {
@@ -836,7 +836,7 @@ void sixaxis_emu_guiFrame::OnButton8Click(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnButton9Click(wxCommandEvent& event)
 {
-    auto_detect(&evcatch, StaticText41, StaticText32, StaticText42, Choice7->GetStringSelection(), StaticText43);
+    auto_detect(StaticText41, StaticText32, StaticText42, Choice7->GetStringSelection(), StaticText43);
 
     if(evcatch.GetEventType() == _("button"))
     {
@@ -1396,181 +1396,84 @@ void sixaxis_emu_guiFrame::OnMenuItemPasteController(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnButton10Click1(wxCommandEvent& event)
 {
-    StaticText35->SetLabel(_(""));
-    StaticText27->SetLabel(_(""));
-    StaticText36->SetLabel(_(""));
-    StaticText37->SetLabel(_(""));
+    StaticText35->SetLabel(wxEmptyString);
+    StaticText27->SetLabel(wxEmptyString);
+    StaticText36->SetLabel(wxEmptyString);
+    StaticText37->SetLabel(wxEmptyString);
     CheckBox1->SetValue(false);
 
     Panel1->Layout();
 }
 
-#define MAX_DEVICES 256
-
-void sixaxis_emu_guiFrame::OnMenuReplaceMouse(wxCommandEvent& event)
+void sixaxis_emu_guiFrame::replaceDevice(wxString device_type)
 {
-    int i = 0;
-    int j, k;
-    wxString mouseName[MAX_DEVICES] = {};
-    int mouseVirtualIndex[MAX_DEVICES] = {};
-    const char* name;
-    int i_selected;
-    wxString str_selected;
+    int k;
+    wxString device_name;
+    wxString device_id;
 
     std::list<ButtonMapper>* buttonMappers;
     std::list<AxisMapper>* axisMappers;
 
-    SDL_Init(SDL_INIT_VIDEO);
+    evcatch.run(device_type, _("button"));
+    device_name = evcatch.GetDeviceName();
+    device_id = evcatch.GetDeviceId();
 
-    while ((name = SDL_GetMouseName(i)))
+    save_current();
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
     {
-      mouseName[i] = wxString(name, wxConvUTF8);
+      Configuration* config = controller->GetConfiguration(k);
 
-      for (j = i - 1; j >= 0; --j)
+      Trigger* trigger = config->GetTrigger();
+
+      if(trigger->GetDevice()->GetType() == device_type)
       {
-        if (mouseName[i] == mouseName[j])
+        trigger->GetDevice()->SetId(device_id);
+        trigger->GetDevice()->SetName(device_name);
+      }
+
+      buttonMappers = config->GetButtonMapperList();
+      for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
+      {
+          if(it->GetDevice()->GetType() == device_type)
+          {
+              it->GetDevice()->SetId(device_id);
+              it->GetDevice()->SetName(device_name);
+          }
+      }
+      axisMappers = config->GetAxisMapperList();
+      for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
+      {
+        if(it->GetDevice()->GetType() == device_type)
         {
-          mouseVirtualIndex[i] = mouseVirtualIndex[j] + 1;
-          break;
+            it->GetDevice()->SetId(device_id);
+            it->GetDevice()->SetName(device_name);
         }
       }
-      if (j < 0)
-      {
-        mouseVirtualIndex[i] = 0;
-      }
-      i++;
-    }
-
-    wxSingleChoiceDialog SingleChoiceDialog1(this, _("Select the mouse to use for the current controller"), _("Replace Mouse"), i, mouseName, 0, wxCHOICEDLG_STYLE, wxDefaultPosition);
-
-    int res = SingleChoiceDialog1.ShowModal();
-
-    if(res == wxID_OK)
-    {
-        i_selected = SingleChoiceDialog1.GetSelection();
-        str_selected = SingleChoiceDialog1.GetStringSelection();
-
-        Controller* controller = configFile.GetController(currentController);
-
-        for(k=0; k<MAX_CONFIGURATIONS; ++k)
-        {
-          Configuration* config = controller->GetConfiguration(k);
-
-          Trigger* trigger = config->GetTrigger();
-
-          if(trigger->GetDevice()->GetType() == _("mouse"))
-          {
-            trigger->GetDevice()->SetId(wxString::Format(wxT("%i"),mouseVirtualIndex[i_selected]));
-            trigger->GetDevice()->SetName(str_selected);
-          }
-
-          buttonMappers = config->GetButtonMapperList();
-          for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
-          {
-              if(it->GetDevice()->GetType() == _("mouse"))
-              {
-                  it->GetDevice()->SetId(wxString::Format(wxT("%i"),mouseVirtualIndex[i_selected]));
-                  it->GetDevice()->SetName(str_selected);
-              }
-          }
-          axisMappers = config->GetAxisMapperList();
-          for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
-          {
-            if(it->GetDevice()->GetType() == _("mouse"))
-            {
-                it->GetDevice()->SetId(wxString::Format(wxT("%i"),mouseVirtualIndex[i_selected]));
-                it->GetDevice()->SetName(str_selected);
-            }
-          }
-        }
     }
 
     load_current();
     refresh_gui();
+}
 
-    SDL_Quit();
+void sixaxis_emu_guiFrame::OnMenuReplaceMouse(wxCommandEvent& event)
+{
+    int answer = wxMessageBox(_("This will replace the mouse in the current controller.\nContinue?"), _("Confirm"), wxYES_NO);
+    if (answer == wxNO)
+    {
+     return;
+    }
+    replaceDevice(_("mouse"));
 }
 
 void sixaxis_emu_guiFrame::OnMenuReplaceKeyboard(wxCommandEvent& event)
 {
-  int i = 0;
-  int j, k;
-  wxString keyboardName[MAX_DEVICES] = {};
-  int keyboardVirtualIndex[MAX_DEVICES] = {};
-  const char* name;
-  int i_selected;
-  wxString str_selected;
-
-  std::list<ButtonMapper>* buttonMappers;
-  std::list<AxisMapper>* axisMappers;
-
-  SDL_Init(SDL_INIT_VIDEO);
-
-  while ((name = SDL_GetKeyboardName(i)))
-  {
-    keyboardName[i] = wxString(name, wxConvUTF8);
-
-    for (j = i - 1; j >= 0; --j)
+    int answer = wxMessageBox(_("This will replace the keyboard in the current controller.\nContinue?"), _("Confirm"), wxYES_NO);
+    if (answer == wxNO)
     {
-      if (keyboardName[i] == keyboardName[j])
-      {
-        keyboardVirtualIndex[i] = keyboardVirtualIndex[j] + 1;
-        break;
-      }
+     return;
     }
-    if (j < 0)
-    {
-      keyboardVirtualIndex[i] = 0;
-    }
-    i++;
-  }
-
-  wxSingleChoiceDialog SingleChoiceDialog1(this, _("Select the keyboard to use for the current controller"), _("Replace Keyboard"), i, keyboardName, 0, wxCHOICEDLG_STYLE, wxDefaultPosition);
-
-  int res = SingleChoiceDialog1.ShowModal();
-
-  if(res == wxID_OK)
-  {
-      i_selected = SingleChoiceDialog1.GetSelection();
-      str_selected = SingleChoiceDialog1.GetStringSelection();
-
-      Controller* controller = configFile.GetController(currentController);
-
-      for(k=0; k<MAX_CONFIGURATIONS; ++k)
-      {
-        Configuration* config = controller->GetConfiguration(k);
-
-        Trigger* trigger = config->GetTrigger();
-
-        if(trigger->GetDevice()->GetType() == _("keyboard"))
-        {
-          trigger->GetDevice()->SetId(wxString::Format(wxT("%i"),keyboardVirtualIndex[i_selected]));
-          trigger->GetDevice()->SetName(str_selected);
-        }
-
-        buttonMappers = config->GetButtonMapperList();
-        for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
-        {
-            if(it->GetDevice()->GetType() == _("keyboard"))
-            {
-                it->GetDevice()->SetId(wxString::Format(wxT("%i"),keyboardVirtualIndex[i_selected]));
-                it->GetDevice()->SetName(str_selected);
-            }
-        }
-        axisMappers = config->GetAxisMapperList();
-        for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
-        {
-          if(it->GetDevice()->GetType() == _("keyboard"))
-          {
-              it->GetDevice()->SetId(wxString::Format(wxT("%i"),keyboardVirtualIndex[i_selected]));
-              it->GetDevice()->SetName(str_selected);
-          }
-        }
-      }
-  }
-
-  load_current();
-  refresh_gui();
-
-  SDL_Quit();
+    replaceDevice(_("keyboard"));
 }
