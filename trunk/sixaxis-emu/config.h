@@ -12,6 +12,7 @@
 #include "sixaxis.h"
 
 #define MAX_CONTROLLERS 7
+#define MAX_CONFIGURATIONS 8
 #define MAX_DEVICES 256
 #define POSTPONE_COUNT 3 //to be moved to config.c later
 
@@ -21,17 +22,44 @@ typedef enum
     E_SHAPE_RECTANGLE
 }e_shape;
 
+typedef enum
+{
+  NONE,
+  MC,
+  CC,
+  MX,
+  MY,
+  DZX,
+  DZY,
+  DZS,
+  RD,
+  EX,
+  EY
+}e_current_cal;
+
 typedef struct
 {
+  int change;
   int changed;
   double merge_x;
   double merge_y;
-  int nb_motion;
   int postpone_wheel_up;
   int postpone_wheel_down;
   int postpone_button_x1;
   int postpone_button_x2;
 }s_mouse_control;
+
+typedef struct
+{
+  double* mx;
+  double* my;
+  double* ex;
+  double* ey;
+  double rd;
+  int* dzx;
+  int* dzy;
+  e_shape* dzs;
+}s_mouse_cal;
 
 typedef struct
 {

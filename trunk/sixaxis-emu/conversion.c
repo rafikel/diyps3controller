@@ -399,20 +399,30 @@ const char* get_chars_from_key(SDLKey key)
 
 #define MOUSE_AXIS_X "x"
 #define MOUSE_AXIS_Y "y"
-#define MOUSE_BUTTON_LEFT "BUTTON_LEFT"
-#define MOUSE_BUTTON_RIGHT "BUTTON_RIGHT"
-#define MOUSE_BUTTON_MIDDLE "BUTTON_MIDDLE"
-#define MOUSE_BUTTON_WHEELUP "BUTTON_WHEELUP"
-#define MOUSE_BUTTON_WHEELDOWN "BUTTON_WHEELDOWN"
-#define MOUSE_BUTTON_X1 "BUTTON_X1"
-#define MOUSE_BUTTON_X2 "BUTTON_X2"
-#define MOUSE_BUTTON_X3 "BUTTON_X3"
 
-#define SDL_BUTTON_X3 8
+const char* buttons[] =
+{
+    "UNDEFINED",
+    "BUTTON_LEFT",
+    "BUTTON_MIDDLE",
+    "BUTTON_RIGHT",
+    "BUTTON_WHEELUP",
+    "BUTTON_WHEELDOWN",
+    "BUTTON_X1",
+    "BUTTON_X2",
+    "BUTTON_X3",
+    "BUTTON_X4",
+    "BUTTON_X5",
+    "BUTTON_X6",
+    "BUTTON_X7",
+    "BUTTON_X8",
+    "BUTTON_X9"
+};
 
 unsigned int get_mouse_event_id_from_buffer(const char* event_id)
 {
   unsigned int r_event_id = 0;
+  int i;
 
   if (!strncmp(event_id, MOUSE_AXIS_X, sizeof(MOUSE_AXIS_X)))
   {
@@ -422,37 +432,16 @@ unsigned int get_mouse_event_id_from_buffer(const char* event_id)
   {
     r_event_id = 1;
   }
-  else if (!strncmp(event_id, MOUSE_BUTTON_LEFT, sizeof(MOUSE_BUTTON_LEFT)))
+  else
   {
-    r_event_id = SDL_BUTTON_LEFT;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_RIGHT, sizeof(MOUSE_BUTTON_RIGHT)))
-  {
-    r_event_id = SDL_BUTTON_RIGHT;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_MIDDLE, sizeof(MOUSE_BUTTON_MIDDLE)))
-  {
-    r_event_id = SDL_BUTTON_MIDDLE;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_WHEELUP, sizeof(MOUSE_BUTTON_WHEELUP)))
-  {
-    r_event_id = SDL_BUTTON_WHEELUP;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_WHEELDOWN, sizeof(MOUSE_BUTTON_WHEELDOWN)))
-  {
-    r_event_id = SDL_BUTTON_WHEELDOWN;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_X1, sizeof(MOUSE_BUTTON_X1)))
-  {
-    r_event_id = SDL_BUTTON_X1;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_X2, sizeof(MOUSE_BUTTON_X2)))
-  {
-    r_event_id = SDL_BUTTON_X2;
-  }
-  else if (!strncmp(event_id, MOUSE_BUTTON_X3, sizeof(MOUSE_BUTTON_X3)))
-  {
-    r_event_id = SDL_BUTTON_X3;
+    for(i=1; i<sizeof(buttons)/sizeof(buttons[0]); ++i)
+    {
+      if(!strcmp(event_id, buttons[i]))
+      {
+        r_event_id = i;
+        break;
+      }
+    }
   }
 
   return r_event_id;

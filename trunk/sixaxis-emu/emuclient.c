@@ -37,26 +37,18 @@
 
 #define SCREEN_WIDTH  8
 #define SCREEN_HEIGHT 8
-#define DEFAULT_DEAD_ZONE_X 18
-#define DEFAULT_DEAD_ZONE_Y 20
-#define DEFAULT_MULTIPLIER_X 4
-#define DEFAULT_MULTIPLIER_Y 9
-#define DEFAULT_EXPONENT 1
-#define MULTIPLIER_STEP 0.25
+#define MULTIPLIER_STEP 0.01
 #define EXPONENT_STEP 0.01
 #define EVENT_BUFFER_SIZE 256
+
+static const double pi = 3.14159265;
 
 char* homedir;
 
 int done = 0;
-double multiplier_x = DEFAULT_MULTIPLIER_X;
-double multiplier_y = DEFAULT_MULTIPLIER_Y;
-double exponent = DEFAULT_EXPONENT;
-int dead_zone_x = DEFAULT_DEAD_ZONE_X;
-int dead_zone_y = DEFAULT_DEAD_ZONE_Y;
-int calibration = 0;
-int testing = 0;
-e_shape test_shape;
+int current_mouse = 0;
+int current_conf = 0;
+e_current_cal current_cal = NONE;
 int display = 0;
 static int lctrl = 0;
 static int rctrl = 0;
@@ -73,10 +65,8 @@ int (*assemble)(uint8_t *buf, int len, struct sixaxis_state *state);
 static int sockfd[MAX_CONTROLLERS];
 s_controller controller[MAX_CONTROLLERS] = {};
 
-/*
- * to be deleted later
- */
 extern s_mouse_control mouse_control[MAX_DEVICES];
+extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
 
 #ifdef WIN32
 static void err(int eval, const char *fmt)
@@ -96,12 +86,10 @@ char* joystickName[MAX_DEVICES] = {};
 int joystickVirtualIndex[MAX_DEVICES] = {};
 int joystickNbButton[MAX_DEVICES] = {};
 int joystickSixaxis[MAX_DEVICES] = {};
-#ifdef MULTIPLE_MICE_KB
 char* mouseName[MAX_DEVICES] = {};
 int mouseVirtualIndex[MAX_DEVICES] = {};
 char* keyboardName[MAX_DEVICES] = {};
 int keyboardVirtualIndex[MAX_DEVICES] = {};
-#endif
 
 #define BT_SIXAXIS_NAME "PLAYSTATION(R)3 Controller"
 
@@ -110,9 +98,7 @@ int initialize(int width, int height, const char *title)
   int i = 0;
   int j;
   SDL_Joystick* joystick;
-#ifdef MULTIPLE_MICE_KB
   const char* name;
-#endif
 
   /* Init SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
@@ -171,7 +157,6 @@ int initialize(int width, int height, const char *title)
       }
       i++;
   }
-#ifdef MULTIPLE_MICE_KB
   i = 0;
   while ((name = SDL_GetMouseName(i)))
   {
@@ -210,7 +195,6 @@ int initialize(int width, int height, const char *title)
     }
     i++;
   }
-#endif
   return 1;
 }
 
@@ -312,134 +296,94 @@ void auto_test()
 void circle_test()
 {
   int i;
-#ifdef MULTIPLE_MICE_KB
-  int j;
-#endif
-  const double pi = 3.14159265;
-  const int m = 294;
   const int step = 1;
-  SDL_Event event = {};
 
   for(i=1; i<360; i+=step)
   {
-#ifdef MULTIPLE_MICE_KB
-    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
-    {
-      event.motion.which = j;
-      event.type = SDL_MOUSEMOTION;
-      event.motion.xrel = round(m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
-      event.motion.yrel = round(m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
-      SDL_PushEvent(&event);
-    }
-#else
-    event.type = SDL_MOUSEMOTION;
-    event.motion.xrel = round(m*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
-    event.motion.yrel = round(m*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
-    SDL_PushEvent(&event);
-#endif
+    mouse_control[current_mouse].merge_x = round(mouse_cal[current_mouse][current_conf].rd*64*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
+    mouse_control[current_mouse].merge_y = round(mouse_cal[current_mouse][current_conf].rd*64*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
+    mouse_control[current_mouse].change = 1;
     usleep(REFRESH_PERIOD);
   }
-}
-
-void dz_test()
-{
-  int i;
-#ifdef MULTIPLE_MICE_KB
-  int j;
-#endif
-  SDL_Event event = {};
-
-  testing = 1;
-
-#ifdef MULTIPLE_MICE_KB
-  for(i=0; i<200; ++i)
-  {
-    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
-    {
-      event.motion.which = j;
-      event.type = SDL_MOUSEMOTION;
-      event.motion.xrel = 1;
-      event.motion.yrel = 0;
-      SDL_PushEvent(&event);
-    }
-    usleep(REFRESH_PERIOD);
-  }
-
-  for(i=0; i<200; ++i)
-  {
-    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
-    {
-      event.motion.which = j;
-      event.type = SDL_MOUSEMOTION;
-      event.motion.xrel = 1;
-      event.motion.yrel = 1;
-      SDL_PushEvent(&event);
-    }
-    usleep(REFRESH_PERIOD);
-  }
-
-  for(i=0; i<200; ++i)
-  {
-    for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
-    {
-      event.motion.which = j;
-      event.type = SDL_MOUSEMOTION;
-      event.motion.xrel = 0;
-      event.motion.yrel = 1;
-      SDL_PushEvent(&event);
-    }
-    usleep(REFRESH_PERIOD);
-  }
-#else
-  for(i=0; i<200; ++i)
-  {
-    event.type = SDL_MOUSEMOTION;
-    event.motion.xrel = 1;
-    event.motion.yrel = 0;
-    SDL_PushEvent(&event);
-    usleep(REFRESH_PERIOD);
-  }
-
-  for(i=0; i<200; ++i)
-  {
-    event.type = SDL_MOUSEMOTION;
-    event.motion.xrel = 1;
-    event.motion.yrel = 1;
-    SDL_PushEvent(&event);
-    usleep(REFRESH_PERIOD);
-  }
-
-  for(i=0; i<200; ++i)
-  {
-    event.type = SDL_MOUSEMOTION;
-    event.motion.xrel = 0;
-    event.motion.yrel = 1;
-    SDL_PushEvent(&event);
-    usleep(REFRESH_PERIOD);
-  }
-#endif
-
-  sleep(1);//give time to purge events
-
-  testing = 0;
 }
 
 void display_calibration()
 {
-  printf("multiplier_x: %.2f\n", multiplier_x);
-  printf("multiplier_y: %.2f\n", multiplier_y);
-  printf("dead_zone_x: %d\n", dead_zone_x);
-  printf("dead_zone_y: %d\n", dead_zone_y);
-  printf("exponent: %.2f\n", exponent);
-  if(test_shape == E_SHAPE_CIRCLE) printf("shape: Circle\n");
-  else printf("shape: Rectangle\n");
+  if(current_cal != NONE)
+  {
+    printf("calibrating mouse %s %d\n", mouseName[current_mouse], mouseVirtualIndex[current_mouse]);
+    printf("calibrating conf %d\n", current_conf+1);
+    printf("multiplier_x:");
+    if(mouse_cal[current_mouse][current_conf].mx)
+    {
+      printf(" %.2f\n", *mouse_cal[current_mouse][current_conf].mx);
+    }
+    else
+    {
+      printf(" NA\n");
+    }
+    printf("multiplier_y:");
+    if(mouse_cal[current_mouse][current_conf].my)
+    {
+      printf(" %.2f\n", *mouse_cal[current_mouse][current_conf].my);
+    }
+    else
+    {
+      printf(" NA\n");
+    }
+    printf("dead_zone_x:");
+    if(mouse_cal[current_mouse][current_conf].dzx)
+    {
+      printf(" %d\n", *mouse_cal[current_mouse][current_conf].dzx);
+    }
+    else
+    {
+      printf(" NA\n");
+    }
+    printf("dead_zone_y:");
+    if(mouse_cal[current_mouse][current_conf].dzy)
+    {
+      printf(" %d\n", *mouse_cal[current_mouse][current_conf].dzy);
+    }
+    else
+    {
+      printf(" NA\n");
+    }
+    printf("shape:");
+    if(mouse_cal[current_mouse][current_conf].dzs) {
+      if(*mouse_cal[current_mouse][current_conf].dzs == E_SHAPE_CIRCLE) printf(" Circle\n");
+      else printf(" Rectangle\n");
+    }
+    else
+    {
+      printf(" NA\n");
+    }
+    printf("exponent_x:");
+    if(mouse_cal[current_mouse][current_conf].ex)
+    {
+      printf(" %.2f\n", *mouse_cal[current_mouse][current_conf].ex);
+    }
+    else
+    {
+      printf(" NA\n");
+    }
+    printf("exponent_y:");
+    if(mouse_cal[current_mouse][current_conf].ey)
+    {
+      printf(" %.2f\n", *mouse_cal[current_mouse][current_conf].ey);
+    }
+    else
+    {
+      printf(" NA\n");
+    }
+    printf("radius: %.2f\n", mouse_cal[current_mouse][current_conf].rd);
+  }
 }
 
 static void key(int sym, int down)
 {
   pthread_t thread;
   pthread_attr_t thread_attr;
-  int i;
 
 	switch (sym)
   {
@@ -451,24 +395,6 @@ static void key(int sym, int down)
 
     case SDLK_LALT: lalt = down ? 1 : 0; break;
     case SDLK_MODE: ralt = down ? 1 : 0; break;
-
-    case SDLK_p:
-    if(down && rctrl)
-      {
-        pthread_attr_init(&thread_attr);
-        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-        pthread_create( &thread, &thread_attr, (void*)circle_test, NULL);
-      }
-      break;
-
-    case SDLK_o:
-    if(down && rctrl)
-      {
-        pthread_attr_init(&thread_attr);
-        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-        pthread_create( &thread, &thread_attr, (void*)auto_test, NULL);
-      }
-      break;
 
     case SDLK_ESCAPE: if(down) done = 1; break;
   }
@@ -487,64 +413,141 @@ static void key(int sym, int down)
 	  }
 	}
 
-	if(calibration)
-	{
-	  switch (sym)
-	  {
-	    case SDLK_KP2: if(down) { multiplier_x -= MULTIPLIER_STEP; printf("multiplier_x: %.2f\n", multiplier_x); } break;
-	    case SDLK_KP5:  if(down) { multiplier_x += MULTIPLIER_STEP; printf("multiplier_x: %.2f\n", multiplier_x); } break;
-	    case SDLK_KP8: if(down) { multiplier_y -= MULTIPLIER_STEP; printf("multiplier_y: %.2f\n", multiplier_y); } break;
-	    case SDLK_KP_DIVIDE:  if(down) { multiplier_y += MULTIPLIER_STEP; printf("multiplier_y: %.2f\n", multiplier_y); } break;
-	    case SDLK_KP3:  if(down) { dead_zone_x -= 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
-	    case SDLK_KP6:  if(down) { dead_zone_x += 1; printf("dead_zone_x: %d\n", dead_zone_x); } break;
-	    case SDLK_KP9:  if(down) { dead_zone_y -= 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
-	    case SDLK_KP_MULTIPLY:  if(down) { dead_zone_y += 1; printf("dead_zone_y: %d\n", dead_zone_y); } break;
-	    case SDLK_KP1:  if(down) { exponent -= EXPONENT_STEP; printf("exponent: %.2f\n", exponent); } break;
-	    case SDLK_KP4:  if(down) { exponent += EXPONENT_STEP; printf("exponent: %.2f\n", exponent); } break;
-	    case SDLK_KP0:
-	      if(down)
-	      {
-	        pthread_attr_init(&thread_attr);
-            pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-            pthread_create( &thread, &thread_attr, (void*)dz_test, NULL);
-	      }
-	      break;
-
-	    case SDLK_KP_PERIOD:
-	      if(down)
-	      {
-	        if(test_shape == E_SHAPE_CIRCLE)
-	        {
-	          test_shape = E_SHAPE_RECTANGLE;
-	          printf("shape: Rectangle\n");
-	        }
-	        else
-	        {
-	          test_shape = E_SHAPE_CIRCLE;
-	          printf("shape: Circle\n");
-	        }
-	      }
-	      break;
-	  }
-	  for(i=0; i<MAX_DEVICES; ++i)
-    {
-      mouse_control[i].changed = 1;
-    }
-	}
-
-	if(lctrl && rctrl)
+  switch (sym)
   {
-    if(calibration)
-    {
-      calibration = 0;
-      printf("calibration mode disabled\n");
-    }
-    else
-    {
-      calibration = 1;
-      printf("calibration mode enabled\n");
-      display_calibration();
-    }
+    case SDLK_F1:
+      if(down && rctrl)
+      {
+        if(current_cal == NONE)
+        {
+          current_cal = MC;
+          display_calibration();
+        }
+        else
+        {
+          current_cal = NONE;
+          printf("calibration done\n");
+        }
+      }
+      break;
+    case SDLK_F2:
+      if(down && rctrl)
+      {
+        if(current_cal == CC)
+        {
+          current_cal = MC;
+        }
+        else if(current_cal >= MC)
+        {
+          current_cal = CC;
+        }
+      }
+      break;
+    case SDLK_F3:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("calibrating multiplier x\n");
+          current_cal = MX;
+        }
+      }
+      break;
+    case SDLK_F4:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("calibrating multiplier y\n");
+          current_cal = MY;
+        }
+      }
+      break;
+    case SDLK_F5:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("calibrating dead zone x\n");
+          current_cal = DZX;
+          mouse_control[current_mouse].merge_x = 1;
+          mouse_control[current_mouse].merge_y = 0;
+          mouse_control[current_mouse].change = 1;
+        }
+      }
+      break;
+    case SDLK_F6:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("calibrating dead zone y\n");
+          current_cal = DZY;
+          mouse_control[current_mouse].merge_x = 0;
+          mouse_control[current_mouse].merge_y = 1;
+          mouse_control[current_mouse].change = 1;
+        }
+      }
+      break;
+    case SDLK_F7:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("calibrating dead zone shape\n");
+          current_cal = DZS;
+          mouse_control[current_mouse].merge_x = 1;
+          mouse_control[current_mouse].merge_y = 1;
+          mouse_control[current_mouse].change = 1;
+        }
+      }
+      break;
+    case SDLK_F8:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("calibrating exponent x\n");
+          current_cal = EX;
+        }
+      }
+      break;
+    case SDLK_F9:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("calibrating exponent y\n");
+          current_cal = EY;
+        }
+      }
+      break;
+    case SDLK_F10:
+      if(down && rctrl && current_cal != NONE)
+      {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          printf("adjusting circle test radius\n");
+          current_cal = RD;
+        }
+      }
+      break;
+    case SDLK_F11:
+      if(down && rctrl)
+      {
+        pthread_attr_init(&thread_attr);
+        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+        pthread_create( &thread, &thread_attr, (void*)circle_test, NULL);
+      }
+      break;
+    case SDLK_F12:
+      if(down && rctrl)
+      {
+        pthread_attr_init(&thread_attr);
+        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+        pthread_create( &thread, &thread_attr, (void*)auto_test, NULL);
+      }
+      break;
   }
 
 	if(lshift && rshift)
@@ -560,6 +563,169 @@ static void key(int sym, int down)
   }
 
 	if(down) macro_lookup(sym);
+}
+
+static void button(int which, int button)
+{
+  switch (button)
+  {
+    case SDL_BUTTON_WHEELUP:
+      switch(current_cal)
+      {
+        case MC:
+          current_mouse += 1;
+          if(!mouseName[current_mouse])
+          {
+            current_mouse -= 1;
+          }
+          break;
+        case CC:
+          current_conf += 1;
+          if(current_conf > MAX_CONFIGURATIONS-1)
+          {
+            current_conf = MAX_CONFIGURATIONS-1;
+          }
+          break;
+        case MX:
+          if(mouse_cal[current_mouse][current_conf].mx) *mouse_cal[current_mouse][current_conf].mx += MULTIPLIER_STEP;
+          break;
+        case MY:
+          if(mouse_cal[current_mouse][current_conf].my) *mouse_cal[current_mouse][current_conf].my += MULTIPLIER_STEP;
+          break;
+        case DZX:
+          if(mouse_cal[current_mouse][current_conf].dzx)
+          {
+            *mouse_cal[current_mouse][current_conf].dzx += 1;
+            if(*mouse_cal[current_mouse][current_conf].dzx > 127)
+            {
+              *mouse_cal[current_mouse][current_conf].dzx = 127;
+            }
+            mouse_control[current_mouse].merge_x = 1;
+            mouse_control[current_mouse].merge_y = 0;
+            mouse_control[current_mouse].change = 1;
+          }
+          break;
+        case DZY:
+          if(mouse_cal[current_mouse][current_conf].dzy)
+          {
+            *mouse_cal[current_mouse][current_conf].dzy += 1;
+            if(*mouse_cal[current_mouse][current_conf].dzy > 127)
+            {
+              *mouse_cal[current_mouse][current_conf].dzy = 127;
+            }
+            mouse_control[current_mouse].merge_x = 0;
+            mouse_control[current_mouse].merge_y = 1;
+            mouse_control[current_mouse].change = 1;
+          }
+          break;
+        case DZS:
+          if(mouse_cal[current_mouse][current_conf].dzs)
+          {
+            if(*mouse_cal[current_mouse][current_conf].dzs == E_SHAPE_CIRCLE)
+            {
+              *mouse_cal[current_mouse][current_conf].dzs = E_SHAPE_RECTANGLE;
+            }
+            else
+            {
+              *mouse_cal[current_mouse][current_conf].dzs = E_SHAPE_CIRCLE;
+            }
+            mouse_control[current_mouse].merge_x = 1;
+            mouse_control[current_mouse].merge_y = 1;
+            mouse_control[current_mouse].change = 1;
+          }
+          break;
+        case RD:
+          mouse_cal[current_mouse][current_conf].rd += 0.5;
+          break;
+        case EX:
+          if(mouse_cal[current_mouse][current_conf].ex) *mouse_cal[current_mouse][current_conf].ex += EXPONENT_STEP;
+          break;
+        case EY:
+          if(mouse_cal[current_mouse][current_conf].ey) *mouse_cal[current_mouse][current_conf].ey += EXPONENT_STEP;
+          break;
+        case NONE:
+          break;
+      }
+      break;
+    case SDL_BUTTON_WHEELDOWN:
+      switch(current_cal)
+      {
+        case MC:
+          if(current_mouse > 0)
+          {
+            current_mouse -= 1;
+          }
+          break;
+        case CC:
+          if(current_conf > 0)
+          {
+            current_conf -= 1;
+          }
+          break;
+        case MX:
+          if(mouse_cal[current_mouse][current_conf].mx) *mouse_cal[current_mouse][current_conf].mx -= MULTIPLIER_STEP;
+          break;
+        case MY:
+          if(mouse_cal[current_mouse][current_conf].my) *mouse_cal[current_mouse][current_conf].my -= MULTIPLIER_STEP;
+          break;
+        case DZX:
+          if(mouse_cal[current_mouse][current_conf].dzx)
+          {
+            *mouse_cal[current_mouse][current_conf].dzx -= 1;
+            if(*mouse_cal[current_mouse][current_conf].dzx < 0)
+            {
+              *mouse_cal[current_mouse][current_conf].dzx = 0;
+            }
+            mouse_control[current_mouse].merge_x = -1;
+            mouse_control[current_mouse].merge_y = 0;
+            mouse_control[current_mouse].change = 1;
+          }
+          break;
+        case DZY:
+          if(mouse_cal[current_mouse][current_conf].dzy)
+          {
+            *mouse_cal[current_mouse][current_conf].dzy -= 1;
+            if(*mouse_cal[current_mouse][current_conf].dzy < 0)
+            {
+              *mouse_cal[current_mouse][current_conf].dzy = 0;
+            }
+            mouse_control[current_mouse].merge_x = 0;
+            mouse_control[current_mouse].merge_y = -1;
+            mouse_control[current_mouse].change = 1;
+          }
+          break;
+        case DZS:
+          if(mouse_cal[current_mouse][current_conf].dzs)
+          {
+            if(*mouse_cal[current_mouse][current_conf].dzs == E_SHAPE_CIRCLE)
+            {
+              *mouse_cal[current_mouse][current_conf].dzs = E_SHAPE_RECTANGLE;
+            }
+            else
+            {
+              *mouse_cal[current_mouse][current_conf].dzs = E_SHAPE_CIRCLE;
+            }
+            mouse_control[current_mouse].merge_x = -1;
+            mouse_control[current_mouse].merge_y = -1;
+            mouse_control[current_mouse].change = 1;
+          }
+          break;
+        case RD:
+          mouse_cal[current_mouse][current_conf].rd -= 0.5;
+          break;
+        case EX:
+          if(mouse_cal[current_mouse][current_conf].ex) *mouse_cal[current_mouse][current_conf].ex -= EXPONENT_STEP;
+          break;
+        case EY:
+          if(mouse_cal[current_mouse][current_conf].ey) *mouse_cal[current_mouse][current_conf].ey -= EXPONENT_STEP;
+          break;
+        case NONE:
+          break;
+      }
+      break;
+  }
+
+  display_calibration();
 }
 
 int main(int argc, char *argv[])
@@ -595,11 +761,6 @@ int main(int argc, char *argv[])
       else if(!strcmp(argv[i], "--status"))
       {
         display = 1;
-      }
-      else if(!strcmp(argv[i], "--calibrate"))
-      {
-        calibration = 1;
-        display_calibration();
       }
     }
 
@@ -637,7 +798,7 @@ int main(int argc, char *argv[])
         SDL_PumpEvents();
         num_evt = SDL_PeepEvents(events, sizeof(events)/sizeof(events[0]), SDL_GETEVENT, SDL_ALLEVENTS);
 
-        if(num_evt > EVENT_BUFFER_SIZE)
+        if(num_evt == EVENT_BUFFER_SIZE)
         {
           printf("buffer too small!!!\n");
         }
@@ -646,10 +807,8 @@ int main(int argc, char *argv[])
         {
           if(event->type != SDL_MOUSEMOTION)
           {
-            /*
-             * Don't process events except mouse events if calibration is on.
-             */
-            if(!calibration)
+            //if calibration is on, all mouse wheel events are skipped
+            if(current_cal == NONE || event->type != SDL_MOUSEBUTTONDOWN || (event->button.button != SDL_BUTTON_WHEELDOWN && event->button.button != SDL_BUTTON_WHEELUP))
             {
               process_event(event);
             }
@@ -658,8 +817,7 @@ int main(int argc, char *argv[])
           {
             mouse_control[event->motion.which].merge_x += event->motion.xrel;
             mouse_control[event->motion.which].merge_y += event->motion.yrel;
-            mouse_control[event->motion.which].nb_motion++;
-            mouse_control[event->motion.which].changed = 1;
+            mouse_control[event->motion.which].change = 1;
           }
 
           trigger_lookup(event);
@@ -675,24 +833,28 @@ int main(int argc, char *argv[])
             case SDL_KEYUP:
               key(event->key.keysym.sym, 0);
               break;
+            case SDL_MOUSEBUTTONDOWN:
+              button(event->button.which, event->button.button);
+              break;
           }
         }
 
         for(i=0; i<MAX_DEVICES; ++i)
         {
-          if(mouse_control[i].changed)
+          if(mouse_control[i].changed || mouse_control[i].change)
           {
             mouse_evt.motion.which = i;
             mouse_evt.type = SDL_MOUSEMOTION;
-            if(!mouse_control[i].nb_motion)
-            {
-              mouse_control[i].changed = 0;
-            }
             process_event(&mouse_evt);
           }
           mouse_control[i].merge_x = 0;
           mouse_control[i].merge_y = 0;
-          mouse_control[i].nb_motion = 0;
+          mouse_control[i].changed = mouse_control[i].change;
+          mouse_control[i].change = 0;
+          if(i == current_mouse && (current_cal == DZX || current_cal == DZY || current_cal == DZS))
+          {
+            mouse_control[i].changed = 0;
+          }
         }
 
         /*
@@ -702,6 +864,8 @@ int main(int argc, char *argv[])
         {
           if(controller[i].send_command)
           {
+            if(!sockfd[i]) continue;
+
             if (assemble_input_01(buf, sizeof(buf), state+i) < 0)
             {
               printf("can't assemble\n");
@@ -741,7 +905,6 @@ int main(int argc, char *argv[])
     {
       free(joystickName[i]);
     }
-#ifdef MULTIPLE_MICE_KB
     for(i=0; i<MAX_DEVICES && mouseName[i]; ++i)
     {
       free(mouseName[i]);
@@ -750,6 +913,5 @@ int main(int argc, char *argv[])
     {
       free(keyboardName[i]);
     }
-#endif
     return 0;
 }

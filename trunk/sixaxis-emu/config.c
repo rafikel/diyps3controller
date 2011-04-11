@@ -26,7 +26,6 @@
 #define X_ATTR_VALUE_YES "yes"
 #define X_ATTR_VALUE_NO "no"
 
-#define MAX_CONFIGURATIONS 8
 #define MAX_CONTROLS 256
 
 #define CONFIG_DIR ".emuclient/config"
@@ -57,6 +56,8 @@
 
 #define AXIS_X 0
 #define AXIS_Y 1
+
+#define DEFAULT_RADIUS 50
 
 typedef enum
 {
@@ -105,25 +106,18 @@ typedef struct
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
 extern char* homedir;
-extern int calibration;
-extern int testing;
-extern int test_shape;
-extern double multiplier_x;
-extern double multiplier_y;
-extern double exponent;
-extern int dead_zone_x;
-extern int dead_zone_y;
 extern int display;
 extern int joystickNbButton[255];
 extern const char* joystickName[MAX_DEVICES];
 extern int joystickVirtualIndex[MAX_DEVICES];
 extern int joystickSixaxis[MAX_DEVICES];
-#ifdef MULTIPLE_MICE_KB
 extern const char* mouseName[MAX_DEVICES];
 extern int mouseVirtualIndex[MAX_DEVICES];
 extern const char* keyboardName[MAX_DEVICES];
 extern int keyboardVirtualIndex[MAX_DEVICES];
-#endif
+
+extern int current_mouse;
+extern e_current_cal current_cal;
 
 /*
  * These variables are used to read the configuration.
@@ -141,7 +135,7 @@ static double r_exponent;
 static e_shape r_shape;
 
 static e_device_type r_device_type;
-static unsigned int r_device_id;
+static int r_device_id;
 static char r_device_name[128];
 
 /*
@@ -177,6 +171,11 @@ static s_mapper* mouse_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
  * Used to tweak mouse controls.
  */
 s_mouse_control mouse_control[MAX_DEVICES];
+
+/*
+ * Used to calibrate mouse controls.
+ */
+s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS] = {};
 
 /*
  * This lists controls of each controller configuration for all joysticks.
@@ -321,7 +320,7 @@ static int postpone_event(unsigned int device, SDL_Event* event)
   return ret;
 }
 
-static void mouse2axis(struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone, e_shape shape)
+static void mouse2axis(int device, struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone, e_shape shape)
 {
   double z = 0;
   double dz = dead_zone;
@@ -335,6 +334,18 @@ static void mouse2axis(struct sixaxis_state* state, int which, double x, double 
     {
       dz = dz*cos(atan(fabs(y/x)));
     }
+    if(device == current_mouse && (current_cal == DZX || current_cal == DZS))
+    {
+      if(val > 0)
+      {
+        state->user.axis[ts][ts_axis] = dz;
+      }
+      else
+      {
+        state->user.axis[ts][ts_axis] = -dz;
+      }
+      return;
+    }
   }
   else if(which == AXIS_Y)
   {
@@ -343,13 +354,21 @@ static void mouse2axis(struct sixaxis_state* state, int which, double x, double 
     {
       dz = dz*sin(atan(fabs(y/x)));
     }
+    if(device == current_mouse && (current_cal == DZY || current_cal == DZS))
+    {
+      if(val > 0)
+      {
+        state->user.axis[ts][ts_axis] = dz;
+      }
+      else
+      {
+        state->user.axis[ts][ts_axis] = -dz;
+      }
+      return;
+    }
   }
 
-  if(testing)
-  {
-    z = val;
-  }
-  else if(val != 0)
+  if(val != 0)
   {
     z = multiplier * (val/fabs(val)) * pow(fabs(val), exp);
   }
@@ -727,17 +746,17 @@ void process_event(SDL_Event* event)
           /*
            * Check the mouse axis.
            */
-          if(!mapper || mapper->axis == 0)
+          if(!mapper)
+          {
+            continue;
+          }
+          else if (mapper->axis == 0)
           {
             value = event->motion.xrel;
           }
           else if(mapper->axis == 1)
           {
             value = event->motion.yrel;
-          }
-          else
-          {
-            continue;
           }
           controller[c_id].send_command = 1;
           /*
@@ -773,10 +792,10 @@ void process_event(SDL_Event* event)
           exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
           shape = mapper->shape;
-          if(mouse_control[device].nb_motion)
+          if(mouse_control[device].change)
           {
-            mx = mouse_control[device].merge_x / 5;
-            my = mouse_control[device].merge_y / 5;
+            mx = mouse_control[device].merge_x;
+            my = mouse_control[device].merge_y;
           }
           else
           {
@@ -785,28 +804,7 @@ void process_event(SDL_Event* event)
           }
           if(ts >= 0)
           {
-            if(mapper->axis == 0)
-            {
-              if(calibration)
-              {
-                multiplier = multiplier_x;
-                exp = exponent;
-                dead_zone = dead_zone_x;
-                shape = test_shape;
-              }
-              mouse2axis(state+c_id, AXIS_X, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
-            }
-            else if(mapper->axis == 1)
-            {
-              if(calibration)
-              {
-                multiplier = multiplier_y;
-                exp = exponent;
-                dead_zone = dead_zone_y;
-                shape = test_shape;
-              }
-              mouse2axis(state+c_id, AXIS_Y, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
-            }
+            mouse2axis(device, state+c_id, mapper->axis, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
           }
           break;
         case SDL_MOUSEBUTTONDOWN:
@@ -1064,7 +1062,7 @@ static int ProcessDeviceElement(xmlNode * a_node)
 
   if(ret != -1)
   {
-    ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_device_id);
+    ret = GetIntProp(a_node, X_ATTR_ID, &r_device_id);
 
     prop = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
     if(prop)
@@ -1086,8 +1084,11 @@ static int ProcessDeviceElement(xmlNode * a_node)
           }
         }
       }
+      if(i == MAX_DEVICES || !joystickName[i])
+      {
+        r_device_id = -1;
+      }
     }
-#ifdef MULTIPLE_MICE_KB
     else if(r_device_type == E_DEVICE_TYPE_MOUSE)
     {
       for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
@@ -1100,6 +1101,10 @@ static int ProcessDeviceElement(xmlNode * a_node)
             break;
           }
         }
+      }
+      if(i == MAX_DEVICES || !mouseName[i])
+      {
+        r_device_id = -1;
       }
     }
     else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
@@ -1115,8 +1120,11 @@ static int ProcessDeviceElement(xmlNode * a_node)
           }
         }
       }
+      if(i == MAX_DEVICES || !keyboardName[i])
+      {
+        r_device_id = -1;
+      }
     }
-#endif
   }
 
   return ret;
@@ -1125,6 +1133,9 @@ static int ProcessDeviceElement(xmlNode * a_node)
 static s_mapper** get_mapper_table()
 {
   s_mapper** pp_mapper = NULL;
+
+  if(r_device_id < 0) return NULL;
+
   switch(r_device_type)
   {
     case E_DEVICE_TYPE_KEYBOARD:
@@ -1429,9 +1440,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
   char* r_switch_back;
   char* event_id;
   int switch_back = 0;
-#ifdef MULTIPLE_MICE_KB
   int i;
-#endif
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -1444,11 +1453,10 @@ static int ProcessTriggerElement(xmlNode * a_node)
     }
     xmlFree(device_name);
 
-    ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_device_id);
+    ret = GetIntProp(a_node, X_ATTR_ID, &r_device_id);
 
     if(ret != -1)
     {
-#ifdef MULTIPLE_MICE_KB
       if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
       {
         for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
@@ -1499,20 +1507,6 @@ static int ProcessTriggerElement(xmlNode * a_node)
           }
         }
       }
-#else
-      if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
-      {
-        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-        r_event_id = get_key_from_buffer(event_id);
-        xmlFree(event_id);
-      }
-      else if(r_device_type == E_DEVICE_TYPE_MOUSE)
-      {
-        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-        r_event_id = get_mouse_event_id_from_buffer(event_id);
-        xmlFree(event_id);
-      }
-#endif
     }
 
     r_switch_back = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
@@ -1752,6 +1746,39 @@ static int read_file(char* file_path)
 
 }
 
+static void read_calibration()
+{
+  int i, j, k;
+  s_mapper* p_mapper;
+
+  for(i=0; i<MAX_DEVICES; ++i)
+  {
+    for(j=0; j<MAX_CONTROLLERS; ++j)
+    {
+      for(k=0; k<MAX_CONFIGURATIONS; ++k)
+      {
+        for(p_mapper = mouse_axis[i][j][k]; p_mapper && p_mapper<mouse_axis[i][j][k]+mouse_axis[i][j][k]->nb_mappers; p_mapper++)
+        {
+          if(p_mapper->axis == 0)
+          {
+            mouse_cal[i][k].mx = &p_mapper->multiplier;
+            mouse_cal[i][k].ex = &p_mapper->exponent;
+            mouse_cal[i][k].dzx = &p_mapper->dead_zone;
+            mouse_cal[i][k].dzs = &p_mapper->shape;
+            mouse_cal[i][k].rd = DEFAULT_RADIUS;
+          }
+          else
+          {
+            mouse_cal[i][k].my = &p_mapper->multiplier;
+            mouse_cal[i][k].ey = &p_mapper->exponent;
+            mouse_cal[i][k].dzy = &p_mapper->dead_zone;
+          }
+        }
+      }
+    }
+  }
+}
+
 /*
  * This function loads a config file.
  */
@@ -1766,6 +1793,8 @@ void read_config_file(const char* file)
     printf("Bad config file: %s\n", file_path);
     exit(-1);
   }
+
+  read_calibration();
 }
 
 /*
