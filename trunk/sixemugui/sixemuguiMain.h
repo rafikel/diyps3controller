@@ -53,6 +53,7 @@ class sixemuguiFrame: public wxFrame
         void OnCheckBox2Click(wxCommandEvent& event);
         void OnCheckBox3Click(wxCommandEvent& event);
         void OnChoice8Select(wxCommandEvent& event);
+        void OnCheckBoxCalibrate(wxCommandEvent& event);
         //*)
 
         void readSixaxis();
