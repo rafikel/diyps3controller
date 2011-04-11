@@ -35,6 +35,7 @@ class sixstatusFrame: public wxFrame
 
         void OnTimer(wxTimerEvent& evt);
         void OnIdle(wxIdleEvent& evt);
+        void TextColor();
         wxTimer monTimer;
 
         //(*Identifiers(sixstatusFrame)
@@ -80,6 +81,12 @@ class sixstatusFrame: public wxFrame
         static const long ID_GAUGE32;
         static const long ID_STATICTEXT33;
         static const long ID_GAUGE33;
+        static const long ID_STATICTEXT42;
+        static const long ID_STATICTEXT43;
+        static const long ID_STATICTEXT39;
+        static const long ID_STATICTEXT38;
+        static const long ID_STATICTEXT41;
+        static const long ID_STATICTEXT40;
         static const long ID_STATICTEXT19;
         static const long ID_STATICTEXT21;
         static const long ID_STATICTEXT20;
@@ -88,11 +95,14 @@ class sixstatusFrame: public wxFrame
         static const long ID_STATICTEXT24;
         static const long ID_STATICTEXT25;
         static const long ID_STATICTEXT26;
+        static const long ID_STATICTEXT37;
+        static const long ID_STATICTEXT34;
         static const long ID_STATICTEXT27;
         static const long ID_STATICTEXT28;
         static const long ID_STATICTEXT29;
         static const long ID_STATICTEXT30;
-        static const long ID_STATICTEXT34;
+        static const long ID_STATICTEXT36;
+        static const long ID_STATICTEXT35;
         static const long idMenuQuit;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
@@ -106,6 +116,7 @@ class sixstatusFrame: public wxFrame
         wxGauge* Gauge3;
         wxStaticText* StaticText29;
         wxGauge* Gauge31;
+        wxStaticText* StaticText37;
         wxStaticText* StaticText33;
         wxStaticText* StaticText13;
         wxStaticText* StaticText2;
@@ -115,10 +126,13 @@ class sixstatusFrame: public wxFrame
         wxStaticText* StaticText6;
         wxGauge* Gauge4;
         wxGauge* Gauge1;
+        wxStaticText* StaticText40;
         wxGauge* Gauge12;
         wxGauge* Gauge6;
         wxStaticText* StaticText19;
+        wxStaticText* StaticText42;
         wxStaticText* StaticText32;
+        wxStaticText* StaticText38;
         wxGauge* Gauge32;
         wxStaticText* StaticText8;
         wxStaticText* StaticText11;
@@ -130,6 +144,7 @@ class sixstatusFrame: public wxFrame
         wxGauge* Gauge18;
         wxStaticText* StaticText3;
         wxStaticText* StaticText21;
+        wxStaticText* StaticText39;
         wxGauge* Gauge10;
         wxStaticText* StaticText23;
         wxStaticText* StaticText24;
@@ -141,13 +156,17 @@ class sixstatusFrame: public wxFrame
         wxStatusBar* StatusBar1;
         wxGauge* Gauge17;
         wxStaticText* StaticText28;
+        wxStaticText* StaticText41;
+        wxStaticText* StaticText43;
         wxStaticText* StaticText15;
         wxStaticText* StaticText12;
         wxGauge* Gauge2;
         wxGauge* Gauge8;
         wxGauge* Gauge15;
+        wxStaticText* StaticText35;
         wxGauge* Gauge16;
         wxStaticText* StaticText25;
+        wxStaticText* StaticText36;
         wxStaticText* StaticText17;
         wxStaticText* StaticText4;
         wxGauge* Gauge14;

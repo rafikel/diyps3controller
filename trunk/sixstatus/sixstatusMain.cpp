@@ -89,6 +89,12 @@ const long sixstatusFrame::ID_STATICTEXT32 = wxNewId();
 const long sixstatusFrame::ID_GAUGE32 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT33 = wxNewId();
 const long sixstatusFrame::ID_GAUGE33 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT42 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT43 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT39 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT38 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT41 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT40 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT19 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT21 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT20 = wxNewId();
@@ -97,11 +103,14 @@ const long sixstatusFrame::ID_STATICTEXT23 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT24 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT25 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT26 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT37 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT34 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT27 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT28 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT29 = wxNewId();
 const long sixstatusFrame::ID_STATICTEXT30 = wxNewId();
-const long sixstatusFrame::ID_STATICTEXT34 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT36 = wxNewId();
+const long sixstatusFrame::ID_STATICTEXT35 = wxNewId();
 const long sixstatusFrame::idMenuQuit = wxNewId();
 const long sixstatusFrame::idMenuAbout = wxNewId();
 const long sixstatusFrame::ID_STATUSBAR1 = wxNewId();
@@ -111,6 +120,23 @@ BEGIN_EVENT_TABLE(sixstatusFrame,wxFrame)
     //(*EventTable(sixstatusFrame)
     //*)
 END_EVENT_TABLE()
+
+typedef enum
+{
+  NONE,
+  MC,
+  CC,
+  MX,
+  MY,
+  DZX,
+  DZY,
+  DZS,
+  RD,
+  EX,
+  EY
+}e_current_cal;
+
+static e_current_cal current_cal;
 
 int lstick_x = 0;
 int lstick_y = 0;
@@ -134,12 +160,17 @@ int bstart = 0;
 int bselect = 0;
 int bps = 0;
 
+string status;
+string cm;
+string cc;
 string dz_x;
 string dz_y;
 string mul_x;
 string mul_y;
-string exponent;
+string exponent_x;
+string exponent_y;
 string shape;
+string radius;
 
 void read_status(void)
 {
@@ -151,7 +182,63 @@ void read_status(void)
         //cout << s << endl;
         stringstream parser(s);
 
-        if(!s.compare(0, 13, "multiplier_x:"))
+        if(!s.compare(0, 16, "calibration done"))
+        {
+            status = string("off");
+            current_cal = NONE;
+        }
+        else if(!s.compare(0, 17, "calibrating mouse"))
+        {
+            cm = parser.str().substr(18);
+            status = string("on");
+        }
+        else if(!s.compare(0, 16, "calibrating conf"))
+        {
+            parser >> s;
+            parser >> s;
+            parser >> cc;
+        }
+        else if(!s.compare(0, 15, "mouse selection"))
+        {
+            current_cal = MC;
+        }
+        else if(!s.compare(0, 16, "config selection"))
+        {
+            current_cal = CC;
+        }
+        else if(!s.compare(0, 24, "calibrating multiplier x"))
+        {
+            current_cal = MX;
+        }
+        else if(!s.compare(0, 24, "calibrating multiplier y"))
+        {
+            current_cal = MY;
+        }
+        else if(!s.compare(0, 23, "calibrating dead zone x"))
+        {
+            current_cal = DZX;
+        }
+        else if(!s.compare(0, 23, "calibrating dead zone y"))
+        {
+            current_cal = DZY;
+        }
+        else if(!s.compare(0, 27, "calibrating dead zone shape"))
+        {
+            current_cal = DZS;
+        }
+        else if(!s.compare(0, 22, "calibrating exponent x"))
+        {
+            current_cal = EX;
+        }
+        else if(!s.compare(0, 22, "calibrating exponent y"))
+        {
+            current_cal = EY;
+        }
+        else if(!s.compare(0, 28, "adjusting circle test radius"))
+        {
+            current_cal = RD;
+        }
+        else if(!s.compare(0, 13, "multiplier_x:"))
         {
             parser >> s;
             parser >> mul_x;
@@ -171,15 +258,25 @@ void read_status(void)
             parser >> s;
             parser >> dz_y;
         }
-        else if(!s.compare(0, 9, "exponent:"))
+        else if(!s.compare(0, 11, "exponent_x:"))
         {
             parser >> s;
-            parser >> exponent;
+            parser >> exponent_x;
+        }
+        else if(!s.compare(0, 11, "exponent_y:"))
+        {
+            parser >> s;
+            parser >> exponent_y;
         }
         else if(!s.compare(0, 6, "shape:"))
         {
             parser >> s;
             parser >> shape;
+        }
+        else if(!s.compare(0, 7, "radius:"))
+        {
+            parser >> s;
+            parser >> radius;
         }
 
         while(parser >> s)
@@ -361,15 +458,18 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer5;
     wxFlexGridSizer* FlexGridSizer2;
     wxMenu* Menu1;
+    wxFlexGridSizer* FlexGridSizer7;
+    wxStaticBoxSizer* StaticBoxSizer7;
     wxStaticBoxSizer* StaticBoxSizer3;
     wxGridSizer* GridSizer1;
-    wxStaticBoxSizer* StaticBoxSizer6;
+    wxFlexGridSizer* FlexGridSizer8;
     wxMenuBar* MenuBar1;
+    wxFlexGridSizer* FlexGridSizer6;
     wxStaticBoxSizer* StaticBoxSizer1;
     wxFlexGridSizer* FlexGridSizer1;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-    
+
     Create(parent, wxID_ANY, _("Sixstatus"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Sixaxis status"));
@@ -463,50 +563,74 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     Gauge33 = new wxGauge(this, ID_GAUGE33, 255, wxDefaultPosition, wxSize(30,30), 0, wxDefaultValidator, _T("ID_GAUGE33"));
     GridSizer1->Add(Gauge33, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer5->Add(GridSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer1->Add(StaticBoxSizer5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Mouse calibration"));
+    FlexGridSizer1->Add(StaticBoxSizer5, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Mouse calibration"));
+    FlexGridSizer5 = new wxFlexGridSizer(2, 1, 0, 0);
+    FlexGridSizer8 = new wxFlexGridSizer(3, 2, 0, 0);
+    StaticText42 = new wxStaticText(this, ID_STATICTEXT42, _("Status:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT42"));
+    FlexGridSizer8->Add(StaticText42, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText43 = new wxStaticText(this, ID_STATICTEXT43, _("off"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT43"));
+    FlexGridSizer8->Add(StaticText43, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText39 = new wxStaticText(this, ID_STATICTEXT39, _("Mouse (rctrl+F1):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT39"));
+    FlexGridSizer8->Add(StaticText39, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText38 = new wxStaticText(this, ID_STATICTEXT38, _("Name id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT38"));
+    FlexGridSizer8->Add(StaticText38, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText41 = new wxStaticText(this, ID_STATICTEXT41, _("Config (rctrl+F2):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT41"));
+    FlexGridSizer8->Add(StaticText41, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText40 = new wxStaticText(this, ID_STATICTEXT40, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT40"));
+    FlexGridSizer8->Add(StaticText40, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer5->Add(FlexGridSizer8, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7 = new wxFlexGridSizer(1, 4, 0, 0);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Multiplier"));
     FlexGridSizer3 = new wxFlexGridSizer(2, 2, 0, 0);
-    StaticText19 = new wxStaticText(this, ID_STATICTEXT19, _("x:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
+    StaticText19 = new wxStaticText(this, ID_STATICTEXT19, _("x (rctrl + F3):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
     FlexGridSizer3->Add(StaticText19, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText21 = new wxStaticText(this, ID_STATICTEXT21, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT21"));
+    StaticText21 = new wxStaticText(this, ID_STATICTEXT21, _("00.00"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT21"));
     FlexGridSizer3->Add(StaticText21, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText20 = new wxStaticText(this, ID_STATICTEXT20, _("y:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT20"));
+    StaticText20 = new wxStaticText(this, ID_STATICTEXT20, _("y (rctrl + F4):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT20"));
     FlexGridSizer3->Add(StaticText20, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText22 = new wxStaticText(this, ID_STATICTEXT22, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT22"));
+    StaticText22 = new wxStaticText(this, ID_STATICTEXT22, _("00.00"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT22"));
     FlexGridSizer3->Add(StaticText22, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(FlexGridSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Dead zone"));
-    FlexGridSizer4 = new wxFlexGridSizer(2, 2, 0, 0);
-    StaticText23 = new wxStaticText(this, ID_STATICTEXT23, _("x:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
+    FlexGridSizer4 = new wxFlexGridSizer(3, 2, 0, 0);
+    StaticText23 = new wxStaticText(this, ID_STATICTEXT23, _("x (rctrl + F5):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
     FlexGridSizer4->Add(StaticText23, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText24 = new wxStaticText(this, ID_STATICTEXT24, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT24"));
+    StaticText24 = new wxStaticText(this, ID_STATICTEXT24, _("000"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT24"));
     FlexGridSizer4->Add(StaticText24, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText25 = new wxStaticText(this, ID_STATICTEXT25, _("y:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT25"));
+    StaticText25 = new wxStaticText(this, ID_STATICTEXT25, _("y (rctrl + F6):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT25"));
     FlexGridSizer4->Add(StaticText25, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText26 = new wxStaticText(this, ID_STATICTEXT26, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT26"));
+    StaticText26 = new wxStaticText(this, ID_STATICTEXT26, _("000"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT26"));
     FlexGridSizer4->Add(StaticText26, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText37 = new wxStaticText(this, ID_STATICTEXT37, _("Shape (rctrl + F7):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT37"));
+    FlexGridSizer4->Add(StaticText37, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText34 = new wxStaticText(this, ID_STATICTEXT34, _("Rectangle"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT34"));
+    FlexGridSizer4->Add(StaticText34, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(StaticBoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Exponent"));
     FlexGridSizer2 = new wxFlexGridSizer(2, 2, 0, 0);
-    StaticText27 = new wxStaticText(this, ID_STATICTEXT27, _("x:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT27"));
+    StaticText27 = new wxStaticText(this, ID_STATICTEXT27, _("x (rctrl + F8):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT27"));
     FlexGridSizer2->Add(StaticText27, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText28 = new wxStaticText(this, ID_STATICTEXT28, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT28"));
+    StaticText28 = new wxStaticText(this, ID_STATICTEXT28, _("0.00"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT28"));
     FlexGridSizer2->Add(StaticText28, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText29 = new wxStaticText(this, ID_STATICTEXT29, _("y:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT29"));
+    StaticText29 = new wxStaticText(this, ID_STATICTEXT29, _("y (rctrl + F9):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT29"));
     FlexGridSizer2->Add(StaticText29, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText30 = new wxStaticText(this, ID_STATICTEXT30, _("0"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT30"));
+    StaticText30 = new wxStaticText(this, ID_STATICTEXT30, _("0.00"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT30"));
     FlexGridSizer2->Add(StaticText30, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4->Add(FlexGridSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(StaticBoxSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer6 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Shape"));
-    FlexGridSizer5 = new wxFlexGridSizer(2, 2, 0, 0);
-    StaticText34 = new wxStaticText(this, ID_STATICTEXT34, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT34"));
-    FlexGridSizer5->Add(StaticText34, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer6->Add(FlexGridSizer5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(StaticBoxSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7->Add(StaticBoxSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer7 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Circle test (rctrl+F11)"));
+    FlexGridSizer6 = new wxFlexGridSizer(2, 2, 0, 0);
+    StaticText36 = new wxStaticText(this, ID_STATICTEXT36, _("radius (rctrl + F10):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT36"));
+    FlexGridSizer6->Add(StaticText36, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText35 = new wxStaticText(this, ID_STATICTEXT35, _("000.00"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT35"));
+    FlexGridSizer6->Add(StaticText35, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer7->Add(FlexGridSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7->Add(StaticBoxSizer7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer5->Add(FlexGridSizer7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(FlexGridSizer5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer2, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(FlexGridSizer1);
     MenuBar1 = new wxMenuBar();
@@ -527,7 +651,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     SetStatusBar(StatusBar1);
     FlexGridSizer1->Fit(this);
     FlexGridSizer1->SetSizeHints(this);
-    
+
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnAbout);
     //*)
@@ -583,6 +707,57 @@ static void clamp(wxGauge* Gauge, int val, wxStaticText* Text)
     }
 }
 
+void sixstatusFrame::TextColor()
+{
+  StaticText43->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText38->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText40->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText21->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText22->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText24->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText26->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText28->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText30->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText34->SetForegroundColour( wxColour(0, 0, 0) );
+  StaticText35->SetForegroundColour( wxColour(0, 0, 0) );
+  switch(current_cal)
+  {
+    case NONE:
+      StaticText43->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case MC:
+      StaticText38->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case CC:
+      StaticText40->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case MX:
+      StaticText21->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case MY:
+      StaticText22->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case DZX:
+      StaticText24->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case DZY:
+      StaticText26->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case DZS:
+      StaticText34->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case RD:
+      StaticText35->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case EX:
+      StaticText28->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+    case EY:
+      StaticText30->SetForegroundColour( wxColour(255, 0, 0) );
+      break;
+  }
+}
+
 void sixstatusFrame::OnIdle(wxIdleEvent& evt)
 {
     clamp(Gauge1, 127+lstick_x, StaticText1);
@@ -606,6 +781,20 @@ void sixstatusFrame::OnIdle(wxIdleEvent& evt)
     clamp(Gauge31, bstart, StaticText31);
     clamp(Gauge32, bselect, StaticText32);
     clamp(Gauge33, bps, StaticText33);
+
+    StaticText43->SetLabel(wxString(status.c_str(), wxConvUTF8));
+    StaticText38->SetLabel(wxString(cm.c_str(), wxConvUTF8));
+    StaticText40->SetLabel(wxString(cc.c_str(), wxConvUTF8));
+    StaticText21->SetLabel(wxString(mul_x.c_str(), wxConvUTF8));
+    StaticText22->SetLabel(wxString(mul_y.c_str(), wxConvUTF8));
+    StaticText24->SetLabel(wxString(dz_x.c_str(), wxConvUTF8));
+    StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
+    StaticText28->SetLabel(wxString(exponent_x.c_str(), wxConvUTF8));
+    StaticText30->SetLabel(wxString(exponent_y.c_str(), wxConvUTF8));
+    StaticText34->SetLabel(wxString(shape.c_str(), wxConvUTF8));
+    StaticText35->SetLabel(wxString(radius.c_str(), wxConvUTF8));
+
+    TextColor();
 
     //cout << 127+lstick_x << " " << 127-lstick_y << " " << 127+rstick_x << " " << 127-rstick_y << endl;
 
@@ -643,13 +832,18 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
     clamp(Gauge32, bselect, StaticText32);
     clamp(Gauge33, bps, StaticText33);
 
+    StaticText43->SetLabel(wxString(status.c_str(), wxConvUTF8));
+    StaticText38->SetLabel(wxString(cm.c_str(), wxConvUTF8));
+    StaticText40->SetLabel(wxString(cc.c_str(), wxConvUTF8));
     StaticText21->SetLabel(wxString(mul_x.c_str(), wxConvUTF8));
     StaticText22->SetLabel(wxString(mul_y.c_str(), wxConvUTF8));
     StaticText24->SetLabel(wxString(dz_x.c_str(), wxConvUTF8));
     StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
-    StaticText28->SetLabel(wxString(exponent.c_str(), wxConvUTF8));
-    StaticText30->SetLabel(wxString(exponent.c_str(), wxConvUTF8));
+    StaticText28->SetLabel(wxString(exponent_x.c_str(), wxConvUTF8));
+    StaticText30->SetLabel(wxString(exponent_y.c_str(), wxConvUTF8));
     StaticText34->SetLabel(wxString(shape.c_str(), wxConvUTF8));
+    StaticText35->SetLabel(wxString(radius.c_str(), wxConvUTF8));
+
 
     //cout << 127+lstick_x << " " << 127-lstick_y << " " << 127+rstick_x << " " << 127-rstick_y << endl;
 

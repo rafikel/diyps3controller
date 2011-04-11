@@ -365,170 +365,270 @@
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
 					<label>Mouse calibration</label>
+					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
-							<label>Multiplier</label>
+						<object class="wxFlexGridSizer" variable="FlexGridSizer5" member="no">
+							<cols>1</cols>
+							<rows>2</rows>
 							<object class="sizeritem">
-								<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
+								<object class="wxFlexGridSizer" variable="FlexGridSizer8" member="no">
 									<cols>2</cols>
-									<rows>2</rows>
+									<rows>3</rows>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT19" variable="StaticText19" member="yes">
-											<label>x:</label>
+										<object class="wxStaticText" name="ID_STATICTEXT42" variable="StaticText42" member="yes">
+											<label>Status:</label>
 										</object>
 										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT21" variable="StaticText21" member="yes">
+										<object class="wxStaticText" name="ID_STATICTEXT43" variable="StaticText43" member="yes">
+											<label>off</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT39" variable="StaticText39" member="yes">
+											<label>Mouse (rctrl+F1):</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT38" variable="StaticText38" member="yes">
+											<label>Name id</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT41" variable="StaticText41" member="yes">
+											<label>Config (rctrl+F2):</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT40" variable="StaticText40" member="yes">
 											<label>0</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT20" variable="StaticText20" member="yes">
-											<label>y:</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT22" variable="StaticText22" member="yes">
-											<label>0</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
-						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-						<option>1</option>
-					</object>
-					<object class="sizeritem">
-						<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="no">
-							<label>Dead zone</label>
 							<object class="sizeritem">
-								<object class="wxFlexGridSizer" variable="FlexGridSizer4" member="no">
-									<cols>2</cols>
-									<rows>2</rows>
+								<object class="wxFlexGridSizer" variable="FlexGridSizer7" member="no">
+									<cols>4</cols>
+									<rows>1</rows>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT23" variable="StaticText23" member="yes">
-											<label>x:</label>
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+											<label>Multiplier</label>
+											<object class="sizeritem">
+												<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
+													<cols>2</cols>
+													<rows>2</rows>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT19" variable="StaticText19" member="yes">
+															<label>x (rctrl + F3):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT21" variable="StaticText21" member="yes">
+															<label>00.00</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT20" variable="StaticText20" member="yes">
+															<label>y (rctrl + F4):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT22" variable="StaticText22" member="yes">
+															<label>00.00</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
 										</object>
 										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT24" variable="StaticText24" member="yes">
-											<label>0</label>
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="no">
+											<label>Dead zone</label>
+											<object class="sizeritem">
+												<object class="wxFlexGridSizer" variable="FlexGridSizer4" member="no">
+													<cols>2</cols>
+													<rows>3</rows>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT23" variable="StaticText23" member="yes">
+															<label>x (rctrl + F5):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT24" variable="StaticText24" member="yes">
+															<label>000</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT25" variable="StaticText25" member="yes">
+															<label>y (rctrl + F6):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT26" variable="StaticText26" member="yes">
+															<label>000</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT37" variable="StaticText37" member="yes">
+															<label>Shape (rctrl + F7):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT34" variable="StaticText34" member="yes">
+															<label>Rectangle</label>
+														</object>
+														<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="no">
+											<label>Exponent</label>
+											<object class="sizeritem">
+												<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
+													<cols>2</cols>
+													<rows>2</rows>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT27" variable="StaticText27" member="yes">
+															<label>x (rctrl + F8):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT28" variable="StaticText28" member="yes">
+															<label>0.00</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT29" variable="StaticText29" member="yes">
+															<label>y (rctrl + F9):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT30" variable="StaticText30" member="yes">
+															<label>0.00</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
 										</object>
 										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT25" variable="StaticText25" member="yes">
-											<label>y:</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT26" variable="StaticText26" member="yes">
-											<label>0</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-								</object>
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-								<option>1</option>
-							</object>
-						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-						<option>1</option>
-					</object>
-					<object class="sizeritem">
-						<object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="no">
-							<label>Exponent</label>
-							<object class="sizeritem">
-								<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
-									<cols>2</cols>
-									<rows>2</rows>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT27" variable="StaticText27" member="yes">
-											<label>x:</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT28" variable="StaticText28" member="yes">
-											<label>0</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT29" variable="StaticText29" member="yes">
-											<label>y:</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT30" variable="StaticText30" member="yes">
-											<label>0</label>
-										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-										<option>1</option>
-									</object>
-								</object>
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-								<option>1</option>
-							</object>
-						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-						<option>1</option>
-					</object>
-					<object class="sizeritem">
-						<object class="wxStaticBoxSizer" variable="StaticBoxSizer6" member="no">
-							<label>Shape</label>
-							<object class="sizeritem">
-								<object class="wxFlexGridSizer" variable="FlexGridSizer5" member="no">
-									<cols>2</cols>
-									<rows>2</rows>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT34" variable="StaticText34" member="yes">
-											<label></label>
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer7" member="no">
+											<label>Circle test (rctrl+F11)</label>
+											<object class="sizeritem">
+												<object class="wxFlexGridSizer" variable="FlexGridSizer6" member="no">
+													<cols>2</cols>
+													<rows>2</rows>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT36" variable="StaticText36" member="yes">
+															<label>radius (rctrl + F10):</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT35" variable="StaticText35" member="yes">
+															<label>000.00</label>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
 										</object>
 										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
