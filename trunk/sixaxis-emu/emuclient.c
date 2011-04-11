@@ -421,6 +421,7 @@ static void key(int sym, int down)
         if(current_cal == NONE)
         {
           current_cal = MC;
+          printf("mouse selection\n");
           display_calibration();
         }
         else
@@ -436,10 +437,12 @@ static void key(int sym, int down)
         if(current_cal == CC)
         {
           current_cal = MC;
+          printf("mouse selection\n");
         }
         else if(current_cal >= MC)
         {
           current_cal = CC;
+          printf("config selection\n");
         }
       }
       break;
