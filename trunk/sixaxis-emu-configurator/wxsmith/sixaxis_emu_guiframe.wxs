@@ -707,6 +707,10 @@
 					<label>Replace Mouse</label>
 					<handler function="OnMenuReplaceMouse" entry="EVT_MENU" />
 				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM22" variable="MenuItem28" member="yes">
+					<label>Replace Mouse DPI</label>
+					<handler function="OnMenuReplaceMouseDPI" entry="EVT_MENU" />
+				</object>
 				<object class="wxMenuItem" name="ID_MENUITEM21" variable="MenuItem27" member="yes">
 					<label>Replace Keyboard</label>
 					<handler function="OnMenuReplaceKeyboard" entry="EVT_MENU" />

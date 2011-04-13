@@ -11,9 +11,11 @@
 #include "sixaxis_emu_guiMain.h"
 #include <wx/msgdlg.h>
 #include <stdio.h>
- #include <sys/types.h>
- #include <pwd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <SDL/SDL.h>
+#include "wx/numdlg.h"
+
 
 //(*InternalHeaders(sixaxis_emu_guiFrame)
 #include <wx/intl.h>
@@ -124,6 +126,7 @@ const long sixaxis_emu_guiFrame::ID_MENUITEM18 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM17 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM19 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM20 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM22 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM21 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM2 = wxNewId();
@@ -477,6 +480,8 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Menu5->AppendSeparator();
     MenuItem26 = new wxMenuItem(Menu5, ID_MENUITEM20, _("Replace Mouse"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem26);
+    MenuItem28 = new wxMenuItem(Menu5, ID_MENUITEM22, _("Replace Mouse DPI"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem28);
     MenuItem27 = new wxMenuItem(Menu5, ID_MENUITEM21, _("Replace Keyboard"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem27);
     MenuBar1->Append(Menu5, _("Edit"));
@@ -553,6 +558,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_MENUITEM17,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteConfiguration);
     Connect(ID_MENUITEM19,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteController);
     Connect(ID_MENUITEM20,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceMouse);
+    Connect(ID_MENUITEM22,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI);
     Connect(ID_MENUITEM21,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceKeyboard);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController1);
     Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemController2);
@@ -1476,4 +1482,67 @@ void sixaxis_emu_guiFrame::OnMenuReplaceKeyboard(wxCommandEvent& event)
      return;
     }
     replaceDevice(_("keyboard"));
+}
+
+void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
+{
+    int answer = wxMessageBox(_("This will adjust multipliers in the current controller.\nContinue?"), _("Confirm"), wxYES_NO);
+    if (answer == wxNO)
+    {
+     return;
+    }
+    int k;
+    wxString device_name;
+    wxString device_id;
+    wxString device_type = _("mouse");
+
+    std::list<AxisMapper>* axisMappers;
+
+    int old_value, new_value;
+    wxNumberEntryDialog dialog1(this, wxT(""), wxT("Enter a number:"), wxT("Old mouse DPI value"), 2000, 100, 10000);
+    if (dialog1.ShowModal() == wxID_OK)
+    {
+        old_value = dialog1.GetValue();
+
+        wxNumberEntryDialog dialog2(this, wxT(""), wxT("Enter a number:"), wxT("New mouse DPI value"), 2000, 100, 10000);
+
+        if (dialog2.ShowModal() == wxID_OK)
+        {
+            new_value = dialog2.GetValue();
+
+            evcatch.run(device_type, _("button"));
+            device_name = evcatch.GetDeviceName();
+            device_id = evcatch.GetDeviceId();
+
+            save_current();
+
+            Controller* controller = configFile.GetController(currentController);
+
+            for(k=0; k<MAX_CONFIGURATIONS; ++k)
+            {
+              Configuration* config = controller->GetConfiguration(k);
+
+              axisMappers = config->GetAxisMapperList();
+              for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
+              {
+                if(it->GetDevice()->GetType() == device_type && it->GetDevice()->GetName() == device_name && it->GetDevice()->GetId() == device_id)
+                {
+                    double val;
+                    wxString sval = it->GetEvent()->GetMultiplier();
+                    sval.Replace(_("."), _(","));
+                    if(sval.ToDouble(&val))
+                    {
+                        val = val * old_value / new_value;
+                        sval.Printf(wxT("%.2f"), val);
+                        sval.Replace(_(","), _("."));
+                        it->GetEvent()->SetMultiplier(sval);
+                    }
+                }
+              }
+            }
+
+            load_current();
+            refresh_gui();
+        }
+    }
 }
