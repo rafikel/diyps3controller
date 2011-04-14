@@ -371,7 +371,7 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
-					<label>Mouse calibration</label>
+					<label>Mouse calibration (use sixemuconf to change the values in the configuration file!)</label>
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
 						<object class="wxFlexGridSizer" variable="FlexGridSizer5" member="no">
