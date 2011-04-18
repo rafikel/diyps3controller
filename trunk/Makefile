@@ -1,5 +1,4 @@
 DIRS=sixaxis-emu sixaxis-emu-configurator sixemugui sixstatus
-ARCH=`uname -m`
 
 all:
 	for i in $(DIRS); do cd $$i; make all; cd ..; done
@@ -10,10 +9,7 @@ clean:
 install: all
 	for i in $(DIRS); do cd $$i; make install; cd ..; done
 	mkdir -p $(DESTDIR)/usr/lib
-	case ${ARCH} in \
-	    x86_64) cp libsdl/lib/libSDL.so.amd64 $(DESTDIR)/usr/lib/libSDL-9.2.so.0 ;; \
-	    *) cp libsdl/lib/libSDL.so $(DESTDIR)/usr/lib/libSDL-9.2.so.0 ;; \
-	esac
+	cp libsdl/lib/libSDL.so $(DESTDIR)/usr/lib/libSDL-9.2.so.0
 	
 
 uninstall:
