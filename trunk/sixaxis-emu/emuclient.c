@@ -12,9 +12,11 @@
 #include <err.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <pwd.h>
 #else
 #include <winsock2.h>
 #define MSG_DONTWAIT 0
+#define sleep Sleep
 #endif
 #include <unistd.h>
 #include <fcntl.h>
@@ -30,7 +32,6 @@
 #include "macros.h"
 #include "config.h"
 #include <math.h>
-#include <pwd.h>
 
 #include <pthread.h>
 #include <sys/time.h>
@@ -98,7 +99,9 @@ int initialize(int width, int height, const char *title)
   int i = 0;
   int j;
   SDL_Joystick* joystick;
+#ifndef WIN32
   const char* name;
+#endif
 
   /* Init SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
@@ -157,6 +160,7 @@ int initialize(int width, int height, const char *title)
       }
       i++;
   }
+#ifndef WIN32
   i = 0;
   while ((name = SDL_GetMouseName(i)))
   {
@@ -195,6 +199,7 @@ int initialize(int width, int height, const char *title)
     }
     i++;
   }
+#endif
   return 1;
 }
 
@@ -743,10 +748,13 @@ int main(int argc, char *argv[])
     char* file = NULL;
     struct timeval t0, t1;
     int time_to_sleep;
-    
-    setlinebuf(stdout);
 
+#ifndef WIN32
+    setlinebuf(stdout);
     homedir = getpwuid(getuid())->pw_dir;
+#else
+
+#endif
 
     system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient");
     
@@ -874,7 +882,11 @@ int main(int argc, char *argv[])
               printf("can't assemble\n");
             }
 
+#ifndef WIN32
             send(sockfd[i], buf, 48, MSG_DONTWAIT);
+#else
+            send(sockfd[i], (const char*)buf, 48, MSG_DONTWAIT);
+#endif
 
             if (display)
             {
