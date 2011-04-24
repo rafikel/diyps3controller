@@ -1,0 +1,16 @@
+BINS=emuclient
+CC=gcc
+CFLAGS=-Wall -g
+LIB=-lmingw32 -lSDLmain -lSDL -llibxml2 -lpthread -lws2_32
+INC=
+
+all: $(BINS)
+
+clean:
+	rm -f $(BINS) *~ *.o
+
+emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o
+	$(CC) -o $@ $^ $(LIB)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INC) -o $@ -c $< 

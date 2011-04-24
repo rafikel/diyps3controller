@@ -24,7 +24,11 @@
 #define DEFAULT_DELAY 50
 
 /* This is the name of the file that contains all macro files. */
+#ifndef WIN32
 #define MACRO_DIR ".emuclient/macros/"
+#else
+#define MACRO_DIR "macros/"
+#endif
 
 typedef struct {
     SDL_Event event;
@@ -204,7 +208,11 @@ void read_macros() {
     struct stat buf;
 #endif
 
+#ifndef WIN32
     snprintf(dir_path, sizeof(dir_path), "%s/%s", homedir, MACRO_DIR);
+#else
+    snprintf(dir_path, sizeof(dir_path), "%s", MACRO_DIR);
+#endif
     dirp = opendir(dir_path);
     if (dirp == NULL)
     {

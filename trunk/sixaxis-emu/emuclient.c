@@ -44,7 +44,11 @@
 
 static const double pi = 3.14159265;
 
-char* homedir;
+#ifndef WIN32
+char* homedir = "";
+#else
+char* ip = "";
+#endif
 
 int done = 0;
 int current_mouse = 0;
@@ -74,11 +78,6 @@ static void err(int eval, const char *fmt)
 {
     fprintf(stderr, fmt);
     exit(eval);
-}
-
-static void warn(const char *fmt)
-{
-    fprintf(stderr, fmt);
 }
 #endif
 
@@ -230,7 +229,11 @@ int tcpconnect(void)
       memset(&addr, 0, sizeof(addr));
       addr.sin_family = AF_INET;
       addr.sin_port = htons(TCP_PORT+i);
-      addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); //inet_addr("192.168.56.101");
+#ifdef WIN32
+      addr.sin_addr.s_addr = inet_addr(ip);
+#else
+      addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+#endif
       if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
       {
         fd = 0;
@@ -752,12 +755,10 @@ int main(int argc, char *argv[])
 #ifndef WIN32
     setlinebuf(stdout);
     homedir = getpwuid(getuid())->pw_dir;
-#else
-
-#endif
 
     system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient");
-    
+#endif
+
     for(i=1; i<argc; ++i)
     {
       if(!strcmp(argv[i], "--nograb"))
@@ -773,6 +774,12 @@ int main(int argc, char *argv[])
       {
         display = 1;
       }
+#ifdef WIN32
+      else if(!strcmp(argv[i], "--ip") && i<argc)
+	  {
+    	ip = argv[++i];
+	  }
+#endif
     }
 
     if(grab == 1)

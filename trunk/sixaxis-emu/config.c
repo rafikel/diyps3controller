@@ -33,7 +33,11 @@
 
 #define MAX_CONTROLS 256
 
+#ifndef WIN32
 #define CONFIG_DIR ".emuclient/config"
+#else
+#define CONFIG_DIR "config"
+#endif
 
 #define X_NODE_ROOT "root"
 #define X_NODE_CONTROLLER "controller"
@@ -110,7 +114,9 @@ typedef struct
 
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
+#ifndef WIN32
 extern char* homedir;
+#endif
 extern int display;
 extern int joystickNbButton[255];
 extern const char* joystickName[MAX_DEVICES];
@@ -1096,6 +1102,7 @@ static int ProcessDeviceElement(xmlNode * a_node)
     }
     else if(r_device_type == E_DEVICE_TYPE_MOUSE)
     {
+#ifndef WIN32
       for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
       {
         if (!strcmp(r_device_name, mouseName[i]))
@@ -1111,9 +1118,13 @@ static int ProcessDeviceElement(xmlNode * a_node)
       {
         r_device_id = -1;
       }
+#else
+      r_device_id = 0;
+#endif
     }
     else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
     {
+#ifndef WIN32
       for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
       {
         if (!strcmp(r_device_name, keyboardName[i]))
@@ -1129,6 +1140,9 @@ static int ProcessDeviceElement(xmlNode * a_node)
       {
         r_device_id = -1;
       }
+#else
+      r_device_id = 0;
+#endif
     }
   }
 
@@ -1717,6 +1731,10 @@ static int read_file(char* file_path)
   /*parse the file and get the DOM */
   doc = xmlReadFile(file_path, NULL, 0);
 
+#ifdef WIN32
+  if(!xmlFree) xmlMemGet(&xmlFree,&xmlMalloc,&xmlRealloc,NULL);
+#endif
+
   if (doc != NULL)
   {
     /*Get the root element node */
@@ -1791,7 +1809,11 @@ void read_config_file(const char* file)
 {
   char file_path[PATH_MAX];
 
+#ifndef WIN32
   snprintf(file_path, sizeof(file_path), "%s/%s/%s", homedir, CONFIG_DIR, file);
+#else
+  snprintf(file_path, sizeof(file_path), "%s/%s", CONFIG_DIR, file);
+#endif
 
   if(read_file(file_path) == -1)
   {
@@ -1818,10 +1840,14 @@ int read_config_dir()
   char** filenames = NULL;
 #ifdef WIN32
   struct stat buf;
-  char dir_path[PATH_MAX];
+  char path[PATH_MAX];
 #endif
 
+#ifndef WIN32
   snprintf(file_path, sizeof(file_path), "%s/%s", homedir, CONFIG_DIR);
+#else
+  snprintf(file_path, sizeof(file_path), "%s", CONFIG_DIR);
+#endif
   dirp = opendir(file_path);
   if (dirp == NULL)
   {
@@ -1840,7 +1866,7 @@ int read_config_dir()
         strncpy(filenames[nb_filenames-1], d->d_name, strlen(d->d_name));
       }
 #else
-      snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, d->d_name);
+      snprintf(path, sizeof(file_path), "%s/%s", file_path, d->d_name);
       if(stat(file_path, &buf) == 0)
       {
         if(S_ISREG(buf.st_mode))

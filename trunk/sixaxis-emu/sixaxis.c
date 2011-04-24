@@ -186,7 +186,9 @@ int assemble_feature_f2(uint8_t *buf, int maxlen, struct sixaxis_state *state)
         0x00, 0x03, 0x50, 0x89, 0xc0, 0x01, 0x8a,
         0x09
     };
+#ifndef WIN32 //remove compilation warnings
     sscanf(bdaddr_src, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", data+3, data+4, data+5, data+6, data+7, data+8);
+#endif
     int len = sizeof(data);
     if (len > maxlen) return -1;
     memcpy(buf, data, len);
