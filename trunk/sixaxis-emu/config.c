@@ -11,6 +11,11 @@
 #include "conversion.h"
 #include <unistd.h>
 
+#ifdef WIN32
+#include <sys/stat.h>
+#define LINE_MAX 1024
+#endif
+
 #define X_ATTR_VALUE_KEYBOARD "keyboard"
 #define X_ATTR_VALUE_MOUSE "mouse"
 #define X_ATTR_VALUE_JOYSTICK "joystick"
@@ -1811,6 +1816,10 @@ int read_config_dir()
   unsigned int selected = 0;
   unsigned int nb_filenames = 0;
   char** filenames = NULL;
+#ifdef WIN32
+  struct stat buf;
+  char dir_path[PATH_MAX];
+#endif
 
   snprintf(file_path, sizeof(file_path), "%s/%s", homedir, CONFIG_DIR);
   dirp = opendir(file_path);
@@ -1822,13 +1831,27 @@ int read_config_dir()
 
   while ((d = readdir(dirp)))
   {
-    if (d->d_type == DT_REG)
-    {
-      nb_filenames++;
-      filenames = realloc(filenames, nb_filenames*sizeof(char*));
-      filenames[nb_filenames-1] = calloc(strlen(d->d_name)+1, sizeof(char));
-      strncpy(filenames[nb_filenames-1], d->d_name, strlen(d->d_name));
-    }
+#ifndef WIN32
+      if (d->d_type == DT_REG)
+      {
+        nb_filenames++;
+        filenames = realloc(filenames, nb_filenames*sizeof(char*));
+        filenames[nb_filenames-1] = calloc(strlen(d->d_name)+1, sizeof(char));
+        strncpy(filenames[nb_filenames-1], d->d_name, strlen(d->d_name));
+      }
+#else
+      snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, d->d_name);
+      if(stat(file_path, &buf) == 0)
+      {
+        if(S_ISREG(buf.st_mode))
+        {
+          nb_filenames++;
+          filenames = realloc(filenames, nb_filenames*sizeof(char*));
+          filenames[nb_filenames-1] = calloc(strlen(d->d_name)+1, sizeof(char));
+          strncpy(filenames[nb_filenames-1], d->d_name, strlen(d->d_name));
+        }
+      }
+#endif
   }
 
   closedir(dirp);
