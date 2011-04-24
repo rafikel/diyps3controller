@@ -670,7 +670,7 @@
   </controller>
   <controller id="7">
     <configuration id="1">
-      <trigger type="mouse" id="0" name="Logitech G500" button_id="BUTTON_LEFT" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no"/>
       <button_map/>
       <axis_map/>
     </configuration>
