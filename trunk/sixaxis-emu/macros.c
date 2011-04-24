@@ -16,6 +16,7 @@
 #include "conversion.h"
 
 #ifdef WIN32
+#include <sys/stat.h>
 #define LINE_MAX 1024
 #endif
 
@@ -199,17 +200,21 @@ void read_macros() {
     unsigned int i;
     unsigned int nb_filenames = 0;
     char** filenames = NULL;
+#ifdef WIN32
+    struct stat buf;
+#endif
 
     snprintf(dir_path, sizeof(dir_path), "%s/%s", homedir, MACRO_DIR);
     dirp = opendir(dir_path);
     if (dirp == NULL)
     {
-      printf("Warning: can't open macro directory %s\n", file_path);
+      printf("Warning: can't open macro directory %s\n", dir_path);
       return;
     }
 
     while ((d = readdir(dirp)))
     {
+#ifndef WIN32
       if (d->d_type == DT_REG)
       {
         nb_filenames++;
@@ -217,6 +222,19 @@ void read_macros() {
         filenames[nb_filenames-1] = calloc(strlen(d->d_name)+1, sizeof(char));
         strncpy(filenames[nb_filenames-1], d->d_name, strlen(d->d_name));
       }
+#else
+      snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, d->d_name);
+      if(stat(file_path, &buf) == 0)
+      {
+        if(S_ISREG(buf.st_mode))
+        {
+          nb_filenames++;
+          filenames = realloc(filenames, nb_filenames*sizeof(char*));
+          filenames[nb_filenames-1] = calloc(strlen(d->d_name)+1, sizeof(char));
+          strncpy(filenames[nb_filenames-1], d->d_name, strlen(d->d_name));
+        }
+      }
+#endif
     }
 
     closedir(dirp);
