@@ -115,7 +115,11 @@ void XmlWritter::CreateConfigurationNodes(xmlNodePtr parent_node)
 
         node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_CONFIGURATION, NULL);
 
+#ifndef WIN32
         snprintf(id, sizeof(id), "%hhu", i+1);
+#else
+        snprintf(id, sizeof(id), "%hu", i+1);
+#endif
 
         xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST id);
 
@@ -139,7 +143,11 @@ void XmlWritter::CreateControllerNodes(xmlNodePtr parent_node)
 
         node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_CONTROLLER, NULL);
 
+#ifndef WIN32
         snprintf(id, sizeof(id), "%hhu", i+1);
+#else
+        snprintf(id, sizeof(id), "%hu", i+1);
+#endif
 
         xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST id);
 

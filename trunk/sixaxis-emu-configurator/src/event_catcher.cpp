@@ -1,5 +1,6 @@
 #include "event_catcher.h"
 #include <SDL/SDL.h>
+#include <unistd.h>
 
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
@@ -332,7 +333,9 @@ event_catcher::~event_catcher()
 void event_catcher::init()
 {
     int i, j;
+#ifndef WIN32
     const char* name;
+#endif
     SDL_Joystick* joystick;
 
     i = 0;
@@ -362,7 +365,7 @@ void event_catcher::init()
         }
         i++;
     }
-
+#ifndef WIN32
     i = 0;
     while ((name = SDL_GetMouseName(i)))
     {
@@ -402,6 +405,7 @@ void event_catcher::init()
       }
       i++;
     }
+#endif
 }
 
 void event_catcher::run(wxString device_type, wxString event_type)
