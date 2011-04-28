@@ -12,7 +12,9 @@
 #include <wx/msgdlg.h>
 #include <stdio.h>
 #include <sys/types.h>
+#ifndef WIN32
 #include <pwd.h>
+#endif
 #include <SDL/SDL.h>
 #include "wx/numdlg.h"
 
@@ -230,7 +232,9 @@ void sixaxis_emu_guiFrame::fillButtonChoice(wxChoice* choice)
     choice->SetSelection(choice->FindString(previous));
 }
 
+#ifndef WIN32
 char* homedir;
+#endif
 
 sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 {
@@ -584,6 +588,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     currentController = 0;
     currentConfiguration = 0;
 
+#ifndef WIN32
     if(!getuid())
     {
     	int answer = wxMessageBox(_("It's not recommended to run as root user. Continue?"), _("Confirm"), wxYES_NO);
@@ -609,6 +614,11 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     cmd.erase();
     cmd.append(homedir);
     cmd.append("/.emuclient/config");
+
+#else
+    string cmd = "config";
+#endif
+
     wxString default_directory = wxString(cmd.c_str(), wxConvUTF8);
 
     FileDialog1->SetDirectory(default_directory);
@@ -1173,9 +1183,13 @@ void sixaxis_emu_guiFrame::OnMenuSaveAs(wxCommandEvent& event)
 {
     wxFileDialog saveFileDialog(this, _T("Save Config file"), _T(""), _T(""), _T("XML files (*.xml)|*.xml"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 
+#ifndef WIN32
     string cmd = "";
     cmd.append(homedir);
     cmd.append("/.emuclient/config");
+#else
+    string cmd = "config";
+#endif
     wxString default_directory = wxString(cmd.c_str(), wxConvUTF8);
     saveFileDialog.SetDirectory(default_directory);
 
