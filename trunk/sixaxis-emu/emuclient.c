@@ -36,8 +36,13 @@
 #include <pthread.h>
 #include <sys/time.h>
 
+#ifndef WIN32
 #define SCREEN_WIDTH  8
 #define SCREEN_HEIGHT 8
+#else
+#define SCREEN_WIDTH  800
+#define SCREEN_HEIGHT 600
+#endif
 #define MULTIPLIER_STEP 0.01
 #define EXPONENT_STEP 0.01
 #define EVENT_BUFFER_SIZE 256
@@ -919,7 +924,9 @@ int main(int argc, char *argv[])
     }
 
     printf("Exiting\n");
+#ifndef WIN32
     SDL_Quit();
+#endif
 
     free_macros();
 
