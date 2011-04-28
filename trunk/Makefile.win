@@ -1,4 +1,4 @@
-DIRS=sixaxis-emu sixaxis-emu-configurator sixemugui sixstatus
+DIRS=sixaxis-emu sixaxis-emu-configurator sixstatus
 
 all:
 	for i in $(DIRS); do cd $$i; make -f Makefile.win all; cd ..; done
