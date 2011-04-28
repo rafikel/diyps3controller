@@ -16,9 +16,13 @@
 #include <wx/string.h>
 //*)
 
-using namespace std;
 #include <sstream>
 #include <wx/timer.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <iostream>
+
+using namespace std;
 
 //helper functions
 enum wxbuildinfoformat {
@@ -659,10 +663,11 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     monTimer.SetOwner(this, 1);
     monTimer.Start(10);
 
-    //Connect(1, wxEVT_TIMER,(wxObjectEventFunction)&sixstatusFrame::OnTimer);
-
+#ifdef WIN32
+    Connect(1, wxEVT_TIMER,(wxObjectEventFunction)&sixstatusFrame::OnTimer);
+#else
     Connect( wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(sixstatusFrame::OnIdle) );
-
+#endif
     pthread_t thread;
     pthread_attr_t thread_attr;
     pthread_attr_init(&thread_attr);
@@ -843,7 +848,6 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
     StaticText30->SetLabel(wxString(exponent_y.c_str(), wxConvUTF8));
     StaticText34->SetLabel(wxString(shape.c_str(), wxConvUTF8));
     StaticText35->SetLabel(wxString(radius.c_str(), wxConvUTF8));
-
 
     //cout << 127+lstick_x << " " << 127-lstick_y << " " << 127+rstick_x << " " << 127-rstick_y << endl;
 
