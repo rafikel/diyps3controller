@@ -310,6 +310,20 @@ static void read_filenames(const char* dir, wxChoice* choice)
     char dir_path[PATH_MAX];
     char file_path[PATH_MAX];
     struct dirent *d;
+    string filename = "";
+    string line = "";
+
+    filename.append(homedir);
+    filename.append("/.sixemugui/default");
+    ifstream infile (filename.c_str());
+    if ( infile.is_open() )
+    {
+        if( infile.good() )
+        {
+            getline (infile,line);
+        }
+        infile.close();
+    }
 
     choice->Clear();
 
@@ -325,7 +339,14 @@ static void read_filenames(const char* dir, wxChoice* choice)
     {
       if (d->d_type == DT_REG)
       {
-        choice->Append(wxString(d->d_name, wxConvUTF8));
+        if(!line.empty() && line == d->d_name)
+        {
+          choice->SetSelection(choice->Append(wxString(d->d_name, wxConvUTF8)));
+        }
+        else
+        {
+          choice->Append(wxString(d->d_name, wxConvUTF8));
+        }
       }
     }
 
@@ -448,7 +469,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer11;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixemugui"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(675,525));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
@@ -593,7 +614,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(2,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     SingleInstanceChecker1.Create(_T("Sixemugui_") + wxGetUserId() + _T("_Guard"));
-
+    
     Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectSixaxisBdaddr);
     Connect(ID_CHOICE2,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectPS3Bdaddr);
     Connect(ID_CHOICE3,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectBtDongle);
@@ -1000,7 +1021,8 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
 
 void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
 {
-    string command;
+    string command = "";
+    string filename = "";
 
     if(CheckBox3->IsChecked())
     {
@@ -1034,6 +1056,14 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     //cout << command << endl;
 
     Button3->Disable();
+    filename.append(homedir);
+    filename.append("/.sixemugui/default");
+    ofstream outfile (filename.c_str(), ios_base::trunc);
+    if(outfile.is_open())
+    {
+        outfile << Choice4->GetStringSelection().mb_str() << endl;
+        outfile.close();
+    }
     g_spawn_command_line_sync (command.c_str(), NULL, NULL, NULL, NULL);
     Button3->Enable();
 }
