@@ -473,7 +473,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer1;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixstatus"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Sixaxis status"));
@@ -568,7 +568,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     GridSizer1->Add(Gauge33, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer5->Add(GridSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer5, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Mouse calibration (use sixemuconf to change the values in the configuration file!)"));
+    StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Mouse calibration (use sixemuconf to change the values in the configuration file!)(use the mouse wheel to change values)"));
     FlexGridSizer5 = new wxFlexGridSizer(2, 1, 0, 0);
     FlexGridSizer8 = new wxFlexGridSizer(3, 2, 0, 0);
     StaticText42 = new wxStaticText(this, ID_STATICTEXT42, _("Status:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT42"));
@@ -655,7 +655,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     SetStatusBar(StatusBar1);
     FlexGridSizer1->Fit(this);
     FlexGridSizer1->SetSizeHints(this);
-
+    
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnAbout);
     //*)
