@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="sixemuguiMain.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="8753" topLine="312" />
+	<File name="sixemuguiMain.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="38297" topLine="1035" />
 	</File>
 	<File name="sixemuguiMain.h" open="0" top="0" tabpos="5">
 		<Cursor position="3149" topLine="53" />

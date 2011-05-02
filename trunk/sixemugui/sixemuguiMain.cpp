@@ -76,6 +76,7 @@ const long sixemuguiFrame::ID_STATICTEXT7 = wxNewId();
 const long sixemuguiFrame::ID_CHOICE7 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT8 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON2 = wxNewId();
+const long sixemuguiFrame::ID_CHECKBOX5 = wxNewId();
 const long sixemuguiFrame::ID_CHOICE8 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON1 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT5 = wxNewId();
@@ -492,6 +493,9 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer1->Add(FlexGridSizer7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer6 = new wxFlexGridSizer(1, 2, 0, 0);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL, Panel1, _("emu"));
+    CheckBox5 = new wxCheckBox(Panel1, ID_CHECKBOX5, _("Autostart\nemuclient"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
+    CheckBox5->SetValue(true);
+    StaticBoxSizer3->Add(CheckBox5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer12 = new wxFlexGridSizer(0, 3, 0, 0);
     Choice8 = new wxChoice(Panel1, ID_CHOICE8, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE8"));
     Choice8->SetSelection( Choice8->Append(_("0")) );
@@ -923,7 +927,14 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
                     break;
                 }
                 Button3->Enable();
-                wxMessageBox(_("Connected!\nStart emuclient now."), _("Info"));
+                if(CheckBox5->IsChecked())
+                {
+                    OnButton3Click(event);
+                }
+                else
+                {
+                    wxMessageBox(_("Connected!\nStart emuclient now."), _("Info"));
+                }
             }
             else if(emu_state == E_ERROR)
             {
