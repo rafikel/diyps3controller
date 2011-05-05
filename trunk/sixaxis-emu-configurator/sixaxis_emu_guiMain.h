@@ -17,6 +17,7 @@
 #include <wx/menu.h>
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
+#include <wx/spinctrl.h>
 #include <wx/statline.h>
 #include <wx/panel.h>
 #include <wx/grid.h>
@@ -116,6 +117,10 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnMenuReplaceKeyboard(wxCommandEvent& event);
         void OnMenuItemReplaceMouseDPI(wxCommandEvent& event);
         void OnMenuReplaceMouseDPI(wxCommandEvent& event);
+        void OnButton13Click1(wxCommandEvent& event);
+        void OnButton14Click(wxCommandEvent& event);
+        void OnButton11Click1(wxCommandEvent& event);
+        void OnButton12Click(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
         void fillButtonAxisChoice(wxChoice* choice);
@@ -139,6 +144,34 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_BUTTON1;
         static const long ID_CHECKBOX1;
         static const long ID_BUTTON10;
+        static const long ID_STATICTEXT26;
+        static const long ID_STATICTEXT52;
+        static const long ID_STATICTEXT53;
+        static const long ID_STATICTEXT54;
+        static const long ID_STATICTEXT55;
+        static const long ID_STATICTEXT57;
+        static const long ID_STATICTEXT58;
+        static const long ID_STATICTEXT59;
+        static const long ID_STATICTEXT60;
+        static const long ID_STATICTEXT61;
+        static const long ID_BUTTON13;
+        static const long ID_BUTTON14;
+        static const long ID_STATICTEXT62;
+        static const long ID_SPINCTRL1;
+        static const long ID_STATICTEXT28;
+        static const long ID_STATICTEXT33;
+        static const long ID_STATICTEXT34;
+        static const long ID_STATICTEXT44;
+        static const long ID_STATICTEXT46;
+        static const long ID_STATICTEXT47;
+        static const long ID_STATICTEXT48;
+        static const long ID_STATICTEXT49;
+        static const long ID_STATICTEXT50;
+        static const long ID_STATICTEXT51;
+        static const long ID_BUTTON11;
+        static const long ID_BUTTON12;
+        static const long ID_STATICTEXT25;
+        static const long ID_SPINCTRL2;
         static const long ID_PANEL1;
         static const long ID_STATICTEXT4;
         static const long ID_STATICTEXT29;
@@ -226,6 +259,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText10;
         wxStaticText* StaticText22;
         wxStaticText* StaticText9;
+        wxStaticText* StaticText53;
         wxMenuItem* MenuItem8;
         wxStaticText* StaticText20;
         wxMenuItem* MenuItem7;
@@ -234,18 +268,22 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxMenuItem* MenuItem25;
         wxStaticText* StaticText29;
         wxNotebook* Notebook1;
+        wxSpinCtrl* SpinCtrl1;
         wxStaticText* StaticText37;
         wxMenuItem* MenuItem5;
         wxStaticText* StaticText13;
+        wxStaticText* StaticText33;
         wxStaticText* StaticText2;
         wxStaticText* StaticText14;
         wxStaticText* StaticText30;
         wxMenu* Menu3;
         wxButton* Button1;
         wxStaticText* StaticText6;
+        wxStaticText* StaticText26;
         wxMenuItem* MenuItem4;
         wxStaticText* StaticText40;
         wxMenuItem* MenuItem14;
+        wxButton* Button14;
         wxMenuItem* MenuItem11;
         wxStaticText* StaticText42;
         wxStaticText* StaticText32;
@@ -253,12 +291,15 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText38;
         wxStaticText* StaticText8;
         wxStaticText* StaticText11;
+        wxStaticText* StaticText62;
         wxStaticText* StaticText18;
         wxMenuItem* MenuItem15;
+        wxStaticText* StaticText50;
         wxMenuItem* MenuItem22;
         wxStaticText* StaticText31;
         wxPanel* Panel1;
         wxStaticText* StaticText1;
+        wxStaticText* StaticText58;
         wxStaticText* StaticText27;
         wxFileDialog* FileDialog1;
         wxMenuItem* MenuItem17;
@@ -268,56 +309,76 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxMenu* Menu1;
         wxChoice* Choice7;
         wxChoice* Choice8;
+        wxStaticText* StaticText54;
         wxMenuItem* MenuItem10;
         wxButton* Button2;
+        wxStaticText* StaticText44;
         wxPanel* Panel3;
         wxStaticText* StaticText21;
         wxStaticText* StaticText39;
         wxCheckBox* CheckBox1;
         wxButton* Button6;
         wxMenuItem* MenuItem12;
+        wxStaticText* StaticText55;
         wxMenuItem* MenuItem24;
         wxStaticText* StaticText23;
         wxStaticText* StaticText24;
         wxMenuItem* MenuItem27;
         wxButton* Button10;
+        wxStaticText* StaticText49;
+        wxButton* Button11;
         wxButton* Button5;
         wxGrid* Grid2;
         wxMenuItem* MenuItem3;
         wxMenuItem* MenuItem20;
         wxButton* Button3;
         wxStaticText* StaticText5;
+        wxStaticText* StaticText34;
         wxMenuItem* MenuItem28;
         wxButton* Button7;
         wxStaticText* StaticText7;
+        wxStaticText* StaticText57;
         wxStatusBar* StatusBar1;
         wxChoice* Choice4;
         wxButton* Button9;
+        wxStaticText* StaticText61;
         wxTextCtrl* TextCtrl8;
         wxStaticLine* StaticLine1;
+        wxStaticText* StaticText47;
+        wxSpinCtrl* SpinCtrl2;
         wxMenuItem* MenuItem23;
+        wxStaticText* StaticText52;
+        wxStaticText* StaticText28;
         wxStaticText* StaticText43;
         wxStaticText* StaticText41;
         wxStaticText* StaticText15;
         wxStaticText* StaticText12;
         wxTextCtrl* TextCtrl9;
         wxStaticText* StaticText35;
+        wxStaticText* StaticText60;
         wxPanel* Panel2;
         wxMenuItem* MenuItem21;
+        wxStaticText* StaticText59;
+        wxStaticText* StaticText25;
         wxMenuItem* MenuItem16;
+        wxButton* Button13;
         wxMenuItem* MenuItem9;
         wxStaticText* StaticText17;
         wxStaticText* StaticText4;
         wxStaticText* StaticText36;
         wxTextCtrl* TextCtrl3;
+        wxStaticText* StaticText48;
         wxMenuItem* MenuItem18;
         wxTextCtrl* TextCtrl10;
         wxChoice* Choice1;
         wxStaticText* StaticText16;
         wxButton* Button8;
         wxMenu* Menu5;
+        wxButton* Button12;
+        wxStaticText* StaticText46;
         wxMenu* Menu4;
         wxMenuItem* MenuItem19;
+        wxStaticText* StaticText51;
         //*)
 
         event_catcher evcatch;

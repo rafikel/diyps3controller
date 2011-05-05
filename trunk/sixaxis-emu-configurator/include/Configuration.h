@@ -4,6 +4,7 @@
 #include <Device.h>
 #include <Event.h>
 #include <Trigger.h>
+#include <Intensity.h>
 #include <ButtonMapper.h>
 #include <AxisMapper.h>
 #include <list>
@@ -17,6 +18,10 @@ class Configuration
         Configuration& operator=(const Configuration& other);
         Trigger* GetTrigger() { return &m_Trigger; }
         void SetTrigger(Trigger val) { m_Trigger = val; }
+        Intensity* GetLeftIntensity() { return &m_LeftIntensity; }
+        void SetLeftIntensity(Intensity val) { m_LeftIntensity = val; }
+        Intensity* GetRightIntensity() { return &m_RightIntensity; }
+        void SetRightIntensity(Intensity val) { m_RightIntensity = val; }
         std::list<ButtonMapper>* GetButtonMapperList() { return &m_ButtonMappers; }
         std::list<AxisMapper>* GetAxisMapperList() { return &m_AxisMappers; }
         void SetButtonMappers(std::list<ButtonMapper> bml) { m_ButtonMappers = bml; }
@@ -24,6 +29,8 @@ class Configuration
     protected:
     private:
         Trigger m_Trigger;
+        Intensity m_LeftIntensity;
+        Intensity m_RightIntensity;
         std::list<ButtonMapper> m_ButtonMappers;
         std::list<AxisMapper> m_AxisMappers;
 };

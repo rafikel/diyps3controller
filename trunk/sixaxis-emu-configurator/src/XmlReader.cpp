@@ -310,9 +310,74 @@ void XmlReader::ProcessTriggerElement(xmlNode * a_node)
     m_TempConfiguration.SetTrigger(m_TempTrigger);
 }
 
+void XmlReader::ProcessLeftIntensityElement(xmlNode * a_node)
+{
+    wxString device_type;
+    wxString device_id;
+    wxString device_name;
+    wxString button_id;
+    unsigned char steps;
+    char * prop;
+
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
+    device_type = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
+    device_id = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    device_name = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+    button_id = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_STEPS);
+    steps = atoi(prop);
+    xmlFree(prop);
+
+    m_TempLeftIntensity.SetDevice(Device(device_type, device_id, device_name));
+    m_TempLeftIntensity.SetEvent(Event(button_id));
+    m_TempLeftIntensity.SetSteps(steps);
+
+    m_TempConfiguration.SetLeftIntensity(m_TempLeftIntensity);
+}
+
+void XmlReader::ProcessRightIntensityElement(xmlNode * a_node)
+{
+    wxString device_type;
+    wxString device_id;
+    wxString device_name;
+    wxString button_id;
+    unsigned char steps;
+    char * prop;
+
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
+    device_type = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
+    device_id = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    device_name = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+    button_id = wxString(prop, wxConvUTF8);
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_STEPS);
+    steps = atoi(prop);
+    xmlFree(prop);
+
+    m_TempRightIntensity.SetDevice(Device(device_type, device_id, device_name));
+    m_TempRightIntensity.SetEvent(Event(button_id));
+    m_TempRightIntensity.SetSteps(steps);
+
+    m_TempConfiguration.SetRightIntensity(m_TempRightIntensity);
+}
+
 void XmlReader::ProcessConfigurationElement(xmlNode * a_node)
 {
     xmlNode* cur_node = NULL;
+    xmlNode* prev;
     unsigned char config_index;
     wxString id;
     char* prop;
@@ -352,6 +417,52 @@ void XmlReader::ProcessConfigurationElement(xmlNode * a_node)
     {
         string message(string("missing trigger element"));
         throw invalid_argument(message);
+    }
+
+    prev = cur_node;
+
+    for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
+    {
+        if (cur_node->type == XML_ELEMENT_NODE)
+        {
+            if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_LEFT_INTENSITY))
+            {
+                ProcessLeftIntensityElement(cur_node);
+                break;
+            }
+            else
+            {
+                m_TempLeftIntensity.SetDevice(Device(_(""), _(""), _("")));
+                m_TempLeftIntensity.SetEvent(Event(_("")));
+                m_TempLeftIntensity.SetSteps(1);
+                m_TempConfiguration.SetLeftIntensity(m_TempLeftIntensity);
+                cur_node = prev;
+                break;
+            }
+        }
+    }
+    
+    prev = cur_node;
+
+    for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
+    {
+        if (cur_node->type == XML_ELEMENT_NODE)
+        {
+            if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_RIGHT_INTENSITY))
+            {
+                ProcessRightIntensityElement(cur_node);
+                break;
+            }
+            else
+            {
+                m_TempRightIntensity.SetDevice(Device(_(""), _(""), _("")));
+                m_TempRightIntensity.SetEvent(Event(_("")));
+                m_TempRightIntensity.SetSteps(1);
+                m_TempConfiguration.SetRightIntensity(m_TempRightIntensity);
+                cur_node = prev;
+                break;
+            }
+        }
     }
 
     for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)

@@ -10,6 +10,8 @@
 #define X_NODE_CONFIGURATION "configuration"
 
 #define X_NODE_TRIGGER "trigger"
+#define X_NODE_LEFT_INTENSITY "left_intensity"
+#define X_NODE_RIGHT_INTENSITY "right_intensity"
 #define X_NODE_BUTTON_MAP "button_map"
 #define X_NODE_AXIS_MAP "axis_map"
 
@@ -28,6 +30,7 @@
 #define X_ATTR_EXPONENT "exponent"
 #define X_ATTR_SHAPE "shape"
 #define X_ATTR_SWITCH_BACK "switch_back"
+#define X_ATTR_STEPS "steps"
 
 class XmlReader
 {
@@ -42,6 +45,8 @@ class XmlReader
         void ProcessControllerElement(xmlNode * a_node);
         void ProcessConfigurationElement(xmlNode * a_node);
         void ProcessTriggerElement(xmlNode * a_node);
+        void ProcessLeftIntensityElement(xmlNode * a_node);
+        void ProcessRightIntensityElement(xmlNode * a_node);
         void ProcessButtonMapElement(xmlNode * a_node);
         void ProcessAxisMapElement(xmlNode * a_node);
         void ProcessButtonElement(xmlNode * a_node);
@@ -53,6 +58,8 @@ class XmlReader
         ButtonMapper m_TempButtonMapper;
         AxisMapper m_TempAxisMapper;
         Trigger m_TempTrigger;
+        Intensity m_TempLeftIntensity;
+        Intensity m_TempRightIntensity;
         Configuration m_TempConfiguration;
         Controller m_TempController;
         ConfigurationFile m_TempConfigurationFile;

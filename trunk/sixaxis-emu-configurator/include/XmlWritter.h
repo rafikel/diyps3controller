@@ -15,6 +15,8 @@ class XmlWritter
         void CreateAxisMapNode(xmlNodePtr parent_node);
         void CreateButtonMapNode(xmlNodePtr parent_node);
         void CreateTriggerNode(xmlNodePtr parent_node);
+        void CreateLeftIntensityNode(xmlNodePtr parent_node);
+        void CreateRightIntensityNode(xmlNodePtr parent_node);
         void CreateConfigurationNodes(xmlNodePtr parent_node);
         void CreateControllerNodes(xmlNodePtr parent_node);
     protected:

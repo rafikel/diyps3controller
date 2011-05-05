@@ -103,6 +103,56 @@ void XmlWritter::CreateTriggerNode(xmlNodePtr parent_node)
     xmlNewProp(node, BAD_CAST X_ATTR_SWITCH_BACK, BAD_CAST (const char*) trigger->GetSwitchBack().mb_str(wxConvUTF8));
 }
 
+void XmlWritter::CreateLeftIntensityNode(xmlNodePtr parent_node)
+{
+    char steps[4];
+
+    Intensity* intensity = m_ConfigurationFile->GetController(m_CurrentController)->GetConfiguration(m_CurrentConfiguration)->GetLeftIntensity();
+
+#ifndef WIN32
+    snprintf(steps, sizeof(steps), "%hhu", intensity->GetSteps());
+#else
+    snprintf(steps, sizeof(steps), "%hu", intensity->GetSteps());
+#endif
+
+    xmlNodePtr node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_LEFT_INTENSITY, NULL);
+
+    xmlNewProp(node, BAD_CAST X_ATTR_TYPE, BAD_CAST (const char*) intensity->GetDevice()->GetType().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST (const char*) intensity->GetDevice()->GetId().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_NAME, BAD_CAST (const char*) intensity->GetDevice()->GetName().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_BUTTON_ID, BAD_CAST (const char*) intensity->GetEvent()->GetId().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_STEPS, BAD_CAST (const char*) steps);
+}
+
+void XmlWritter::CreateRightIntensityNode(xmlNodePtr parent_node)
+{
+    char steps[4];
+
+    Intensity* intensity = m_ConfigurationFile->GetController(m_CurrentController)->GetConfiguration(m_CurrentConfiguration)->GetRightIntensity();
+
+#ifndef WIN32
+    snprintf(steps, sizeof(steps), "%hhu", intensity->GetSteps());
+#else
+    snprintf(steps, sizeof(steps), "%hu", intensity->GetSteps());
+#endif
+
+    xmlNodePtr node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_RIGHT_INTENSITY, NULL);
+
+    xmlNewProp(node, BAD_CAST X_ATTR_TYPE, BAD_CAST (const char*) intensity->GetDevice()->GetType().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST (const char*) intensity->GetDevice()->GetId().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_NAME, BAD_CAST (const char*) intensity->GetDevice()->GetName().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_BUTTON_ID, BAD_CAST (const char*) intensity->GetEvent()->GetId().mb_str(wxConvUTF8));
+
+    xmlNewProp(node, BAD_CAST X_ATTR_STEPS, BAD_CAST (const char*) steps);
+}
+
 void XmlWritter::CreateConfigurationNodes(xmlNodePtr parent_node)
 {
     xmlNodePtr node;
@@ -124,6 +174,10 @@ void XmlWritter::CreateConfigurationNodes(xmlNodePtr parent_node)
         xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST id);
 
         CreateTriggerNode(node);
+
+        CreateLeftIntensityNode(node);
+
+        CreateRightIntensityNode(node);
 
         CreateButtonMapNode(node);
 
