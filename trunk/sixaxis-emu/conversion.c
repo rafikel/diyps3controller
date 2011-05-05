@@ -397,9 +397,6 @@ const char* get_chars_from_key(SDLKey key)
   return arg_key_table[0].arg;
 }
 
-#define MOUSE_AXIS_X "x"
-#define MOUSE_AXIS_Y "y"
-
 const char* buttons[] =
 {
     "UNDEFINED",
@@ -426,11 +423,11 @@ unsigned int get_mouse_event_id_from_buffer(const char* event_id)
 
   if (!strncmp(event_id, MOUSE_AXIS_X, sizeof(MOUSE_AXIS_X)))
   {
-    r_event_id = 0;
+    r_event_id = AXIS_X;
   }
   else if (!strncmp(event_id, MOUSE_AXIS_Y, sizeof(MOUSE_AXIS_Y)))
   {
-    r_event_id = 1;
+    r_event_id = AXIS_Y;
   }
   else
   {
