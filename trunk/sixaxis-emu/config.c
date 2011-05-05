@@ -2,7 +2,6 @@
 #include <dirent.h>
 #include <limits.h>
 #include <stdio.h>
-#include <libxml/xmlreader.h>
 #include <string.h>
 #include "config.h"
 #include <stdlib.h>
@@ -16,74 +15,7 @@
 #define LINE_MAX 1024
 #endif
 
-#define X_ATTR_VALUE_KEYBOARD "keyboard"
-#define X_ATTR_VALUE_MOUSE "mouse"
-#define X_ATTR_VALUE_JOYSTICK "joystick"
-
-#define X_ATTR_VALUE_BUTTON "button"
-#define X_ATTR_VALUE_AXIS "axis"
-#define X_ATTR_VALUE_AXIS_DOWN "axis_down"
-#define X_ATTR_VALUE_AXIS_UP "axis_up"
-
-#define X_ATTR_VALUE_CIRCLE "Circle"
-#define X_ATTR_VALUE_RECTANGLE "Rectangle"
-
-#define X_ATTR_VALUE_YES "yes"
-#define X_ATTR_VALUE_NO "no"
-
-#define MAX_CONTROLS 256
-
-#ifndef WIN32
-#define CONFIG_DIR ".emuclient/config"
-#else
-#define CONFIG_DIR "config"
-#endif
-
-#define X_NODE_ROOT "root"
-#define X_NODE_CONTROLLER "controller"
-#define X_NODE_CONFIGURATION "configuration"
-
-#define X_NODE_TRIGGER "trigger"
-#define X_NODE_BUTTON_MAP "button_map"
-#define X_NODE_AXIS_MAP "axis_map"
-
-#define X_NODE_DEVICE "device"
-#define X_NODE_EVENT "event"
-#define X_NODE_AXIS "axis"
-#define X_NODE_BUTTON "button"
-
-#define X_ATTR_ID "id"
-#define X_ATTR_TYPE "type"
-#define X_ATTR_NAME "name"
-#define X_ATTR_BUTTON_ID "button_id"
-#define X_ATTR_THRESHOLD "threshold"
-#define X_ATTR_DEADZONE "dead_zone"
-#define X_ATTR_MULTIPLIER "multiplier"
-#define X_ATTR_EXPONENT "exponent"
-#define X_ATTR_SHAPE "shape"
-#define X_ATTR_SWITCH_BACK "switch_back"
-
-#define AXIS_X 0
-#define AXIS_Y 1
-
 #define DEFAULT_RADIUS 50
-
-typedef enum
-{
-  E_DEVICE_TYPE_UNKNOWN,
-  E_DEVICE_TYPE_KEYBOARD,
-  E_DEVICE_TYPE_MOUSE,
-  E_DEVICE_TYPE_JOYSTICK
-}e_device_type;
-
-typedef enum
-{
-  E_EVENT_TYPE_UNKNOWN,
-  E_EVENT_TYPE_BUTTON,
-  E_EVENT_TYPE_AXIS,
-  E_EVENT_TYPE_AXIS_DOWN,
-  E_EVENT_TYPE_AXIS_UP
-}e_event_type;
 
 typedef struct
 {
@@ -111,6 +43,15 @@ typedef struct
   int button;
   int switch_back;;
 }s_trigger;
+
+typedef struct
+{
+  int device_type;
+  int device_id;
+  int button;
+  double step;
+  double value;
+}s_intensity;
 
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
@@ -167,6 +108,12 @@ static int previous_config[MAX_CONTROLLERS];
 static s_trigger triggers[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
+ * This lists controller stick intensity modifiers.
+ */
+static s_intensity left_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_intensity right_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+
+/*
  * This lists controls of each controller configuration for all keyboards.
  */
 static s_mapper* keyboard_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
@@ -211,6 +158,7 @@ void trigger_lookup(SDL_Event* e)
 {
   int i, j;
   int device_type;
+  int button;
   int up = 0;
   unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
 
@@ -220,16 +168,19 @@ void trigger_lookup(SDL_Event* e)
       up = 1;
     case SDL_JOYBUTTONDOWN:
       device_type = E_DEVICE_TYPE_JOYSTICK;
+      button = e->jbutton.button;
       break;
     case SDL_KEYUP:
       up = 1;
     case SDL_KEYDOWN:
       device_type = E_DEVICE_TYPE_KEYBOARD;
+      button = e->key.keysym.sym;
       break;
     case SDL_MOUSEBUTTONUP:
       up = 1;
     case SDL_MOUSEBUTTONDOWN:
       device_type = E_DEVICE_TYPE_MOUSE;
+      button = e->button.button;
       break;
     default:
       return;
@@ -244,7 +195,7 @@ void trigger_lookup(SDL_Event* e)
       {
         continue;
       }
-      if (e->jbutton.button == triggers[i][j].button)
+      if (button == triggers[i][j].button)
       {
         if (display)
         {
@@ -262,6 +213,67 @@ void trigger_lookup(SDL_Event* e)
         if (display)
         {
           printf(" to %d\n", current_config[i]);
+        }
+      }
+    }
+  }
+}
+
+/*
+ * Check if stick intensities need to be updated.
+ */
+void intensity_lookup(SDL_Event* e)
+{
+  int i, j;
+  int device_type;
+  int button;
+  unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
+
+  switch( e->type )
+  {
+    case SDL_JOYBUTTONDOWN:
+      device_type = E_DEVICE_TYPE_JOYSTICK;
+      button = e->jbutton.button;
+      break;
+    case SDL_KEYDOWN:
+      device_type = E_DEVICE_TYPE_KEYBOARD;
+      button = e->key.keysym.sym;
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+      device_type = E_DEVICE_TYPE_MOUSE;
+      button = e->button.button;
+      break;
+    default:
+      return;
+  }
+
+  for(i=0; i<MAX_CONTROLLERS; ++i)
+  {
+    for(j=0; j<MAX_CONFIGURATIONS; ++j)
+    {
+      if (left_intensity[i][j].device_type != device_type || device_id
+          != left_intensity[i][j].device_id)
+      {
+        continue;
+      }
+      if (button == left_intensity[i][j].button)
+      {
+        left_intensity[i][j].value += left_intensity[i][j].step;
+        if(left_intensity[i][j].value > 127) left_intensity[i][j].value = left_intensity[i][j].step;
+
+        if (display)
+        {
+          printf("controller %d configuration %d left intensity: %.0f\n", i, j, left_intensity[i][j].value);
+        }
+      }
+      if (button == right_intensity[i][j].button)
+      {
+        right_intensity[i][j].value += right_intensity[i][j].step;
+        if(right_intensity[i][j].value > 127) right_intensity[i][j].value = right_intensity[i][j].step;
+
+        if (display)
+        {
+          printf("controller %d configuration %d right intensity: %.0f\n", i, j, right_intensity[i][j].value);
         }
       }
     }
@@ -690,7 +702,29 @@ void process_event(SDL_Event* event)
           ts_axis = mapper->controller_thumbstick_axis;
           if(ts >= 0)
           {
-            state[c_id].user.axis[ts][ts_axis] = mapper->controller_thumbstick_axis_value;
+            if(ts == 0)
+            {
+              if(mapper->controller_thumbstick_axis_value < 0)
+              {
+                state[c_id].user.axis[ts][ts_axis] = - left_intensity[c_id][config].value;
+              }
+              else
+              {
+                state[c_id].user.axis[ts][ts_axis] = left_intensity[c_id][config].value;
+              }
+            }
+            else
+            {
+              if(mapper->controller_thumbstick_axis_value < 0)
+              {
+                state[c_id].user.axis[ts][ts_axis] = - right_intensity[c_id][config].value;
+              }
+              else
+              {
+                state[c_id].user.axis[ts][ts_axis] = right_intensity[c_id][config].value;
+              }
+
+            }
             /*
              * Specific code for issue 15.
              */
@@ -888,7 +922,7 @@ void process_event(SDL_Event* event)
   }
 }
 
-static inline int GetDeviceTypeProp(xmlNode * a_node)
+static int GetDeviceTypeProp(xmlNode * a_node)
 {
   int ret = 0;
   char* type;
@@ -916,7 +950,7 @@ static inline int GetDeviceTypeProp(xmlNode * a_node)
   return ret;
 }
 
-static inline int GetEventId(xmlNode * a_node)
+static int GetEventId(xmlNode * a_node)
 {
   char* event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
 
@@ -941,7 +975,7 @@ static inline int GetEventId(xmlNode * a_node)
   return 0;
 }
 
-static inline int GetIntProp(xmlNode * a_node, char* a_attr, int* a_int)
+int GetIntProp(xmlNode * a_node, char* a_attr, int* a_int)
 {
   char* val;
   int ret;
@@ -962,7 +996,7 @@ static inline int GetIntProp(xmlNode * a_node, char* a_attr, int* a_int)
   return ret;
 }
 
-static inline int GetUnsignedIntProp(xmlNode * a_node, char* a_attr, unsigned int* a_uint)
+int GetUnsignedIntProp(xmlNode * a_node, char* a_attr, unsigned int* a_uint)
 {
   char* val;
   int ret;
@@ -983,7 +1017,7 @@ static inline int GetUnsignedIntProp(xmlNode * a_node, char* a_attr, unsigned in
   return ret;
 }
 
-static inline int GetDoubleProp(xmlNode * a_node, char* a_attr, double* a_double)
+int GetDoubleProp(xmlNode * a_node, char* a_attr, double* a_double)
 {
   char* val;
   int ret;
@@ -1550,10 +1584,101 @@ static int ProcessTriggerElement(xmlNode * a_node)
   return ret;
 }
 
+static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
+{
+  int ret = 0;
+  char* device_name;
+  char* event_id;
+  int steps = 1;
+  int i;
+
+  ret = GetDeviceTypeProp(a_node);
+
+  if(ret != -1 && r_device_type != E_DEVICE_TYPE_UNKNOWN)
+  {
+    device_name = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    if(device_name)
+    {
+      strncpy(r_device_name, device_name, sizeof(r_device_name));
+    }
+    xmlFree(device_name);
+
+    ret = GetIntProp(a_node, X_ATTR_ID, &r_device_id);
+
+    if(ret != -1)
+    {
+      if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+      {
+        for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
+        {
+          if (!strcmp(r_device_name, joystickName[i]))
+          {
+            if (r_device_id == joystickVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
+          }
+        }
+      }
+      else if(r_device_type == E_DEVICE_TYPE_MOUSE)
+      {
+        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+        r_event_id = get_mouse_event_id_from_buffer(event_id);
+        xmlFree(event_id);
+
+        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+        {
+          if (!strcmp(r_device_name, mouseName[i]))
+          {
+            if (r_device_id == mouseVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
+          }
+        }
+      }
+      else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
+      {
+        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+        r_event_id = get_key_from_buffer(event_id);
+        xmlFree(event_id);
+
+        for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+        {
+          if (!strcmp(r_device_name, keyboardName[i]))
+          {
+            if (r_device_id == keyboardVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    ret = GetIntProp(a_node, X_ATTR_STEPS, &steps);
+
+    if(ret != -1)
+    {
+      intensity->button = r_event_id;
+      intensity->device_id = r_device_id;
+      intensity->device_type = r_device_type;
+      intensity->step = (double) 127 / steps;
+      intensity->value = (double) 127 / steps;
+    }
+  }
+
+  return ret;
+}
+
 static int ProcessConfigurationElement(xmlNode * a_node)
 {
   int ret = 0;
   xmlNode* cur_node = NULL;
+  xmlNode* prev;
 
   ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_config_id);
 
@@ -1591,6 +1716,50 @@ static int ProcessConfigurationElement(xmlNode * a_node)
   {
     printf("missing trigger element");
     ret = -1;
+  }
+
+  prev = cur_node;
+
+  for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
+  {
+    if (cur_node->type == XML_ELEMENT_NODE)
+    {
+      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_LEFT_INTENSITY))
+      {
+        ret = ProcessIntensityElement(cur_node, &left_intensity[r_controller_id][r_config_id]);
+        break;
+      }
+      else
+      {
+        left_intensity[r_controller_id][r_config_id].device_id = -1;
+        left_intensity[r_controller_id][r_config_id].step = 127;
+        left_intensity[r_controller_id][r_config_id].value = 127;
+        cur_node = prev;
+        break;
+      }
+    }
+  }
+
+  prev = cur_node;
+
+  for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
+  {
+    if (cur_node->type == XML_ELEMENT_NODE)
+    {
+      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_RIGHT_INTENSITY))
+      {
+        ret = ProcessIntensityElement(cur_node, &right_intensity[r_controller_id][r_config_id]);
+        break;
+      }
+      else
+      {
+        right_intensity[r_controller_id][r_config_id].device_id = -1;
+        right_intensity[r_controller_id][r_config_id].step = 127;
+        right_intensity[r_controller_id][r_config_id].value = 127;
+        cur_node = prev;
+        break;
+      }
+    }
   }
 
   for (cur_node = cur_node->next; cur_node && ret != -1; cur_node = cur_node->next)
