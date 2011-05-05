@@ -31,6 +31,7 @@
 #include "dump.h"
 #include "macros.h"
 #include "config.h"
+#include "config_writter.h"
 #include <math.h>
 
 #include <pthread.h>
@@ -54,6 +55,8 @@ char* homedir = "";
 #else
 char* ip = "";
 #endif
+
+char* config_file = NULL;
 
 int done = 0;
 int current_mouse = 0;
@@ -86,8 +89,8 @@ static void err(int eval, const char *fmt)
 }
 #endif
 
-
 char* joystickName[MAX_DEVICES] = {};
+SDL_Joystick* joysticks[MAX_DEVICES] = {};
 int joystickVirtualIndex[MAX_DEVICES] = {};
 int joystickNbButton[MAX_DEVICES] = {};
 int joystickSixaxis[MAX_DEVICES] = {};
@@ -96,13 +99,14 @@ int mouseVirtualIndex[MAX_DEVICES] = {};
 char* keyboardName[MAX_DEVICES] = {};
 int keyboardVirtualIndex[MAX_DEVICES] = {};
 
+int test_time = 1000;
+
 #define BT_SIXAXIS_NAME "PLAYSTATION(R)3 Controller"
 
 int initialize(int width, int height, const char *title)
 {
   int i = 0;
   int j;
-  SDL_Joystick* joystick;
 #ifndef WIN32
   const char* name;
 #endif
@@ -136,7 +140,7 @@ int initialize(int width, int height, const char *title)
   }
   SDL_ShowCursor(SDL_DISABLE);
 
-  while((joystick = SDL_JoystickOpen(i)))
+  while((joysticks[i] = SDL_JoystickOpen(i)))
   {
       joystickName[i] = strdup(SDL_JoystickName(i));
 
@@ -157,7 +161,7 @@ int initialize(int width, int height, const char *title)
       {
         joystickVirtualIndex[i] = 0;
       }
-      joystickNbButton[i] = SDL_JoystickNumButtons(joystick);
+      joystickNbButton[i] = SDL_JoystickNumButtons(joysticks[i]);
       if(!strcmp(joystickName[i], "Sony PLAYSTATION(R)3 Controller"))
       {
         joystickSixaxis[i] = 1;
@@ -275,35 +279,57 @@ void move_y(int y)
 void auto_test()
 {
 
-  state[0].user.axis[1][0] = 48;
-  controller[0].send_command = 1;
+  /*if(mouse_cal[current_mouse][current_conf].dzx)
+  {
+    state[0].user.axis[1][0] = *mouse_cal[current_mouse][current_conf].dzx;
+    controller[0].send_command = 1;
 
-  sleep(18);
+    usleep(test_time*1000);
 
-  state[0].user.axis[1][0] = 0;
-  controller[0].send_command = 1;
+    state[0].user.axis[1][0] = 0;
+    controller[0].send_command = 1;
+  }*/
 
-  sleep(2);
+  if(mouse_cal[current_mouse][current_conf].dzy)
+    {
+      state[0].user.axis[1][1] = *mouse_cal[current_mouse][current_conf].dzy;
+      controller[0].send_command = 1;
 
-  state[0].user.axis[1][0] = 88;
-  controller[0].send_command = 1;
+      usleep(test_time*1000);
 
-  sleep(5);
+      state[0].user.axis[1][1] = 0;
+      controller[0].send_command = 1;
 
-  state[0].user.axis[1][0] = 0;
-  controller[0].send_command = 1;
+      usleep(500*1000);
 
-  sleep(2);
+      state[0].user.axis[1][1] = *mouse_cal[current_mouse][current_conf].dzy;
+      controller[0].send_command = 1;
 
-  state[0].user.axis[1][0] = 128;
-  controller[0].send_command = 1;
+      usleep(1000*1000);
 
-  sleep(2);
+      state[0].user.axis[1][1] = 0;
+      controller[0].send_command = 1;
 
-  state[0].user.axis[1][0] = 0;
-  controller[0].send_command = 1;
+      usleep(500*1000);
 
-  sleep(2);
+      state[0].user.axis[1][1] = - *mouse_cal[current_mouse][current_conf].dzy;
+      controller[0].send_command = 1;
+
+      usleep(test_time*1000);
+
+      state[0].user.axis[1][1] = 0;
+      controller[0].send_command = 1;
+
+      usleep(500*1000);
+
+      state[0].user.axis[1][1] = - *mouse_cal[current_mouse][current_conf].dzy;
+      controller[0].send_command = 1;
+
+      usleep(1000*1000);
+
+      state[0].user.axis[1][1] = 0;
+      controller[0].send_command = 1;
+    }
 }
 
 void circle_test()
@@ -390,6 +416,7 @@ void display_calibration()
       printf(" NA\n");
     }
     printf("radius: %.2f\n", mouse_cal[current_mouse][current_conf].rd);
+    printf("time: %d\n", test_time);
   }
 }
 
@@ -440,6 +467,10 @@ static void key(int sym, int down)
         else
         {
           current_cal = NONE;
+          if(modify_file(config_file))
+          {
+            printf("error writting the config file %s\n", config_file);
+          }
           printf("calibration done\n");
         }
       }
@@ -557,8 +588,12 @@ static void key(int sym, int down)
       }
       break;
     case SDLK_F12:
-      if(down && rctrl)
+      if(down && rctrl && current_cal != NONE)
       {
+        if(current_conf >=0 && current_mouse >=0)
+        {
+          current_cal = TEST;
+        }
         pthread_attr_init(&thread_attr);
         pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
         pthread_create( &thread, &thread_attr, (void*)auto_test, NULL);
@@ -659,6 +694,9 @@ static void button(int which, int button)
         case EY:
           if(mouse_cal[current_mouse][current_conf].ey) *mouse_cal[current_mouse][current_conf].ey += EXPONENT_STEP;
           break;
+        case TEST:
+          test_time += 10;
+          break;
         case NONE:
           break;
       }
@@ -735,6 +773,9 @@ static void button(int which, int button)
         case EY:
           if(mouse_cal[current_mouse][current_conf].ey) *mouse_cal[current_mouse][current_conf].ey -= EXPONENT_STEP;
           break;
+        case TEST:
+          test_time -= 10;
+          break;
         case NONE:
           break;
       }
@@ -753,7 +794,6 @@ int main(int argc, char *argv[])
     int num_evt;
     unsigned char buf[48];
     int read = 0;
-    char* file = NULL;
     struct timeval t0, t1;
     int time_to_sleep;
 
@@ -772,7 +812,7 @@ int main(int argc, char *argv[])
       }
       else if(!strcmp(argv[i], "--config") && i<argc)
       {
-        file = argv[++i];
+        config_file = argv[++i];
         read = 1;
       }
       else if(!strcmp(argv[i], "--status"))
@@ -805,7 +845,7 @@ int main(int argc, char *argv[])
 
     if(read == 1)
     {
-      read_config_file(file);
+      read_config_file(config_file);
     }
 
     if(tcpconnect() < 0)
@@ -844,6 +884,7 @@ int main(int argc, char *argv[])
           }
 
           trigger_lookup(event);
+          intensity_lookup(event);
 
           switch (event->type)
           {
@@ -924,15 +965,13 @@ int main(int argc, char *argv[])
     }
 
     printf("Exiting\n");
-#ifndef WIN32
-    SDL_Quit();
-#endif
 
     free_macros();
 
     for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
     {
       free(joystickName[i]);
+      SDL_JoystickClose(joysticks[i]);
     }
     for(i=0; i<MAX_DEVICES && mouseName[i]; ++i)
     {
@@ -942,5 +981,11 @@ int main(int argc, char *argv[])
     {
       free(keyboardName[i]);
     }
+
+#ifndef WIN32
+    SDL_FreeSurface(screen);
+    SDL_Quit();
+#endif
+
     return 0;
 }
