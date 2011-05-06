@@ -53,13 +53,6 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 }
 
 //(*IdInit(sixaxis_emu_guiFrame)
-const long sixaxis_emu_guiFrame::ID_STATICTEXT1 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT19 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT9 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT3 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT24 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT23 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT35 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT27 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT36 = wxNewId();
@@ -67,34 +60,42 @@ const long sixaxis_emu_guiFrame::ID_STATICTEXT37 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_CHECKBOX1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON10 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT26 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT52 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT53 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT54 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT55 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT57 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT58 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT59 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT60 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT61 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON13 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON14 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT24 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_SPINCTRL3 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT62 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_SPINCTRL1 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT28 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT33 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT34 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT44 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT46 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICTEXT47 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT67 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT68 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT69 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT70 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_BUTTON15 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_BUTTON16 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT19 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_CHOICE2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT48 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT49 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT50 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT51 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON11 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON12 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT26 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_SPINCTRL4 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT25 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_SPINCTRL2 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT1 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT2 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT3 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT9 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_BUTTON17 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_BUTTON18 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT23 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_CHOICE3 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_PANEL1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT4 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT29 = wxNewId();
@@ -269,6 +270,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     //(*Initialize(sixaxis_emu_guiFrame)
     wxStaticBoxSizer* StaticBoxSizer2;
     wxFlexGridSizer* FlexGridSizer4;
+    wxFlexGridSizer* FlexGridSizer16;
     wxMenuItem* MenuItem2;
     wxStaticBoxSizer* StaticBoxSizer4;
     wxFlexGridSizer* FlexGridSizer10;
@@ -278,8 +280,13 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer9;
     wxFlexGridSizer* FlexGridSizer2;
     wxFlexGridSizer* FlexGridSizer7;
+    wxStaticBoxSizer* StaticBoxSizer7;
+    wxStaticBoxSizer* StaticBoxSizer8;
     wxStaticBoxSizer* StaticBoxSizer3;
     wxGridSizer* GridSizer1;
+    wxStaticBoxSizer* StaticBoxSizer6;
+    wxFlexGridSizer* FlexGridSizer15;
+    wxFlexGridSizer* FlexGridSizer18;
     wxFlexGridSizer* FlexGridSizer8;
     wxMenuItem* MenuItem6;
     wxFlexGridSizer* FlexGridSizer14;
@@ -289,30 +296,17 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer6;
     wxStaticBoxSizer* StaticBoxSizer1;
     wxFlexGridSizer* FlexGridSizer1;
-    wxFlexGridSizer* FlexGridSizer11;
+    wxFlexGridSizer* FlexGridSizer17;
     wxMenu* Menu2;
+    wxStaticBoxSizer* StaticBoxSizer5;
     
     Create(parent, wxID_ANY, _("Sixaxis emulator customizer"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     GridSizer1 = new wxGridSizer(1, 1, 0, 0);
-    Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,480), 0, _T("ID_NOTEBOOK1"));
+    Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,570), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-    FlexGridSizer10 = new wxFlexGridSizer(1, 1, 0, 0);
+    FlexGridSizer10 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Trigger"));
     FlexGridSizer13 = new wxFlexGridSizer(2, 7, 0, 0);
-    StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Device type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    FlexGridSizer13->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText19 = new wxStaticText(Panel1, ID_STATICTEXT19, _("Device name"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
-    FlexGridSizer13->Add(StaticText19, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText9 = new wxStaticText(Panel1, ID_STATICTEXT9, _("Device id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
-    FlexGridSizer13->Add(StaticText9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("Button id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-    FlexGridSizer13->Add(StaticText3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText24 = new wxStaticText(Panel1, ID_STATICTEXT24, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT24"));
-    FlexGridSizer13->Add(StaticText24, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText23 = new wxStaticText(Panel1, ID_STATICTEXT23, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
-    FlexGridSizer13->Add(StaticText23, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-    FlexGridSizer13->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText35 = new wxStaticText(Panel1, ID_STATICTEXT35, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT35"));
     FlexGridSizer13->Add(StaticText35, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText27 = new wxStaticText(Panel1, ID_STATICTEXT27, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT27"));
@@ -330,22 +324,12 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer13->Add(Button10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(FlexGridSizer13, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer10->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, Panel1, _("Stick intensity"));
+    StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Stick intensity"));
+    FlexGridSizer18 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Left"));
-    FlexGridSizer12 = new wxFlexGridSizer(0, 3, 0, 0);
+    FlexGridSizer12 = new wxFlexGridSizer(2, 5, 0, 0);
+    StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Increase"));
     FlexGridSizer14 = new wxFlexGridSizer(2, 6, 0, 0);
-    StaticText26 = new wxStaticText(Panel1, ID_STATICTEXT26, _("Device type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT26"));
-    FlexGridSizer14->Add(StaticText26, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText52 = new wxStaticText(Panel1, ID_STATICTEXT52, _("Device name"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT52"));
-    FlexGridSizer14->Add(StaticText52, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText53 = new wxStaticText(Panel1, ID_STATICTEXT53, _("Device id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT53"));
-    FlexGridSizer14->Add(StaticText53, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText54 = new wxStaticText(Panel1, ID_STATICTEXT54, _("Button id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT54"));
-    FlexGridSizer14->Add(StaticText54, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText55 = new wxStaticText(Panel1, ID_STATICTEXT55, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT55"));
-    FlexGridSizer14->Add(StaticText55, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText57 = new wxStaticText(Panel1, ID_STATICTEXT57, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT57"));
-    FlexGridSizer14->Add(StaticText57, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText58 = new wxStaticText(Panel1, ID_STATICTEXT58, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT58"));
     FlexGridSizer14->Add(StaticText58, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText59 = new wxStaticText(Panel1, ID_STATICTEXT59, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT59"));
@@ -358,29 +342,46 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer14->Add(Button13, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     Button14 = new wxButton(Panel1, ID_BUTTON14, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON14"));
     FlexGridSizer14->Add(Button14, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer12->Add(FlexGridSizer14, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer5->Add(FlexGridSizer14, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer12->Add(StaticBoxSizer5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText24 = new wxStaticText(Panel1, ID_STATICTEXT24, _("Dead zone"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT24"));
+    FlexGridSizer12->Add(StaticText24, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    SpinCtrl3 = new wxSpinCtrl(Panel1, ID_SPINCTRL3, _T("0"), wxDefaultPosition, wxSize(60,-1), 0, 0, 127, 0, _T("ID_SPINCTRL3"));
+    SpinCtrl3->SetValue(_T("0"));
+    FlexGridSizer12->Add(SpinCtrl3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText62 = new wxStaticText(Panel1, ID_STATICTEXT62, _("Steps:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT62"));
     FlexGridSizer12->Add(StaticText62, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SpinCtrl1 = new wxSpinCtrl(Panel1, ID_SPINCTRL1, _T("1"), wxDefaultPosition, wxSize(60,-1), 0, 1, 127, 1, _T("ID_SPINCTRL1"));
     SpinCtrl1->SetValue(_T("1"));
     FlexGridSizer12->Add(SpinCtrl1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer6 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Decrease"));
+    FlexGridSizer15 = new wxFlexGridSizer(1, 6, 0, 0);
+    StaticText67 = new wxStaticText(Panel1, ID_STATICTEXT67, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT67"));
+    FlexGridSizer15->Add(StaticText67, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText68 = new wxStaticText(Panel1, ID_STATICTEXT68, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT68"));
+    FlexGridSizer15->Add(StaticText68, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText69 = new wxStaticText(Panel1, ID_STATICTEXT69, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT69"));
+    FlexGridSizer15->Add(StaticText69, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText70 = new wxStaticText(Panel1, ID_STATICTEXT70, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT70"));
+    FlexGridSizer15->Add(StaticText70, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button15 = new wxButton(Panel1, ID_BUTTON15, _("Auto detect"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON15"));
+    FlexGridSizer15->Add(Button15, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
+    Button16 = new wxButton(Panel1, ID_BUTTON16, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON16"));
+    FlexGridSizer15->Add(Button16, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer6->Add(FlexGridSizer15, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer12->Add(StaticBoxSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText19 = new wxStaticText(Panel1, ID_STATICTEXT19, _("Shape"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT19"));
+    FlexGridSizer12->Add(StaticText19, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Choice2 = new wxChoice(Panel1, ID_CHOICE2, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE2"));
+    Choice2->SetSelection( Choice2->Append(_("Circle")) );
+    Choice2->Append(_("Rectangle"));
+    FlexGridSizer12->Add(Choice2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(FlexGridSizer12, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(StaticBoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer18->Add(StaticBoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Right"));
-    FlexGridSizer11 = new wxFlexGridSizer(0, 3, 0, 0);
+    FlexGridSizer16 = new wxFlexGridSizer(2, 5, 0, 0);
+    StaticBoxSizer7 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Increase"));
     FlexGridSizer2 = new wxFlexGridSizer(2, 6, 0, 0);
-    StaticText28 = new wxStaticText(Panel1, ID_STATICTEXT28, _("Device type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT28"));
-    FlexGridSizer2->Add(StaticText28, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText33 = new wxStaticText(Panel1, ID_STATICTEXT33, _("Device name"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT33"));
-    FlexGridSizer2->Add(StaticText33, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText34 = new wxStaticText(Panel1, ID_STATICTEXT34, _("Device id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT34"));
-    FlexGridSizer2->Add(StaticText34, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText44 = new wxStaticText(Panel1, ID_STATICTEXT44, _("Button id"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT44"));
-    FlexGridSizer2->Add(StaticText44, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText46 = new wxStaticText(Panel1, ID_STATICTEXT46, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT46"));
-    FlexGridSizer2->Add(StaticText46, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText47 = new wxStaticText(Panel1, ID_STATICTEXT47, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT47"));
-    FlexGridSizer2->Add(StaticText47, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText48 = new wxStaticText(Panel1, ID_STATICTEXT48, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT48"));
     FlexGridSizer2->Add(StaticText48, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText49 = new wxStaticText(Panel1, ID_STATICTEXT49, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT49"));
@@ -393,14 +394,43 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer2->Add(Button11, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     Button12 = new wxButton(Panel1, ID_BUTTON12, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON12"));
     FlexGridSizer2->Add(Button12, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer11->Add(FlexGridSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer7->Add(FlexGridSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer16->Add(StaticBoxSizer7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText26 = new wxStaticText(Panel1, ID_STATICTEXT26, _("Dead zone"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT26"));
+    FlexGridSizer16->Add(StaticText26, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    SpinCtrl4 = new wxSpinCtrl(Panel1, ID_SPINCTRL4, _T("0"), wxDefaultPosition, wxSize(60,-1), 0, 0, 127, 0, _T("ID_SPINCTRL4"));
+    SpinCtrl4->SetValue(_T("0"));
+    FlexGridSizer16->Add(SpinCtrl4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText25 = new wxStaticText(Panel1, ID_STATICTEXT25, _("Steps:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT25"));
-    FlexGridSizer11->Add(StaticText25, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer16->Add(StaticText25, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SpinCtrl2 = new wxSpinCtrl(Panel1, ID_SPINCTRL2, _T("1"), wxDefaultPosition, wxSize(60,-1), 0, 1, 127, 1, _T("ID_SPINCTRL2"));
     SpinCtrl2->SetValue(_T("1"));
-    FlexGridSizer11->Add(SpinCtrl2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer4->Add(FlexGridSizer11, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(StaticBoxSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer16->Add(SpinCtrl2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer8 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Decrease"));
+    FlexGridSizer17 = new wxFlexGridSizer(1, 6, 0, 0);
+    StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    FlexGridSizer17->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+    FlexGridSizer17->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+    FlexGridSizer17->Add(StaticText3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText9 = new wxStaticText(Panel1, ID_STATICTEXT9, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
+    FlexGridSizer17->Add(StaticText9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button17 = new wxButton(Panel1, ID_BUTTON17, _("Auto detect"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON17"));
+    FlexGridSizer17->Add(Button17, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
+    Button18 = new wxButton(Panel1, ID_BUTTON18, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON18"));
+    FlexGridSizer17->Add(Button18, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer8->Add(FlexGridSizer17, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer16->Add(StaticBoxSizer8, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText23 = new wxStaticText(Panel1, ID_STATICTEXT23, _("Shape"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT23"));
+    FlexGridSizer16->Add(StaticText23, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Choice3 = new wxChoice(Panel1, ID_CHOICE3, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE3"));
+    Choice3->SetSelection( Choice3->Append(_("Circle")) );
+    Choice3->Append(_("Rectangle"));
+    FlexGridSizer16->Add(Choice3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4->Add(FlexGridSizer16, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer18->Add(StaticBoxSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(FlexGridSizer18, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer10->Add(StaticBoxSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Panel1->SetSizer(FlexGridSizer10);
     FlexGridSizer10->Fit(Panel1);
@@ -562,7 +592,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer5->Fit(Panel3);
     FlexGridSizer5->SetSizeHints(Panel3);
     Notebook1->AddPage(Panel1, _("Overall"), false);
-    Notebook1->AddPage(Panel2, _("Button"), false);
+    Notebook1->AddPage(Panel2, _("Button"), true);
     Notebook1->AddPage(Panel3, _("Axis"), false);
     GridSizer1->Add(Notebook1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(GridSizer1);
@@ -652,8 +682,16 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton10Click1);
     Connect(ID_BUTTON13,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton13Click1);
     Connect(ID_BUTTON14,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton14Click);
+    Connect(ID_SPINCTRL3,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnSpinCtrl3Change);
+    Connect(ID_BUTTON15,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton15Click);
+    Connect(ID_BUTTON16,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton16Click);
+    Connect(ID_CHOICE2,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnChoice1Select);
     Connect(ID_BUTTON11,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton11Click1);
     Connect(ID_BUTTON12,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton12Click);
+    Connect(ID_SPINCTRL4,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnSpinCtrl4Change);
+    Connect(ID_BUTTON17,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton17Click);
+    Connect(ID_BUTTON18,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton18Click);
+    Connect(ID_CHOICE3,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnChoice1Select);
     Connect(ID_CHOICE4,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnChoice4Select1);
     Connect(ID_BUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton8Click);
     Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButtonAdd1Click);
@@ -1017,24 +1055,26 @@ void sixaxis_emu_guiFrame::save_current()
 {
     std::list<ButtonMapper>* buttonMappers;
     std::list<AxisMapper>* axisMappers;
+    std::list<Intensity>* intensityList;
     //Save Trigger
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->SetType(StaticText35->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->SetName(StaticText27->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->SetId(StaticText36->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetEvent()->SetId(StaticText37->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->SetSwitchBack(CheckBox1->GetValue()?_("yes"):_("no"));
-    //Save LeftIntensity
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetDevice()->SetType(StaticText58->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetDevice()->SetName(StaticText59->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetDevice()->SetId(StaticText60->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetEvent()->SetId(StaticText61->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->SetSteps(SpinCtrl1->GetValue());
-    //Save RightIntensity
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetDevice()->SetType(StaticText48->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetDevice()->SetName(StaticText49->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetDevice()->SetId(StaticText50->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetEvent()->SetId(StaticText51->GetLabel());
-    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->SetSteps(SpinCtrl2->GetValue());
+    //Save Intensity
+    intensityList = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetIntensityList();
+    for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it = intensityList->erase(it)) {}
+    //Save left stick Intensity
+    intensityList->push_back(Intensity(_("left_stick"),
+        StaticText58->GetLabel(), StaticText60->GetLabel(), StaticText59->GetLabel(), StaticText61->GetLabel(),
+        StaticText67->GetLabel(), StaticText69->GetLabel(), StaticText68->GetLabel(), StaticText70->GetLabel(),
+        SpinCtrl3->GetValue(), SpinCtrl1->GetValue(), Choice2->GetStringSelection()));
+    //Save right stick intensity
+    intensityList->push_back(Intensity(_("right_stick"),
+        StaticText48->GetLabel(), StaticText50->GetLabel(), StaticText49->GetLabel(), StaticText51->GetLabel(),
+        StaticText1->GetLabel(), StaticText3->GetLabel(), StaticText2->GetLabel(), StaticText9->GetLabel(),
+        SpinCtrl4->GetValue(), SpinCtrl2->GetValue(), Choice3->GetStringSelection()));
     //Save ButtonMappers
     buttonMappers = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetButtonMapperList();
     for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it = buttonMappers->erase(it)) {}
@@ -1058,6 +1098,7 @@ void sixaxis_emu_guiFrame::load_current()
 {
     std::list<ButtonMapper>* buttonMappers;
     std::list<AxisMapper>* axisMappers;
+    std::list<Intensity>* intensityList;
     //Load Trigger
     StaticText35->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->GetType());
     StaticText27->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->GetName());
@@ -1071,18 +1112,61 @@ void sixaxis_emu_guiFrame::load_current()
     {
         CheckBox1->SetValue(false);
     }
-    //Load LeftIntensity
-    StaticText58->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetDevice()->GetType());
-    StaticText59->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetDevice()->GetName());
-    StaticText60->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetDevice()->GetId());
-    StaticText61->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetEvent()->GetId());
-    SpinCtrl1->SetValue(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetLeftIntensity()->GetSteps());
-    //Load RightIntensity
-    StaticText48->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetDevice()->GetType());
-    StaticText49->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetDevice()->GetName());
-    StaticText50->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetDevice()->GetId());
-    StaticText51->SetLabel(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetEvent()->GetId());
-    SpinCtrl2->SetValue(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetRightIntensity()->GetSteps());
+    //Load left & right stick intensities
+    intensityList = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetIntensityList();
+    StaticText58->SetLabel(wxEmptyString);
+    StaticText59->SetLabel(wxEmptyString);
+    StaticText60->SetLabel(wxEmptyString);
+    StaticText61->SetLabel(wxEmptyString);
+    StaticText67->SetLabel(wxEmptyString);
+    StaticText68->SetLabel(wxEmptyString);
+    StaticText69->SetLabel(wxEmptyString);
+    StaticText70->SetLabel(wxEmptyString);
+    SpinCtrl3->SetValue(0);
+    SpinCtrl1->SetValue(1);
+    Choice2->SetSelection(0);
+    StaticText48->SetLabel(wxEmptyString);
+    StaticText49->SetLabel(wxEmptyString);
+    StaticText50->SetLabel(wxEmptyString);
+    StaticText51->SetLabel(wxEmptyString);
+    StaticText1->SetLabel(wxEmptyString);
+    StaticText2->SetLabel(wxEmptyString);
+    StaticText3->SetLabel(wxEmptyString);
+    StaticText9->SetLabel(wxEmptyString);
+    SpinCtrl4->SetValue(0);
+    SpinCtrl2->SetValue(1);
+    Choice3->SetSelection(0);
+    for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+    {
+      if(it->GetControl() == _("left_stick"))
+      {
+        StaticText58->SetLabel(it->GetDeviceUp()->GetType());
+        StaticText59->SetLabel(it->GetDeviceUp()->GetName());
+        StaticText60->SetLabel(it->GetDeviceUp()->GetId());
+        StaticText61->SetLabel(it->GetEventUp()->GetId());
+        StaticText67->SetLabel(it->GetDeviceDown()->GetType());
+        StaticText68->SetLabel(it->GetDeviceDown()->GetName());
+        StaticText69->SetLabel(it->GetDeviceDown()->GetId());
+        StaticText70->SetLabel(it->GetEventDown()->GetId());
+        SpinCtrl3->SetValue(it->GetDeadZone());
+        SpinCtrl1->SetValue(it->GetSteps());
+        Choice2->SetSelection(Choice2->FindString(it->GetShape()));
+      }
+      else if(it->GetControl() == _("right_stick"))
+      {
+        StaticText48->SetLabel(it->GetDeviceUp()->GetType());
+        StaticText49->SetLabel(it->GetDeviceUp()->GetName());
+        StaticText50->SetLabel(it->GetDeviceUp()->GetId());
+        StaticText51->SetLabel(it->GetEventUp()->GetId());
+        StaticText1->SetLabel(it->GetDeviceDown()->GetType());
+        StaticText2->SetLabel(it->GetDeviceDown()->GetName());
+        StaticText3->SetLabel(it->GetDeviceDown()->GetId());
+        StaticText9->SetLabel(it->GetEventDown()->GetId());
+        SpinCtrl4->SetValue(it->GetDeadZone());
+        SpinCtrl2->SetValue(it->GetSteps());
+        Choice3->SetSelection(Choice3->FindString(it->GetShape()));
+      }
+    }
     //Load ButtonMappers
     Grid1->DeleteRows(0, Grid1->GetNumberRows());
     buttonMappers = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetButtonMapperList();
@@ -1571,6 +1655,7 @@ void sixaxis_emu_guiFrame::replaceDevice(wxString device_type)
 
     std::list<ButtonMapper>* buttonMappers;
     std::list<AxisMapper>* axisMappers;
+    std::list<Intensity>* intensityList;
 
     evcatch.run(device_type, _("button"));
     device_name = evcatch.GetDeviceName();
@@ -1592,20 +1677,19 @@ void sixaxis_emu_guiFrame::replaceDevice(wxString device_type)
         trigger->GetDevice()->SetName(device_name);
       }
 
-      Intensity* intensity = config->GetLeftIntensity();
-
-      if(intensity->GetDevice()->GetType() == device_type)
+      intensityList = config->GetIntensityList();
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
       {
-        intensity->GetDevice()->SetId(device_id);
-        intensity->GetDevice()->SetName(device_name);
-      }
-
-      intensity = config->GetRightIntensity();
-
-      if(intensity->GetDevice()->GetType() == device_type)
-      {
-        intensity->GetDevice()->SetId(device_id);
-        intensity->GetDevice()->SetName(device_name);
+          if(it->GetDeviceUp()->GetType() == device_type)
+          {
+              it->GetDeviceUp()->SetId(device_id);
+              it->GetDeviceUp()->SetName(device_name);
+          }
+          if(it->GetDeviceDown()->GetType() == device_type)
+          {
+              it->GetDeviceDown()->SetId(device_id);
+              it->GetDeviceDown()->SetName(device_name);
+          }
       }
 
       buttonMappers = config->GetButtonMapperList();
@@ -1729,7 +1813,6 @@ void sixaxis_emu_guiFrame::OnButton14Click(wxCommandEvent& event)
     StaticText60->SetLabel(wxEmptyString);
     StaticText61->SetLabel(wxEmptyString);
 
-    SpinCtrl1->SetValue(1);
     Panel1->Layout();
 }
 
@@ -1747,6 +1830,61 @@ void sixaxis_emu_guiFrame::OnButton12Click(wxCommandEvent& event)
     StaticText50->SetLabel(wxEmptyString);
     StaticText51->SetLabel(wxEmptyString);
 
-    SpinCtrl2->SetValue(1);
+    Panel1->Layout();
+}
+
+void sixaxis_emu_guiFrame::OnSpinCtrl3Change(wxSpinEvent& event)
+{
+    int max = 127-SpinCtrl3->GetValue();
+    if(max)
+    {
+        SpinCtrl1->SetValue(SpinCtrl1->GetValue()*SpinCtrl1->GetMax()/max);
+        SpinCtrl1->SetRange(1, max);
+    }
+    Panel1->Layout();
+}
+
+void sixaxis_emu_guiFrame::OnSpinCtrl4Change(wxSpinEvent& event)
+{
+    int max = 127-SpinCtrl4->GetValue();
+    if(max)
+    {
+        SpinCtrl2->SetValue(SpinCtrl2->GetValue()*SpinCtrl2->GetMax()/max);
+        SpinCtrl2->SetRange(1, max);
+    }
+    Panel1->Layout();
+}
+
+void sixaxis_emu_guiFrame::OnButton15Click(wxCommandEvent& event)
+{
+    auto_detect(StaticText67, StaticText68, StaticText69, _("button"), StaticText70);
+
+    Panel1->Layout();
+}
+
+void sixaxis_emu_guiFrame::OnButton16Click(wxCommandEvent& event)
+{
+    StaticText67->SetLabel(wxEmptyString);
+    StaticText68->SetLabel(wxEmptyString);
+    StaticText69->SetLabel(wxEmptyString);
+    StaticText70->SetLabel(wxEmptyString);
+
+    Panel1->Layout();
+}
+
+void sixaxis_emu_guiFrame::OnButton17Click(wxCommandEvent& event)
+{
+    auto_detect(StaticText1, StaticText2, StaticText3, _("button"), StaticText9);
+
+    Panel1->Layout();
+}
+
+void sixaxis_emu_guiFrame::OnButton18Click(wxCommandEvent& event)
+{
+    StaticText1->SetLabel(wxEmptyString);
+    StaticText2->SetLabel(wxEmptyString);
+    StaticText3->SetLabel(wxEmptyString);
+    StaticText9->SetLabel(wxEmptyString);
+
     Panel1->Layout();
 }

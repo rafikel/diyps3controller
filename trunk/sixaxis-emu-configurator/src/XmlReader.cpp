@@ -310,74 +310,126 @@ void XmlReader::ProcessTriggerElement(xmlNode * a_node)
     m_TempConfiguration.SetTrigger(m_TempTrigger);
 }
 
-void XmlReader::ProcessLeftIntensityElement(xmlNode * a_node)
+
+
+void XmlReader::ProcessIntensityElement(xmlNode * a_node)
 {
+    xmlNode* cur_node = NULL;
+    wxString control;
+    unsigned char dead_zone;
+    wxString shape;
+    unsigned char steps;
     wxString device_type;
     wxString device_id;
     wxString device_name;
     wxString button_id;
-    unsigned char steps;
     char * prop;
 
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
-    device_type = wxString(prop, wxConvUTF8);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_CONTROL);
+    control = wxString(prop, wxConvUTF8);
     xmlFree(prop);
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
-    device_id = wxString(prop, wxConvUTF8);
+    m_TempIntensity.SetControl(control);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_DEADZONE);
+    dead_zone = atoi(prop);
     xmlFree(prop);
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
-    device_name = wxString(prop, wxConvUTF8);
+    m_TempIntensity.SetDeadZone(dead_zone);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_SHAPE);
+    shape = wxString(prop, wxConvUTF8);
     xmlFree(prop);
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-    button_id = wxString(prop, wxConvUTF8);
-    xmlFree(prop);
+    m_TempIntensity.SetShape(shape);
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_STEPS);
     steps = atoi(prop);
     xmlFree(prop);
+    m_TempIntensity.SetSteps(steps);
 
-    m_TempLeftIntensity.SetDevice(Device(device_type, device_id, device_name));
-    m_TempLeftIntensity.SetEvent(Event(button_id));
-    m_TempLeftIntensity.SetSteps(steps);
+    for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
+    {
+        if (cur_node->type == XML_ELEMENT_NODE)
+        {
+            if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_UP))
+            {
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_TYPE);
+              device_type = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_ID);
+              device_id = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_NAME);
+              device_name = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_BUTTON_ID);
+              button_id = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
 
-    m_TempConfiguration.SetLeftIntensity(m_TempLeftIntensity);
+              m_TempIntensity.SetDeviceUp(Device(device_type, device_id, device_name));
+              m_TempIntensity.SetEventUp(Event(button_id));
+              break;
+            }
+            else
+            {
+                string message(string("bad element name: ") + string((char*)cur_node->name));
+                throw invalid_argument(message);
+            }
+        }
+    }
+
+    for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
+    {
+        if (cur_node->type == XML_ELEMENT_NODE)
+        {
+            if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_DOWN))
+            {
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_TYPE);
+              device_type = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_ID);
+              device_id = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_NAME);
+              device_name = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
+              prop = (char*)xmlGetProp(cur_node, (xmlChar*) X_ATTR_BUTTON_ID);
+              button_id = wxString(prop, wxConvUTF8);
+              xmlFree(prop);
+
+              m_TempIntensity.SetDeviceDown(Device(device_type, device_id, device_name));
+              m_TempIntensity.SetEventDown(Event(button_id));
+              break;
+            }
+            else
+            {
+                string message(string("bad element name: ") + string((char*)cur_node->name));
+                throw invalid_argument(message);
+            }
+        }
+    }
+
+    m_TempConfiguration.GetIntensityList()->push_back(m_TempIntensity);
 }
 
-void XmlReader::ProcessRightIntensityElement(xmlNode * a_node)
+void XmlReader::ProcessIntensityListElement(xmlNode * a_node)
 {
-    wxString device_type;
-    wxString device_id;
-    wxString device_name;
-    wxString button_id;
-    unsigned char steps;
-    char * prop;
+  xmlNode* cur_node = NULL;
 
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
-    device_type = wxString(prop, wxConvUTF8);
-    xmlFree(prop);
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
-    device_id = wxString(prop, wxConvUTF8);
-    xmlFree(prop);
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
-    device_name = wxString(prop, wxConvUTF8);
-    xmlFree(prop);
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-    button_id = wxString(prop, wxConvUTF8);
-    xmlFree(prop);
-    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_STEPS);
-    steps = atoi(prop);
-    xmlFree(prop);
-
-    m_TempRightIntensity.SetDevice(Device(device_type, device_id, device_name));
-    m_TempRightIntensity.SetEvent(Event(button_id));
-    m_TempRightIntensity.SetSteps(steps);
-
-    m_TempConfiguration.SetRightIntensity(m_TempRightIntensity);
+  for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
+  {
+      if (cur_node->type == XML_ELEMENT_NODE)
+      {
+          if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_INTENSITY))
+          {
+              ProcessIntensityElement(cur_node);
+          }
+          else
+          {
+              break;
+          }
+      }
+  }
 }
 
 void XmlReader::ProcessConfigurationElement(xmlNode * a_node)
 {
     xmlNode* cur_node = NULL;
-    xmlNode* prev;
     unsigned char config_index;
     wxString id;
     char* prop;
@@ -419,51 +471,39 @@ void XmlReader::ProcessConfigurationElement(xmlNode * a_node)
         throw invalid_argument(message);
     }
 
-    prev = cur_node;
+    m_TempConfiguration.GetIntensityList()->clear();
 
     for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
     {
         if (cur_node->type == XML_ELEMENT_NODE)
         {
-            if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_LEFT_INTENSITY))
+            if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_INTENSITY_LIST))
             {
-                ProcessLeftIntensityElement(cur_node);
-                break;
+                ProcessIntensityListElement(cur_node);
             }
             else
             {
-                m_TempLeftIntensity.SetDevice(Device(_(""), _(""), _("")));
-                m_TempLeftIntensity.SetEvent(Event(_("")));
-                m_TempLeftIntensity.SetSteps(1);
-                m_TempConfiguration.SetLeftIntensity(m_TempLeftIntensity);
-                cur_node = prev;
                 break;
             }
         }
     }
     
-    prev = cur_node;
-
-    for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
+    if(m_TempConfiguration.GetIntensityList()->empty())
     {
-        if (cur_node->type == XML_ELEMENT_NODE)
-        {
-            if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_RIGHT_INTENSITY))
-            {
-                ProcessRightIntensityElement(cur_node);
-                break;
-            }
-            else
-            {
-                m_TempRightIntensity.SetDevice(Device(_(""), _(""), _("")));
-                m_TempRightIntensity.SetEvent(Event(_("")));
-                m_TempRightIntensity.SetSteps(1);
-                m_TempConfiguration.SetRightIntensity(m_TempRightIntensity);
-                cur_node = prev;
-                break;
-            }
-        }
+      m_TempIntensity.SetControl(_("left_stick"));
+      m_TempIntensity.SetDeviceUp(Device(wxEmptyString, wxEmptyString, wxEmptyString));
+      m_TempIntensity.SetEventUp(Event(wxEmptyString));
+      m_TempIntensity.SetDeviceDown(Device(wxEmptyString, wxEmptyString, wxEmptyString));
+      m_TempIntensity.SetEventDown(Event(wxEmptyString));
+      m_TempIntensity.SetDeadZone(0);
+      m_TempIntensity.SetShape(_("Circle"));
+      m_TempIntensity.SetSteps(1);
+      m_TempConfiguration.GetIntensityList()->push_back(m_TempIntensity);
+      m_TempIntensity.SetControl(_("right_stick"));
+      m_TempConfiguration.GetIntensityList()->push_back(m_TempIntensity);
     }
+
+    cur_node = cur_node->prev;
 
     for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
     {
