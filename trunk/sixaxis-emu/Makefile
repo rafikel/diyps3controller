@@ -15,7 +15,7 @@ clean:
 emu: emu.o sixaxis.o dump.o l2cap_con.o bt_utils.o
 	$(CC) -o $@ $^ -lbluetooth
 
-emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o
+emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o config_reader.o
 	$(CC) -o $@ $^ $(LIB)
 
 sixaddr: utils/sixaddr.c

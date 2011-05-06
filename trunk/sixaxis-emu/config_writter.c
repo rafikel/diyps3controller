@@ -1,4 +1,5 @@
 #include "config.h"
+#include "config_reader.h"
 #include "conversion.h"
 #include <libxml/xmlreader.h>
 #include <libxml/xmlwriter.h>

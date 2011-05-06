@@ -32,6 +32,7 @@
 #include "macros.h"
 #include "config.h"
 #include "config_writter.h"
+#include "config_reader.h"
 #include <math.h>
 
 #include <pthread.h>

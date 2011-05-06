@@ -10,7 +10,6 @@
 
 #include <SDL/SDL.h>
 #include "sixaxis.h"
-#include <libxml/xmlreader.h>
 
 #ifndef WIN32
 #define CONFIG_DIR ".emuclient/config"
@@ -131,15 +130,44 @@ typedef struct
   int ts_axis[TS_MAX][TS_AXIS_MAX][2];
 } s_controller;
 
+typedef struct
+{
+  int nb_mappers;
+
+  int button;
+  int axis;
+  int threshold;
+  double multiplier;
+  double exponent;
+  e_shape shape;
+  int dead_zone;
+
+  int controller_button;
+  int controller_button_axis;
+  int controller_thumbstick;
+  int controller_thumbstick_axis;
+  int controller_thumbstick_axis_value; //only for button to axis mapping
+}s_mapper;
+
+typedef struct
+{
+  int device_type;
+  int device_id;
+  int button;
+  int switch_back;;
+}s_trigger;
+
+typedef struct
+{
+  int device_type;
+  int device_id;
+  int button;
+  double step;
+  double value;
+}s_intensity;
+
 void trigger_lookup(SDL_Event*);
 void intensity_lookup(SDL_Event*);
 void process_event(SDL_Event*);
-
-void read_config_file(const char*);
-int read_config_dir();
-
-int GetIntProp(xmlNode*, char*, int*);
-int GetUnsignedIntProp(xmlNode*, char*, unsigned int*);
-int GetDoubleProp(xmlNode*, char*, double*);
 
 #endif /* CONFIG_H_ */

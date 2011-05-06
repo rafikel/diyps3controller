@@ -9,7 +9,7 @@ all: $(BINS)
 clean:
 	rm -f $(BINS) *~ *.o
 
-emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o
+emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o config_reader.o
 	$(CC) -o $@ $^ $(LIB)
 
 %.o: %.c
