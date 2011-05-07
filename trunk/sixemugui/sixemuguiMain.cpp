@@ -1037,10 +1037,6 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     {
         command.append(" --nograb");
     }
-    if(CheckBox4->IsChecked())
-    {
-        command.append(" --calibrate");
-    }
     command.append(" --config ");
     command.append(Choice4->GetStringSelection().mb_str());
     if(CheckBox2->IsChecked())
