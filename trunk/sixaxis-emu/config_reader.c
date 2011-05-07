@@ -858,7 +858,6 @@ static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
         if(ret != -1)
         {
           intensity->step = (double)(127 - intensity->dead_zone) / steps;
-          intensity->value = intensity->dead_zone + intensity->step;
         }
       }
     }
