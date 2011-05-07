@@ -4,7 +4,7 @@
 
 #include <SDL/SDL.h>
 
-void macro_lookup(SDLKey);
+void macro_lookup(int keyboard_id, SDLKey);
 void initialize_macros();
 void free_macros();
 

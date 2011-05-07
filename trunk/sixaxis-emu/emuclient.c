@@ -421,7 +421,7 @@ void display_calibration()
   }
 }
 
-static void key(int sym, int down)
+static void key(int device_id, int sym, int down)
 {
   pthread_t thread;
   pthread_attr_t thread_attr;
@@ -614,7 +614,7 @@ static void key(int sym, int down)
     }
   }
 
-	if(down) macro_lookup(sym);
+	if(down) macro_lookup(device_id, sym);
 }
 
 static void button(int which, int button)
@@ -893,10 +893,10 @@ int main(int argc, char *argv[])
               done = 1;
               break;
             case SDL_KEYDOWN:
-              key(event->key.keysym.sym, 1);
+              key(event->key.which, event->key.keysym.sym, 1);
               break;
             case SDL_KEYUP:
-              key(event->key.keysym.sym, 0);
+              key(event->key.which, event->key.keysym.sym, 0);
               break;
             case SDL_MOUSEBUTTONDOWN:
               button(event->button.which, event->button.button);

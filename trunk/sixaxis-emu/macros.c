@@ -37,6 +37,13 @@ typedef struct {
     char macro[MAX_NAME_LENGTH];
 } s_macro_event_delay;
 
+typedef struct {
+  int keyboard_id;
+  s_macro_event_delay* macro;
+} s_macro_arg;
+
+s_macro_arg macro_arg;
+
 extern char* homedir;
 
 /*
@@ -281,13 +288,16 @@ void initialize_macros() {
 /*
  * This code is run by each thread that executes a macro.
  */
-void macro(s_macro_event_delay* p_table) {
-
+void macro(s_macro_arg* p_macro_arg) {
+    SDL_Event event;
     s_macro_event_delay* p_element;
+    s_macro_event_delay* p_table = p_macro_arg->macro;
 
     for (p_element = p_table; p_element < p_table + p_table->size; p_element++) {
         if (p_element->event.type != SDL_NOEVENT) {
-            SDL_PushEvent(&(p_element->event));
+            event = p_element->event;
+            event.key.which = p_macro_arg->keyboard_id;
+            SDL_PushEvent(&event);
         }
         if (p_element->delay > 0) {
             usleep(p_element->delay*1000);
@@ -299,14 +309,16 @@ void macro(s_macro_event_delay* p_table) {
 /*
  * Launches a thread if there is a macro for that key.
  */
-void macro_lookup(SDLKey key)
+void macro_lookup(int keyboard_id, SDLKey key)
 {
     pthread_t thread;
     pthread_attr_t thread_attr;
 
     if(macro_table[key]) {
+        macro_arg.keyboard_id = keyboard_id;
+        macro_arg.macro = macro_table[key];
         pthread_attr_init(&thread_attr);
         pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-        pthread_create( &thread, &thread_attr, (void*)macro, (void*) macro_table[key]);
+        pthread_create( &thread, &thread_attr, (void*)macro, (void*) &macro_arg);
     }
 }
