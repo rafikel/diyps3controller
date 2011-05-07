@@ -205,9 +205,9 @@ static int ProcessEventElement(xmlNode * a_node)
     if(shape)
     {
       if (!strncmp(shape, X_ATTR_VALUE_RECTANGLE, strlen(X_ATTR_VALUE_RECTANGLE)))
-    {
-      r_shape = E_SHAPE_RECTANGLE;
-    }
+      {
+        r_shape = E_SHAPE_RECTANGLE;
+      }
     }
     xmlFree(shape);
   }
@@ -715,12 +715,11 @@ static int ProcessTriggerElement(xmlNode * a_node)
   return ret;
 }
 
-static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
+static int ProcessUpDownElement(xmlNode * a_node, int* device_type, int* device_id, int* button)
 {
   int ret = 0;
   char* device_name;
   char* event_id;
-  int steps = 1;
   int i;
 
   ret = GetDeviceTypeProp(a_node);
@@ -790,15 +789,111 @@ static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
       }
     }
 
-    ret = GetIntProp(a_node, X_ATTR_STEPS, &steps);
+    if(ret != -1)
+    {
+      *button = r_event_id;
+      *device_id = r_device_id;
+      *device_type = r_device_type;
+    }
+  }
+
+  return ret;
+}
+
+static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
+{
+  xmlNode* cur_node = NULL;
+  int ret = 0;
+  char* shape;
+  unsigned int steps;
+
+  for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
+  {
+    if (cur_node->type == XML_ELEMENT_NODE)
+    {
+      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_UP))
+      {
+        ret = ProcessUpDownElement(cur_node, &intensity->device_up_type, &intensity->device_up_id, &intensity->up_button);
+      }
+      else if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_DOWN))
+      {
+        ret = ProcessUpDownElement(cur_node, &intensity->device_down_type, &intensity->device_down_id, &intensity->down_button);
+      }
+      else
+      {
+        printf("bad element name: %s", cur_node->name);
+        ret = -1;
+      }
+    }
+  }
+
+  if(ret != -1 && (intensity->device_down_id != -1 || intensity->device_up_id != -1))
+  {
+    ret = GetUnsignedIntProp(a_node, X_ATTR_DEADZONE, &intensity->dead_zone);
 
     if(ret != -1)
     {
-      intensity->button = r_event_id;
-      intensity->device_id = r_device_id;
-      intensity->device_type = r_device_type;
-      intensity->step = (double) 127 / steps;
-      intensity->value = (double) 127 / steps;
+      shape = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_SHAPE);
+      if(shape)
+      {
+        if (!strncmp(shape, X_ATTR_VALUE_RECTANGLE, strlen(X_ATTR_VALUE_RECTANGLE)))
+        {
+          r_shape = E_SHAPE_RECTANGLE;
+        }
+        else
+        {
+          intensity->shape = E_SHAPE_CIRCLE;
+        }
+      }
+      else
+      {
+        ret = -1;
+      }
+      xmlFree(shape);
+
+      if(ret != -1)
+      {
+        ret = GetUnsignedIntProp(a_node, X_ATTR_STEPS, &steps);
+
+        if(ret != -1)
+        {
+          intensity->step = (double)(127 - intensity->dead_zone) / steps;
+          intensity->value = intensity->dead_zone + intensity->step;
+        }
+      }
+    }
+  }
+
+  return ret;
+}
+
+static int ProcessIntensityListElement(xmlNode * a_node)
+{
+  xmlNode* cur_node = NULL;
+  int ret = 0;
+  char* control;
+
+  for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
+  {
+    if (cur_node->type == XML_ELEMENT_NODE)
+    {
+      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_INTENSITY))
+      {
+        control = (char*) xmlGetProp(cur_node, (xmlChar*) X_ATTR_CONTROL);
+        if(!strcmp(control, "left_stick"))
+        {
+          ret = ProcessIntensityElement(cur_node, &left_intensity[r_controller_id][r_config_id]);
+        }
+        else if(!strcmp(control, "right_stick"))
+        {
+          ret = ProcessIntensityElement(cur_node, &right_intensity[r_controller_id][r_config_id]);
+        }
+        xmlFree(control);
+      }
+      else
+      {
+        break;
+      }
     }
   }
 
@@ -809,7 +904,6 @@ static int ProcessConfigurationElement(xmlNode * a_node)
 {
   int ret = 0;
   xmlNode* cur_node = NULL;
-  xmlNode* prev;
 
   ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_config_id);
 
@@ -849,45 +943,32 @@ static int ProcessConfigurationElement(xmlNode * a_node)
     ret = -1;
   }
 
-  prev = cur_node;
+  left_intensity[r_controller_id][r_config_id].device_up_id = -1;
+  left_intensity[r_controller_id][r_config_id].device_down_id = -1;
+  left_intensity[r_controller_id][r_config_id].up_button = -1;
+  left_intensity[r_controller_id][r_config_id].down_button = -1;
+  left_intensity[r_controller_id][r_config_id].value = 127;
+  left_intensity[r_controller_id][r_config_id].shape = E_SHAPE_RECTANGLE;
+
+  right_intensity[r_controller_id][r_config_id].device_up_id = -1;
+  right_intensity[r_controller_id][r_config_id].device_down_id = -1;
+  right_intensity[r_controller_id][r_config_id].up_button = -1;
+  right_intensity[r_controller_id][r_config_id].down_button = -1;
+  right_intensity[r_controller_id][r_config_id].value = 127;
+  right_intensity[r_controller_id][r_config_id].shape = E_SHAPE_RECTANGLE;
 
   for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
   {
     if (cur_node->type == XML_ELEMENT_NODE)
     {
-      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_LEFT_INTENSITY))
+      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_INTENSITY_LIST))
       {
-        ret = ProcessIntensityElement(cur_node, &left_intensity[r_controller_id][r_config_id]);
+        ret = ProcessIntensityListElement(cur_node);
         break;
       }
       else
       {
-        left_intensity[r_controller_id][r_config_id].device_id = -1;
-        left_intensity[r_controller_id][r_config_id].step = 127;
-        left_intensity[r_controller_id][r_config_id].value = 127;
-        cur_node = prev;
-        break;
-      }
-    }
-  }
-
-  prev = cur_node;
-
-  for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
-  {
-    if (cur_node->type == XML_ELEMENT_NODE)
-    {
-      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_RIGHT_INTENSITY))
-      {
-        ret = ProcessIntensityElement(cur_node, &right_intensity[r_controller_id][r_config_id]);
-        break;
-      }
-      else
-      {
-        right_intensity[r_controller_id][r_config_id].device_id = -1;
-        right_intensity[r_controller_id][r_config_id].step = 127;
-        right_intensity[r_controller_id][r_config_id].value = 127;
-        cur_node = prev;
+        cur_node = cur_node->prev;
         break;
       }
     }
