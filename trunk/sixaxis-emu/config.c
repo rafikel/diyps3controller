@@ -148,28 +148,125 @@ void trigger_lookup(SDL_Event* e)
 }
 
 /*
+ * This updates the stick according to the intensity shape.
+ */
+static void update_stick(s_intensity* intensity, int control, int ts)
+{
+  int value = intensity->value;
+
+  if (intensity->shape == E_SHAPE_CIRCLE)
+  {
+    if (state[control].user.axis[ts][0] && state[control].user.axis[ts][1])
+    {
+      value = sqrt(value * value / 2);
+    }
+  }
+
+  if (state[control].user.axis[ts][0] > 0)
+  {
+    state[control].user.axis[ts][0] = round(value);
+    controller[control].send_command = 1;
+  }
+  else if (state[control].user.axis[ts][0] < 0)
+  {
+    state[control].user.axis[ts][0] = -round(value);
+    controller[control].send_command = 1;
+  }
+  if (state[control].user.axis[ts][1] > 0)
+  {
+    state[control].user.axis[ts][1] = round(value);
+    controller[control].send_command = 1;
+  }
+  else if (state[control].user.axis[ts][1] < 0)
+  {
+    state[control].user.axis[ts][1] = -round(value);
+    controller[control].send_command = 1;
+  }
+
+}
+
+static int update_intensity(s_intensity* intensity, int device_type, int device_id, int button, int control, int config, int ts)
+{
+  int ret = 0;
+
+  if ((intensity->device_up_type == device_type && device_id
+      == intensity->device_up_id)
+      || (intensity->device_down_type == device_type && device_id
+          == intensity->device_down_id))
+  {
+    if (button == intensity->up_button)
+    {
+      intensity->value += intensity->step;
+      if (intensity->value > 127)
+      {
+        if (intensity->down_button != -1)
+        {
+          intensity->value = 127;
+        }
+        else
+        {
+          intensity->value = (double) intensity->dead_zone
+              + intensity->step;
+        }
+      }
+    }
+    else if (button == intensity->down_button)
+    {
+      intensity->value -= intensity->step;
+      if (intensity->value < intensity->dead_zone
+          + intensity->step)
+      {
+        if (intensity->up_button != -1)
+        {
+          intensity->value = (double) intensity->dead_zone
+              + intensity->step;
+        }
+        else
+        {
+          intensity->value = 127;
+        }
+      }
+    }
+
+    if (button == intensity->up_button || button == intensity->down_button)
+    {
+      ret = 1;
+
+      /*
+       * We have to update current stick intensity according to the new value.
+       */
+      if (current_config[control] == config)
+      {
+        update_stick(intensity, control, ts);
+      }
+    }
+  }
+  return ret;
+}
+
+/*
  * Check if stick intensities need to be updated.
  */
 void intensity_lookup(SDL_Event* e)
 {
   int i, j;
   int device_type;
-  int button;
+  int button_id;
   unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
 
   switch( e->type )
   {
     case SDL_JOYBUTTONDOWN:
       device_type = E_DEVICE_TYPE_JOYSTICK;
-      button = e->jbutton.button;
+      button_id = e->jbutton.button;
       break;
     case SDL_KEYDOWN:
       device_type = E_DEVICE_TYPE_KEYBOARD;
-      button = e->key.keysym.sym;
+      button_id = e->key.keysym.sym;
       break;
     case SDL_MOUSEBUTTONDOWN:
       device_type = E_DEVICE_TYPE_MOUSE;
-      button = e->button.button;
+      button_id = e->button.button;
       break;
     default:
       return;
@@ -179,76 +276,18 @@ void intensity_lookup(SDL_Event* e)
   {
     for(j=0; j<MAX_CONFIGURATIONS; ++j)
     {
-      if (left_intensity[i][j].device_type != device_type || device_id
-          != left_intensity[i][j].device_id)
+      if(update_intensity(&left_intensity[i][j], device_type, device_id, button_id, i, j, 0))
       {
-        continue;
-      }
-      if (button == left_intensity[i][j].button)
-      {
-        left_intensity[i][j].value += left_intensity[i][j].step;
-        if(left_intensity[i][j].value > 127) left_intensity[i][j].value = left_intensity[i][j].step;
-
         if (display)
         {
           printf("controller %d configuration %d left intensity: %.0f\n", i, j, left_intensity[i][j].value);
         }
-
-        /*
-         * We have to update current stick intensity according to the new value.
-         */
-        if(current_config[i] == j)
-        {
-          if(state[i].user.axis[0][0] && state[i].user.axis[0][1])
-          {
-            state[i].user.axis[0][0] = left_intensity[i][j].value;
-            state[i].user.axis[0][1] = left_intensity[i][j].value;
-            controller[i].send_command = 1;
-          }
-          else if(state[i].user.axis[0][0])
-          {
-            state[i].user.axis[0][0] = left_intensity[i][j].value;
-            controller[i].send_command = 1;
-
-          }
-          else if(state[i].user.axis[0][1])
-          {
-            state[i].user.axis[0][1] = left_intensity[i][j].value;
-            controller[i].send_command = 1;
-          }
-        }
       }
-      if (button == right_intensity[i][j].button)
+      if(update_intensity(&right_intensity[i][j], device_type, device_id, button_id, i, j, 1))
       {
-        right_intensity[i][j].value += right_intensity[i][j].step;
-        if(right_intensity[i][j].value > 127) right_intensity[i][j].value = right_intensity[i][j].step;
-
         if (display)
         {
-          printf("controller %d configuration %d right intensity: %.0f\n", i, j, right_intensity[i][j].value);
-        }
-
-        /*
-         * We have to update current stick intensity according to the new value.
-         */
-        if(current_config[i] == j)
-        {
-          if(state[i].user.axis[1][0] && state[i].user.axis[1][1])
-          {
-            state[i].user.axis[1][0] = right_intensity[i][j].value;
-            state[i].user.axis[1][1] = right_intensity[i][j].value;
-            controller[i].send_command = 1;
-          }
-          else if(state[i].user.axis[1][0])
-          {
-            state[i].user.axis[1][0] = right_intensity[i][j].value;
-            controller[i].send_command = 1;
-          }
-          else if(state[i].user.axis[1][1])
-          {
-            state[i].user.axis[1][1] = right_intensity[i][j].value;
-            controller[i].send_command = 1;
-          }
+          printf("controller %d configuration %d left intensity: %.0f\n", i, j, right_intensity[i][j].value);
         }
       }
     }
@@ -677,37 +716,44 @@ void process_event(SDL_Event* event)
           ts_axis = mapper->controller_thumbstick_axis;
           if(ts >= 0)
           {
-            if(ts == 0)
+            if(mapper->controller_thumbstick_axis_value < 0)
             {
-              if(mapper->controller_thumbstick_axis_value < 0)
+              if(ts == 0)
               {
                 state[c_id].user.axis[ts][ts_axis] = - left_intensity[c_id][config].value;
               }
               else
               {
-                state[c_id].user.axis[ts][ts_axis] = left_intensity[c_id][config].value;
+                state[c_id].user.axis[ts][ts_axis] = - right_intensity[c_id][config].value;
               }
             }
             else
             {
-              if(mapper->controller_thumbstick_axis_value < 0)
+              if(ts == 0)
               {
-                state[c_id].user.axis[ts][ts_axis] = - right_intensity[c_id][config].value;
+                state[c_id].user.axis[ts][ts_axis] = left_intensity[c_id][config].value;
               }
               else
               {
                 state[c_id].user.axis[ts][ts_axis] = right_intensity[c_id][config].value;
               }
-
+            }
+            if(ts == 0)
+            {
+              update_stick(&left_intensity[c_id][config], c_id, ts);
+            }
+            else
+            {
+              update_stick(&left_intensity[c_id][config], c_id, ts);
             }
             /*
              * Specific code for issue 15.
              */
-            if(mapper->controller_thumbstick_axis_value == 127)
+            if(mapper->controller_thumbstick_axis_value > 0)
             {
               controller[c_id].ts_axis[ts][ts_axis][0] = 1;
             }
-            else if(mapper->controller_thumbstick_axis_value == -127)
+            else if(mapper->controller_thumbstick_axis_value < 0)
             {
               controller[c_id].ts_axis[ts][ts_axis][1] = 1;
             }
@@ -743,7 +789,7 @@ void process_event(SDL_Event* event)
             /*
              * Specific code for issue 15.
              */
-            if(mapper->controller_thumbstick_axis_value == 127)
+            if(mapper->controller_thumbstick_axis_value > 0)
             {
               controller[c_id].ts_axis[ts][ts_axis][0] = 0;
               if(controller[c_id].ts_axis[ts][ts_axis][1] == 1)
@@ -751,13 +797,21 @@ void process_event(SDL_Event* event)
                 state[c_id].user.axis[ts][ts_axis] = -mapper->controller_thumbstick_axis_value;
               }
             }
-            else if(mapper->controller_thumbstick_axis_value == -127)
+            else if(mapper->controller_thumbstick_axis_value < 0)
             {
               controller[c_id].ts_axis[ts][ts_axis][1] = 0;
               if(controller[c_id].ts_axis[ts][ts_axis][0] == 1)
               {
                 state[c_id].user.axis[ts][ts_axis] = -mapper->controller_thumbstick_axis_value;
               }
+            }
+            if(ts == 0)
+            {
+              update_stick(&left_intensity[c_id][config], c_id, ts);
+            }
+            else
+            {
+              update_stick(&left_intensity[c_id][config], c_id, ts);
             }
           }
           break;

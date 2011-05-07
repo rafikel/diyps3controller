@@ -27,14 +27,16 @@
 #define X_NODE_CONTROLLER "controller"
 #define X_NODE_CONFIGURATION "configuration"
 #define X_NODE_TRIGGER "trigger"
-#define X_NODE_LEFT_INTENSITY "left_intensity"
-#define X_NODE_RIGHT_INTENSITY "right_intensity"
+#define X_NODE_INTENSITY_LIST "intensity_list"
+#define X_NODE_INTENSITY "intensity"
 #define X_NODE_BUTTON_MAP "button_map"
 #define X_NODE_AXIS_MAP "axis_map"
 #define X_NODE_DEVICE "device"
 #define X_NODE_EVENT "event"
 #define X_NODE_AXIS "axis"
 #define X_NODE_BUTTON "button"
+#define X_NODE_UP "up"
+#define X_NODE_DOWN "down"
 
 #define X_ATTR_ID "id"
 #define X_ATTR_TYPE "type"
@@ -47,6 +49,7 @@
 #define X_ATTR_SHAPE "shape"
 #define X_ATTR_SWITCH_BACK "switch_back"
 #define X_ATTR_STEPS "steps"
+#define X_ATTR_CONTROL "control"
 
 #define X_ATTR_VALUE_KEYBOARD "keyboard"
 #define X_ATTR_VALUE_MOUSE "mouse"
@@ -159,9 +162,14 @@ typedef struct
 
 typedef struct
 {
-  int device_type;
-  int device_id;
-  int button;
+  int device_up_type;
+  int device_up_id;
+  int up_button;
+  int device_down_type;
+  int device_down_id;
+  int down_button;
+  unsigned int dead_zone;
+  e_shape shape;
   double step;
   double value;
 }s_intensity;
