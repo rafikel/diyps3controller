@@ -7,7 +7,7 @@
 #include <winsock2.h> /* for htons */
 #endif
 
-static int clamp(int min, int val, int max)
+int clamp(int min, int val, int max)
 {
     if (val < min) return min;
     if (val > max) return max;
@@ -133,7 +133,7 @@ int process_input_01(const uint8_t *buf, int len, struct sixaxis_state *state)
     return 0;
 }
 
-int sixaxis_number;
+int sixaxis_number = -1;
 
 /* Unknown */
 int assemble_feature_01(uint8_t *buf, int maxlen, struct sixaxis_state *state)
