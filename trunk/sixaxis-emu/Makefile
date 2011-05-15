@@ -1,7 +1,7 @@
 prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
 confdir=$(DESTDIR)/etc/emuclient
-BINS=emu emuclient sixaddr bdaddr
+BINS=emu emu_rs232 emuclient sixaddr bdaddr
 CC=gcc
 CFLAGS=-Wall -g
 LIB=-L../libsdl/lib -lSDL -lxml2 -lXi
@@ -14,6 +14,9 @@ clean:
 
 emu: emu.o sixaxis.o dump.o l2cap_con.o bt_utils.o
 	$(CC) -o $@ $^ -lbluetooth
+	
+emu_rs232: emu_rs232.o sixaxis.o dump.o
+	$(CC) -o $@ $^
 
 emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o config_reader.o
 	$(CC) -o $@ $^ $(LIB)
