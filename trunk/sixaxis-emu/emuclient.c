@@ -59,6 +59,8 @@ char* ip = "";
 
 char* config_file = NULL;
 
+int refresh = DEFAULT_REFRESH_PERIOD;
+int rs232 = 0;
 int done = 0;
 int current_mouse = 0;
 int current_conf = 0;
@@ -343,7 +345,7 @@ void circle_test()
     mouse_control[current_mouse].merge_x = round(mouse_cal[current_mouse][current_conf].rd*64*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
     mouse_control[current_mouse].merge_y = round(mouse_cal[current_mouse][current_conf].rd*64*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
     mouse_control[current_mouse].change = 1;
-    usleep(REFRESH_PERIOD);
+    usleep(refresh);
   }
 }
 
@@ -820,6 +822,14 @@ int main(int argc, char *argv[])
       {
         display = 1;
       }
+      else if(!strcmp(argv[i], "--refresh"))
+      {
+        refresh = atoi(argv[++i])*1000;
+      }
+      else if(!strcmp(argv[i], "--rs232"))
+      {
+        rs232 = 1;
+      }
 #ifdef WIN32
       else if(!strcmp(argv[i], "--ip") && i<argc)
 	  {
@@ -931,16 +941,18 @@ int main(int argc, char *argv[])
           {
             if(!sockfd[i]) continue;
 
-            if (assemble_input_01(buf, sizeof(buf), state+i) < 0)
+            if(!rs232)
             {
-              printf("can't assemble\n");
+              if (assemble_input_01(buf, sizeof(buf), state + i) < 0)
+              {
+                printf("can't assemble\n");
+              }
+              send(sockfd[i], (const char*)buf, 48, MSG_DONTWAIT);
             }
-
-#ifndef WIN32
-            send(sockfd[i], buf, 48, MSG_DONTWAIT);
-#else
-            send(sockfd[i], (const char*)buf, 48, MSG_DONTWAIT);
-#endif
+            else
+            {
+              send(sockfd[i], (const char*)(state + i), sizeof(struct sixaxis_state), MSG_DONTWAIT);
+            }
 
             if (display)
             {
@@ -953,7 +965,7 @@ int main(int argc, char *argv[])
 
         gettimeofday(&t1, NULL);
 
-        time_to_sleep = REFRESH_PERIOD - ((t1.tv_sec-t0.tv_sec)*1000000+t1.tv_usec-t0.tv_usec);
+        time_to_sleep = refresh - ((t1.tv_sec*1000000+t1.tv_usec)-(t0.tv_sec*1000000+t0.tv_usec));
 
         if(time_to_sleep > 0)
         {
@@ -961,7 +973,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-          printf("processing time higher than 10ms!!\n");
+          printf("processing time higher than %dms!!\n", refresh/1000);
         }
     }
 
