@@ -266,7 +266,7 @@ void trigger_lookup(SDL_Event* e)
           previous_config[i] = current_config[i];
           current_config[i] = j;
         }
-        else
+        else if(triggers[i][j].switch_back)
         {
           current_config[i] = previous_config[i];
         }
