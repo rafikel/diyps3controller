@@ -643,6 +643,10 @@ static int ProcessTriggerElement(xmlNode * a_node)
     {
       if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
       {
+        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
+        r_event_id = atoi(event_id);
+        xmlFree(event_id);
+
         for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
         {
           if (!strcmp(r_device_name, joystickName[i]))
@@ -693,7 +697,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
       }
     }
 
-    r_switch_back = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+    r_switch_back = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_SWITCH_BACK);
     if(r_switch_back)
     {
       if(!strncmp(r_switch_back, X_ATTR_VALUE_YES, sizeof(X_ATTR_VALUE_YES)))
