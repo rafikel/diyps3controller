@@ -48,6 +48,7 @@
 #define MULTIPLIER_STEP 0.01
 #define EXPONENT_STEP 0.01
 #define EVENT_BUFFER_SIZE 256
+#define DEFAULT_POSTPONE_COUNT 3
 
 static const double pi = 3.14159265;
 
@@ -60,6 +61,7 @@ char* ip = "";
 char* config_file = NULL;
 
 int refresh = DEFAULT_REFRESH_PERIOD;
+int postpone_count = DEFAULT_POSTPONE_COUNT;
 int rs232 = 0;
 int done = 0;
 int current_mouse = 0;
@@ -825,6 +827,7 @@ int main(int argc, char *argv[])
       else if(!strcmp(argv[i], "--refresh"))
       {
         refresh = atoi(argv[++i])*1000;
+        postpone_count = 3*DEFAULT_REFRESH_PERIOD/refresh;
       }
       else if(!strcmp(argv[i], "--rs232"))
       {

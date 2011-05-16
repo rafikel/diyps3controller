@@ -281,6 +281,8 @@ void trigger_lookup(SDL_Event* e)
   }
 }
 
+extern int postpone_count;
+
 /*
  * Specific stuff to postpone some SDL_MOUSEBUTTONUP events
  * that come too quickly after corresponding SDL_MOUSEBUTTONDOWN events.
@@ -291,7 +293,7 @@ static int postpone_event(unsigned int device, SDL_Event* event)
   int ret = 0;
   if (event->button.button == SDL_BUTTON_WHEELUP)
   {
-    if (mouse_control[device].postpone_wheel_up < POSTPONE_COUNT)
+    if (mouse_control[device].postpone_wheel_up < postpone_count)
     {
       SDL_PushEvent(event);
       mouse_control[device].postpone_wheel_up++;
@@ -304,7 +306,7 @@ static int postpone_event(unsigned int device, SDL_Event* event)
   }
   else if (event->button.button == SDL_BUTTON_WHEELDOWN)
   {
-    if (mouse_control[device].postpone_wheel_down < POSTPONE_COUNT)
+    if (mouse_control[device].postpone_wheel_down < postpone_count)
     {
       SDL_PushEvent(event);
       mouse_control[device].postpone_wheel_down++;
@@ -317,7 +319,7 @@ static int postpone_event(unsigned int device, SDL_Event* event)
   }
   else if (event->button.button == SDL_BUTTON_X1)
   {
-    if (mouse_control[device].postpone_button_x1 < POSTPONE_COUNT)
+    if (mouse_control[device].postpone_button_x1 < postpone_count)
     {
       SDL_PushEvent(event);
       mouse_control[device].postpone_button_x1++;
@@ -330,7 +332,7 @@ static int postpone_event(unsigned int device, SDL_Event* event)
   }
   else if (event->button.button == SDL_BUTTON_X2)
   {
-    if (mouse_control[device].postpone_button_x2 < POSTPONE_COUNT)
+    if (mouse_control[device].postpone_button_x2 < postpone_count)
     {
       SDL_PushEvent(event);
       mouse_control[device].postpone_button_x2++;

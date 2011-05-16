@@ -21,7 +21,6 @@
 #define MAX_CONFIGURATIONS 8
 #define MAX_DEVICES 256
 #define MAX_CONTROLS 256
-#define POSTPONE_COUNT 3
 
 #define X_NODE_ROOT "root"
 #define X_NODE_CONTROLLER "controller"
