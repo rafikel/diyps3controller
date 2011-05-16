@@ -279,7 +279,7 @@ int main(int argc, char *argv[])
     {
       device = argv[++i];
     }
-    else if(!strcmp(argv[i], "--sixaxis") && i<argc)
+    else if(!strcmp(argv[i], "--controller") && i<argc)
     {
       sixaxis_number = atoi(argv[++i]);
     }
