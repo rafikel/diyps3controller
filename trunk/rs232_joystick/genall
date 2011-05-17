@@ -21,3 +21,4 @@ do
   mv Joystick.hex firmwares/$TARGET.hex
 done
 
+zip -r firmwares.zip firmwares
