@@ -98,7 +98,7 @@ void SetupHardware(void)
 
 	/* Hardware Initialization */
 //	Joystick_Init();
-	LEDs_Init();
+//	LEDs_Init();
 //	Buttons_Init();
 	USB_Init();
 }
