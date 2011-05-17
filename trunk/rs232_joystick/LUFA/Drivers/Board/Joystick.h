@@ -75,7 +75,7 @@
 	#include "../../Common/Common.h"
 
 	#if (BOARD == BOARD_NONE)
-		#error The Board Joystick driver cannot be used if the makefile BOARD option is not set.
+//		#error The Board Joystick driver cannot be used if the makefile BOARD option is not set.
 	#elif (BOARD == BOARD_USBKEY)
 		#include "USBKEY/Joystick.h"
 	#elif (BOARD == BOARD_STK525)
