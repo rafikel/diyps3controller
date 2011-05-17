@@ -89,7 +89,7 @@
 	#elif (BOARD == BOARD_USER)
 		#include "Board/Joystick.h"
 	#else
-		#error The selected board does not contain a joystick.
+//		#error The selected board does not contain a joystick.
 	#endif
 
 	/* Pseudo-Functions for Doxygen: */

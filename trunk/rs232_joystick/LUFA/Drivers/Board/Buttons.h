@@ -110,7 +110,7 @@
 	#elif (BOARD == BOARD_USER)
 		#include "Board/Buttons.h"
 	#else
-		#error The selected board does not contain any GPIO buttons.
+//		#error The selected board does not contain any GPIO buttons.
 	#endif
 
 	/* Pseudo-Functions for Doxygen: */
