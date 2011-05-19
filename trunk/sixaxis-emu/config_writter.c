@@ -277,50 +277,6 @@ static int ProcessConfigurationElement(xmlNode * a_node)
 
   cur_node = a_node->children;
 
-  for (cur_node = a_node->children; cur_node && ret != -1; cur_node = cur_node->next)
-  {
-    if (cur_node->type == XML_ELEMENT_NODE)
-    {
-      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_TRIGGER))
-      {
-        break;
-      }
-      else
-      {
-        printf("bad element name: %s", cur_node->name);
-        ret = -1;
-      }
-    }
-  }
-
-  if (!cur_node)
-  {
-    printf("missing trigger element");
-    ret = -1;
-  }
-
-  for (cur_node = cur_node->next; cur_node && ret != -1; cur_node = cur_node->next)
-  {
-    if (cur_node->type == XML_ELEMENT_NODE)
-    {
-      if (xmlStrEqual(cur_node->name, (xmlChar*) X_NODE_BUTTON_MAP))
-      {
-        break;
-      }
-      else
-      {
-        printf("bad element name: %s", cur_node->name);
-        ret = -1;
-      }
-    }
-  }
-
-  if (!cur_node)
-  {
-    printf("missing button_map element");
-    ret = -1;
-  }
-
   for (cur_node = cur_node->next; cur_node && ret != -1; cur_node = cur_node->next)
   {
     if (cur_node->type == XML_ELEMENT_NODE)
@@ -329,11 +285,6 @@ static int ProcessConfigurationElement(xmlNode * a_node)
       {
         ret = ProcessAxisMapElement(cur_node);
         break;
-      }
-      else
-      {
-        printf("bad element name: %s", cur_node->name);
-        ret = -1;
       }
     }
   }
