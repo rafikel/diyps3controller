@@ -2,7 +2,7 @@
 <wxsmith>
 	<object class="wxFrame" name="sixemuguiFrame">
 		<title>Sixemugui-rs232</title>
-		<size>425,425</size>
+		<size>425,460</size>
 		<id_arg>0</id_arg>
 		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
 			<size>0,0</size>

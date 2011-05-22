@@ -272,7 +272,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxStaticBoxSizer* StaticBoxSizer5;
 
     Create(parent, wxID_ANY, _("Sixemugui-rs232"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
-    SetClientSize(wxSize(425,425));
+    SetClientSize(wxSize(425,460));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     FlexGridSizer7 = new wxFlexGridSizer(1, 2, 0, 0);
