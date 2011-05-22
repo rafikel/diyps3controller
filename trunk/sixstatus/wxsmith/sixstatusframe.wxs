@@ -463,7 +463,7 @@
 													</object>
 													<object class="sizeritem">
 														<object class="wxStaticText" name="ID_STATICTEXT20" variable="StaticText20" member="yes">
-															<label>y (rctrl + F4):</label>
+															<label>x/y ratio (rctrl + F4):</label>
 														</object>
 														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 														<border>5</border>
