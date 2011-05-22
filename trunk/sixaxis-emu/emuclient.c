@@ -45,10 +45,12 @@
 #define SCREEN_WIDTH  800
 #define SCREEN_HEIGHT 600
 #endif
-#define MULTIPLIER_STEP 0.01
+#define DEFAULT_MULTIPLIER_STEP 0.01
 #define EXPONENT_STEP 0.01
 #define EVENT_BUFFER_SIZE 256
 #define DEFAULT_POSTPONE_COUNT 3
+#define DEFAULT_MAX_AXIS_VALUE 255
+#define DEFAULT_AXIS_SCALE 1
 
 static const double pi = 3.14159265;
 
@@ -62,6 +64,13 @@ char* config_file = NULL;
 
 int refresh = DEFAULT_REFRESH_PERIOD;
 int postpone_count = DEFAULT_POSTPONE_COUNT;
+int max_axis_value = DEFAULT_MAX_AXIS_VALUE;
+int mean_axis_value = DEFAULT_MAX_AXIS_VALUE/2;
+double multiplier_step = DEFAULT_MULTIPLIER_STEP;
+double axis_scale = DEFAULT_AXIS_SCALE;
+double frequency_scale;
+int subpos = 0;
+
 int rs232 = 0;
 int done = 0;
 int current_mouse = 0;
@@ -271,18 +280,45 @@ int tcpconnect(void)
     return ret;
 }
 
-void move_x(int x)
-{
-    state[0].user.axis[0][0] = x;
-}
-
-void move_y(int y)
-{
-    state[0].user.axis[0][1] = y;
-}
-
 void auto_test()
 {
+  int i, j, k;
+  int step;
+
+  SDL_Event mouse_evt = {};
+
+  for(k = 0; k<5; ++k)
+  {
+    step = 1 << k;
+
+    for(i=0; i<500; i++)
+    {
+      for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
+      {
+        mouse_evt.motion.xrel = step;
+        mouse_evt.motion.which = j;
+        mouse_evt.type = SDL_MOUSEMOTION;
+        SDL_PushEvent(&mouse_evt);
+      }
+      usleep(2000);
+    }
+
+    usleep(1000000);
+
+    for(i=0; i<250; i++)
+    {
+      for(j=0; j<MAX_DEVICES && mouseName[j]; ++j)
+      {
+        mouse_evt.motion.xrel = -2*step;
+        mouse_evt.motion.which = j;
+        mouse_evt.type = SDL_MOUSEMOTION;
+        SDL_PushEvent(&mouse_evt);
+      }
+      usleep(2000);
+    }
+
+    usleep(1000000);
+  }
 
   /*if(mouse_cal[current_mouse][current_conf].dzx)
   {
@@ -295,7 +331,7 @@ void auto_test()
     controller[0].send_command = 1;
   }*/
 
-  if(mouse_cal[current_mouse][current_conf].dzy)
+  /*if(mouse_cal[current_mouse][current_conf].dzy)
     {
       state[0].user.axis[1][1] = *mouse_cal[current_mouse][current_conf].dzy;
       controller[0].send_command = 1;
@@ -334,20 +370,23 @@ void auto_test()
 
       state[0].user.axis[1][1] = 0;
       controller[0].send_command = 1;
-    }
+    }*/
 }
 
 void circle_test()
 {
-  int i;
+  int i, j;
   const int step = 1;
 
   for(i=1; i<360; i+=step)
   {
-    mouse_control[current_mouse].merge_x = round(mouse_cal[current_mouse][current_conf].rd*64*(cos(i*2*pi/360)-cos((i-1)*2*pi/360)));
-    mouse_control[current_mouse].merge_y = round(mouse_cal[current_mouse][current_conf].rd*64*(sin(i*2*pi/360)-sin((i-1)*2*pi/360)));
-    mouse_control[current_mouse].change = 1;
-    usleep(refresh);
+    for(j=0; j<DEFAULT_REFRESH_PERIOD/refresh; ++j)
+    {
+      mouse_control[current_mouse].merge_x += mouse_cal[current_mouse][current_conf].rd*64*(cos(i*2*pi/360)-cos((i-1)*2*pi/360));
+      mouse_control[current_mouse].merge_y += mouse_cal[current_mouse][current_conf].rd*64*(sin(i*2*pi/360)-sin((i-1)*2*pi/360));
+      mouse_control[current_mouse].change = 1;
+      usleep(refresh);
+    }
   }
 }
 
@@ -366,10 +405,10 @@ void display_calibration()
     {
       printf(" NA\n");
     }
-    printf("multiplier_y:");
-    if(mouse_cal[current_mouse][current_conf].my)
+    printf("x/y_ratio:");
+    if(mouse_cal[current_mouse][current_conf].mx && mouse_cal[current_mouse][current_conf].my)
     {
-      printf(" %.2f\n", *mouse_cal[current_mouse][current_conf].my);
+      printf(" %.2f\n", *mouse_cal[current_mouse][current_conf].my / *mouse_cal[current_mouse][current_conf].mx);
     }
     else
     {
@@ -510,7 +549,7 @@ static void key(int device_id, int sym, int down)
       {
         if(current_conf >=0 && current_mouse >=0)
         {
-          printf("calibrating multiplier y\n");
+          printf("calibrating x/y ratio\n");
           current_cal = MY;
         }
       }
@@ -623,6 +662,8 @@ static void key(int device_id, int sym, int down)
 
 static void button(int which, int button)
 {
+  double ratio;
+
   switch (button)
   {
     case SDL_BUTTON_WHEELUP:
@@ -643,18 +684,28 @@ static void button(int which, int button)
           }
           break;
         case MX:
-          if(mouse_cal[current_mouse][current_conf].mx) *mouse_cal[current_mouse][current_conf].mx += MULTIPLIER_STEP;
+          if(mouse_cal[current_mouse][current_conf].mx && mouse_cal[current_mouse][current_conf].my)
+          {
+            ratio = *mouse_cal[current_mouse][current_conf].my / *mouse_cal[current_mouse][current_conf].mx;
+            *mouse_cal[current_mouse][current_conf].mx += multiplier_step;
+            *mouse_cal[current_mouse][current_conf].my = *mouse_cal[current_mouse][current_conf].mx * ratio;
+          }
           break;
         case MY:
-          if(mouse_cal[current_mouse][current_conf].my) *mouse_cal[current_mouse][current_conf].my += MULTIPLIER_STEP;
+          if(mouse_cal[current_mouse][current_conf].mx && mouse_cal[current_mouse][current_conf].my)
+          {
+            ratio = *mouse_cal[current_mouse][current_conf].my / *mouse_cal[current_mouse][current_conf].mx;
+            ratio += multiplier_step;
+            *mouse_cal[current_mouse][current_conf].my = *mouse_cal[current_mouse][current_conf].mx * ratio;
+          }
           break;
         case DZX:
           if(mouse_cal[current_mouse][current_conf].dzx)
           {
             *mouse_cal[current_mouse][current_conf].dzx += 1;
-            if(*mouse_cal[current_mouse][current_conf].dzx > 127)
+            if(*mouse_cal[current_mouse][current_conf].dzx > mean_axis_value)
             {
-              *mouse_cal[current_mouse][current_conf].dzx = 127;
+              *mouse_cal[current_mouse][current_conf].dzx = mean_axis_value;
             }
             mouse_control[current_mouse].merge_x = 1;
             mouse_control[current_mouse].merge_y = 0;
@@ -665,9 +716,9 @@ static void button(int which, int button)
           if(mouse_cal[current_mouse][current_conf].dzy)
           {
             *mouse_cal[current_mouse][current_conf].dzy += 1;
-            if(*mouse_cal[current_mouse][current_conf].dzy > 127)
+            if(*mouse_cal[current_mouse][current_conf].dzy > mean_axis_value)
             {
-              *mouse_cal[current_mouse][current_conf].dzy = 127;
+              *mouse_cal[current_mouse][current_conf].dzy = mean_axis_value;
             }
             mouse_control[current_mouse].merge_x = 0;
             mouse_control[current_mouse].merge_y = 1;
@@ -722,10 +773,20 @@ static void button(int which, int button)
           }
           break;
         case MX:
-          if(mouse_cal[current_mouse][current_conf].mx) *mouse_cal[current_mouse][current_conf].mx -= MULTIPLIER_STEP;
+          if(mouse_cal[current_mouse][current_conf].mx && mouse_cal[current_mouse][current_conf].my)
+          {
+            ratio = *mouse_cal[current_mouse][current_conf].my / *mouse_cal[current_mouse][current_conf].mx;
+            *mouse_cal[current_mouse][current_conf].mx -= multiplier_step;
+            *mouse_cal[current_mouse][current_conf].my = *mouse_cal[current_mouse][current_conf].mx * ratio;
+          }
           break;
         case MY:
-          if(mouse_cal[current_mouse][current_conf].my) *mouse_cal[current_mouse][current_conf].my -= MULTIPLIER_STEP;
+          if(mouse_cal[current_mouse][current_conf].mx && mouse_cal[current_mouse][current_conf].my)
+          {
+            ratio = *mouse_cal[current_mouse][current_conf].my / *mouse_cal[current_mouse][current_conf].mx;
+            ratio -= multiplier_step;
+            *mouse_cal[current_mouse][current_conf].my = *mouse_cal[current_mouse][current_conf].mx * ratio;
+          }
           break;
         case DZX:
           if(mouse_cal[current_mouse][current_conf].dzx)
@@ -829,15 +890,24 @@ int main(int argc, char *argv[])
         refresh = atoi(argv[++i])*1000;
         postpone_count = 3*DEFAULT_REFRESH_PERIOD/refresh;
       }
+      else if(!strcmp(argv[i], "--precision"))
+      {
+        max_axis_value = (1 << atoi(argv[++i])) - 1;
+        mean_axis_value = max_axis_value/2;
+      }
       else if(!strcmp(argv[i], "--rs232"))
       {
         rs232 = 1;
       }
+      else if(!strcmp(argv[i], "--subpos"))
+      {
+        subpos = 1;
+      }
 #ifdef WIN32
       else if(!strcmp(argv[i], "--ip") && i<argc)
-	  {
-    	ip = argv[++i];
-	  }
+      {
+        ip = argv[++i];
+      }
 #endif
     }
 
@@ -845,6 +915,14 @@ int main(int argc, char *argv[])
     {
       sleep(1);//ugly stuff that needs to be cleaned...
     }
+
+    if(display == 1)
+    {
+      printf("max_axis_value: %d\n", max_axis_value);//needed by sixstatus...
+    }
+
+    axis_scale = (double) max_axis_value / DEFAULT_MAX_AXIS_VALUE;
+    frequency_scale = (double) DEFAULT_REFRESH_PERIOD / refresh;
 
     initialize_macros();
 
@@ -917,10 +995,29 @@ int main(int argc, char *argv[])
           }
         }
 
+        /*
+         * Process a single (merged) motion event for each mouse.
+         */
         for(i=0; i<MAX_DEVICES; ++i)
         {
           if(mouse_control[i].changed || mouse_control[i].change)
           {
+            if(subpos)
+            {
+              /*
+               * Add the residual motion vector from the last iteration.
+               */
+              mouse_control[i].merge_x += mouse_control[i].residue_x;
+              mouse_control[i].merge_y += mouse_control[i].residue_y;
+              /*
+               * If no motion was received this iteration, the residual motion vector from the last iteration is reset.
+               */
+              if(!mouse_control[i].change)
+              {
+                mouse_control[i].residue_x = 0;
+                mouse_control[i].residue_y = 0;
+              }
+            }
             mouse_evt.motion.which = i;
             mouse_evt.type = SDL_MOUSEMOTION;
             process_event(&mouse_evt);
