@@ -21,6 +21,8 @@
 extern char* homedir;
 #endif
 
+extern int mean_axis_value;
+
 extern const char* joystickName[MAX_DEVICES];
 extern int joystickVirtualIndex[MAX_DEVICES];
 extern const char* mouseName[MAX_DEVICES];
@@ -861,7 +863,7 @@ static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
 
         if(ret != -1)
         {
-          intensity->step = (double)(127 - intensity->dead_zone) / steps;
+          intensity->step = (double)(mean_axis_value - intensity->dead_zone) / steps;
         }
       }
     }
@@ -950,14 +952,14 @@ static int ProcessConfigurationElement(xmlNode * a_node)
   left_intensity[r_controller_id][r_config_id].device_down_id = -1;
   left_intensity[r_controller_id][r_config_id].up_button = -1;
   left_intensity[r_controller_id][r_config_id].down_button = -1;
-  left_intensity[r_controller_id][r_config_id].value = 127;
+  left_intensity[r_controller_id][r_config_id].value = mean_axis_value;
   left_intensity[r_controller_id][r_config_id].shape = E_SHAPE_RECTANGLE;
 
   right_intensity[r_controller_id][r_config_id].device_up_id = -1;
   right_intensity[r_controller_id][r_config_id].device_down_id = -1;
   right_intensity[r_controller_id][r_config_id].up_button = -1;
   right_intensity[r_controller_id][r_config_id].down_button = -1;
-  right_intensity[r_controller_id][r_config_id].value = 127;
+  right_intensity[r_controller_id][r_config_id].value = mean_axis_value;
   right_intensity[r_controller_id][r_config_id].shape = E_SHAPE_RECTANGLE;
 
   for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
@@ -1153,10 +1155,14 @@ static int read_file(char* file_path)
 
 }
 
+extern int current_mouse;
+
 static void read_calibration()
 {
   int i, j, k;
   s_mapper* p_mapper;
+
+  current_mouse = -1;
 
   for(i=0; i<MAX_DEVICES; ++i)
   {
@@ -1166,6 +1172,10 @@ static void read_calibration()
       {
         for(p_mapper = mouse_axis[i][j][k]; p_mapper && p_mapper<mouse_axis[i][j][k]+mouse_axis[i][j][k]->nb_mappers; p_mapper++)
         {
+          if(current_mouse < 0)
+          {
+            current_mouse = i;
+          }
           if(p_mapper->axis == 0)
           {
             mouse_cal[i][k].mx = &p_mapper->multiplier;
@@ -1183,6 +1193,11 @@ static void read_calibration()
         }
       }
     }
+  }
+
+  if(current_mouse < 0)
+  {
+    current_mouse = 0;
   }
 }
 
