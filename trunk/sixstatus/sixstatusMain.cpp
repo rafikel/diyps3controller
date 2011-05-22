@@ -24,6 +24,9 @@
 
 using namespace std;
 
+int max_axis_value = 256;
+int mean_axis_value = max_axis_value/2;
+
 //helper functions
 enum wxbuildinfoformat {
     short_f, long_f };
@@ -170,7 +173,7 @@ string cc;
 string dz_x;
 string dz_y;
 string mul_x;
-string mul_y;
+string xyratio;
 string exponent_x;
 string exponent_y;
 string shape;
@@ -214,7 +217,7 @@ void read_status(void)
         {
             current_cal = MX;
         }
-        else if(!s.compare(0, 24, "calibrating multiplier y"))
+        else if(!s.compare(0, 21, "calibrating x/y ratio"))
         {
             current_cal = MY;
         }
@@ -247,10 +250,10 @@ void read_status(void)
             parser >> s;
             parser >> mul_x;
         }
-        else if(!s.compare(0, 13, "multiplier_y:"))
+        else if(!s.compare(0, 10, "x/y_ratio:"))
         {
             parser >> s;
-            parser >> mul_y;
+            parser >> xyratio;
         }
         else if(!s.compare(0, 12, "dead_zone_x:"))
         {
@@ -281,6 +284,12 @@ void read_status(void)
         {
             parser >> s;
             parser >> radius;
+        }
+        else if(!s.compare(0, 15, "max_axis_value:"))
+        {
+            parser >> s;
+            parser >> max_axis_value;
+            mean_axis_value = max_axis_value/2;
         }
 
         while(parser >> s)
@@ -473,7 +482,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer1;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixstatus"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Sixaxis status"));
@@ -591,7 +600,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer3->Add(StaticText19, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText21 = new wxStaticText(this, ID_STATICTEXT21, _("00.00"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT21"));
     FlexGridSizer3->Add(StaticText21, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText20 = new wxStaticText(this, ID_STATICTEXT20, _("y (rctrl + F4):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT20"));
+    StaticText20 = new wxStaticText(this, ID_STATICTEXT20, _("x/y ratio (rctrl + F4):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT20"));
     FlexGridSizer3->Add(StaticText20, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText22 = new wxStaticText(this, ID_STATICTEXT22, _("00.00"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT22"));
     FlexGridSizer3->Add(StaticText22, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -655,7 +664,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     SetStatusBar(StatusBar1);
     FlexGridSizer1->Fit(this);
     FlexGridSizer1->SetSizeHints(this);
-
+    
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnAbout);
     //*)
@@ -765,10 +774,14 @@ void sixstatusFrame::TextColor()
 
 void sixstatusFrame::OnIdle(wxIdleEvent& evt)
 {
-    clamp(Gauge1, 127+lstick_x, StaticText1);
-    clamp(Gauge2, 127-lstick_y, StaticText4);
-    clamp(Gauge3, 127+rstick_x, StaticText3);
-    clamp(Gauge4, 127-rstick_y, StaticText2);
+    Gauge1->SetRange(max_axis_value);
+    Gauge2->SetRange(max_axis_value);
+    Gauge3->SetRange(max_axis_value);
+    Gauge4->SetRange(max_axis_value);
+    clamp(Gauge1, mean_axis_value+lstick_x, StaticText1);
+    clamp(Gauge2, mean_axis_value-lstick_y, StaticText4);
+    clamp(Gauge3, mean_axis_value+rstick_x, StaticText3);
+    clamp(Gauge4, mean_axis_value-rstick_y, StaticText2);
     clamp(Gauge5, bup, StaticText5);
     clamp(Gauge6, bdown, StaticText6);
     clamp(Gauge7, bright, StaticText7);
@@ -791,7 +804,7 @@ void sixstatusFrame::OnIdle(wxIdleEvent& evt)
     StaticText38->SetLabel(wxString(cm.c_str(), wxConvUTF8));
     StaticText40->SetLabel(wxString(cc.c_str(), wxConvUTF8));
     StaticText21->SetLabel(wxString(mul_x.c_str(), wxConvUTF8));
-    StaticText22->SetLabel(wxString(mul_y.c_str(), wxConvUTF8));
+    StaticText22->SetLabel(wxString(xyratio.c_str(), wxConvUTF8));
     StaticText24->SetLabel(wxString(dz_x.c_str(), wxConvUTF8));
     StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
     StaticText28->SetLabel(wxString(exponent_x.c_str(), wxConvUTF8));
@@ -801,7 +814,7 @@ void sixstatusFrame::OnIdle(wxIdleEvent& evt)
 
     TextColor();
 
-    //cout << 127+lstick_x << " " << 127-lstick_y << " " << 127+rstick_x << " " << 127-rstick_y << endl;
+    //cout << mean_axis_value+lstick_x << " " << mean_axis_value-lstick_y << " " << mean_axis_value+rstick_x << " " << mean_axis_value-rstick_y << endl;
 
     usleep(10000);
 
@@ -815,10 +828,14 @@ void sixstatusFrame::OnIdle(wxIdleEvent& evt)
 
 void sixstatusFrame::OnTimer(wxTimerEvent& evt)
 {
-    clamp(Gauge1, 127+lstick_x, StaticText1);
-    clamp(Gauge2, 127-lstick_y, StaticText4);
-    clamp(Gauge3, 127+rstick_x, StaticText3);
-    clamp(Gauge4, 127-rstick_y, StaticText2);
+    Gauge1->SetRange(max_axis_value);
+    Gauge2->SetRange(max_axis_value);
+    Gauge3->SetRange(max_axis_value);
+    Gauge4->SetRange(max_axis_value);
+    clamp(Gauge1, mean_axis_value+lstick_x, StaticText1);
+    clamp(Gauge2, mean_axis_value-lstick_y, StaticText4);
+    clamp(Gauge3, mean_axis_value+rstick_x, StaticText3);
+    clamp(Gauge4, mean_axis_value-rstick_y, StaticText2);
     clamp(Gauge5, bup, StaticText5);
     clamp(Gauge6, bdown, StaticText6);
     clamp(Gauge7, bright, StaticText7);
@@ -841,7 +858,7 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
     StaticText38->SetLabel(wxString(cm.c_str(), wxConvUTF8));
     StaticText40->SetLabel(wxString(cc.c_str(), wxConvUTF8));
     StaticText21->SetLabel(wxString(mul_x.c_str(), wxConvUTF8));
-    StaticText22->SetLabel(wxString(mul_y.c_str(), wxConvUTF8));
+    StaticText22->SetLabel(wxString(xyratio.c_str(), wxConvUTF8));
     StaticText24->SetLabel(wxString(dz_x.c_str(), wxConvUTF8));
     StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
     StaticText28->SetLabel(wxString(exponent_x.c_str(), wxConvUTF8));
@@ -849,7 +866,7 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
     StaticText34->SetLabel(wxString(shape.c_str(), wxConvUTF8));
     StaticText35->SetLabel(wxString(radius.c_str(), wxConvUTF8));
 
-    //cout << 127+lstick_x << " " << 127-lstick_y << " " << 127+rstick_x << " " << 127-rstick_y << endl;
+    //cout << mean_axis_value+lstick_x << " " << mean_axis_value-lstick_y << " " << mean_axis_value+rstick_x << " " << mean_axis_value-rstick_y << endl;
 
     if(!cin)
     {
