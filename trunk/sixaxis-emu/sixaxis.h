@@ -28,7 +28,7 @@ struct sixaxis_button {
 };
 
 struct sixaxis_axis {
-    /* -128 to 127 */
+    /* -max_axis_value to max_axis_value */
     int x;
     int y;
 };
