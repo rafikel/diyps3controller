@@ -1,4 +1,4 @@
-DIRS=sixaxis-emu sixaxis-emu-configurator sixemugui sixstatus
+DIRS=sixaxis-emu sixaxis-emu-configurator sixemugui sixemugui_rs232 sixstatus
 
 all:
 	for i in $(DIRS); do cd $$i; make all; cd ..; done
