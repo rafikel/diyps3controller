@@ -32,7 +32,8 @@ static int debug = 0;
 #define TCPPORT 21313 /* ('S'<<8+'A') */
 #define DEFAULT_DEVICE "/dev/ttyUSB0"
 
-#define SCALE 258
+#define DEFAULT_MAX_AXIS_VALUE 65535
+#define DEFAULT_MEAN_AXIS_VALUE DEFAULT_MAX_AXIS_VALUE/2
 
 extern int sixaxis_number;
 
@@ -63,10 +64,13 @@ int send_report(int fd, struct sixaxis_state *state)
   struct timeval tv;
   uint8_t* pdata = (uint8_t*)&data;
 
-  data.X = clamp(0, state->user.axis[0][0] * SCALE + 32767, 65535);
-  data.Y = clamp(0, state->user.axis[0][1] * SCALE + 32767, 65535);
-  data.Z = clamp(0, state->user.axis[1][0] * SCALE + 32767, 65535);
-  data.Rz = clamp(0, state->user.axis[1][1] * SCALE + 32767, 65535);
+  /*
+   * Make sure the value is not out of range.
+   */
+  data.X = clamp(0, state->user.axis[0][0] + DEFAULT_MEAN_AXIS_VALUE, DEFAULT_MAX_AXIS_VALUE);
+  data.Y = clamp(0, state->user.axis[0][1] + DEFAULT_MEAN_AXIS_VALUE, DEFAULT_MAX_AXIS_VALUE);
+  data.Z = clamp(0, state->user.axis[1][0] + DEFAULT_MEAN_AXIS_VALUE, DEFAULT_MAX_AXIS_VALUE);
+  data.Rz = clamp(0, state->user.axis[1][1] + DEFAULT_MEAN_AXIS_VALUE, DEFAULT_MAX_AXIS_VALUE);
   if(state->user.button[sb_square].pressed)
   {
     data.Bt |= 0x0001;
