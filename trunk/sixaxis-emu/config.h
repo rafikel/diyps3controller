@@ -107,6 +107,8 @@ typedef struct
   int changed;
   double merge_x;
   double merge_y;
+  double residue_x;
+  double residue_y;
   int postpone_wheel_up;
   int postpone_wheel_down;
   int postpone_button_x1;
