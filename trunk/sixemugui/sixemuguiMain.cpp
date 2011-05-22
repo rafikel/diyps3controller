@@ -308,7 +308,6 @@ static void read_filenames(const char* dir, wxChoice* choice)
 {
     DIR *dirp;
     char dir_path[PATH_MAX];
-    char file_path[PATH_MAX];
     struct dirent *d;
     string filename = "";
     string line = "";
@@ -331,7 +330,7 @@ static void read_filenames(const char* dir, wxChoice* choice)
     dirp = opendir(dir_path);
     if (dirp == NULL)
     {
-      printf("Warning: can't open config directory %s\n", file_path);
+      printf("Warning: can't open config directory %s\n", dir_path);
       return;
     }
 
