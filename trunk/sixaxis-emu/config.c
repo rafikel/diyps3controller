@@ -18,6 +18,10 @@ extern int joystickSixaxis[MAX_DEVICES];
 extern int current_mouse;
 extern e_current_cal current_cal;
 
+extern double axis_scale;
+extern double frequency_scale;
+extern int mean_axis_value;
+
 /*
  * This tells what's the current config of each controller.
  */
@@ -127,11 +131,11 @@ static int update_intensity(s_intensity* intensity, int device_type, int device_
   if (intensity->device_up_type == device_type && device_id == intensity->device_up_id && button == intensity->up_button)
   {
     intensity->value += intensity->step;
-    if (intensity->value > 127)
+    if (intensity->value > mean_axis_value)
     {
       if (intensity->down_button != -1)
       {
-        intensity->value = 127;
+        intensity->value = mean_axis_value;
       }
       else
       {
@@ -153,7 +157,7 @@ static int update_intensity(s_intensity* intensity, int device_type, int device_
       }
       else
       {
-        intensity->value = 127;
+        intensity->value = mean_axis_value;
       }
     }
     update_stick(intensity, control, ts);
@@ -346,12 +350,16 @@ static int postpone_event(unsigned int device, SDL_Event* event)
   return ret;
 }
 
-static void mouse2axis(int device, struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone, e_shape shape)
+static double mouse2axis(int device, struct sixaxis_state* state, int which, double x, double y, int ts, int ts_axis, double exp, double multiplier, int dead_zone, e_shape shape)
 {
   double z = 0;
   double dz = dead_zone;
+  double motion_residue = 0;
+  double ztrunk = 0;
+  double val = 0;
 
-  int val = 0;
+  multiplier *= frequency_scale * axis_scale;
+  dz *= axis_scale;
 
   if(which == AXIS_X)
   {
@@ -370,7 +378,7 @@ static void mouse2axis(int device, struct sixaxis_state* state, int which, doubl
       {
         state->user.axis[ts][ts_axis] = -dz;
       }
-      return;
+      return 0;
     }
   }
   else if(which == AXIS_Y)
@@ -390,18 +398,58 @@ static void mouse2axis(int device, struct sixaxis_state* state, int which, doubl
       {
         state->user.axis[ts][ts_axis] = -dz;
       }
-      return;
+      return 0;
     }
   }
 
   if(val != 0)
   {
     z = multiplier * (val/fabs(val)) * pow(fabs(val), exp);
+    /*
+     * Subtract the first position to the dead zone (useful for high multipliers).
+     */
+    dz = dz - multiplier;// * pow(1, exp);
   }
 
-  if(z > 0) state->user.axis[ts][ts_axis] = round(dz + z);
-  else if(z < 0) state->user.axis[ts][ts_axis] = round(z - dz);
+  if(z > 0)
+  {
+    state->user.axis[ts][ts_axis] = dz + z;
+    /*
+     * max stick position => no residue
+     */
+    if(state->user.axis[ts][ts_axis] < mean_axis_value)
+    {
+      ztrunk = state->user.axis[ts][ts_axis] - dz;
+    }
+  }
+  else if(z < 0)
+  {
+    state->user.axis[ts][ts_axis] = z - dz;
+    /*
+     * max stick position => no residue
+     */
+    if(state->user.axis[ts][ts_axis] > -mean_axis_value)
+    {
+      ztrunk = state->user.axis[ts][ts_axis] + dz;
+    }
+  }
   else state->user.axis[ts][ts_axis] = 0;
+
+  if(val != 0 && ztrunk != 0)
+  {
+    //printf("ztrunk: %.4f\n", ztrunk);
+    /*
+     * Compute the motion that wasn't applied due to the double to integer conversion.
+     */
+    motion_residue = (val/fabs(val)) * ( fabs(val) - pow(fabs(ztrunk)/multiplier, 1/exp) );
+    if(fabs(motion_residue) < 0.0039)//allow 256 subpositions
+    {
+      motion_residue = 0;
+    }
+    //printf("motion_residue: %.4f\n", motion_residue);
+  }
+
+  return motion_residue;
 }
 
 /*
@@ -427,6 +475,7 @@ void process_event(SDL_Event* event)
   SDL_Event event_jb;
   double mx;
   double my;
+  double residue;
 
   /*
    * 'which' should always be at that place
@@ -562,7 +611,14 @@ void process_event(SDL_Event* event)
           ts_axis = mapper->controller_thumbstick_axis;
           if(ts >= 0)
           {
-            state[c_id].user.axis[ts][ts_axis] = joystick_buttons[device][c_id][config][control].controller_thumbstick_axis_value;
+            if(mapper->controller_thumbstick_axis_value < 0)
+            {
+              state[c_id].user.axis[ts][ts_axis] = -mean_axis_value;
+            }
+            else
+            {
+              state[c_id].user.axis[ts][ts_axis] = mean_axis_value;
+            }
           }
           break;
         case SDL_JOYBUTTONUP:
@@ -676,7 +732,7 @@ void process_event(SDL_Event* event)
             {
               value -= dead_zone;
             }
-            state[c_id].user.axis[ts][ts_axis] = clamp(-128, value , 127);
+            state[c_id].user.axis[ts][ts_axis] = clamp(-mean_axis_value, value , mean_axis_value);
           }
           break;
         case SDL_KEYDOWN:
@@ -783,7 +839,14 @@ void process_event(SDL_Event* event)
               controller[c_id].ts_axis[ts][ts_axis][0] = 0;
               if(controller[c_id].ts_axis[ts][ts_axis][1] == 1)
               {
-                state[c_id].user.axis[ts][ts_axis] = -mapper->controller_thumbstick_axis_value;
+                if(mapper->controller_thumbstick_axis_value < 0)
+                {
+                  state[c_id].user.axis[ts][ts_axis] = mean_axis_value;
+                }
+                else
+                {
+                  state[c_id].user.axis[ts][ts_axis] = -mean_axis_value;
+                }
               }
             }
             else if(mapper->controller_thumbstick_axis_value < 0)
@@ -791,7 +854,14 @@ void process_event(SDL_Event* event)
               controller[c_id].ts_axis[ts][ts_axis][1] = 0;
               if(controller[c_id].ts_axis[ts][ts_axis][0] == 1)
               {
-                state[c_id].user.axis[ts][ts_axis] = -mapper->controller_thumbstick_axis_value;
+                if(mapper->controller_thumbstick_axis_value < 0)
+                {
+                  state[c_id].user.axis[ts][ts_axis] = mean_axis_value;
+                }
+                else
+                {
+                  state[c_id].user.axis[ts][ts_axis] = -mean_axis_value;
+                }
               }
             }
             if(ts == 0)
@@ -813,11 +883,11 @@ void process_event(SDL_Event* event)
           {
             continue;
           }
-          else if (mapper->axis == 0)
+          else if (mapper->axis == AXIS_X)
           {
             value = event->motion.xrel;
           }
-          else if(mapper->axis == 1)
+          else if(mapper->axis == AXIS_Y)
           {
             value = event->motion.yrel;
           }
@@ -867,7 +937,15 @@ void process_event(SDL_Event* event)
           }
           if(ts >= 0)
           {
-            mouse2axis(device, state+c_id, mapper->axis, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
+            residue = mouse2axis(device, state+c_id, mapper->axis, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
+            if(mapper->axis == AXIS_X)
+            {
+              mouse_control[device].residue_x = residue;
+            }
+            else if(mapper->axis == AXIS_Y)
+            {
+              mouse_control[device].residue_y = residue;
+            }
           }
           break;
         case SDL_MOUSEBUTTONDOWN:
@@ -896,7 +974,14 @@ void process_event(SDL_Event* event)
           ts_axis = mapper->controller_thumbstick_axis;
           if(ts >= 0)
           {
-            state[c_id].user.axis[ts][ts_axis] = mapper->controller_thumbstick_axis_value;
+            if(mapper->controller_thumbstick_axis_value < 0)
+            {
+              state[c_id].user.axis[ts][ts_axis] = -mean_axis_value;
+            }
+            else
+            {
+              state[c_id].user.axis[ts][ts_axis] = mean_axis_value;
+            }
           }
           break;
         case SDL_MOUSEBUTTONUP:
