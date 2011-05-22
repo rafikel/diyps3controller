@@ -10,7 +10,7 @@
 
 #include <libxml/xmlreader.h>
 
-#define DEFAULT_RADIUS 50
+#define DEFAULT_RADIUS 4
 
 void read_config_file(const char*);
 int read_config_dir();
