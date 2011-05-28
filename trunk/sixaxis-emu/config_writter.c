@@ -130,7 +130,9 @@ static int ProcessDeviceElement(xmlNode * a_node)
 {
   int ret = 0;
   char* prop;
+#ifndef WIN32
   int i;
+#endif
   char* type;
 
   type = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
