@@ -1,9 +1,9 @@
-#summary This wiki explains a simple way to install developpement tools for the diyps3controller v2 (sixaxis emulator).
+#summary This wiki explains a simple way to install development tools for the diyps3controller v2 (sixaxis emulator).
 
 = Introduction =
 
 This wiki explains how to install Eclipse CDT with SVN.
-It explains how to perform a checkout and build the project.
+It also explains how to perform a checkout and build the project.
 
 Target OS is Windows, but it can be easily adapted to Linux.
 
@@ -23,7 +23,7 @@ type filter text: svn
 
 Select "Subversive SVN Integration for the Mylyn Project" and "Subversive SVN Team Provider".
 
-Proceed to installation (select SVN Kit 1.3.0), and restart eclipse.
+Proceed to installation (select latest SVN Kit), and restart eclipse.
 
 = Project checkout =
 
@@ -45,6 +45,6 @@ Enter a Project name, and select "Makefile Project > Empty Project", and click n
 
 Click Finish.
 
-Check out is performed, and the new project appears in Project Explorer view.
+Check out is performed, and the new project appears in the Project Explorer view.
 
-Project is build automatically.
+The project is build automatically.
