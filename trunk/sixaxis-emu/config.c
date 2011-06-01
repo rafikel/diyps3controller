@@ -74,16 +74,6 @@ s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 s_mapper* joystick_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
- * Clamp a value between a min and a max.
- */
-static int clamp(int min, int val, int max)
-{
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
-}
-
-/*
  * This updates the stick according to the intensity shape.
  */
 static void update_stick(s_intensity* intensity, int control, int ts)
