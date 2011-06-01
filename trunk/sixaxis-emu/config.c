@@ -704,7 +704,7 @@ void process_event(SDL_Event* event)
            */
           ts = mapper->controller_thumbstick;
           ts_axis = mapper->controller_thumbstick_axis;
-          multiplier = mapper->multiplier;
+          multiplier = mapper->multiplier * axis_scale;
           exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
           if(ts >= 0)
