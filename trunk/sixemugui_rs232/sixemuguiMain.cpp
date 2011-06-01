@@ -107,7 +107,7 @@ void sixemuguiFrame::readDevices()
   string line = "";
 
   filename.append(homedir);
-  filename.append("/.sixemugui_rs232/config");
+  filename.append("/.sixemugui-serial/config");
   ifstream infile (filename.c_str());
   if ( infile.is_open() )
   {
@@ -154,7 +154,7 @@ static void read_filenames(const char* dir, wxChoice* choice)
     string line = "";
 
     filename.append(homedir);
-    filename.append("/.sixemugui_rs232/default");
+    filename.append("/.sixemugui-serial/default");
     ifstream infile (filename.c_str());
     if ( infile.is_open() )
     {
@@ -199,7 +199,7 @@ void sixemuguiFrame::readFrequency()
   string line = "";
 
   filename.append(homedir);
-  filename.append("/.sixemugui_rs232/frequency");
+  filename.append("/.sixemugui-serial/frequency");
   ifstream infile (filename.c_str());
   if ( infile.is_open() )
   {
@@ -445,7 +445,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     string cmd;
     cmd.append("mkdir -p ");
     cmd.append(homedir);
-    cmd.append("/.sixemugui_rs232");
+    cmd.append("/.sixemugui-serial");
     if(system(cmd.c_str()) < 0)
     {
         wxMessageBox( wxT("Cannot open sixemugui config directory!"), wxT("Error"), wxICON_ERROR);
@@ -482,10 +482,10 @@ void sixemuguiFrame::OnQuit(wxCommandEvent& event)
 
     if(i < 7)
     {
-        answer = wxMessageBox(_("emu_rs232 processes will be killed!"), _("Confirm"), wxNO | wxCANCEL);
+        answer = wxMessageBox(_("emu-serial processes will be killed!"), _("Confirm"), wxNO | wxCANCEL);
         if (answer == wxYES)
         {
-            g_spawn_command_line_sync ("killall emu_rs232", NULL, NULL, NULL, NULL);
+            g_spawn_command_line_sync ("killall emu-serial", NULL, NULL, NULL, NULL);
         }
         else
         {
@@ -509,7 +509,7 @@ void sixemuguiFrame::OnSelectRefresh(wxCommandEvent& event)
 static char emu_device[PATH_MAX];
 static char controller[2];
 
-static const char *emu_command[] = { "emu_rs232",  "--mav", "65535", "--device", emu_device, "--controller", controller, NULL };
+static const char *emu_command[] = { "emu-serial",  "--mav", "65535", "--device", emu_device, "--controller", controller, NULL };
 
 typedef enum
 {
@@ -742,7 +742,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     {
         command.append("/bin/bash -c \"");
     }
-    command.append(" emuclient --subpos --precision 16 --rs232");
+    command.append(" emuclient --precision 16 --rs232");
     if(!CheckBox1->IsChecked())
     {
         command.append(" --nograb");
@@ -767,7 +767,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
 
     Button3->Disable();
     filename.append(homedir);
-    filename.append("/.sixemugui_rs232/default");
+    filename.append("/.sixemugui-serial/default");
     ofstream outfile (filename.c_str(), ios_base::trunc);
     if(outfile.is_open())
     {
@@ -776,7 +776,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     }
     filename.erase();
     filename.append(homedir);
-    filename.append("/.sixemugui_rs232/frequency");
+    filename.append("/.sixemugui-serial/frequency");
     ofstream outfile2 (filename.c_str(), ios_base::trunc);
     if(outfile2.is_open())
     {
@@ -796,7 +796,7 @@ void sixemuguiFrame::OnSave(wxCommandEvent& event)
     string master;
 
     filename.append(homedir);
-    filename.append("/.sixemugui_rs232/config");
+    filename.append("/.sixemugui-serial/config");
 
     ofstream outfile (filename.c_str(), ios_base::trunc);
 

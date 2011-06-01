@@ -37,6 +37,6 @@ bool sixemuguiApp::OnInit()
 
 int sixemuguiApp::OnExit()
 {
-    g_spawn_command_line_sync ("killall emu_rs232", NULL, NULL, NULL, NULL);
+    g_spawn_command_line_sync ("killall emu-serial", NULL, NULL, NULL, NULL);
     return 0;
 }

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=0.1
-Name=Sixemugui-rs232
-GenericName=Sixemugui-rs232
-Icon=
-Exec=/usr/bin/sixemugui-rs232
-Categories=Game;

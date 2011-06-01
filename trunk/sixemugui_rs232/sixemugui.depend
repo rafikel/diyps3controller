@@ -1846,7 +1846,7 @@
 1285628926 /usr/include/glib-2.0/glib/gwin32.h
 	<glib/gtypes.h>
 
-1298323923 source:/home/matlo/workspace/diyps3controller/sixemugui_rs232/wx_pch.h
+1298323923 source:/home/matlo/workspace/diyps3controller/sixemugui-serial/wx_pch.h
 	<wx/wxprec.h>
 	<wx/wx.h>
 
