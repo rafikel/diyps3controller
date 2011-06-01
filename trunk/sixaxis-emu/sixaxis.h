@@ -98,4 +98,6 @@ int assemble_input_01(uint8_t*, int, struct sixaxis_state*);
 
 int get_button_index_from_name(const char*);
 
+int clamp(int, int, int);
+
 #endif
