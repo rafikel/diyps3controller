@@ -18,7 +18,7 @@ emu: emu.o sixaxis.o dump.o l2cap_con.o bt_utils.o
 emu_rs232: emu_rs232.o sixaxis.o dump.o
 	$(CC) -o $@ $^
 
-emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o config_reader.o
+emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o config_reader.o sdl_tools.o tcp_con.o calibration.o
 	$(CC) -o $@ $^ $(LIB)
 
 sixaddr: utils/sixaddr.c
