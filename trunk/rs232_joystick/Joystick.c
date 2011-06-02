@@ -37,7 +37,8 @@
 #include "Joystick.h"
 #include <util/delay.h>
 
-#define USART_BAUDRATE 1000000
+//#define USART_BAUDRATE 1000000
+#define USART_BAUDRATE 500000
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
 USB_JoystickReport_Data_t data = {};

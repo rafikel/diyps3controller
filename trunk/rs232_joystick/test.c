@@ -16,6 +16,8 @@
 #include <unistd.h>
 #include <termios.h>
 
+#define BUFFER_SIZE 48
+
 static int bexit = 0;
 
 static int fd;
@@ -41,18 +43,18 @@ int main(int argc, char *argv[])
   unsigned int cread = 0;
   unsigned char w_data;
   unsigned char r_data;
-  unsigned char wbuffer[256];
-  unsigned char rbuffer[256];
+  unsigned char wbuffer[BUFFER_SIZE];
+  unsigned char rbuffer[BUFFER_SIZE];
   int i;
   for(i=0; i<sizeof(wbuffer); ++i)
   {
-    wbuffer[i] = i%256;
+    wbuffer[i] = i%sizeof(wbuffer);
   }
   (void) signal(SIGINT, ex_program);
   fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY/* | O_NONBLOCK*/);
   tcgetattr(fd, &options);
-  cfsetispeed(&options, B1000000);
-  cfsetospeed(&options, B1000000);
+  cfsetispeed(&options, B500000);
+  cfsetospeed(&options, B500000);
   options.c_cflag |= (CLOCAL | CREAD);
   tcsetattr(fd, TCSANOW, &options);
   options.c_cflag &= ~PARENB;
@@ -64,7 +66,7 @@ int main(int argc, char *argv[])
 
   while(!bexit)
   {
-    w_data = cwrite%256;
+    w_data = cwrite%sizeof(wbuffer);
     FD_ZERO(&rfds);
     FD_SET(fd, &rfds);
     FD_ZERO(&wfds);
