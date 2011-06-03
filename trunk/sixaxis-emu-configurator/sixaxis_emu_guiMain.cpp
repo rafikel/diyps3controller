@@ -769,6 +769,16 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 
 #else
     string cmd = "config";
+    MenuItem26->Enable(false);
+    MenuItem27->Enable(false);
+    MenuItem8->Enable(false);
+    MenuItem9->Enable(false);
+    MenuItem10->Enable(false);
+    MenuItem11->Enable(false);
+    MenuItem12->Enable(false);
+    MenuItem13->Enable(false);
+    MenuItem24->Enable(false);
+    MenuItem25->Enable(false);
 #endif
 
     wxString default_directory = wxString(cmd.c_str(), wxConvUTF8);
@@ -792,7 +802,7 @@ void sixaxis_emu_guiFrame::OnQuit(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = wxbuildinfo(long_f);
+    wxString msg = _("Sixemu configurator\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\n");
     wxMessageBox(msg, _("Welcome to..."));
 }
 
