@@ -26,6 +26,7 @@
 									<value>127</value>
 									<range>255</range>
 									<size>-1,-1</size>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -43,6 +44,7 @@
 								<object class="wxGauge" name="ID_GAUGE2" variable="Gauge2" member="yes">
 									<value>127</value>
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -60,6 +62,7 @@
 								<object class="wxGauge" name="ID_GAUGE3" variable="Gauge3" member="yes">
 									<value>127</value>
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -77,6 +80,7 @@
 								<object class="wxGauge" name="ID_GAUGE4" variable="Gauge4" member="yes">
 									<value>127</value>
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -93,6 +97,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE5" variable="Gauge5" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -109,6 +114,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE6" variable="Gauge6" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -125,6 +131,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE7" variable="Gauge7" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -141,6 +148,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE8" variable="Gauge8" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -157,6 +165,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE9" variable="Gauge9" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -173,6 +182,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE10" variable="Gauge10" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -189,6 +199,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE11" variable="Gauge11" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -205,6 +216,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE12" variable="Gauge12" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -221,6 +233,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE13" variable="Gauge13" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -237,6 +250,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE14" variable="Gauge14" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -253,6 +267,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE15" variable="Gauge15" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -269,6 +284,7 @@
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAUGE16" variable="Gauge16" member="yes">
 									<range>255</range>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -286,6 +302,7 @@
 								<object class="wxGauge" name="ID_GAUGE17" variable="Gauge17" member="yes">
 									<range>255</range>
 									<size>30,30</size>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -303,6 +320,7 @@
 								<object class="wxGauge" name="ID_GAUGE18" variable="Gauge18" member="yes">
 									<range>255</range>
 									<size>30,30</size>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -320,6 +338,7 @@
 								<object class="wxGauge" name="ID_GAUGE31" variable="Gauge31" member="yes">
 									<range>255</range>
 									<size>30,30</size>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -337,6 +356,7 @@
 								<object class="wxGauge" name="ID_GAUGE32" variable="Gauge32" member="yes">
 									<range>255</range>
 									<size>30,30</size>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -354,6 +374,7 @@
 								<object class="wxGauge" name="ID_GAUGE33" variable="Gauge33" member="yes">
 									<range>255</range>
 									<size>30,30</size>
+									<style>wxGA_SMOOTH</style>
 								</object>
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
