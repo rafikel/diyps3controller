@@ -11,6 +11,7 @@
 #define WIN_SERIAL_CON_H_
 
 int serial_connect(char*);
-int serial_send();
+void serial_send();
+void serial_close();
 
 #endif /* WIN_SERIAL_H_ */

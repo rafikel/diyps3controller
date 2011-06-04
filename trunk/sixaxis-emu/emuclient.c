@@ -35,6 +35,7 @@
 #include "config_reader.h"
 #include <sys/time.h>
 #include "calibration.h"
+#include <libxml/parser.h>
 
 #define EVENT_BUFFER_SIZE 256
 #define DEFAULT_POSTPONE_COUNT 3
@@ -151,6 +152,10 @@ int main(int argc, char *argv[])
 //    }
 //#endif
   }
+
+#ifdef WIN32
+  SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+#endif
 
 #ifdef WIN32
   if (!portname)
@@ -307,6 +312,16 @@ int main(int argc, char *argv[])
     serial_send();
 #endif
 
+#ifdef WIN32
+    /*
+     * There is no setlinebuf(stdout) in windows.
+     */
+    if(display)
+    {
+      fflush(stdout);
+    }
+#endif
+
     gettimeofday(&t1, NULL);
 
     time_to_sleep = refresh - ((t1.tv_sec * 1000000 + t1.tv_usec) - (t0.tv_sec * 1000000 + t0.tv_usec));
@@ -326,6 +341,11 @@ int main(int argc, char *argv[])
 
   free_macros();
   sdl_quit();
+#ifdef WIN32
+  serial_close();
+#endif
+
+  xmlCleanupParser();
 
   return 0;
 }

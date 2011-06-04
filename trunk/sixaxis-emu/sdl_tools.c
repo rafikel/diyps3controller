@@ -50,12 +50,6 @@ int sdl_initialize()
     return 0;
   }
 
-#ifdef WIN32
-  /* enable stdout and stderr */
-  freopen("CON", "w", stdout);
-  freopen("CON", "w", stderr);
-#endif
-
   SDL_WM_SetCaption(TITLE, TITLE);
 
   /* Init video */

@@ -1145,14 +1145,7 @@ static int read_file(char* file_path)
   /*free the document */
   xmlFreeDoc(doc);
 
-  /*
-   *Free the global variables that may
-   *have been allocated by the parser.
-   */
-  xmlCleanupParser();
-
   return ret;
-
 }
 
 extern int current_mouse;

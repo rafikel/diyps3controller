@@ -429,12 +429,5 @@ int modify_file(char* file)
   /*free the document */
   xmlFreeDoc(doc);
 
-  /*
-   *Free the global variables that may
-   *have been allocated by the parser.
-   */
-  xmlCleanupParser();
-
   return ret;
-
 }
