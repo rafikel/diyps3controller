@@ -231,10 +231,4 @@ void XmlWritter::WriteConfigFile()
 
     /*free the document */
     xmlFreeDoc(doc);
-
-    /*
-     *Free the global variables that may
-     *have been allocated by the parser.
-     */
-    xmlCleanupParser();
 }

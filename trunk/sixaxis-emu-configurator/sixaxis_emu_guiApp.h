@@ -16,6 +16,7 @@ class sixaxis_emu_guiApp : public wxApp
 {
     public:
         virtual bool OnInit();
+        virtual int OnExit();
 };
 
 #endif // SIXAXIS_EMU_GUIAPP_H

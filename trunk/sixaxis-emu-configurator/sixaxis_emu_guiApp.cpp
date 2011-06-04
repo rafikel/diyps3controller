@@ -9,6 +9,7 @@
 
 #include "wx_pch.h"
 #include "sixaxis_emu_guiApp.h"
+#include <libxml/parser.h>
 
 //(*AppHeaders
 #include "sixaxis_emu_guiMain.h"
@@ -31,4 +32,11 @@ bool sixaxis_emu_guiApp::OnInit()
     //*)
     return wxsOK;
 
+}
+
+int sixaxis_emu_guiApp::OnExit()
+{
+  xmlCleanupParser();
+
+  return 0;
 }

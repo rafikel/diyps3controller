@@ -667,10 +667,4 @@ void XmlReader::ReadConfigFile(wxString filePath)
 
     /*free the document */
     xmlFreeDoc(doc);
-
-    /*
-     *Free the global variables that may
-     *have been allocated by the parser.
-     */
-    xmlCleanupParser();
 }
