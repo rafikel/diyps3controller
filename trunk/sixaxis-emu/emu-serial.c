@@ -32,6 +32,8 @@ static int debug = 0;
 #define TCPPORT 21313 /* ('S'<<8+'A') */
 #define DEFAULT_DEVICE "/dev/ttyUSB0"
 
+#define BAUDRATE B500000
+
 #define DEFAULT_MAX_AXIS_VALUE 65535
 #define DEFAULT_MEAN_AXIS_VALUE DEFAULT_MAX_AXIS_VALUE/2
 
@@ -314,8 +316,8 @@ int main(int argc, char *argv[])
   }
 
   tcgetattr(fdrs232, &options);
-  cfsetispeed(&options, B1000000);
-  cfsetospeed(&options, B1000000);
+  cfsetispeed(&options, BAUDRATE);
+  cfsetospeed(&options, BAUDRATE);
   options.c_cflag |= (CLOCAL | CREAD);
   tcsetattr(fdrs232, TCSANOW, &options);
   options.c_cflag &= ~PARENB;
