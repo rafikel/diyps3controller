@@ -707,17 +707,29 @@ static void clamp(wxGauge* Gauge, int val, wxStaticText* Text)
     if(val < 0)
     {
         Gauge->SetValue(0);
+#ifndef WIN32
         Text->SetForegroundColour( wxColour(255, 0, 0) );
+#else
+        Gauge->SetForegroundColour( wxColour(255, 0, 0) );
+#endif
     }
     else if(val > high)
     {
         Gauge->SetValue(high);
+#ifndef WIN32
         Text->SetForegroundColour( wxColour(255, 0, 0) );
+#else
+        Gauge->SetForegroundColour( wxColour(255, 0, 0) );
+#endif
     }
     else
     {
         Gauge->SetValue(val);
+#ifndef WIN32
         Text->SetForegroundColour( wxColour(0, 0, 0) );
+#else
+        Gauge->SetForegroundColour( wxColour(51, 153, 255) );
+#endif
     }
 }
 
@@ -772,6 +784,7 @@ void sixstatusFrame::TextColor()
   }
 }
 
+#ifndef WIN32
 void sixstatusFrame::OnIdle(wxIdleEvent& evt)
 {
     Gauge1->SetRange(max_axis_value);
@@ -824,8 +837,7 @@ void sixstatusFrame::OnIdle(wxIdleEvent& evt)
         exit(-1);
     }
 }
-
-
+#else
 void sixstatusFrame::OnTimer(wxTimerEvent& evt)
 {
     Gauge1->SetRange(max_axis_value);
@@ -876,3 +888,5 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
         exit(-1);
     }
 }
+#endif
+
