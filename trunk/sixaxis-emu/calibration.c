@@ -48,7 +48,10 @@ int test_time = 1000;
  */
 void auto_test()
 {
-  int i, j, k;
+#ifndef WIN32
+  int j;
+#endif
+  int i, k;
   int step;
 
   SDL_Event mouse_evt =
@@ -60,6 +63,7 @@ void auto_test()
 
     for (i = 0; i < 500; i++)
     {
+#ifndef WIN32
       for (j = 0; j < MAX_DEVICES && mouseName[j]; ++j)
       {
         mouse_evt.motion.xrel = step;
@@ -67,6 +71,12 @@ void auto_test()
         mouse_evt.type = SDL_MOUSEMOTION;
         SDL_PushEvent(&mouse_evt);
       }
+#else
+      mouse_evt.motion.xrel = step;
+      mouse_evt.motion.which = 0;
+      mouse_evt.type = SDL_MOUSEMOTION;
+      SDL_PushEvent(&mouse_evt);
+#endif
       usleep(2000);
     }
 
@@ -74,6 +84,7 @@ void auto_test()
 
     for (i = 0; i < 250; i++)
     {
+#ifndef WIN32
       for (j = 0; j < MAX_DEVICES && mouseName[j]; ++j)
       {
         mouse_evt.motion.xrel = -2 * step;
@@ -81,6 +92,12 @@ void auto_test()
         mouse_evt.type = SDL_MOUSEMOTION;
         SDL_PushEvent(&mouse_evt);
       }
+#else
+      mouse_evt.motion.xrel = -2 * step;
+      mouse_evt.motion.which = 0;
+      mouse_evt.type = SDL_MOUSEMOTION;
+      SDL_PushEvent(&mouse_evt);
+#endif
       usleep(2000);
     }
 

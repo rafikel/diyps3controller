@@ -13,8 +13,8 @@
 #define SCREEN_WIDTH  8
 #define SCREEN_HEIGHT 8
 #else
-#define SCREEN_WIDTH  800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH  128
+#define SCREEN_HEIGHT 8
 #endif
 #define TITLE "Sixaxis Control"
 #define BT_SIXAXIS_NAME "PLAYSTATION(R)3 Controller"
