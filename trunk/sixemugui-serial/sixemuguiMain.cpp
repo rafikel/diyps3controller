@@ -497,8 +497,8 @@ void sixemuguiFrame::OnQuit(wxCommandEvent& event)
 
 void sixemuguiFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = wxbuildinfo(long_f);
-    wxMessageBox(msg, _("Welcome to..."));
+  wxString msg = _("Sixemugui-serial\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\n");
+  wxMessageBox(msg, _("Welcome to..."));
 }
 
 void sixemuguiFrame::OnSelectRefresh(wxCommandEvent& event)
