@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include "sixaxis.h"
 #include "dump.h"
+#include <sys/resource.h>
 
 #ifdef WIN32
 #define SHUT_RDWR SD_BOTH
@@ -331,7 +332,11 @@ int main(int argc, char *argv[])
     int recv_flags = MSG_DONTWAIT;
 #endif
 
+#ifndef WIN32
+    setpriority(PRIO_PROCESS, getpid(), -20);
+
     setlinebuf(stdout);
+#endif
 
     sixaxis_init(&state);
 
@@ -378,7 +383,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if(getuid())
+    if(geteuid())
     {
         printf("run as root user to set device class\n");
     }
