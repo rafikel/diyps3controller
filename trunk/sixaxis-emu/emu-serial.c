@@ -26,6 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <sys/resource.h>
 
 static int debug = 0;
 
@@ -268,7 +269,11 @@ int main(int argc, char *argv[])
   int recv_flags = MSG_DONTWAIT;
 #endif
 
+#ifndef WIN32
+  setpriority(PRIO_PROCESS, getpid(), -20);
+
   setlinebuf(stdout);
+#endif
 
   sixaxis_init(&state);
 
