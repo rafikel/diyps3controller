@@ -161,13 +161,13 @@ static int readCommandResults(const char * argv[], int nb_params, wxString param
 static char hci[7];
 static char bad[18];
 
-static const char *sixaxis_device[] = { "gksudo",  "--description", "Sixemugui", "sixaddr", NULL };
+static const char *sixaxis_device[] = { "sixaddr", NULL };
 
 static const char *hciconfig_all[] = { "hciconfig", "-a", hci, NULL };
 static const char *hciconfig_revision[] = { "gksudo", "--description", "Sixemugui", "hciconfig", hci, "revision", NULL };
 
 static const char *bdaddr[] = { "bdaddr", "-i", hci, NULL };
-static const char *bdaddr_modify[] = { "sudo", "bdaddr", "-r", "-i", hci, bad, NULL };
+static const char *bdaddr_modify[] = { "bdaddr", "-r", "-i", hci, bad, NULL };
 
 void sixemuguiFrame::readSixaxis()
 {
@@ -275,9 +275,6 @@ int sixemuguiFrame::setDongleAddress()
     snprintf(hci, sizeof(hci), "hci%d", i);
     strncpy( bad, Choice1->GetStringSelection().mb_str(), 18 );
 
-    //this is to avoid readCommandResults from asking password in the terminal.
-    g_spawn_command_line_sync ("gksudo --description Sixemugui bdaddr", NULL, NULL, NULL, NULL);
-
     res = readCommandResults(bdaddr_modify, 1, params1, 1, results1);
 
     if(res != -1)
@@ -298,6 +295,7 @@ int sixemuguiFrame::setDongleAddress()
     }
     else
     {
+        Choice3->SetString(Choice3->GetSelection(), Choice1->GetStringSelection());
         wxMessageBox( wxT("Read address after set: seems ok!"), wxT("Success"), wxICON_INFORMATION);
     }
 
@@ -757,10 +755,7 @@ void sixemuguiFrame::OnButton2Click(wxCommandEvent& event)
     answer = wxMessageBox(_("Did you saved your dongle address?"), _("Confirm"), wxYES_NO | wxCANCEL);
     if (answer == wxYES)
     {
-        if(setDongleAddress() != -1)
-        {
-            refresh();
-        }
+        setDongleAddress();
     }
     else if (answer == wxNO)
     {
@@ -881,12 +876,12 @@ void sixemuguiFrame::OnButton1Click(wxCommandEvent& event)
             /*
              * This allows not to launch the emu process as root.
              */
-            command.append("gksudo --description Sixemugui hciconfig hci");
-            stringstream stream;
-            stream << Choice3->GetSelection();
-            command.append(stream.str());
-            command.append(" class 0x508");
-            g_spawn_command_line_sync (command.c_str(), NULL, NULL, NULL, NULL);
+//            command.append("gksudo --description Sixemugui hciconfig hci");
+//            stringstream stream;
+//            stream << Choice3->GetSelection();
+//            command.append(stream.str());
+//            command.append(" class 0x508");
+//            g_spawn_command_line_sync (command.c_str(), NULL, NULL, NULL, NULL);
             /*
              * Update variables to be read by the thread.
              */
