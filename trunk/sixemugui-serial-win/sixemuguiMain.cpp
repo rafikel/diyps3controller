@@ -311,6 +311,7 @@ sixemuguiFrame::~sixemuguiFrame()
 
 void sixemuguiFrame::OnQuit(wxCommandEvent& event)
 {
+  Close();
 }
 
 void sixemuguiFrame::OnAbout(wxCommandEvent& event)
