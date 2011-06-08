@@ -36,6 +36,7 @@
 #include <sys/time.h>
 #include "calibration.h"
 #include <libxml/parser.h>
+#include <sys/resource.h>
 
 #define EVENT_BUFFER_SIZE 256
 #define DEFAULT_POSTPONE_COUNT 3
@@ -99,6 +100,8 @@ int main(int argc, char *argv[])
   int time_to_sleep;
 
 #ifndef WIN32
+  setpriority(PRIO_PROCESS, getpid(), -20);
+
   setlinebuf(stdout);
   homedir = getpwuid(getuid())->pw_dir;
 
