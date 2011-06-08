@@ -34,6 +34,7 @@ install: all
 	mkdir -p $(prefix)
 	mkdir -p $(bindir)
 	for i in $(BINS); do cp $$i $(bindir)/; done
+	for i in $(BINS); do chmod ug+s $(bindir)/$$i; done
 	mkdir -p $(confdir)/config
 	mkdir -p $(confdir)/macros
 	cp config/* $(confdir)/config
