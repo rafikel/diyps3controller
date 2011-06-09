@@ -348,12 +348,12 @@ static double mouse2axis(int device, struct sixaxis_state* state, int which, dou
   double ztrunk = 0;
   double val = 0;
 
-  multiplier *= frequency_scale * axis_scale;
+  multiplier *= axis_scale;
   dz *= axis_scale;
 
   if(which == AXIS_X)
   {
-    val = x;
+    val = x * frequency_scale;
     if(x && y && shape == E_SHAPE_CIRCLE)
     {
       dz = dz*cos(atan(fabs(y/x)));
@@ -373,7 +373,7 @@ static double mouse2axis(int device, struct sixaxis_state* state, int which, dou
   }
   else if(which == AXIS_Y)
   {
-    val = y;
+    val = y * frequency_scale;
     if(x && y && shape == E_SHAPE_CIRCLE)
     {
       dz = dz*sin(atan(fabs(y/x)));
