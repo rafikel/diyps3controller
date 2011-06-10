@@ -67,10 +67,9 @@ int win_serial_connect(char* portname)
  */
 void win_serial_send(s_report_data* pdata)
 {
-  uint8_t* pdata = (uint8_t*) pdata;
   DWORD dwBytesWrite = 0;
 
-  WriteFile(serial, pdata, sizeof(s_report_data), &dwBytesWrite, NULL);
+  WriteFile(serial, (uint8_t*)pdata, sizeof(s_report_data), &dwBytesWrite, NULL);
 }
 
 /*
