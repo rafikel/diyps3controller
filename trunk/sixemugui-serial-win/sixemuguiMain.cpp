@@ -516,8 +516,24 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
         outfile2 << Choice1->GetStringSelection().mb_str() << endl;
         outfile2.close();
     }
+    filename.erase();
+#ifdef WIN32
+    filename.append("config");
+#else
+    filename.append(homedir);
+    filename.append("/.sixemugui-serial/config");
+#endif
+    ofstream outfile3 (filename.c_str(), ios_base::trunc);
+    if(outfile3.is_open())
+    {
+        outfile3 << Choice3->GetStringSelection().mb_str() << endl;
+        outfile3.close();
+    }
 
-    system(command.c_str());
+    if(system(command.c_str()) != 0)
+    {
+        wxMessageBox( wxT("Connection error!\nPlease check the serial device!"), wxT("Error"), wxICON_ERROR);
+    }
 
     Button3->Enable();
 }
