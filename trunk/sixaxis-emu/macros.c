@@ -89,7 +89,7 @@ SDLKey process_line(const char* line, SDLKey macro) {
     char argument[LINE_MAX];
     SDLKey key;
     int delay;
-    s_macro_event_delay** pt;
+    s_macro_event_delay** pt = NULL;
     int ret;
 
     if (macro != SDLK_UNKNOWN) {
