@@ -28,16 +28,7 @@
 								<object class="sizeritem">
 									<object class="wxChoice" name="ID_CHOICE3" variable="Choice3" member="yes">
 										<content>
-											<item>COM1</item>
-											<item>COM2</item>
-											<item>COM3</item>
-											<item>COM4</item>
-											<item>COM5</item>
-											<item>COM6</item>
-											<item>COM7</item>
-											<item>COM8</item>
-											<item>COM9</item>
-											<item>COM10</item>
+											<item></item>
 										</content>
 									</object>
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -79,6 +70,8 @@
 													<item>100</item>
 													<item>125</item>
 													<item>250</item>
+													<item>333</item>
+													<item>500</item>
 												</content>
 												<selection>0</selection>
 											</object>

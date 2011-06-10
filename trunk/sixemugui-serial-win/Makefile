@@ -19,12 +19,12 @@ RANLIB = ranlib
 WINDRES = windres
 
 INC = 
-CFLAGS = -Wall `pkg-config --cflags glib-2.0` `wx-config --cflags` -Winvalid-pch -include wx_pch.h -DWX_PRECOMP
+CFLAGS = -Wall `wx-config --cflags` -Winvalid-pch -include wx_pch.h -DWX_PRECOMP
 RESINC = 
 RCFLAGS = 
 LIBDIR =
 LIB =
-LDFLAGS = `wx-config --libs` `pkg-config --libs glib-2.0`
+LDFLAGS = `wx-config --libs`
 
 INC_RELEASE = $(INC)
 CFLAGS_RELEASE = $(CFLAGS) -O2

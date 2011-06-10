@@ -25,12 +25,21 @@
 #include <sstream>
 #include <limits.h>
 #include <string.h>
+#ifdef WIN32
 #include <windows.h>
-
-#define CONFIG_DIR "config/"
-#define MAX_PORT_ID 32
+#else
+#include <pwd.h>
+#endif
 
 using namespace std;
+
+#ifdef WIN32
+#define CONFIG_DIR "config/"
+#define MAX_PORT_ID 32
+#else
+#define CONFIG_DIR ".emuclient/config/"
+char* homedir;
+#endif
 
 //helper functions
 enum wxbuildinfoformat
@@ -83,6 +92,7 @@ BEGIN_EVENT_TABLE(sixemuguiFrame,wxFrame)
     //*)
 END_EVENT_TABLE()
 
+#ifdef WIN32
 static void read_filenames(wxChoice* choice)
 {
     DIR *dirp;
@@ -172,6 +182,121 @@ static void read_frequency(wxChoice* choice)
       infile.close();
   }
 }
+#else
+static void read_devices(wxChoice* choice)
+{
+  DIR *dirp;
+  char dir_path[PATH_MAX];
+  struct dirent *d;
+  string filename = "";
+  string line = "";
+
+  filename.append(homedir);
+  filename.append("/.sixemugui-serial/config");
+  ifstream infile (filename.c_str());
+  if ( infile.is_open() )
+  {
+      if( infile.good() )
+      {
+          getline (infile,line);
+      }
+      infile.close();
+  }
+
+  choice->Clear();
+
+  dirp = opendir("/dev");
+  if (dirp == NULL)
+  {
+    printf("Warning: can't open config directory %s\n", dir_path);
+    return;
+  }
+
+  while ((d = readdir(dirp)))
+  {
+    if (d->d_type == DT_CHR && !strncmp(d->d_name, "ttyUSB", 6))
+    {
+      if(!line.empty() && line == d->d_name)
+      {
+        choice->SetSelection(choice->Append(wxString(d->d_name, wxConvUTF8)));
+      }
+      else
+      {
+        choice->Append(wxString(d->d_name, wxConvUTF8));
+      }
+    }
+  }
+
+  closedir(dirp);
+}
+
+static void read_filenames(wxChoice* choice)
+{
+    DIR *dirp;
+    char dir_path[PATH_MAX];
+    struct dirent *d;
+    string filename = "";
+    string line = "";
+
+    filename.append(homedir);
+    filename.append("/.sixemugui-serial/default");
+    ifstream infile (filename.c_str());
+    if ( infile.is_open() )
+    {
+        if( infile.good() )
+        {
+            getline (infile,line);
+        }
+        infile.close();
+    }
+
+    choice->Clear();
+
+    snprintf(dir_path, sizeof(dir_path), "%s/%s", homedir, CONFIG_DIR);
+    dirp = opendir(dir_path);
+    if (dirp == NULL)
+    {
+      printf("Warning: can't open config directory %s\n", dir_path);
+      return;
+    }
+
+    while ((d = readdir(dirp)))
+    {
+      if (d->d_type == DT_REG)
+      {
+        if(!line.empty() && line == d->d_name)
+        {
+          choice->SetSelection(choice->Append(wxString(d->d_name, wxConvUTF8)));
+        }
+        else
+        {
+          choice->Append(wxString(d->d_name, wxConvUTF8));
+        }
+      }
+    }
+
+    closedir(dirp);
+}
+
+static void read_frequency(wxChoice* choice)
+{
+  string filename = "";
+  string line = "";
+
+  filename.append(homedir);
+  filename.append("/.sixemugui-serial/frequency");
+  ifstream infile (filename.c_str());
+  if ( infile.is_open() )
+  {
+      if( infile.good() )
+      {
+          getline (infile,line);
+          choice->SetSelection(choice->FindString(wxString(line.c_str(), wxConvUTF8)));
+      }
+      infile.close();
+  }
+}
+#endif
 
 sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
 {
@@ -194,7 +319,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer11;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixemugui-serial"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(412,340));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
@@ -204,16 +329,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("Device"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
     FlexGridSizer3->Add(StaticText3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Choice3 = new wxChoice(Panel1, ID_CHOICE3, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE3"));
-    Choice3->Append(_("COM1"));
-    Choice3->Append(_("COM2"));
-    Choice3->Append(_("COM3"));
-    Choice3->Append(_("COM4"));
-    Choice3->Append(_("COM5"));
-    Choice3->Append(_("COM6"));
-    Choice3->Append(_("COM7"));
-    Choice3->Append(_("COM8"));
-    Choice3->Append(_("COM9"));
-    Choice3->Append(_("COM10"));
+    Choice3->Append(wxEmptyString);
     FlexGridSizer3->Add(Choice3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2->Add(FlexGridSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -226,6 +342,8 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Choice1->SetSelection( Choice1->Append(_("100")) );
     Choice1->Append(_("125"));
     Choice1->Append(_("250"));
+    Choice1->Append(_("333"));
+    Choice1->Append(_("500"));
     FlexGridSizer2->Add(Choice1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, _("Hz"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
     FlexGridSizer2->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -281,7 +399,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(2,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     SingleInstanceChecker1.Create(_T("Sixemugui-serial_") + wxGetUserId() + _T("_Guard"));
-
+    
     Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBoxCalibrate);
     Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox2Click);
     Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox3Click);
@@ -295,6 +413,10 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
         wxMessageBox( wxT("Sixemugui is already running!"), wxT("Error"), wxICON_ERROR);
         exit(-1);
     }
+
+#ifndef WIN32
+    homedir = getpwuid(getuid())->pw_dir;
+#endif
 
     read_filenames(Choice4);
     read_frequency(Choice1);
@@ -327,15 +449,20 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     int refresh;
     char crefresh[3];
 
-//    if(CheckBox3->IsChecked())
-//    {
-//        command.append("gnome-terminal -e \"");
-//    }
-//    else
-//    {
-//        command.append("/bin/bash -c \"");
-//    }
-    command.append(" emuclient.exe --precision 16 --serial");
+#ifdef WIN32
+    command.append("emuclient.exe");
+#else
+    if(CheckBox3->IsChecked())
+    {
+        command.append("gnome-terminal -e \"");
+    }
+    else
+    {
+        command.append("/bin/bash -c \"");
+    }
+    command.append(" emuclient");
+#endif
+    command.append(" --precision 16 --serial");
     if(!CheckBox1->IsChecked())
     {
         command.append(" --nograb");
@@ -347,6 +474,9 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     snprintf(crefresh, sizeof(crefresh), "%d", refresh);
     command.append(crefresh);
     command.append(" --port ");
+#ifndef WIN32
+    command.append("/dev/");
+#endif
     command.append(Choice3->GetStringSelection().mb_str());
     if(CheckBox2->IsChecked())
     {
@@ -356,12 +486,17 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     {
         command.append(" --status");
     }
-//    command.append("\"");
+    command.append("\"");
 
-    cout << command << endl;
+    //cout << command << endl;
 
     Button3->Disable();
+#ifdef WIN32
     filename.append("default");
+#else
+    filename.append(homedir);
+    filename.append("/.sixemugui-serial/default");
+#endif
     ofstream outfile (filename.c_str(), ios_base::trunc);
     if(outfile.is_open())
     {
@@ -369,14 +504,21 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
         outfile.close();
     }
     filename.erase();
+#ifdef WIN32
     filename.append("frequency");
+#else
+    filename.append(homedir);
+    filename.append("/.sixemugui-serial/frequency");
+#endif
     ofstream outfile2 (filename.c_str(), ios_base::trunc);
     if(outfile2.is_open())
     {
         outfile2 << Choice1->GetStringSelection().mb_str() << endl;
         outfile2.close();
     }
+
     system(command.c_str());
+
     Button3->Enable();
 }
 
