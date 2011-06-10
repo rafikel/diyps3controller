@@ -1,7 +1,7 @@
 prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
 confdir=$(DESTDIR)/etc/emuclient
-BINS=emu emu-serial emuclient sixaddr bdaddr
+BINS=emu emuclient sixaddr bdaddr
 CC=gcc
 CFLAGS=-Wall -g
 LIB=-L../libsdl/lib -lSDL -lxml2 -lXi
@@ -18,7 +18,7 @@ emu: emu.o sixaxis.o dump.o l2cap_con.o bt_utils.o
 emu-serial: emu-serial.o sixaxis.o dump.o
 	$(CC) -o $@ $^
 
-emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o config_reader.o sdl_tools.o tcp_con.o calibration.o
+emuclient: emuclient.o sixaxis.o dump.o macros.o config.o conversion.o config_writter.o config_reader.o sdl_tools.o tcp_con.o calibration.o serial_con.o lin_serial_con.o
 	$(CC) -o $@ $^ $(LIB)
 
 sixaddr: utils/sixaddr.c
