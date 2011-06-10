@@ -17,6 +17,8 @@
 #include <sys/socket.h>
 #include <poll.h>
 #include <termios.h>
+#include <sys/resource.h>
+#include <sched.h>
 #else
 #include <winsock2.h>
 #endif
@@ -26,7 +28,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
-#include <sys/resource.h>
 
 static int debug = 0;
 
@@ -270,7 +271,13 @@ int main(int argc, char *argv[])
 #endif
 
 #ifndef WIN32
-  setpriority(PRIO_PROCESS, getpid(), -20);
+  /*
+   * Set highest priority & scheduler policy.
+   */
+  struct sched_param p = {.sched_priority = 99};
+
+  sched_setscheduler(0, SCHED_FIFO, &p);
+  //setpriority(PRIO_PROCESS, getpid(), -20);
 
   setlinebuf(stdout);
 #endif
