@@ -536,7 +536,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
 
     if(system(command.c_str()) != 0)
     {
-        wxMessageBox( wxT("Connection error!\nPlease check the serial device!"), wxT("Error"), wxICON_ERROR);
+        wxMessageBox( wxT("Connection error!\nPlease check the USB to serial device!"), wxT("Error"), wxICON_ERROR);
     }
 
     Button3->Enable();
