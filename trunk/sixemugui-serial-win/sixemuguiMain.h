@@ -50,7 +50,7 @@ class sixemuguiFrame: public wxFrame
         static const long ID_STATICTEXT3;
         static const long ID_COMBOBOX1;
         static const long ID_STATICTEXT1;
-        static const long ID_CHOICE1;
+        static const long ID_COMBOBOX2;
         static const long ID_STATICTEXT2;
         static const long ID_CHECKBOX1;
         static const long ID_CHECKBOX4;
@@ -78,7 +78,7 @@ class sixemuguiFrame: public wxFrame
         wxChoice* Choice4;
         wxCheckBox* CheckBox4;
         wxComboBox* ComboBox1;
-        wxChoice* Choice1;
+        wxComboBox* ComboBox2;
         //*)
 
         DECLARE_EVENT_TABLE()

@@ -73,7 +73,7 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 const long sixemuguiFrame::ID_STATICTEXT3 = wxNewId();
 const long sixemuguiFrame::ID_COMBOBOX1 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT1 = wxNewId();
-const long sixemuguiFrame::ID_CHOICE1 = wxNewId();
+const long sixemuguiFrame::ID_COMBOBOX2 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT2 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX1 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX4 = wxNewId();
@@ -165,7 +165,7 @@ static void read_devices(wxComboBox* choice)
   }
 }
 
-static void read_frequency(wxChoice* choice)
+static void read_frequency(wxComboBox* choice)
 {
   string filename = "";
   string line = "";
@@ -278,7 +278,7 @@ static void read_filenames(wxChoice* choice)
     closedir(dirp);
 }
 
-static void read_frequency(wxChoice* choice)
+static void read_frequency(wxComboBox* choice)
 {
   string filename = "";
   string line = "";
@@ -320,7 +320,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer11;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixemugui-serial"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(412,370));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
@@ -338,13 +338,11 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer2 = new wxFlexGridSizer(1, 3, 0, 0);
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Update frequency "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     FlexGridSizer2->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    Choice1 = new wxChoice(Panel1, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
-    Choice1->SetSelection( Choice1->Append(_("100")) );
-    Choice1->Append(_("125"));
-    Choice1->Append(_("250"));
-    Choice1->Append(_("333"));
-    Choice1->Append(_("500"));
-    FlexGridSizer2->Add(Choice1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    ComboBox2 = new wxComboBox(Panel1, ID_COMBOBOX2, wxEmptyString, wxDefaultPosition, wxSize(75,-1), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX2"));
+    ComboBox2->SetSelection( ComboBox2->Append(_("100")) );
+    ComboBox2->Append(_("125"));
+    ComboBox2->Append(_("250"));
+    FlexGridSizer2->Add(ComboBox2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, _("Hz"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
     FlexGridSizer2->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer5->Add(FlexGridSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -373,7 +371,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer9 = new wxFlexGridSizer(1, 2, 0, 0);
     StaticBoxSizer8 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Config"));
     FlexGridSizer4 = new wxFlexGridSizer(0, 3, 0, 0);
-    Choice4 = new wxChoice(Panel1, ID_CHOICE4, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE4"));
+    Choice4 = new wxChoice(Panel1, ID_CHOICE4, wxDefaultPosition, wxSize(225,-1), 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE4"));
     FlexGridSizer4->Add(Choice4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer8->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer9->Add(StaticBoxSizer8, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -401,7 +399,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(2,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     SingleInstanceChecker1.Create(_T("Sixemugui-serial_") + wxGetUserId() + _T("_Guard"));
-
+    
     Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBoxCalibrate);
     Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox2Click);
     Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox3Click);
@@ -421,7 +419,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
 #endif
 
     read_filenames(Choice4);
-    read_frequency(Choice1);
+    read_frequency(ComboBox2);
     read_devices(ComboBox1);
 
     Refresh();
@@ -472,7 +470,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     command.append(" --config ");
     command.append(Choice4->GetStringSelection().mb_str());
     command.append(" --refresh ");
-    refresh = 1000 / wxAtoi(Choice1->GetStringSelection());
+    refresh = 1000 / wxAtoi(ComboBox2->GetStringSelection());
     snprintf(crefresh, sizeof(crefresh), "%d", refresh);
     command.append(crefresh);
     command.append(" --port ");
@@ -517,7 +515,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     ofstream outfile2 (filename.c_str(), ios_base::trunc);
     if(outfile2.is_open())
     {
-        outfile2 << Choice1->GetStringSelection().mb_str() << endl;
+        outfile2 << ComboBox2->GetStringSelection().mb_str() << endl;
         outfile2.close();
     }
     filename.erase();
