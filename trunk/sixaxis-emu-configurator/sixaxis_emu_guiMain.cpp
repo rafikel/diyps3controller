@@ -17,7 +17,7 @@
 #endif
 #include <SDL/SDL.h>
 #include "wx/numdlg.h"
-
+#include <math.h>
 
 //(*InternalHeaders(sixaxis_emu_guiFrame)
 #include <wx/intl.h>
@@ -1772,9 +1772,11 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
         {
             new_value = dialog2.GetValue();
 
+#ifndef WIN32
             evcatch.run(device_type, _("button"));
             device_name = evcatch.GetDeviceName();
             device_id = evcatch.GetDeviceId();
+#endif
 
             save_current();
 
@@ -1787,16 +1789,27 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
               axisMappers = config->GetAxisMapperList();
               for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
               {
-                if(it->GetDevice()->GetType() == device_type && it->GetDevice()->GetName() == device_name && it->GetDevice()->GetId() == device_id)
+                if(it->GetDevice()->GetType() == device_type
+#ifndef WIN32
+                    && it->GetDevice()->GetName() == device_name && it->GetDevice()->GetId() == device_id
+#endif
+                )
                 {
-                    double val;
+                    double val, exp;
                     wxString sval = it->GetEvent()->GetMultiplier();
+                    wxString sexp = it->GetEvent()->GetExponent();
+#ifndef WIN32
                     sval.Replace(_("."), _(","));
-                    if(sval.ToDouble(&val))
+                    sexp.Replace(_("."), _(","));
+#endif
+                    if(sval.ToDouble(&val) && sexp.ToDouble(&exp))
                     {
-                        val = val * old_value / new_value;
+                        val = val * pow((double)old_value / new_value, exp);
                         sval.Printf(wxT("%.2f"), val);
+#ifndef WIN32
                         sval.Replace(_(","), _("."));
+                        sexp.Replace(_(","), _("."));
+#endif
                         it->GetEvent()->SetMultiplier(sval);
                     }
                 }
