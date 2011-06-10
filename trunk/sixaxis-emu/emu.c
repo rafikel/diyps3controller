@@ -21,13 +21,14 @@
 #include <poll.h>
 #include <bluetooth/bluetooth.h>
 #include "bt_utils.h"
+#include <sys/resource.h>
+#include <sched.h>
 #else
 #include <winsock2.h>
 #endif
 #include <sys/types.h>
 #include "sixaxis.h"
 #include "dump.h"
-#include <sys/resource.h>
 
 #ifdef WIN32
 #define SHUT_RDWR SD_BOTH
@@ -333,7 +334,14 @@ int main(int argc, char *argv[])
 #endif
 
 #ifndef WIN32
-    setpriority(PRIO_PROCESS, getpid(), -20);
+    /*
+     * Set highest priority & scheduler policy.
+     */
+    struct sched_param p = {.sched_priority = 99};
+
+    sched_setscheduler(0, SCHED_FIFO, &p);
+    
+    //setpriority(PRIO_PROCESS, getpid(), -20); only useful with SCHED_OTHER
 
     setlinebuf(stdout);
 #endif
