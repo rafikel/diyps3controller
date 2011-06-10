@@ -834,7 +834,7 @@ void sixstatusFrame::OnIdle(wxIdleEvent& evt)
     if(!cin)
     {
         cout << "no more cin: exiting" << endl;
-        exit(-1);
+        exit(0);
     }
 }
 #else
@@ -885,7 +885,7 @@ void sixstatusFrame::OnTimer(wxTimerEvent& evt)
     if(!cin)
     {
         cout << "no more cin: exiting" << endl;
-        exit(-1);
+        exit(0);
     }
 }
 #endif
