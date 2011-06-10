@@ -32,28 +32,37 @@ int serial;
 int lin_serial_connect(char* portname)
 {
   struct termios options;
+  int ret = 0;
 
   printf("connecting to %s\n", portname);
 
   if ((serial = open(portname, O_RDWR | O_NOCTTY | O_NDELAY)) < 0)
   {
     printf("can't connect to %s\n", portname);
-    exit(-1);
+    ret = -1;
+  }
+  else
+  {
+    tcgetattr(serial, &options);
+    cfsetispeed(&options, BAUDRATE);
+    cfsetospeed(&options, BAUDRATE);
+    options.c_cflag |= (CLOCAL | CREAD);
+    options.c_cflag &= ~PARENB;
+    options.c_cflag &= ~CSTOPB;
+    options.c_cflag &= ~CSIZE;
+    options.c_cflag |= CS8;
+    if(tcsetattr(serial, TCSANOW, &options) < 0)
+    {
+      printf("can't set serial port options\n");
+      ret = -1;
+    }
+    else
+    {
+      printf("connected\n");
+    }
   }
 
-  tcgetattr(serial, &options);
-  cfsetispeed(&options, BAUDRATE);
-  cfsetospeed(&options, BAUDRATE);
-  options.c_cflag |= (CLOCAL | CREAD);
-  tcsetattr(serial, TCSANOW, &options);
-  options.c_cflag &= ~PARENB;
-  options.c_cflag &= ~CSTOPB;
-  options.c_cflag &= ~CSIZE;
-  options.c_cflag |= CS8;
-
-  printf("connected\n");
-
-  return 0;
+  return ret;
 }
 
 /*
