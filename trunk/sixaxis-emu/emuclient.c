@@ -14,9 +14,10 @@
 #include <sys/socket.h>
 #include <pwd.h>
 #include "tcp_con.h"
+#include <sys/resource.h>
+#include <sched.h>
 #else
 #include <windows.h>
-#include "win_serial_con.h"
 #define sleep Sleep
 #endif
 #include <unistd.h>
@@ -36,7 +37,7 @@
 #include <sys/time.h>
 #include "calibration.h"
 #include <libxml/parser.h>
-#include <sys/resource.h>
+#include "serial_con.h"
 
 #define EVENT_BUFFER_SIZE 256
 #define DEFAULT_POSTPONE_COUNT 3
@@ -100,12 +101,20 @@ int main(int argc, char *argv[])
   int time_to_sleep;
 
 #ifndef WIN32
-  setpriority(PRIO_PROCESS, getpid(), -20);
+  /*
+   * Set highest priority & scheduler policy.
+   */
+  struct sched_param p = {.sched_priority = 99};
+
+  sched_setscheduler(0, SCHED_FIFO, &p);
+  //setpriority(PRIO_PROCESS, getpid(), -20); only useful with SCHED_OTHER
 
   setlinebuf(stdout);
   homedir = getpwuid(getuid())->pw_dir;
 
   system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient");
+#else
+  SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
 #endif
 
   for (i = 1; i < argc; ++i)
@@ -120,12 +129,10 @@ int main(int argc, char *argv[])
       config_file = argv[++i];
       read = 1;
     }
-#ifdef WIN32
     else if (!strcmp(argv[i], "--port") && i < argc)
     {
       portname = argv[++i];
     }
-#endif
     else if (!strcmp(argv[i], "--status"))
     {
       display = 1;
@@ -155,10 +162,6 @@ int main(int argc, char *argv[])
 //    }
 //#endif
   }
-
-#ifdef WIN32
-  SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
-#endif
 
 #ifdef WIN32
   if (!portname)
@@ -204,7 +207,14 @@ int main(int argc, char *argv[])
   }
 
 #ifndef WIN32
-  if(tcp_connect() < 0)
+  if(serial)
+  {
+    if (serial_connect(portname) < 0)
+    {
+      err(1, "serial_connect");
+    }
+  }
+  else if(tcp_connect() < 0)
   {
     err(1, "tcp_connect");
   }
@@ -310,7 +320,14 @@ int main(int argc, char *argv[])
     }
 
 #ifndef WIN32
-    tcp_send(serial);
+    if(serial)
+    {
+      serial_send();
+    }
+    else
+    {
+      tcp_send(serial);
+    }
 #else
     serial_send();
 #endif
