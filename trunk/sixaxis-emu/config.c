@@ -460,7 +460,7 @@ void process_event(SDL_Event* event)
   double exp;
   int dead_zone;
   e_shape shape;
-  int value;
+  int value = 0;
   unsigned int nb_controls = 0;
   SDL_Event event_jb;
   double mx;
