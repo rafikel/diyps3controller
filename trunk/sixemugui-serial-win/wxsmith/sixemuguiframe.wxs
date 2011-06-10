@@ -2,7 +2,7 @@
 <wxsmith>
 	<object class="wxFrame" name="sixemuguiFrame">
 		<title>Sixemugui-serial</title>
-		<size>412,340</size>
+		<size>412,370</size>
 		<id_arg>0</id_arg>
 		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
 			<size>0,0</size>
@@ -26,7 +26,7 @@
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
-									<object class="wxChoice" name="ID_CHOICE3" variable="Choice3" member="yes" />
+									<object class="wxComboBox" name="ID_COMBOBOX1" variable="ComboBox1" member="yes" />
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
@@ -189,7 +189,7 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>

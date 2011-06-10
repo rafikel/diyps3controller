@@ -21,6 +21,7 @@
 #include <wx/button.h>
 #include <wx/utils.h>
 #include <wx/frame.h>
+#include <wx/combobox.h>
 #include <wx/statusbr.h>
 //*)
 
@@ -47,7 +48,7 @@ class sixemuguiFrame: public wxFrame
 
         //(*Identifiers(sixemuguiFrame)
         static const long ID_STATICTEXT3;
-        static const long ID_CHOICE3;
+        static const long ID_COMBOBOX1;
         static const long ID_STATICTEXT1;
         static const long ID_CHOICE1;
         static const long ID_STATICTEXT2;
@@ -65,7 +66,6 @@ class sixemuguiFrame: public wxFrame
 
         //(*Declarations(sixemuguiFrame)
         wxStaticText* StaticText2;
-        wxChoice* Choice3;
         wxCheckBox* CheckBox3;
         wxCheckBox* CheckBox2;
         wxPanel* Panel1;
@@ -77,6 +77,7 @@ class sixemuguiFrame: public wxFrame
         wxStatusBar* StatusBar1;
         wxChoice* Choice4;
         wxCheckBox* CheckBox4;
+        wxComboBox* ComboBox1;
         wxChoice* Choice1;
         //*)
 
