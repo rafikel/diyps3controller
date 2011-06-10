@@ -104,11 +104,11 @@
         </axis>
         <axis id="rstick x">
           <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="x" dead_zone="22" multiplier="0.80" exponent="1" shape="Circle"/>
+          <event type="axis" id="x" dead_zone="22" multiplier="8.50" exponent="0.39" shape="Circle"/>
         </axis>
         <axis id="rstick y">
           <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="y" dead_zone="22" multiplier="1.80" exponent="1" shape="Circle"/>
+          <event type="axis" id="y" dead_zone="22" multiplier="24.29" exponent="0.39" shape="Circle"/>
         </axis>
       </axis_map>
     </configuration>
@@ -215,11 +215,11 @@
         </axis>
         <axis id="rstick x">
           <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="x" dead_zone="22" multiplier="2" exponent="0.8" shape="Circle"/>
+          <event type="axis" id="x" dead_zone="22" multiplier="0.70" exponent="0.80" shape="Circle"/>
         </axis>
         <axis id="rstick y">
           <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="y" dead_zone="22" multiplier="3" exponent="0.8" shape="Circle"/>
+          <event type="axis" id="y" dead_zone="22" multiplier="1.20" exponent="0.80" shape="Circle"/>
         </axis>
       </axis_map>
     </configuration>
