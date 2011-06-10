@@ -486,7 +486,9 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     {
         command.append(" --status");
     }
+#ifndef WIN32
     command.append("\"");
+#endif
 
     //cout << command << endl;
 
