@@ -1,4 +1,4 @@
-DIRS=sixaxis-emu sixaxis-emu-configurator sixemugui sixemugui-serial-win sixstatus
+DIRS=sixaxis-emu sixaxis-emu-configurator sixemugui sixemugui-serial sixstatus
 
 all:
 	for i in $(DIRS); do cd $$i; make all; cd ..; done
