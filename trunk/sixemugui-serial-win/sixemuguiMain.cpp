@@ -448,6 +448,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     string filename = "";
     int refresh;
     char crefresh[3];
+    int frequency;
 
 #ifdef WIN32
     command.append("emuclient.exe");
@@ -470,14 +471,22 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     command.append(" --config ");
     command.append(Choice4->GetStringSelection().mb_str());
     command.append(" --refresh ");
-    refresh = 1000 / wxAtoi(ComboBox2->GetStringSelection());
+    frequency = wxAtoi(ComboBox2->GetValue());
+    if(frequency)
+    {
+      refresh = 1000 / frequency;
+    }
+    else
+    {
+      refresh = 10;
+    }
     snprintf(crefresh, sizeof(crefresh), "%d", refresh);
     command.append(crefresh);
     command.append(" --port ");
 #ifndef WIN32
     command.append("/dev/");
 #endif
-    command.append(ComboBox1->GetStringSelection().mb_str());
+    command.append(ComboBox1->GetValue().mb_str());
     if(CheckBox2->IsChecked())
     {
         command.append(" --status | sixstatus");
