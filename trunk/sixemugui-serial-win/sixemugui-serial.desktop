@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=0.1
-Name=Sixemugui-serial
-GenericName=Sixemugui-serial
-Icon=
-Exec=/usr/bin/sixemugui-serial
-Categories=Game;
