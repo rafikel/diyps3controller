@@ -166,16 +166,16 @@ void serial_send()
       printf("\n");
     }
 
-    if (display)
-    {
-      sixaxis_dump_state(state, 0);
-    }
-
 #ifdef WIN32
     win_serial_send(&data);
 #else
     lin_serial_send(&data);
 #endif
+
+    if (display)
+    {
+      sixaxis_dump_state(state, 0);
+    }
 
     controller[0].send_command = 0;
   }
