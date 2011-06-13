@@ -36,6 +36,7 @@ class sixstatusFrame: public wxFrame
         void OnTimer(wxTimerEvent& evt);
         void OnIdle(wxIdleEvent& evt);
         void TextColor();
+        void Update();
         wxTimer monTimer;
 
         //(*Identifiers(sixstatusFrame)

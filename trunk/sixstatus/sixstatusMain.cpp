@@ -454,7 +454,7 @@ void read_status(void)
                 converter >> hex >> bps;
             }
         }
-        usleep(1000);
+        //usleep(1000);
         //cout << lstick_x << " " << lstick_y << " " << rstick_x << " " << rstick_y << endl;
     }
 }
@@ -669,10 +669,9 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnAbout);
     //*)
 
+#ifdef WIN32
     monTimer.SetOwner(this, 1);
     monTimer.Start(10);
-
-#ifdef WIN32
     Connect(1, wxEVT_TIMER,(wxObjectEventFunction)&sixstatusFrame::OnTimer);
 #else
     Connect( wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(sixstatusFrame::OnIdle) );
@@ -701,192 +700,291 @@ void sixstatusFrame::OnAbout(wxCommandEvent& event)
     wxMessageBox(msg, _("Welcome to..."));
 }
 
+int changed = 0;
+
+static void set_text_color(wxStaticText* text, wxColour colour)
+{
+  if(text->GetForegroundColour() != colour)
+  {
+    text->SetForegroundColour(colour);
+  }
+}
+
 static void clamp(wxGauge* Gauge, int val, wxStaticText* Text)
 {
     int high = Gauge->GetRange();
     if(val < 0)
     {
-        Gauge->SetValue(0);
+        if(Gauge->GetValue() != 0)
+        {
+          changed = 1;
+          Gauge->SetValue(0);
 #ifndef WIN32
-        Text->SetForegroundColour( wxColour(255, 0, 0) );
+          set_text_color(Text, wxColour(255, 0, 0));
 #else
-        Gauge->SetForegroundColour( wxColour(255, 0, 0) );
+          Gauge->SetForegroundColour( wxColour(255, 0, 0) );
 #endif
+        }
     }
     else if(val > high)
     {
-        Gauge->SetValue(high);
+        if(Gauge->GetValue() != high)
+        {
+          changed = 1;
+          Gauge->SetValue(high);
 #ifndef WIN32
-        Text->SetForegroundColour( wxColour(255, 0, 0) );
+          set_text_color(Text, wxColour(255, 0, 0));
 #else
-        Gauge->SetForegroundColour( wxColour(255, 0, 0) );
+          Gauge->SetForegroundColour( wxColour(255, 0, 0) );
 #endif
+        }
     }
     else
     {
-        Gauge->SetValue(val);
+        if(Gauge->GetValue() != val)
+        {
+          changed = 1;
+          Gauge->SetValue(val);
 #ifndef WIN32
-        Text->SetForegroundColour( wxColour(0, 0, 0) );
+          set_text_color(Text, wxColour(0, 0, 0));
 #else
-        Gauge->SetForegroundColour( wxColour(51, 153, 255) );
+          Gauge->SetForegroundColour( wxColour(51, 153, 255) );
 #endif
+        }
     }
 }
 
 void sixstatusFrame::TextColor()
 {
-  StaticText43->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText38->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText40->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText21->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText22->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText24->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText26->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText28->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText30->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText34->SetForegroundColour( wxColour(0, 0, 0) );
-  StaticText35->SetForegroundColour( wxColour(0, 0, 0) );
   switch(current_cal)
   {
     case NONE:
-      StaticText43->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(255, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case MC:
-      StaticText38->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(255, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case CC:
-      StaticText40->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(255, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case MX:
-      StaticText21->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(255, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case MY:
-      StaticText22->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(255, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case DZX:
-      StaticText24->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(255, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case DZY:
-      StaticText26->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(255, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case DZS:
-      StaticText34->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(255, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case RD:
-      StaticText35->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(255, 0, 0));
       break;
     case EX:
-      StaticText28->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(255, 0, 0));
+      set_text_color(StaticText30, wxColour(0, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
     case EY:
-      StaticText30->SetForegroundColour( wxColour(255, 0, 0) );
+      set_text_color(StaticText43, wxColour(0, 0, 0));
+      set_text_color(StaticText38, wxColour(0, 0, 0));
+      set_text_color(StaticText40, wxColour(0, 0, 0));
+      set_text_color(StaticText21, wxColour(0, 0, 0));
+      set_text_color(StaticText22, wxColour(0, 0, 0));
+      set_text_color(StaticText24, wxColour(0, 0, 0));
+      set_text_color(StaticText26, wxColour(0, 0, 0));
+      set_text_color(StaticText28, wxColour(0, 0, 0));
+      set_text_color(StaticText30, wxColour(255, 0, 0));
+      set_text_color(StaticText34, wxColour(0, 0, 0));
+      set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
   }
+}
+
+static void set_text(wxStaticText* text, string s)
+{
+  wxString ws = wxString(s.c_str(), wxConvUTF8);
+  if(text->GetLabel() != ws)
+  {
+    text->SetLabel(ws);
+  }
+}
+
+void sixstatusFrame::Update()
+{
+    changed = 0;
+    if(Gauge1->GetRange() != max_axis_value)
+    {
+      Gauge1->SetRange(max_axis_value);
+      Gauge2->SetRange(max_axis_value);
+      Gauge3->SetRange(max_axis_value);
+      Gauge4->SetRange(max_axis_value);
+    }
+    clamp(Gauge1, mean_axis_value+lstick_x, StaticText1);
+    clamp(Gauge2, mean_axis_value-lstick_y, StaticText4);
+    clamp(Gauge3, mean_axis_value+rstick_x, StaticText3);
+    clamp(Gauge4, mean_axis_value-rstick_y, StaticText2);
+    clamp(Gauge5, bup, StaticText5);
+    clamp(Gauge6, bdown, StaticText6);
+    clamp(Gauge7, bright, StaticText7);
+    clamp(Gauge8, bleft, StaticText8);
+    clamp(Gauge9, br1, StaticText9);
+    clamp(Gauge10, br2, StaticText10);
+    clamp(Gauge11, bl1, StaticText11);
+    clamp(Gauge12, bl2, StaticText12);
+    clamp(Gauge13, bcircle, StaticText13);
+    clamp(Gauge14, bsquare, StaticText14);
+    clamp(Gauge15, bcross, StaticText15);
+    clamp(Gauge16, btriangle, StaticText16);
+    clamp(Gauge17, br3, StaticText17);
+    clamp(Gauge18, bl3, StaticText18);
+    clamp(Gauge31, bstart, StaticText31);
+    clamp(Gauge32, bselect, StaticText32);
+    clamp(Gauge33, bps, StaticText33);
+
+    set_text(StaticText43, status);
+    set_text(StaticText38, cm);
+    set_text(StaticText40, cc);
+    set_text(StaticText21, mul_x);
+    set_text(StaticText22, xyratio);
+    set_text(StaticText24, dz_x);
+    set_text(StaticText26, dz_y);
+    set_text(StaticText28, exponent_x);
+    set_text(StaticText30, exponent_y);
+    set_text(StaticText34, shape);
+    set_text(StaticText35, radius);
+
+    TextColor();
+
+    //cout << mean_axis_value+lstick_x << " " << mean_axis_value-lstick_y << " " << mean_axis_value+rstick_x << " " << mean_axis_value-rstick_y << endl;
+
+    if(!cin)
+    {
+        cout << "no more cin: exiting" << endl;
+        exit(0);
+    }
 }
 
 #ifndef WIN32
 void sixstatusFrame::OnIdle(wxIdleEvent& evt)
 {
-    Gauge1->SetRange(max_axis_value);
-    Gauge2->SetRange(max_axis_value);
-    Gauge3->SetRange(max_axis_value);
-    Gauge4->SetRange(max_axis_value);
-    clamp(Gauge1, mean_axis_value+lstick_x, StaticText1);
-    clamp(Gauge2, mean_axis_value-lstick_y, StaticText4);
-    clamp(Gauge3, mean_axis_value+rstick_x, StaticText3);
-    clamp(Gauge4, mean_axis_value-rstick_y, StaticText2);
-    clamp(Gauge5, bup, StaticText5);
-    clamp(Gauge6, bdown, StaticText6);
-    clamp(Gauge7, bright, StaticText7);
-    clamp(Gauge8, bleft, StaticText8);
-    clamp(Gauge9, br1, StaticText9);
-    clamp(Gauge10, br2, StaticText10);
-    clamp(Gauge11, bl1, StaticText11);
-    clamp(Gauge12, bl2, StaticText12);
-    clamp(Gauge13, bcircle, StaticText13);
-    clamp(Gauge14, bsquare, StaticText14);
-    clamp(Gauge15, bcross, StaticText15);
-    clamp(Gauge16, btriangle, StaticText16);
-    clamp(Gauge17, br3, StaticText17);
-    clamp(Gauge18, bl3, StaticText18);
-    clamp(Gauge31, bstart, StaticText31);
-    clamp(Gauge32, bselect, StaticText32);
-    clamp(Gauge33, bps, StaticText33);
+    Update();
 
-    StaticText43->SetLabel(wxString(status.c_str(), wxConvUTF8));
-    StaticText38->SetLabel(wxString(cm.c_str(), wxConvUTF8));
-    StaticText40->SetLabel(wxString(cc.c_str(), wxConvUTF8));
-    StaticText21->SetLabel(wxString(mul_x.c_str(), wxConvUTF8));
-    StaticText22->SetLabel(wxString(xyratio.c_str(), wxConvUTF8));
-    StaticText24->SetLabel(wxString(dz_x.c_str(), wxConvUTF8));
-    StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
-    StaticText28->SetLabel(wxString(exponent_x.c_str(), wxConvUTF8));
-    StaticText30->SetLabel(wxString(exponent_y.c_str(), wxConvUTF8));
-    StaticText34->SetLabel(wxString(shape.c_str(), wxConvUTF8));
-    StaticText35->SetLabel(wxString(radius.c_str(), wxConvUTF8));
-
-    TextColor();
-
-    //cout << mean_axis_value+lstick_x << " " << mean_axis_value-lstick_y << " " << mean_axis_value+rstick_x << " " << mean_axis_value-rstick_y << endl;
+    if(changed)
+    {
+      Refresh();
+    }
 
     usleep(10000);
-
-    if(!cin)
-    {
-        cout << "no more cin: exiting" << endl;
-        exit(0);
-    }
+    evt.RequestMore();
 }
 #else
 void sixstatusFrame::OnTimer(wxTimerEvent& evt)
 {
-    Gauge1->SetRange(max_axis_value);
-    Gauge2->SetRange(max_axis_value);
-    Gauge3->SetRange(max_axis_value);
-    Gauge4->SetRange(max_axis_value);
-    clamp(Gauge1, mean_axis_value+lstick_x, StaticText1);
-    clamp(Gauge2, mean_axis_value-lstick_y, StaticText4);
-    clamp(Gauge3, mean_axis_value+rstick_x, StaticText3);
-    clamp(Gauge4, mean_axis_value-rstick_y, StaticText2);
-    clamp(Gauge5, bup, StaticText5);
-    clamp(Gauge6, bdown, StaticText6);
-    clamp(Gauge7, bright, StaticText7);
-    clamp(Gauge8, bleft, StaticText8);
-    clamp(Gauge9, br1, StaticText9);
-    clamp(Gauge10, br2, StaticText10);
-    clamp(Gauge11, bl1, StaticText11);
-    clamp(Gauge12, bl2, StaticText12);
-    clamp(Gauge13, bcircle, StaticText13);
-    clamp(Gauge14, bsquare, StaticText14);
-    clamp(Gauge15, bcross, StaticText15);
-    clamp(Gauge16, btriangle, StaticText16);
-    clamp(Gauge17, br3, StaticText17);
-    clamp(Gauge18, bl3, StaticText18);
-    clamp(Gauge31, bstart, StaticText31);
-    clamp(Gauge32, bselect, StaticText32);
-    clamp(Gauge33, bps, StaticText33);
-
-    StaticText43->SetLabel(wxString(status.c_str(), wxConvUTF8));
-    StaticText38->SetLabel(wxString(cm.c_str(), wxConvUTF8));
-    StaticText40->SetLabel(wxString(cc.c_str(), wxConvUTF8));
-    StaticText21->SetLabel(wxString(mul_x.c_str(), wxConvUTF8));
-    StaticText22->SetLabel(wxString(xyratio.c_str(), wxConvUTF8));
-    StaticText24->SetLabel(wxString(dz_x.c_str(), wxConvUTF8));
-    StaticText26->SetLabel(wxString(dz_y.c_str(), wxConvUTF8));
-    StaticText28->SetLabel(wxString(exponent_x.c_str(), wxConvUTF8));
-    StaticText30->SetLabel(wxString(exponent_y.c_str(), wxConvUTF8));
-    StaticText34->SetLabel(wxString(shape.c_str(), wxConvUTF8));
-    StaticText35->SetLabel(wxString(radius.c_str(), wxConvUTF8));
-
-    TextColor();
-
-    //cout << mean_axis_value+lstick_x << " " << mean_axis_value-lstick_y << " " << mean_axis_value+rstick_x << " " << mean_axis_value-rstick_y << endl;
-
-    if(!cin)
-    {
-        cout << "no more cin: exiting" << endl;
-        exit(0);
-    }
+    Update();
 }
 #endif
 
