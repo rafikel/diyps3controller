@@ -702,11 +702,21 @@ void sixstatusFrame::OnAbout(wxCommandEvent& event)
 
 int changed = 0;
 
+static void set_text(wxStaticText* text, string s)
+{
+  wxString ws = wxString(s.c_str(), wxConvUTF8);
+  if(text->GetLabel() != ws)
+  {
+    text->SetLabel(ws);
+  }
+}
+
 static void set_text_color(wxStaticText* text, wxColour colour)
 {
   if(text->GetForegroundColour() != colour)
   {
     text->SetForegroundColour(colour);
+    text->SetLabel(text->GetLabel());
   }
 }
 
@@ -719,11 +729,7 @@ static void clamp(wxGauge* Gauge, int val, wxStaticText* Text)
         {
           changed = 1;
           Gauge->SetValue(0);
-#ifndef WIN32
           set_text_color(Text, wxColour(255, 0, 0));
-#else
-          Gauge->SetForegroundColour( wxColour(255, 0, 0) );
-#endif
         }
     }
     else if(val > high)
@@ -732,11 +738,7 @@ static void clamp(wxGauge* Gauge, int val, wxStaticText* Text)
         {
           changed = 1;
           Gauge->SetValue(high);
-#ifndef WIN32
           set_text_color(Text, wxColour(255, 0, 0));
-#else
-          Gauge->SetForegroundColour( wxColour(255, 0, 0) );
-#endif
         }
     }
     else
@@ -745,11 +747,7 @@ static void clamp(wxGauge* Gauge, int val, wxStaticText* Text)
         {
           changed = 1;
           Gauge->SetValue(val);
-#ifndef WIN32
           set_text_color(Text, wxColour(0, 0, 0));
-#else
-          Gauge->SetForegroundColour( wxColour(51, 153, 255) );
-#endif
         }
     }
 }
@@ -901,15 +899,6 @@ void sixstatusFrame::TextColor()
       set_text_color(StaticText34, wxColour(0, 0, 0));
       set_text_color(StaticText35, wxColour(0, 0, 0));
       break;
-  }
-}
-
-static void set_text(wxStaticText* text, string s)
-{
-  wxString ws = wxString(s.c_str(), wxConvUTF8);
-  if(text->GetLabel() != ws)
-  {
-    text->SetLabel(ws);
   }
 }
 
