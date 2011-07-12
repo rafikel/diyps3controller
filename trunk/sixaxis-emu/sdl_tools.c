@@ -30,7 +30,7 @@ char* keyboardName[MAX_DEVICES] = {};
 int keyboardVirtualIndex[MAX_DEVICES] = {};
 
 static SDL_Surface *screen = NULL;
-static int grab = 1;
+static int grab = 0;
 
 /*
  * Initializes the SDL library.
@@ -61,10 +61,6 @@ int sdl_initialize()
     return 0;
   }
 
-  if (grab)
-  {
-    SDL_WM_GrabInput(SDL_GRAB_ON);
-  }
   SDL_ShowCursor(SDL_DISABLE);
 
   while ((joysticks[i] = SDL_JoystickOpen(i)))
@@ -153,6 +149,15 @@ void sdl_grab_toggle()
     SDL_WM_GrabInput(SDL_GRAB_ON);
     grab = 1;
   }
+}
+
+/*
+ * Grab the mouse.
+ */
+void sdl_grab()
+{
+  SDL_WM_GrabInput(SDL_GRAB_ON);
+  grab = 1;
 }
 
 /*

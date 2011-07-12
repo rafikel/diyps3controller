@@ -121,7 +121,6 @@ int main(int argc, char *argv[])
   {
     if (!strcmp(argv[i], "--nograb"))
     {
-      sdl_grab_toggle();
       grab = 0;
     }
     else if (!strcmp(argv[i], "--config") && i < argc)
@@ -175,11 +174,6 @@ int main(int argc, char *argv[])
   mean_axis_value = max_axis_value / 2;
 #endif
 
-  if (grab == 1)
-  {
-    sleep(1);//ugly stuff that needs to be cleaned...
-  }
-
   if (display == 1)
   {
     printf("max_axis_value: %d\n", max_axis_value);//needed by sixstatus...
@@ -199,6 +193,12 @@ int main(int argc, char *argv[])
   if (!sdl_initialize())
   {
     err(1, "can't init sdl");
+  }
+
+  if(grab)
+  {
+    sleep(1);
+    sdl_grab();
   }
 
   if (read == 1)
