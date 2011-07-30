@@ -215,6 +215,7 @@ void trigger_lookup(SDL_Event* e)
   int button;
   int up = 0;
   unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
+  int selected;
 
   switch( e->type )
   {
@@ -242,6 +243,7 @@ void trigger_lookup(SDL_Event* e)
 
   for(i=0; i<MAX_CONTROLLERS; ++i)
   {
+    selected = -1;
     for(j=0; j<MAX_CONFIGURATIONS; ++j)
     {
       if (triggers[i][j].device_type != device_type || device_id
@@ -251,26 +253,39 @@ void trigger_lookup(SDL_Event* e)
       }
       if (button == triggers[i][j].button)
       {
-        if (display)
-        {
-          printf("controller %d is switched from configuration %d", i, current_config[i]);
-        }
         if (!up)
         {
-          previous_config[i] = current_config[i];
-          current_config[i] = j;
+          if(current_config[i] == j)
+          {
+            continue;
+          }
+          if(selected < 0)
+          {
+            selected = j;
+          }
+          if(selected < current_config[i] && j > current_config[i])
+          {
+            selected = j;
+          }
         }
         else if(triggers[i][j].switch_back)
         {
-          current_config[i] = previous_config[i];
+          selected = previous_config[i];
+          break;
         }
-        if (display)
-        {
-          printf(" to %d\n", current_config[i]);
-        }
-        update_stick(&left_intensity[i][current_config[i]], i, 0);
-        update_stick(&right_intensity[i][current_config[i]], i, 1);
       }
+    }
+    if(selected > -1)
+    {
+      if (display)
+      {
+        printf("controller %d is switched from configuration %d to %d\n", i, current_config[i], selected);
+      }
+      previous_config[i] = current_config[i];
+      current_config[i] = selected;
+      update_stick(&left_intensity[i][current_config[i]], i, 0);
+      update_stick(&right_intensity[i][current_config[i]], i, 1);
+      break;
     }
   }
 }
