@@ -7,6 +7,7 @@
 #include <math.h>
 #include "conversion.h"
 #include <unistd.h>
+#include <sys/time.h>
 
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
@@ -21,6 +22,8 @@ extern e_current_cal current_cal;
 extern double axis_scale;
 extern double frequency_scale;
 extern int mean_axis_value;
+extern int refresh;
+extern int postpone_count;
 
 /*
  * This tells what's the current config of each controller.
@@ -28,9 +31,14 @@ extern int mean_axis_value;
 static int current_config[MAX_CONTROLLERS];
 
 /*
+ * This tells what's the next config of each controller.
+ */
+static int next_config[MAX_CONTROLLERS];
+static int config_delay[MAX_CONTROLLERS];
+
+/*
  * This tells what's the previous config of each controller.
  * Hackish way to switch back to previous config.
- * Only used with left mouse clic.
  */
 static int previous_config[MAX_CONTROLLERS];
 
@@ -216,6 +224,7 @@ void trigger_lookup(SDL_Event* e)
   int up = 0;
   unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
   int selected;
+  int current;
 
   switch( e->type )
   {
@@ -244,6 +253,14 @@ void trigger_lookup(SDL_Event* e)
   for(i=0; i<MAX_CONTROLLERS; ++i)
   {
     selected = -1;
+    if(next_config[i] > -1)
+    {
+      current = next_config[i];
+    }
+    else
+    {
+      current = current_config[i];
+    }
     for(j=0; j<MAX_CONFIGURATIONS; ++j)
     {
       if (triggers[i][j].device_type != device_type || device_id
@@ -255,7 +272,7 @@ void trigger_lookup(SDL_Event* e)
       {
         if (!up)
         {
-          if(current_config[i] == j)
+          if(current == j)
           {
             continue;
           }
@@ -263,7 +280,7 @@ void trigger_lookup(SDL_Event* e)
           {
             selected = j;
           }
-          if(selected < current_config[i] && j > current_config[i])
+          if(selected < current && j > current)
           {
             selected = j;
           }
@@ -277,28 +294,57 @@ void trigger_lookup(SDL_Event* e)
     }
     if(selected > -1)
     {
-      if (display)
-      {
-        printf("controller %d is switched from configuration %d to %d\n", i, current_config[i], selected);
-      }
-      previous_config[i] = current_config[i];
-      current_config[i] = selected;
-      update_stick(&left_intensity[i][current_config[i]], i, 0);
-      update_stick(&right_intensity[i][current_config[i]], i, 1);
+      next_config[i] = selected;
+      config_delay[i] = triggers[i][selected].delay / (refresh / 1000);
       break;
     }
   }
 }
 
-extern int postpone_count;
+/*
+ * Check if a config activation has to be performed.
+ */
+void config_activation()
+{
+  int i;
+  struct timeval tv;
+
+  for(i=0; i<MAX_CONTROLLERS; ++i)
+  {
+    if(next_config[i] > -1)
+    {
+      if(!config_delay[i])
+      {
+        if(display)
+        {
+          gettimeofday(&tv, NULL);
+
+          printf("%d %ld.%06ld controller %d is switched from configuration %d to %d\n", i, tv.tv_sec, tv.tv_usec, i, current_config[i], next_config[i]);
+        }
+        previous_config[i] = current_config[i];
+        current_config[i] = next_config[i];
+        update_stick(&left_intensity[i][current_config[i]], i, 0);
+        update_stick(&right_intensity[i][current_config[i]], i, 1);
+        next_config[i] = -1;
+      }
+      else
+      {
+        config_delay[i]--;
+      }
+    }
+  }
+}
 
 /*
  * Specific stuff to postpone some SDL_MOUSEBUTTONUP events
  * that come too quickly after corresponding SDL_MOUSEBUTTONDOWN events.
  * If we don't do that, the PS3 will miss events.
+ * 
+ * This function also postpones mouse button up events in case a delayed config toggle is triggered.
  */
 static int postpone_event(unsigned int device, SDL_Event* event)
 {
+  int i;
   int ret = 0;
   if (event->button.button == SDL_BUTTON_WHEELUP)
   {
@@ -352,6 +398,22 @@ static int postpone_event(unsigned int device, SDL_Event* event)
       mouse_control[device].postpone_button_x2 = 0;
     }
   }
+
+  for(i=0; i<MAX_CONTROLLERS; ++i)
+  {
+    if(next_config[i] > -1)
+    {
+      if(triggers[i][next_config[i]].device_type == E_DEVICE_TYPE_MOUSE
+          && triggers[i][next_config[i]].device_id == device
+          && triggers[i][next_config[i]].button == event->button.button)
+      {
+        SDL_PushEvent(event);
+        ret = 1;
+        break;
+      }
+    }
+  }
+
   return ret;
 }
 
