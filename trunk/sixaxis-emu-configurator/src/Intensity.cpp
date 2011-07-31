@@ -3,6 +3,8 @@
 Intensity::Intensity()
 {
     //ctor
+    m_dead_zone = 0;
+    m_steps = 0;
 }
 
 Intensity::Intensity(wxString control,

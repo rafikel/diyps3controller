@@ -88,6 +88,8 @@ void XmlWritter::CreateButtonMapNode(xmlNodePtr parent_node)
 
 void XmlWritter::CreateTriggerNode(xmlNodePtr parent_node)
 {
+    char delay[6];
+
     Trigger* trigger = m_ConfigurationFile->GetController(m_CurrentController)->GetConfiguration(m_CurrentConfiguration)->GetTrigger();
 
     xmlNodePtr node = xmlNewChild(parent_node, NULL, BAD_CAST X_NODE_TRIGGER, NULL);
@@ -101,6 +103,9 @@ void XmlWritter::CreateTriggerNode(xmlNodePtr parent_node)
     xmlNewProp(node, BAD_CAST X_ATTR_BUTTON_ID, BAD_CAST (const char*) trigger->GetEvent()->GetId().mb_str(wxConvUTF8));
 
     xmlNewProp(node, BAD_CAST X_ATTR_SWITCH_BACK, BAD_CAST (const char*) trigger->GetSwitchBack().mb_str(wxConvUTF8));
+
+    snprintf(delay, sizeof(delay), "%hu", trigger->GetDelay());
+    xmlNewProp(node, BAD_CAST X_ATTR_DELAY, BAD_CAST (const char*) delay);
 }
 
 void XmlWritter::CreateIntensityNodes(xmlNodePtr parent_node)
