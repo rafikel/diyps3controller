@@ -19,8 +19,8 @@
 										<label>Trigger</label>
 										<object class="sizeritem">
 											<object class="wxFlexGridSizer" variable="FlexGridSizer13" member="no">
-												<cols>7</cols>
-												<rows>2</rows>
+												<cols>9</cols>
+												<rows>1</rows>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT35" variable="StaticText35" member="yes">
 														<label></label>
@@ -65,6 +65,24 @@
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBox1" member="yes">
 														<label>Switch back</label>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT28" variable="StaticText28" member="yes">
+														<label>Delay (ms):</label>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxSpinCtrl" name="ID_SPINCTRL5" variable="SpinCtrl5" member="yes">
+														<value>0</value>
+														<max>1000</max>
+														<size>65,-1</size>
 													</object>
 													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
