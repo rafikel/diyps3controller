@@ -33,6 +33,7 @@
 #define X_ATTR_EXPONENT "exponent"
 #define X_ATTR_SHAPE "shape"
 #define X_ATTR_SWITCH_BACK "switch_back"
+#define X_ATTR_DELAY "delay"
 #define X_ATTR_STEPS "steps"
 #define X_ATTR_CONTROL "control"
 
