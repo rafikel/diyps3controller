@@ -47,6 +47,7 @@
 #define X_ATTR_EXPONENT "exponent"
 #define X_ATTR_SHAPE "shape"
 #define X_ATTR_SWITCH_BACK "switch_back"
+#define X_ATTR_DELAY "delay"
 #define X_ATTR_STEPS "steps"
 #define X_ATTR_CONTROL "control"
 
@@ -158,7 +159,8 @@ typedef struct
   int device_type;
   int device_id;
   int button;
-  int switch_back;;
+  int switch_back;
+  int delay; //ms
 }s_trigger;
 
 typedef struct
@@ -176,6 +178,7 @@ typedef struct
 }s_intensity;
 
 void trigger_lookup(SDL_Event*);
+void config_activation();
 void intensity_lookup(SDL_Event*);
 void process_event(SDL_Event*);
 
