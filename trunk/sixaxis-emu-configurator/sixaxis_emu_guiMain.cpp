@@ -59,6 +59,8 @@ const long sixaxis_emu_guiFrame::ID_STATICTEXT36 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT37 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_CHECKBOX1 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT28 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_SPINCTRL5 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON10 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT58 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT59 = wxNewId();
@@ -299,14 +301,14 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer17;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-    
+
     Create(parent, wxID_ANY, _("Sixaxis emulator customizer"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     GridSizer1 = new wxGridSizer(1, 1, 0, 0);
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,570), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     FlexGridSizer10 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Trigger"));
-    FlexGridSizer13 = new wxFlexGridSizer(2, 7, 0, 0);
+    FlexGridSizer13 = new wxFlexGridSizer(1, 9, 0, 0);
     StaticText35 = new wxStaticText(Panel1, ID_STATICTEXT35, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT35"));
     FlexGridSizer13->Add(StaticText35, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText27 = new wxStaticText(Panel1, ID_STATICTEXT27, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT27"));
@@ -320,6 +322,11 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("Switch back"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     CheckBox1->SetValue(false);
     FlexGridSizer13->Add(CheckBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText28 = new wxStaticText(Panel1, ID_STATICTEXT28, _("Delay (ms):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT28"));
+    FlexGridSizer13->Add(StaticText28, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    SpinCtrl5 = new wxSpinCtrl(Panel1, ID_SPINCTRL5, _T("0"), wxDefaultPosition, wxSize(65,-1), 0, 0, 1000, 0, _T("ID_SPINCTRL5"));
+    SpinCtrl5->SetValue(_T("0"));
+    FlexGridSizer13->Add(SpinCtrl5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button10 = new wxButton(Panel1, ID_BUTTON10, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON10"));
     FlexGridSizer13->Add(Button10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(FlexGridSizer13, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -677,7 +684,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), wxFD_DEFAULT_STYLE|wxFD_OPEN, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     GridSizer1->Fit(this);
     GridSizer1->SetSizeHints(this);
-    
+
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton1Click1);
     Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton10Click1);
     Connect(ID_BUTTON13,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton13Click1);
@@ -1072,6 +1079,7 @@ void sixaxis_emu_guiFrame::save_current()
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDevice()->SetId(StaticText36->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetEvent()->SetId(StaticText37->GetLabel());
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->SetSwitchBack(CheckBox1->GetValue()?_("yes"):_("no"));
+    configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->SetDelay(SpinCtrl5->GetValue());
     //Save Intensity
     intensityList = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetIntensityList();
     for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it = intensityList->erase(it)) {}
@@ -1122,6 +1130,7 @@ void sixaxis_emu_guiFrame::load_current()
     {
         CheckBox1->SetValue(false);
     }
+    SpinCtrl5->SetValue(configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->GetDelay());
     //Load left & right stick intensities
     intensityList = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetIntensityList();
     StaticText58->SetLabel(wxEmptyString);
@@ -1434,6 +1443,8 @@ void sixaxis_emu_guiFrame::OnMenuSaveAs(wxCommandEvent& event)
     configFile.SetFilePath(FileName);
 
     OnMenuSave(event);
+
+    Menu1->Enable(idMenuSave, true);
 }
 
 void sixaxis_emu_guiFrame::OnButtonModifyButton(wxCommandEvent& event)

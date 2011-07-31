@@ -142,6 +142,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_STATICTEXT37;
         static const long ID_BUTTON1;
         static const long ID_CHECKBOX1;
+        static const long ID_STATICTEXT28;
+        static const long ID_SPINCTRL5;
         static const long ID_BUTTON10;
         static const long ID_STATICTEXT58;
         static const long ID_STATICTEXT59;
@@ -352,6 +354,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxSpinCtrl* SpinCtrl2;
         wxStaticText* StaticText70;
         wxMenuItem* MenuItem23;
+        wxSpinCtrl* SpinCtrl5;
+        wxStaticText* StaticText28;
         wxStaticText* StaticText43;
         wxStaticText* StaticText41;
         wxStaticText* StaticText15;
