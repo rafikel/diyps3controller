@@ -626,6 +626,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
   char* r_switch_back;
   char* event_id;
   int switch_back = 0;
+  int delay = 0;
   int i;
 
   ret = GetDeviceTypeProp(a_node);
@@ -699,6 +700,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
       }
     }
 
+    //Optional
     r_switch_back = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_SWITCH_BACK);
     if(r_switch_back)
     {
@@ -708,6 +710,9 @@ static int ProcessTriggerElement(xmlNode * a_node)
       }
     }
     xmlFree(r_switch_back);
+
+    //Optional
+    GetIntProp(a_node, X_ATTR_DELAY, &delay);
   }
 
   if(ret != -1)
@@ -716,6 +721,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
     triggers[r_controller_id][r_config_id].device_id = r_device_id;
     triggers[r_controller_id][r_config_id].device_type = r_device_type;
     triggers[r_controller_id][r_config_id].switch_back = switch_back;
+    triggers[r_controller_id][r_config_id].delay = delay;
   }
 
   return ret;
