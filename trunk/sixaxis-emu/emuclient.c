@@ -210,6 +210,7 @@ int main(int argc, char *argv[])
   if (read == 1)
   {
     read_config_file(config_file);
+    sdl_release_unused();
   }
 
 #ifndef WIN32

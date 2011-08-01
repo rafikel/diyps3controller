@@ -29,6 +29,10 @@ int mouseVirtualIndex[MAX_DEVICES] = {};
 char* keyboardName[MAX_DEVICES] = {};
 int keyboardVirtualIndex[MAX_DEVICES] = {};
 
+//needed to release unused joysticks
+extern s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+extern s_mapper* joystick_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+
 static SDL_Surface *screen = NULL;
 static int grab = 0;
 
@@ -135,6 +139,48 @@ int sdl_initialize()
 }
 
 /*
+ * Release unused stuff.
+ * It currently releases unused joysticks, and closes the joystick subsystem if none is used.
+ */
+void sdl_release_unused()
+{
+  int i, j, k;
+  int used;
+  int none = 1;
+  for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
+  {
+    used = 0;
+    for(j=0; j<MAX_CONTROLLERS && !used; ++j)
+    {
+      for(k=0; k<MAX_CONFIGURATIONS && !used; ++k)
+      {
+        if((joystick_buttons[i][j][k] && joystick_buttons[i][j][k]->nb_mappers)
+            || (joystick_axis[i][j][k] && joystick_axis[i][j][k]->nb_mappers))
+        {
+          used = 1;
+        }
+      }
+    }
+    if(!used)
+    {
+      printf("close unused joystick: %s\n", joystickName[i]);
+      free(joystickName[i]);
+      joystickName[i] = NULL;
+      SDL_JoystickClose(joysticks[i]);
+    }
+    else
+    {
+      none = 0;
+    }
+  }
+  if(none)
+  {
+    printf("close joystick subsystem\n");
+    SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+  }
+}
+
+/*
  * Grab/Release the mouse.
  */
 void sdl_grab_toggle()
@@ -167,10 +213,13 @@ void sdl_quit()
 {
   int i;
 
-  for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
+  for (i = 0; i < MAX_DEVICES; ++i)
   {
-    free(joystickName[i]);
-    SDL_JoystickClose(joysticks[i]);
+    if(joystickName[i])
+    {
+      free(joystickName[i]);
+      SDL_JoystickClose(joysticks[i]);
+    }
   }
   for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
   {

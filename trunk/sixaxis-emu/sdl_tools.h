@@ -12,6 +12,8 @@
 
 int sdl_initialize();
 void sdl_grab_toggle();
+void sdl_grab();
+void sdl_release_unused();
 void sdl_quit();
 
 #endif /* SDL_TOOLS_H_ */
