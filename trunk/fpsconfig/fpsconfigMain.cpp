@@ -17,13 +17,14 @@
 #endif
 
 //(*InternalHeaders(fpsconfigFrame)
-#include <wx/bitmap.h>
 #include <wx/settings.h>
 #include <wx/font.h>
 #include <wx/intl.h>
-#include <wx/image.h>
 #include <wx/string.h>
 //*)
+
+#include "background.png.cpp"
+#include <wx/mstream.h>
 
 using namespace std;
 
@@ -58,7 +59,6 @@ char* homedir;
 #endif
 
 //(*IdInit(fpsconfigFrame)
-const long fpsconfigFrame::ID_BITMAPBUTTON1 = wxNewId();
 const long fpsconfigFrame::ID_BUTTON10 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL1 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL2 = wxNewId();
@@ -170,10 +170,6 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     SetClientSize(wxSize(620,410));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(620,372), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     Panel1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND));
-    BitmapButton1 = new wxBitmapButton(Panel1, ID_BITMAPBUTTON1, wxBitmap(wxImage(_T("/home/matlo/Bureau/fpsconfig-img/ps3contr_alt.png"))), wxPoint(0,0), wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
-    BitmapButton1->SetDefault();
-    BitmapButton1->Disable();
-    BitmapButton1->Hide();
     stickright = new wxButton(Panel1, ID_BUTTON10, wxEmptyString, wxPoint(256,222), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_BUTTON10"));
     wxFont stickrightFont(6,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     stickright->SetFont(stickrightFont);
@@ -334,7 +330,9 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&fpsconfigFrame::OnAbout);
     //*)
 
-    wxBackgroundBitmap* ToolBarBackground = new wxBackgroundBitmap(wxBitmap(wxImage(_T("/home/matlo/Bureau/fpsconfig-img/ps3contr_alt.png"))));
+    wxMemoryInputStream istream(background_png, sizeof background_png);
+    wxImage background_img(istream, wxBITMAP_TYPE_PNG);
+    wxBackgroundBitmap* ToolBarBackground = new wxBackgroundBitmap(wxBitmap(background_img));
     Panel1->PushEventHandler(ToolBarBackground);
 
 #ifndef WIN32

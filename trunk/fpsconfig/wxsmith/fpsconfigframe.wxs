@@ -8,13 +8,6 @@
 			<pos>0,0</pos>
 			<size>620,372</size>
 			<bg>wxSYS_COLOUR_BACKGROUND</bg>
-			<object class="wxBitmapButton" name="ID_BITMAPBUTTON1" variable="BitmapButton1" member="yes">
-				<bitmap>/home/matlo/Bureau/fpsconfig-img/ps3contr_alt.png</bitmap>
-				<default>1</default>
-				<pos>0,0</pos>
-				<enabled>0</enabled>
-				<hidden>1</hidden>
-			</object>
 			<object class="wxButton" name="ID_BUTTON10" variable="stickright" member="yes">
 				<pos>256,222</pos>
 				<size>50,-1</size>

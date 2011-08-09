@@ -18,7 +18,6 @@
 #include <wx/panel.h>
 #include <wx/filedlg.h>
 #include <wx/choice.h>
-#include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/frame.h>
 #include <wx/spinbutt.h>
@@ -76,7 +75,6 @@ class fpsconfigFrame: public wxFrame
         wxButton* getAxisButton(wxString blabel);
 
         //(*Identifiers(fpsconfigFrame)
-        static const long ID_BITMAPBUTTON1;
         static const long ID_BUTTON10;
         static const long ID_SPINCTRL1;
         static const long ID_SPINCTRL2;
@@ -153,7 +151,6 @@ class fpsconfigFrame: public wxFrame
         wxStaticText* StaticText1;
         wxFileDialog* FileDialog1;
         wxStaticText* StaticText3;
-        wxBitmapButton* BitmapButton1;
         wxButton* r2;
         wxButton* l2;
         wxSpinButton* SpinButton1;
