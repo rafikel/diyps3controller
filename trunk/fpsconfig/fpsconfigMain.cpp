@@ -170,7 +170,7 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     SetClientSize(wxSize(620,410));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(620,372), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     Panel1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND));
-    BitmapButton1 = new wxBitmapButton(Panel1, ID_BITMAPBUTTON1, wxBitmap(wxImage(_T("/home/matlo/Bureau/fpsconfig-img/game-console-controller-outline-hi.png"))), wxPoint(0,0), wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
+    BitmapButton1 = new wxBitmapButton(Panel1, ID_BITMAPBUTTON1, wxBitmap(wxImage(_T("/home/matlo/Bureau/fpsconfig-img/ps3contr_alt.png"))), wxPoint(0,0), wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
     BitmapButton1->SetDefault();
     BitmapButton1->Disable();
     BitmapButton1->Hide();
@@ -1007,7 +1007,7 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
 
     if(warning)
     {
-        wxMessageBox( wxT("Some parts of this config file are not supported\nand will be lost is the file is edited.\n"), wxT("Info"), wxICON_INFORMATION);
+        wxMessageBox( wxT("Some parts of this config file are not supported\nand will be lost if the file is edited.\n"), wxT("Info"), wxICON_INFORMATION);
     }
 
     MenuItem4->Enable(true);
