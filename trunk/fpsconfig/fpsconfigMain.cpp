@@ -394,7 +394,9 @@ void updateTextCtrlValue(wxTextCtrl* text, wxSpinEvent& event)
     wxString str;
     value = event.GetInt() * 0.01;
     str = wxString::Format(wxT("%.02f"), value);
+#ifndef WIN32
     str.Replace(_(","), _("."));
+#endif
     text->SetValue(str);
 }
 
@@ -746,8 +748,10 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
     axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("x"), _("rstick x"), wxString::Format(wxT("%i"),SpinCtrl1->GetValue()), TextCtrl23->GetValue(), TextCtrl22->GetValue(), Choice2->GetStringSelection()));
     wsmx = TextCtrl23->GetValue();
     wsxyratio = TextCtrl1->GetValue();
+#ifndef WIN32
     wsmx.Replace(_("."), _(","));
     wsxyratio.Replace(_("."), _(","));
+#endif
     if(wsmx.ToDouble(&mx) && wsxyratio.ToDouble(&xyratio))
     {
         my = mx * xyratio;
@@ -757,7 +761,9 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
         my = mx;
     }
     wsmy = wxString::Format(wxT("%.02f"), my);
+#ifndef WIN32
     wsmy.Replace(_(","), _("."));
+#endif
     axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("y"), _("rstick y"), wxString::Format(wxT("%i"),SpinCtrl1->GetValue()), wsmy, TextCtrl22->GetValue(), Choice2->GetStringSelection()));
     /*
      * Save secondary config.
@@ -792,8 +798,10 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
     axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("x"), _("rstick x"), wxString::Format(wxT("%i"),SpinCtrl2->GetValue()), TextCtrl24->GetValue(), TextCtrl26->GetValue(), Choice2->GetStringSelection()));
     wsmx = TextCtrl24->GetValue();
     wsxyratio = TextCtrl25->GetValue();
+#ifndef WIN32
     wsmx.Replace(_("."), _(","));
     wsxyratio.Replace(_("."), _(","));
+#endif
     if(wsmx.ToDouble(&mx) && wsxyratio.ToDouble(&xyratio))
     {
         my = mx * xyratio;
@@ -803,7 +811,9 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
         my = mx;
     }
     wsmy = wxString::Format(wxT("%.02f"), my);
+#ifndef WIN32
     wsmy.Replace(_(","), _("."));
+#endif
     axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("y"), _("rstick y"), wxString::Format(wxT("%i"),SpinCtrl2->GetValue()), wsmy, TextCtrl26->GetValue(), Choice1->GetStringSelection()));
 
     configFile.WriteConfigFile();
@@ -899,7 +909,9 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
                 Choice2->SetStringSelection(it->GetEvent()->GetShape());
 
                 wsmx = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
                 wsmx.Replace(_("."), _(","));
+#endif
                 if(wsmx.ToDouble(&mx))
                 {
                     TextCtrl23->SetValue(wsmx);
@@ -908,14 +920,18 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
                     {
                         xyratio = my / mx;
                         wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
                         wsxyratio.Replace(_(","), _("."));
+#endif
                         TextCtrl1->SetValue(wsxyratio);
                         SpinCtrl7->SetValue(xyratio*100);
                     }
                 }
 
                 wsexp = it->GetEvent()->GetExponent();
+#ifndef WIN32
                 wsexp.Replace(_("."), _(","));
+#endif
                 if(wsexp.ToDouble(&exp))
                 {
                   TextCtrl22->SetValue(it->GetEvent()->GetExponent());
@@ -925,12 +941,16 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
             else if(it->GetAxis() == _("rstick y"))
             {
                 wsmy = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
                 wsmy.Replace(_("."), _(","));
+#endif
                 if(wsmy.ToDouble(&my) && mx && my)
                 {
                     xyratio = my / mx;
                     wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
                     wsxyratio.Replace(_(","), _("."));
+#endif
                     TextCtrl1->SetValue(wsxyratio);
                     SpinCtrl7->SetValue(xyratio*100);
                 }
@@ -982,7 +1002,9 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
                 Choice1->SetStringSelection(it->GetEvent()->GetShape());
 
                 wsmx = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
                 wsmx.Replace(_("."), _(","));
+#endif
                 if(wsmx.ToDouble(&mx))
                 {
                     TextCtrl24->SetValue(wsmx);
@@ -991,14 +1013,18 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
                     {
                         xyratio = my / mx;
                         wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
                         wsxyratio.Replace(_(","), _("."));
+#endif
                         TextCtrl25->SetValue(wsxyratio);
                         SpinCtrl8->SetValue(xyratio*100);
                     }
                 }
 
                 wsexp = it->GetEvent()->GetExponent();
+#ifndef WIN32
                 wsexp.Replace(_("."), _(","));
+#endif
                 if(wsexp.ToDouble(&exp))
                 {
                   TextCtrl26->SetValue(it->GetEvent()->GetExponent());
@@ -1008,12 +1034,16 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
             else if(it->GetAxis() == _("rstick y"))
             {
                 wsmy = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
                 wsmy.Replace(_("."), _(","));
+#endif
                 if(wsmy.ToDouble(&my) && mx && my)
                 {
                     xyratio = my / mx;
                     wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
                     wsxyratio.Replace(_(","), _("."));
+#endif
                     TextCtrl25->SetValue(wsxyratio);
                     SpinCtrl8->SetValue(xyratio*100);
                 }
