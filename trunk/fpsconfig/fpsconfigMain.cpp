@@ -167,8 +167,8 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
 
     Create(parent, wxID_ANY, _("fpsconfig"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(620,410));
-    SetBackgroundColour(wxColour(255,255,255));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(620,372), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
+    Panel1->SetBackgroundColour(wxColour(255,255,255));
     SpinCtrl8 = new wxSpinCtrl(Panel1, ID_SPINCTRL8, _T("100"), wxPoint(592,352), wxSize(20,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL8"));
     SpinCtrl8->SetValue(_T("100"));
     SpinCtrl7 = new wxSpinCtrl(Panel1, ID_SPINCTRL7, _T("100"), wxPoint(592,320), wxSize(20,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL7"));

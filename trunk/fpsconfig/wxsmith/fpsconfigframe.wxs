@@ -3,11 +3,11 @@
 	<object class="wxFrame" name="fpsconfigFrame">
 		<title>fpsconfig</title>
 		<size>620,410</size>
-		<bg>#FFFFFF</bg>
 		<id_arg>0</id_arg>
 		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
 			<pos>0,0</pos>
 			<size>620,372</size>
+			<bg>#FFFFFF</bg>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL8" variable="SpinCtrl8" member="yes">
 				<value>100</value>
 				<min>-10000</min>
