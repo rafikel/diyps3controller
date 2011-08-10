@@ -20,7 +20,6 @@
 #include <wx/choice.h>
 #include <wx/button.h>
 #include <wx/frame.h>
-#include <wx/spinbutt.h>
 #include <wx/statusbr.h>
 //*)
 
@@ -56,17 +55,12 @@ class fpsconfigFrame: public wxFrame
         //(*Handlers(fpsconfigFrame)
         void OnQuit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
-        void OnSpinButton4Change(wxSpinEvent& event);
-        void OnSpinButton2Change(wxSpinEvent& event);
-        void OnSpinButton1Change(wxSpinEvent& event);
-        void OnSpinButton3Change(wxSpinEvent& event);
-        void OnSpinButton5Change(wxSpinEvent& event);
         void OnButtonClick(wxCommandEvent& event);
-        void OnSpinButton6Change(wxSpinEvent& event);
         void OnMenuSave(wxCommandEvent& event);
         void OnMenuNew(wxCommandEvent& event);
         void OnMenuSaveAs(wxCommandEvent& event);
         void OnMenuOpen(wxCommandEvent& event);
+        void OnSpinCtrlChange(wxSpinEvent& event);
         //*)
 
         e_button_index getButtonIndex(wxButton* button);
@@ -75,21 +69,19 @@ class fpsconfigFrame: public wxFrame
         wxButton* getAxisButton(wxString blabel);
 
         //(*Identifiers(fpsconfigFrame)
+        static const long ID_SPINCTRL8;
+        static const long ID_SPINCTRL7;
+        static const long ID_SPINCTRL6;
+        static const long ID_SPINCTRL5;
+        static const long ID_SPINCTRL4;
+        static const long ID_SPINCTRL3;
         static const long ID_BUTTON10;
         static const long ID_SPINCTRL1;
         static const long ID_SPINCTRL2;
         static const long ID_TEXTCTRL24;
         static const long ID_TEXTCTRL23;
         static const long ID_TEXTCTRL26;
-        static const long ID_TEXTCTRL1;
-        static const long ID_TEXTCTRL25;
         static const long ID_TEXTCTRL22;
-        static const long ID_SPINBUTTON3;
-        static const long ID_SPINBUTTON2;
-        static const long ID_SPINBUTTON5;
-        static const long ID_SPINBUTTON6;
-        static const long ID_SPINBUTTON4;
-        static const long ID_SPINBUTTON1;
         static const long ID_STATICTEXT1;
         static const long ID_STATICTEXT7;
         static const long ID_STATICTEXT2;
@@ -119,6 +111,8 @@ class fpsconfigFrame: public wxFrame
         static const long ID_BUTTON21;
         static const long ID_CHOICE2;
         static const long ID_CHOICE1;
+        static const long ID_TEXTCTRL1;
+        static const long ID_TEXTCTRL25;
         static const long ID_PANEL1;
         static const long ID_MENUITEM1;
         static const long ID_MENUITEM4;
@@ -131,7 +125,7 @@ class fpsconfigFrame: public wxFrame
 
         //(*Declarations(fpsconfigFrame)
         wxButton* stickdown;
-        wxSpinButton* SpinButton5;
+        wxSpinCtrl* SpinCtrl4;
         wxButton* l1;
         wxButton* r3;
         wxSpinCtrl* SpinCtrl1;
@@ -145,42 +139,42 @@ class fpsconfigFrame: public wxFrame
         wxMenuItem* MenuItem4;
         wxButton* select;
         wxButton* down;
-        wxSpinButton* SpinButton6;
         wxButton* stickup;
+        wxSpinCtrl* SpinCtrl7;
         wxPanel* Panel1;
         wxStaticText* StaticText1;
         wxFileDialog* FileDialog1;
         wxStaticText* StaticText3;
         wxButton* r2;
         wxButton* l2;
-        wxSpinButton* SpinButton1;
         wxMenuItem* MenuItem3;
         wxTextCtrl* TextCtrl24;
+        wxSpinCtrl* SpinCtrl3;
         wxStaticText* StaticText5;
         wxStaticText* StaticText7;
-        wxSpinButton* SpinButton2;
-        wxSpinButton* SpinButton4;
         wxStatusBar* StatusBar1;
         wxMenuItem* MenuItem6;
         wxButton* left;
         wxTextCtrl* TextCtrl22;
         wxSpinCtrl* SpinCtrl2;
         wxButton* triangle;
+        wxSpinCtrl* SpinCtrl5;
         wxTextCtrl* TextCtrl1;
         wxTextCtrl* TextCtrl25;
         wxButton* cross;
         wxButton* square;
         wxTextCtrl* TextCtrl23;
         wxButton* ps;
-        wxSpinButton* SpinButton3;
         wxButton* l3;
         wxButton* up;
         wxStaticText* StaticText4;
         wxButton* r1;
+        wxSpinCtrl* SpinCtrl6;
         wxChoice* Choice1;
         wxChoice* Choice2;
         wxButton* right;
         wxButton* circle;
+        wxSpinCtrl* SpinCtrl8;
         //*)
 
         event_catcher evcatch;
