@@ -131,7 +131,7 @@ bool wxBackgroundBitmap::ProcessEvent(wxEvent &Event)
     if (Event.GetEventType() == wxEVT_ERASE_BACKGROUND) {
         wxEraseEvent &EraseEvent = dynamic_cast<wxEraseEvent &>(Event);
         wxDC *DC = EraseEvent.GetDC();
-        DC->DrawBitmap(Bitmap, 7, 7, false);
+        DC->DrawBitmap(Bitmap, 0, 0, false);
         return true;
     } else return Inherited::ProcessEvent(Event);
 }
@@ -164,9 +164,9 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     wxMenu* Menu1;
     wxMenuBar* MenuBar1;
     wxMenu* Menu2;
-
+    
     Create(parent, wxID_ANY, _("fpsconfig"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
-    SetClientSize(wxSize(620,410));
+    SetClientSize(wxSize(620,430));
     SetBackgroundColour(wxColour(255,255,255));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(620,372), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     Panel1->SetBackgroundColour(wxColour(255,255,255));
@@ -294,7 +294,7 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(1,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-
+    
     Connect(ID_SPINCTRL8,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL7,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL6,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
