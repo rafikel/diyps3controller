@@ -818,9 +818,9 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
     bool warning = false;
     wxButton* button;
 
-    double mx, my;
+    double mx, my, exp;
     double xyratio;
-    wxString wsmx, wsmy, wsxyratio;
+    wxString wsmx, wsmy, wsexp, wsxyratio;
 
     if ( FileDialog1->ShowModal() != wxID_OK ) return;
 
@@ -897,17 +897,29 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
             {
                 SpinCtrl1->SetValue(wxAtoi(it->GetEvent()->GetDeadZone()));
                 Choice2->SetStringSelection(it->GetEvent()->GetShape());
-                TextCtrl23->SetValue(it->GetEvent()->GetMultiplier());
-                TextCtrl22->SetValue(it->GetEvent()->GetExponent());
 
                 wsmx = it->GetEvent()->GetMultiplier();
                 wsmx.Replace(_("."), _(","));
-                if(wsmx.ToDouble(&mx) && my && mx)
+                if(wsmx.ToDouble(&mx))
                 {
-                    xyratio = my / mx;
-                    wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
-                    wsxyratio.Replace(_(","), _("."));
-                    TextCtrl1->SetValue(wsxyratio);
+                    TextCtrl23->SetValue(wsmx);
+                    SpinCtrl3->SetValue(mx*100);
+                    if(my && mx)
+                    {
+                        xyratio = my / mx;
+                        wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+                        wsxyratio.Replace(_(","), _("."));
+                        TextCtrl1->SetValue(wsxyratio);
+                        SpinCtrl7->SetValue(xyratio*100);
+                    }
+                }
+
+                wsexp = it->GetEvent()->GetExponent();
+                wsexp.Replace(_("."), _(","));
+                if(wsexp.ToDouble(&exp))
+                {
+                  TextCtrl22->SetValue(it->GetEvent()->GetExponent());
+                  SpinCtrl5->SetValue(exp*100);
                 }
             }
             else if(it->GetAxis() == _("rstick y"))
@@ -920,6 +932,7 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
                     wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
                     wsxyratio.Replace(_(","), _("."));
                     TextCtrl1->SetValue(wsxyratio);
+                    SpinCtrl7->SetValue(xyratio*100);
                 }
             }
             else
@@ -967,17 +980,29 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
             {
                 SpinCtrl2->SetValue(wxAtoi(it->GetEvent()->GetDeadZone()));
                 Choice1->SetStringSelection(it->GetEvent()->GetShape());
-                TextCtrl24->SetValue(it->GetEvent()->GetMultiplier());
-                TextCtrl26->SetValue(it->GetEvent()->GetExponent());
 
                 wsmx = it->GetEvent()->GetMultiplier();
                 wsmx.Replace(_("."), _(","));
-                if(wsmx.ToDouble(&mx) && my && mx)
+                if(wsmx.ToDouble(&mx))
                 {
-                    xyratio = my / mx;
-                    wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
-                    wsxyratio.Replace(_(","), _("."));
-                    TextCtrl25->SetValue(wsxyratio);
+                    TextCtrl24->SetValue(wsmx);
+                    SpinCtrl4->SetValue(mx*100);
+                    if(my && mx)
+                    {
+                        xyratio = my / mx;
+                        wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+                        wsxyratio.Replace(_(","), _("."));
+                        TextCtrl25->SetValue(wsxyratio);
+                        SpinCtrl8->SetValue(xyratio*100);
+                    }
+                }
+
+                wsexp = it->GetEvent()->GetExponent();
+                wsexp.Replace(_("."), _(","));
+                if(wsexp.ToDouble(&exp))
+                {
+                  TextCtrl26->SetValue(it->GetEvent()->GetExponent());
+                  SpinCtrl6->SetValue(exp*100);
                 }
             }
             else if(it->GetAxis() == _("rstick y"))
@@ -990,6 +1015,7 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
                     wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
                     wsxyratio.Replace(_(","), _("."));
                     TextCtrl25->SetValue(wsxyratio);
+                    SpinCtrl8->SetValue(xyratio*100);
                 }
             }
             else

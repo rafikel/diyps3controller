@@ -3,6 +3,7 @@
 	<object class="wxFrame" name="fpsconfigFrame">
 		<title>fpsconfig</title>
 		<size>620,410</size>
+		<bg>#FFFFFF</bg>
 		<id_arg>0</id_arg>
 		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
 			<pos>0,0</pos>
@@ -13,7 +14,7 @@
 				<min>-10000</min>
 				<max>10000</max>
 				<pos>592,352</pos>
-				<size>20,-1</size>
+				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL7" variable="SpinCtrl7" member="yes">
@@ -21,7 +22,7 @@
 				<min>-10000</min>
 				<max>10000</max>
 				<pos>592,320</pos>
-				<size>20,-1</size>
+				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL6" variable="SpinCtrl6" member="yes">
@@ -29,7 +30,7 @@
 				<min>-10000</min>
 				<max>10000</max>
 				<pos>496,352</pos>
-				<size>20,-1</size>
+				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL5" variable="SpinCtrl5" member="yes">
@@ -37,7 +38,7 @@
 				<min>-10000</min>
 				<max>10000</max>
 				<pos>496,320</pos>
-				<size>20,-1</size>
+				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL4" variable="SpinCtrl4" member="yes">
@@ -45,7 +46,7 @@
 				<min>-10000</min>
 				<max>10000</max>
 				<pos>400,352</pos>
-				<size>20,-1</size>
+				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL3" variable="SpinCtrl3" member="yes">
@@ -53,7 +54,7 @@
 				<min>-10000</min>
 				<max>10000</max>
 				<pos>400,320</pos>
-				<size>20,-1</size>
+				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
 			<object class="wxButton" name="ID_BUTTON10" variable="stickright" member="yes">
