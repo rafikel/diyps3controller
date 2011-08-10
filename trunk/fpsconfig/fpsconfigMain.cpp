@@ -17,7 +17,6 @@
 #endif
 
 //(*InternalHeaders(fpsconfigFrame)
-#include <wx/settings.h>
 #include <wx/font.h>
 #include <wx/intl.h>
 #include <wx/string.h>
@@ -169,7 +168,7 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     Create(parent, wxID_ANY, _("fpsconfig"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(620,410));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(620,372), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-    Panel1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND));
+    Panel1->SetBackgroundColour(wxColour(255,255,255));
     stickright = new wxButton(Panel1, ID_BUTTON10, wxEmptyString, wxPoint(256,222), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_BUTTON10"));
     wxFont stickrightFont(6,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     stickright->SetFont(stickrightFont);

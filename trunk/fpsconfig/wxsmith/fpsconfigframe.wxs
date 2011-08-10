@@ -7,7 +7,7 @@
 		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
 			<pos>0,0</pos>
 			<size>620,372</size>
-			<bg>wxSYS_COLOUR_BACKGROUND</bg>
+			<bg>#FFFFFF</bg>
 			<object class="wxButton" name="ID_BUTTON10" variable="stickright" member="yes">
 				<pos>256,222</pos>
 				<size>50,-1</size>
