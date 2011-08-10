@@ -165,7 +165,7 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     wxMenu* Menu1;
     wxMenuBar* MenuBar1;
     wxMenu* Menu2;
-
+    
     Create(parent, wxID_ANY, _("fpsconfig"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(620,410));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(620,372), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
@@ -173,27 +173,27 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     stickright = new wxButton(Panel1, ID_BUTTON10, wxEmptyString, wxPoint(256,222), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_BUTTON10"));
     wxFont stickrightFont(6,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     stickright->SetFont(stickrightFont);
-    SpinCtrl1 = new wxSpinCtrl(Panel1, ID_SPINCTRL1, _T("20"), wxPoint(184,320), wxSize(50,-1), 0, 0, 64, 20, _T("ID_SPINCTRL1"));
+    SpinCtrl1 = new wxSpinCtrl(Panel1, ID_SPINCTRL1, _T("20"), wxPoint(184,320), wxSize(50,26), 0, 0, 64, 20, _T("ID_SPINCTRL1"));
     SpinCtrl1->SetValue(_T("20"));
-    SpinCtrl2 = new wxSpinCtrl(Panel1, ID_SPINCTRL2, _T("20"), wxPoint(184,352), wxSize(50,-1), 0, 0, 64, 20, _T("ID_SPINCTRL2"));
+    SpinCtrl2 = new wxSpinCtrl(Panel1, ID_SPINCTRL2, _T("20"), wxPoint(184,352), wxSize(50,26), 0, 0, 64, 20, _T("ID_SPINCTRL2"));
     SpinCtrl2->SetValue(_T("20"));
-    TextCtrl24 = new wxTextCtrl(Panel1, ID_TEXTCTRL24, _("1.00"), wxPoint(328,352), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL24"));
-    TextCtrl23 = new wxTextCtrl(Panel1, ID_TEXTCTRL23, _("1.00"), wxPoint(328,320), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL23"));
-    TextCtrl26 = new wxTextCtrl(Panel1, ID_TEXTCTRL26, _("1.00"), wxPoint(424,352), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL26"));
-    TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("1.00"), wxPoint(520,320), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-    TextCtrl25 = new wxTextCtrl(Panel1, ID_TEXTCTRL25, _("1.00"), wxPoint(520,352), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL25"));
-    TextCtrl22 = new wxTextCtrl(Panel1, ID_TEXTCTRL22, _("1.00"), wxPoint(424,320), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL22"));
-    SpinButton3 = new wxSpinButton(Panel1, ID_SPINBUTTON3, wxPoint(400,352), wxDefaultSize, wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON3"));
+    TextCtrl24 = new wxTextCtrl(Panel1, ID_TEXTCTRL24, _("1.00"), wxPoint(328,352), wxSize(73,26), 0, wxDefaultValidator, _T("ID_TEXTCTRL24"));
+    TextCtrl23 = new wxTextCtrl(Panel1, ID_TEXTCTRL23, _("1.00"), wxPoint(328,320), wxSize(73,26), 0, wxDefaultValidator, _T("ID_TEXTCTRL23"));
+    TextCtrl26 = new wxTextCtrl(Panel1, ID_TEXTCTRL26, _("1.00"), wxPoint(424,352), wxSize(73,26), 0, wxDefaultValidator, _T("ID_TEXTCTRL26"));
+    TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("1.00"), wxPoint(520,320), wxSize(73,26), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    TextCtrl25 = new wxTextCtrl(Panel1, ID_TEXTCTRL25, _("1.00"), wxPoint(520,352), wxSize(73,26), 0, wxDefaultValidator, _T("ID_TEXTCTRL25"));
+    TextCtrl22 = new wxTextCtrl(Panel1, ID_TEXTCTRL22, _("1.00"), wxPoint(424,320), wxSize(73,26), 0, wxDefaultValidator, _T("ID_TEXTCTRL22"));
+    SpinButton3 = new wxSpinButton(Panel1, ID_SPINBUTTON3, wxPoint(400,352), wxSize(10,26), wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON3"));
     SpinButton3->SetRange(-10000, 10000);
-    SpinButton2 = new wxSpinButton(Panel1, ID_SPINBUTTON2, wxPoint(400,320), wxDefaultSize, wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON2"));
+    SpinButton2 = new wxSpinButton(Panel1, ID_SPINBUTTON2, wxPoint(400,320), wxSize(10,26), wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON2"));
     SpinButton2->SetRange(-10000, 10000);
-    SpinButton5 = new wxSpinButton(Panel1, ID_SPINBUTTON5, wxPoint(496,352), wxDefaultSize, wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON5"));
+    SpinButton5 = new wxSpinButton(Panel1, ID_SPINBUTTON5, wxPoint(496,352), wxSize(10,26), wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON5"));
     SpinButton5->SetRange(-10000, 10000);
-    SpinButton6 = new wxSpinButton(Panel1, ID_SPINBUTTON6, wxPoint(592,320), wxDefaultSize, wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON6"));
+    SpinButton6 = new wxSpinButton(Panel1, ID_SPINBUTTON6, wxPoint(592,320), wxSize(10,26), wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON6"));
     SpinButton6->SetRange(-10000, 10000);
-    SpinButton4 = new wxSpinButton(Panel1, ID_SPINBUTTON4, wxPoint(592,352), wxDefaultSize, wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON4"));
+    SpinButton4 = new wxSpinButton(Panel1, ID_SPINBUTTON4, wxPoint(592,352), wxSize(10,26), wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON4"));
     SpinButton4->SetRange(-10000, 10000);
-    SpinButton1 = new wxSpinButton(Panel1, ID_SPINBUTTON1, wxPoint(496,320), wxDefaultSize, wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON1"));
+    SpinButton1 = new wxSpinButton(Panel1, ID_SPINBUTTON1, wxPoint(496,320), wxSize(10,26), wxSP_VERTICAL|wxSP_ARROW_KEYS, _T("ID_SPINBUTTON1"));
     SpinButton1->SetRange(-10000, 10000);
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("primary"), wxPoint(120,328), wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     StaticText7 = new wxStaticText(Panel1, ID_STATICTEXT7, _("dz shape"), wxPoint(256,296), wxDefaultSize, 0, _T("ID_STATICTEXT7"));
@@ -262,10 +262,10 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     r3 = new wxButton(Panel1, ID_BUTTON21, wxEmptyString, wxPoint(368,222), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_BUTTON21"));
     wxFont r3Font(6,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     r3->SetFont(r3Font);
-    Choice2 = new wxChoice(Panel1, ID_CHOICE2, wxPoint(240,320), wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE2"));
+    Choice2 = new wxChoice(Panel1, ID_CHOICE2, wxPoint(240,320), wxSize(80,26), 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE2"));
     Choice2->SetSelection( Choice2->Append(_("Circle")) );
     Choice2->Append(_("Rectangle"));
-    Choice1 = new wxChoice(Panel1, ID_CHOICE1, wxPoint(240,352), wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
+    Choice1 = new wxChoice(Panel1, ID_CHOICE1, wxPoint(240,352), wxSize(80,26), 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
     Choice1->SetSelection( Choice1->Append(_("Circle")) );
     Choice1->Append(_("Rectangle"));
     MenuBar1 = new wxMenuBar();
@@ -294,7 +294,7 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(1,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-
+    
     Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_SPINBUTTON3,wxEVT_SCROLL_THUMBTRACK,(wxObjectEventFunction)&fpsconfigFrame::OnSpinButton3Change);
     Connect(ID_SPINBUTTON2,wxEVT_SCROLL_THUMBTRACK,(wxObjectEventFunction)&fpsconfigFrame::OnSpinButton2Change);
