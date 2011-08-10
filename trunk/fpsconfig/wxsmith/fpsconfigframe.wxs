@@ -3,11 +3,59 @@
 	<object class="wxFrame" name="fpsconfigFrame">
 		<title>fpsconfig</title>
 		<size>620,410</size>
+		<bg>#FFFFFF</bg>
 		<id_arg>0</id_arg>
 		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
 			<pos>0,0</pos>
 			<size>620,372</size>
-			<bg>#FFFFFF</bg>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL8" variable="SpinCtrl8" member="yes">
+				<value>100</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>592,352</pos>
+				<size>20,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL7" variable="SpinCtrl7" member="yes">
+				<value>100</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>592,320</pos>
+				<size>20,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL6" variable="SpinCtrl6" member="yes">
+				<value>100</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>496,352</pos>
+				<size>20,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL5" variable="SpinCtrl5" member="yes">
+				<value>100</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>496,320</pos>
+				<size>20,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL4" variable="SpinCtrl4" member="yes">
+				<value>100</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>400,352</pos>
+				<size>20,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL3" variable="SpinCtrl3" member="yes">
+				<value>100</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>400,320</pos>
+				<size>20,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
 			<object class="wxButton" name="ID_BUTTON10" variable="stickright" member="yes">
 				<pos>256,222</pos>
 				<size>50,-1</size>
@@ -20,85 +68,33 @@
 				<value>20</value>
 				<max>64</max>
 				<pos>184,320</pos>
-				<size>50,26</size>
+				<size>50,-1</size>
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL2" variable="SpinCtrl2" member="yes">
 				<value>20</value>
 				<max>64</max>
 				<pos>184,352</pos>
-				<size>50,26</size>
+				<size>50,-1</size>
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL24" variable="TextCtrl24" member="yes">
 				<value>1.00</value>
 				<pos>328,352</pos>
-				<size>73,26</size>
+				<size>73,-1</size>
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL23" variable="TextCtrl23" member="yes">
 				<value>1.00</value>
 				<pos>328,320</pos>
-				<size>73,26</size>
+				<size>73,-1</size>
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL26" variable="TextCtrl26" member="yes">
 				<value>1.00</value>
 				<pos>424,352</pos>
-				<size>73,26</size>
-			</object>
-			<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrl1" member="yes">
-				<value>1.00</value>
-				<pos>520,320</pos>
-				<size>73,26</size>
-			</object>
-			<object class="wxTextCtrl" name="ID_TEXTCTRL25" variable="TextCtrl25" member="yes">
-				<value>1.00</value>
-				<pos>520,352</pos>
-				<size>73,26</size>
+				<size>73,-1</size>
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL22" variable="TextCtrl22" member="yes">
 				<value>1.00</value>
 				<pos>424,320</pos>
-				<size>73,26</size>
-			</object>
-			<object class="wxSpinButton" name="ID_SPINBUTTON3" variable="SpinButton3" member="yes">
-				<min>-10000</min>
-				<max>10000</max>
-				<pos>400,352</pos>
-				<size>10,26</size>
-				<handler function="OnSpinButton3Change" entry="EVT_SPIN" />
-			</object>
-			<object class="wxSpinButton" name="ID_SPINBUTTON2" variable="SpinButton2" member="yes">
-				<min>-10000</min>
-				<max>10000</max>
-				<pos>400,320</pos>
-				<size>10,26</size>
-				<handler function="OnSpinButton2Change" entry="EVT_SPIN" />
-			</object>
-			<object class="wxSpinButton" name="ID_SPINBUTTON5" variable="SpinButton5" member="yes">
-				<min>-10000</min>
-				<max>10000</max>
-				<pos>496,352</pos>
-				<size>10,26</size>
-				<handler function="OnSpinButton5Change" entry="EVT_SPIN" />
-			</object>
-			<object class="wxSpinButton" name="ID_SPINBUTTON6" variable="SpinButton6" member="yes">
-				<min>-10000</min>
-				<max>10000</max>
-				<pos>592,320</pos>
-				<size>10,26</size>
-				<handler function="OnSpinButton6Change" entry="EVT_SPIN" />
-			</object>
-			<object class="wxSpinButton" name="ID_SPINBUTTON4" variable="SpinButton4" member="yes">
-				<min>-10000</min>
-				<max>10000</max>
-				<pos>592,352</pos>
-				<size>10,26</size>
-				<handler function="OnSpinButton4Change" entry="EVT_SPIN" />
-			</object>
-			<object class="wxSpinButton" name="ID_SPINBUTTON1" variable="SpinButton1" member="yes">
-				<min>-10000</min>
-				<max>10000</max>
-				<pos>496,320</pos>
-				<size>10,26</size>
-				<handler function="OnSpinButton1Change" entry="EVT_SPIN" />
+				<size>73,-1</size>
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
 				<label>primary</label>
@@ -295,7 +291,7 @@
 				</content>
 				<selection>0</selection>
 				<pos>240,320</pos>
-				<size>80,26</size>
+				<size>80,-1</size>
 			</object>
 			<object class="wxChoice" name="ID_CHOICE1" variable="Choice1" member="yes">
 				<content>
@@ -304,7 +300,17 @@
 				</content>
 				<selection>0</selection>
 				<pos>240,352</pos>
-				<size>80,26</size>
+				<size>80,-1</size>
+			</object>
+			<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrl1" member="yes">
+				<value>1.00</value>
+				<pos>520,320</pos>
+				<size>73,-1</size>
+			</object>
+			<object class="wxTextCtrl" name="ID_TEXTCTRL25" variable="TextCtrl25" member="yes">
+				<value>1.00</value>
+				<pos>520,352</pos>
+				<size>73,-1</size>
 			</object>
 		</object>
 		<object class="wxMenuBar" variable="MenuBar1" member="no">
