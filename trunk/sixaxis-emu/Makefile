@@ -1,7 +1,7 @@
 prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
 confdir=$(DESTDIR)/etc/emuclient
-BINS=emu emuclient sixaddr bdaddr
+BINS=emu emuclient sixaddr bdaddr hcirevision
 CC=gcc
 CFLAGS=-Wall -g
 LIB=-L../libsdl/lib -lSDL -lxml2 -lXi
@@ -26,6 +26,9 @@ sixaddr: utils/sixaddr.c
 
 bdaddr: utils/bdaddr.c utils/oui.c
 	$(CC) -o $@ $^ -lbluetooth
+	
+hcirevision: hcirevision.c
+	$(CC) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INC) -o $@ -c $< 
