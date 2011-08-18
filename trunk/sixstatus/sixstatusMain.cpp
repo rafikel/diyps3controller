@@ -482,7 +482,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer1;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-    
+
     Create(parent, wxID_ANY, _("Sixstatus"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Sixaxis status"));
@@ -664,7 +664,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     SetStatusBar(StatusBar1);
     FlexGridSizer1->Fit(this);
     FlexGridSizer1->SetSizeHints(this);
-    
+
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixstatusFrame::OnAbout);
     //*)
@@ -905,6 +905,10 @@ void sixstatusFrame::TextColor()
 void sixstatusFrame::Update()
 {
     changed = 0;
+#ifndef WIN32
+    if(current_cal == NONE)
+    {
+#endif
     if(Gauge1->GetRange() != max_axis_value)
     {
       Gauge1->SetRange(max_axis_value);
@@ -933,6 +937,9 @@ void sixstatusFrame::Update()
     clamp(Gauge31, bstart, StaticText31);
     clamp(Gauge32, bselect, StaticText32);
     clamp(Gauge33, bps, StaticText33);
+#ifndef WIN32
+    }
+#endif
 
     set_text(StaticText43, status);
     set_text(StaticText38, cm);
