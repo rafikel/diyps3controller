@@ -43,65 +43,55 @@ static const double pi = 3.14159265;
 
 int test_time = 1000;
 
+#define DURATION 1000000 //1s
+
 /*
  * Test translation acceleration.
  */
 void auto_test()
 {
-#ifndef WIN32
-  int j;
-#endif
   int i, k;
-  int step;
+  double d = 0.1;//0.1 inches
+  int dots;
+  int dpi;
 
   SDL_Event mouse_evt =
   { };
 
-  for (k = 0; k < 5; ++k)
+  dpi = mouse_cal[current_mouse][current_conf].dpi;
+  
+  if(dpi <= 0)
   {
-    step = 1 << k;
+    return;
+  }
 
-    for (i = 0; i < 500; i++)
+  for (k = 0; k < 6; ++k)
+  {
+    dots = d*dpi;
+
+    for (i = 0; i < dots; i++)
     {
-#ifndef WIN32
-      for (j = 0; j < MAX_DEVICES && mouseName[j]; ++j)
-      {
-        mouse_evt.motion.xrel = step;
-        mouse_evt.motion.which = j;
-        mouse_evt.type = SDL_MOUSEMOTION;
-        SDL_PushEvent(&mouse_evt);
-      }
-#else
-      mouse_evt.motion.xrel = step;
-      mouse_evt.motion.which = 0;
+      mouse_evt.motion.xrel = 1;
+      mouse_evt.motion.which = current_mouse;
       mouse_evt.type = SDL_MOUSEMOTION;
       SDL_PushEvent(&mouse_evt);
-#endif
-      usleep(2000);
+      usleep(DURATION/dots);
     }
 
     usleep(1000000);
 
-    for (i = 0; i < 250; i++)
+    for (i = 0; i < dots/2; i++)
     {
-#ifndef WIN32
-      for (j = 0; j < MAX_DEVICES && mouseName[j]; ++j)
-      {
-        mouse_evt.motion.xrel = -2 * step;
-        mouse_evt.motion.which = j;
-        mouse_evt.type = SDL_MOUSEMOTION;
-        SDL_PushEvent(&mouse_evt);
-      }
-#else
-      mouse_evt.motion.xrel = -2 * step;
-      mouse_evt.motion.which = 0;
+      mouse_evt.motion.xrel = -2 * 1;
+      mouse_evt.motion.which = current_mouse;
       mouse_evt.type = SDL_MOUSEMOTION;
       SDL_PushEvent(&mouse_evt);
-#endif
-      usleep(2000);
+      usleep(DURATION/dots);
     }
 
     usleep(1000000);
+
+    d = d*2;
   }
 
   /*if(mouse_cal[current_mouse][current_conf].dzx)
@@ -158,21 +148,45 @@ void auto_test()
 }
 
 /*
- * 
+ *
  */
 void circle_test()
 {
   int i, j;
   const int step = 1;
+  int dpi;
+  
+//  for (i = 1; i < 360; i += step)
+//  {
+//    for (j = 0; j < DEFAULT_REFRESH_PERIOD / refresh; ++j)
+//    {
+//      mouse_control[current_mouse].merge_x += mouse_cal[current_mouse][current_conf].rd * 64 * pow(dpi/5700, *mouse_cal[current_mouse][current_conf].ex) * (cos(i * 2 * pi / 360) - cos((i - 1) * 2 * pi / 360));
+//      mouse_control[current_mouse].merge_y += mouse_cal[current_mouse][current_conf].rd * 64 * pow(dpi/5700, *mouse_cal[current_mouse][current_conf].ex) * (sin(i * 2 * pi / 360) - sin((i - 1) * 2 * pi / 360));
+//      mouse_control[current_mouse].change = 1;
+//      usleep(refresh);
+//    }
+//  }
+
+  SDL_Event mouse_evt =
+  { };
+
+  dpi = mouse_cal[current_mouse][current_conf].dpi;
+  
+  if(dpi <= 0)
+  {
+    return;
+  }
 
   for (i = 1; i < 360; i += step)
   {
     for (j = 0; j < DEFAULT_REFRESH_PERIOD / refresh; ++j)
     {
-      mouse_control[current_mouse].merge_x += mouse_cal[current_mouse][current_conf].rd * 64 * (cos(i * 2 * pi / 360) - cos((i - 1) * 2 * pi / 360));
-      mouse_control[current_mouse].merge_y += mouse_cal[current_mouse][current_conf].rd * 64 * (sin(i * 2 * pi / 360) - sin((i - 1) * 2 * pi / 360));
-      mouse_control[current_mouse].change = 1;
-      usleep(refresh);
+      mouse_evt.motion.xrel = round(128 * pow((double)dpi/5700, *mouse_cal[current_mouse][current_conf].ex) * (cos(i * 2 * pi / 360) - cos((i - 1) * 2 * pi / 360)));
+      mouse_evt.motion.yrel = round(128 * pow((double)dpi/5700, *mouse_cal[current_mouse][current_conf].ex) * (sin(i * 2 * pi / 360) - sin((i - 1) * 2 * pi / 360)));
+      mouse_evt.motion.which = current_mouse;
+      mouse_evt.type = SDL_MOUSEMOTION;
+      SDL_PushEvent(&mouse_evt);
+      usleep(refresh / 2);
     }
   }
 }
