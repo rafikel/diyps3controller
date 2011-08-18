@@ -14,6 +14,7 @@
 #include <wx/stattext.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
 #include <wx/spinctrl.h>
 #include <wx/panel.h>
 #include <wx/filedlg.h>
@@ -61,6 +62,8 @@ class fpsconfigFrame: public wxFrame
         void OnMenuSaveAs(wxCommandEvent& event);
         void OnMenuOpen(wxCommandEvent& event);
         void OnSpinCtrlChange(wxSpinEvent& event);
+        void OnTextCtrlText(wxCommandEvent& event);
+        void OnMouseDPIChange(wxSpinEvent& event);
         //*)
 
         e_button_index getButtonIndex(wxButton* button);
@@ -113,6 +116,9 @@ class fpsconfigFrame: public wxFrame
         static const long ID_CHOICE1;
         static const long ID_TEXTCTRL1;
         static const long ID_TEXTCTRL25;
+        static const long ID_SPINCTRL9;
+        static const long ID_STATICTEXT8;
+        static const long ID_CHECKBOX1;
         static const long ID_PANEL1;
         static const long ID_MENUITEM1;
         static const long ID_MENUITEM4;
@@ -138,7 +144,9 @@ class fpsconfigFrame: public wxFrame
         wxButton* stickleft;
         wxMenuItem* MenuItem4;
         wxButton* select;
+        wxStaticText* StaticText8;
         wxButton* down;
+        wxSpinCtrl* SpinCtrl9;
         wxButton* stickup;
         wxSpinCtrl* SpinCtrl7;
         wxPanel* Panel1;
@@ -146,6 +154,7 @@ class fpsconfigFrame: public wxFrame
         wxFileDialog* FileDialog1;
         wxStaticText* StaticText3;
         wxButton* r2;
+        wxCheckBox* CheckBox1;
         wxButton* l2;
         wxMenuItem* MenuItem3;
         wxTextCtrl* TextCtrl24;
@@ -182,6 +191,10 @@ class fpsconfigFrame: public wxFrame
 
         ButtonMapper buttons[BI_MAX];
         AxisMapper axes[AI_MAX];
+
+        unsigned int current_dpi;
+
+        double values[6];
 
         DECLARE_EVENT_TABLE()
 };

@@ -102,6 +102,9 @@ const long fpsconfigFrame::ID_CHOICE2 = wxNewId();
 const long fpsconfigFrame::ID_CHOICE1 = wxNewId();
 const long fpsconfigFrame::ID_TEXTCTRL1 = wxNewId();
 const long fpsconfigFrame::ID_TEXTCTRL25 = wxNewId();
+const long fpsconfigFrame::ID_SPINCTRL9 = wxNewId();
+const long fpsconfigFrame::ID_STATICTEXT8 = wxNewId();
+const long fpsconfigFrame::ID_CHECKBOX1 = wxNewId();
 const long fpsconfigFrame::ID_PANEL1 = wxNewId();
 const long fpsconfigFrame::ID_MENUITEM1 = wxNewId();
 const long fpsconfigFrame::ID_MENUITEM4 = wxNewId();
@@ -158,13 +161,15 @@ const char* axis_labels[AI_MAX] =
 
 fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
 {
+    unsigned int i;
+
     //(*Initialize(fpsconfigFrame)
     wxMenuItem* MenuItem2;
     wxMenuItem* MenuItem1;
     wxMenu* Menu1;
     wxMenuBar* MenuBar1;
     wxMenu* Menu2;
-    
+
     Create(parent, wxID_ANY, _("fpsconfig"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(620,430));
     SetBackgroundColour(wxColour(255,255,255));
@@ -268,6 +273,13 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     Choice1->Append(_("Rectangle"));
     TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("1.00"), wxPoint(520,320), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     TextCtrl25 = new wxTextCtrl(Panel1, ID_TEXTCTRL25, _("1.00"), wxPoint(520,352), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL25"));
+    SpinCtrl9 = new wxSpinCtrl(Panel1, ID_SPINCTRL9, _T("0"), wxPoint(24,256), wxSize(64,27), 0, 0, 9900, 0, _T("ID_SPINCTRL9"));
+    SpinCtrl9->SetValue(_T("0"));
+    SpinCtrl9->SetToolTip(_("Set your mouse DPI if you are building a new config with unknown calibration parameters.\nTo use someone else\'s calibration parameters: set the parameters and the corresponding DPI, tick the box below, and set the new DPI."));
+    StaticText8 = new wxStaticText(Panel1, ID_STATICTEXT8, _("Mouse DPI"), wxPoint(24,240), wxDefaultSize, 0, _T("ID_STATICTEXT8"));
+    CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("adjust\nsensitivity"), wxPoint(24,280), wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    CheckBox1->SetValue(false);
+    CheckBox1->SetToolTip(_("Let this box unticked to build a new config with unknown calibration parameters."));
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
     MenuItem3 = new wxMenuItem(Menu1, ID_MENUITEM1, _("New"), wxEmptyString, wxITEM_NORMAL);
@@ -294,7 +306,7 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(1,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    
+
     Connect(ID_SPINCTRL8,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL7,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL6,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
@@ -302,6 +314,10 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_SPINCTRL4,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL3,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
+    Connect(ID_TEXTCTRL24,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL23,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL26,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL22,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
@@ -322,6 +338,9 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_BUTTON19,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON20,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON21,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL25,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_SPINCTRL9,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnMouseDPIChange);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&fpsconfigFrame::OnMenuNew);
     Connect(ID_MENUITEM4,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&fpsconfigFrame::OnMenuOpen);
     Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&fpsconfigFrame::OnMenuSave);
@@ -339,10 +358,10 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     if(!getuid())
     {
     	int answer = wxMessageBox(_("It's not recommended to run as root user. Continue?"), _("Confirm"), wxYES_NO);
-		if (answer == wxNO)
-		{
-			exit(0);
-		}
+      if (answer == wxNO)
+      {
+        exit(0);
+      }
     }
 
     homedir = getpwuid(getuid())->pw_dir;
@@ -369,6 +388,13 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     wxString default_directory = wxString(cmd.c_str(), wxConvUTF8);
 
     FileDialog1->SetDirectory(default_directory);
+
+    current_dpi = 0;
+
+    for(i=0; i<sizeof(values)/sizeof(values[0]); ++i)
+    {
+      values[i] = 1;
+    }
 }
 
 fpsconfigFrame::~fpsconfigFrame()
@@ -388,12 +414,11 @@ void fpsconfigFrame::OnAbout(wxCommandEvent& event)
     wxMessageBox(msg, _("Welcome to..."));
 }
 
-void updateTextCtrlValue(wxTextCtrl* text, wxSpinEvent& event)
+void updateTextCtrlValue(wxTextCtrl* text, wxSpinEvent& event, double* value)
 {
-    double value;
     wxString str;
-    value = event.GetInt() * 0.01;
-    str = wxString::Format(wxT("%.02f"), value);
+    *value = (double)(event.GetInt()) / 100;
+    str = wxString::Format(wxT("%.02f"), *value);
 #ifndef WIN32
     str.Replace(_(","), _("."));
 #endif
@@ -406,27 +431,27 @@ void fpsconfigFrame::OnSpinCtrlChange(wxSpinEvent& event)
 
     if(spin == SpinCtrl3)
     {
-        updateTextCtrlValue(TextCtrl23, event);
+        updateTextCtrlValue(TextCtrl23, event, values);
     }
     else if(spin == SpinCtrl4)
     {
-        updateTextCtrlValue(TextCtrl24, event);
+        updateTextCtrlValue(TextCtrl24, event, values+1);
     }
     else if(spin == SpinCtrl5)
     {
-        updateTextCtrlValue(TextCtrl22, event);
+        updateTextCtrlValue(TextCtrl22, event, values+2);
     }
     else if(spin == SpinCtrl6)
     {
-        updateTextCtrlValue(TextCtrl26, event);
+        updateTextCtrlValue(TextCtrl26, event, values+3);
     }
     else if(spin == SpinCtrl7)
     {
-        updateTextCtrlValue(TextCtrl1, event);
+        updateTextCtrlValue(TextCtrl1, event, values+4);
     }
     else if(spin == SpinCtrl8)
     {
-        updateTextCtrlValue(TextCtrl25, event);
+        updateTextCtrlValue(TextCtrl25, event, values+5);
     }
 }
 
@@ -723,6 +748,10 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
     double xyratio;
     wxString wsmx, wsmy, wsxyratio;
     /*
+     * Save DPI value.
+     */
+    configFile.GetController(0)->SetMouseDPI(current_dpi);
+    /*
      * Save primary config.
      */
     //Save ButtonMappers
@@ -769,10 +798,10 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
      * Save secondary config.
      */
     //Save Trigger
-    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetDevice()->SetType(buttons[bi_l1].GetDevice()->GetType());
-    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetDevice()->SetName(buttons[bi_l1].GetDevice()->GetName());
-    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetDevice()->SetId(buttons[bi_l1].GetDevice()->GetId());
-    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetEvent()->SetId(buttons[bi_l1].GetEvent()->GetId());
+    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetDevice()->SetType(_("mouse"));
+    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetDevice()->SetName(_(""));
+    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetDevice()->SetId(_("0"));
+    configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->GetEvent()->SetId(_("BUTTON_RIGHT"));
     configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->SetSwitchBack(_("yes"));
     configFile.GetController(0)->GetConfiguration(1)->GetTrigger()->SetDelay(0);
     //Save ButtonMappers
@@ -838,6 +867,9 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
     if ( FileName.IsEmpty() ) return;
 
     configFile.ReadConfigFile(FileName);
+
+    current_dpi = configFile.GetController(0)->GetMouseDPI();
+    SpinCtrl9->SetValue(current_dpi);
 
     /*
      * Load primary config.
@@ -1061,4 +1093,114 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
     }
 
     MenuItem4->Enable(true);
+}
+
+void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
+{
+    wxString str;
+    wxTextCtrl* text;
+    double value;
+    int ivalue;
+
+    text = (wxTextCtrl*)event.GetEventObject();
+    str = text->GetValue();
+
+    if(str.IsEmpty())
+    {
+        return;
+    }
+
+    if(str.Replace(_(","), _(".")))
+    {
+        text->SetValue(str);
+    }
+
+#ifndef WIN32
+    str.Replace(_("."), _(","));
+#endif
+
+    if(!str.ToDouble(&value))
+    {
+        text->SetValue(_("1.00"));
+    }
+    else
+    {
+        ivalue = round(value * 100);
+        if(text == TextCtrl23)
+        {
+            SpinCtrl3->SetValue(ivalue);
+            values[0] = value;
+        }
+        else if(text == TextCtrl24)
+        {
+            SpinCtrl4->SetValue(ivalue);
+            values[1] = value;
+        }
+        else if(text == TextCtrl22)
+        {
+            SpinCtrl5->SetValue(ivalue);
+            values[2] = value;
+        }
+        else if(text == TextCtrl26)
+        {
+            SpinCtrl6->SetValue(ivalue);
+            values[3] = value;
+        }
+        else if(text == TextCtrl1)
+        {
+            SpinCtrl7->SetValue(ivalue);
+            values[4] = value;
+        }
+        else if(text == TextCtrl25)
+        {
+            SpinCtrl8->SetValue(ivalue);
+            values[5] = value;
+        }
+    }
+}
+
+#define STEP 100
+
+void fpsconfigFrame::OnMouseDPIChange(wxSpinEvent& event)
+{
+    int v = SpinCtrl9->GetValue();
+    int vceil = ceil((double)v/STEP)*STEP;
+    int vfloor = floor((double)v/STEP)*STEP;
+    int new_dpi;
+    wxString wsm;
+    if(vceil-v > STEP/2)
+    {
+        new_dpi = vceil;
+    }
+    else
+    {
+        new_dpi = vfloor;
+    }
+
+    if(CheckBox1->IsChecked() && current_dpi && new_dpi)
+    {
+        /*
+         * Store the new x multiplier so as not to loose precision due to rounding.
+         */
+        values[0] = values[0]*pow((double)current_dpi/new_dpi, values[2]);
+        SpinCtrl3->SetValue(values[0]*100);
+        wsm = wxString::Format(wxT("%.02f"), (double)values[0]);
+#ifndef WIN32
+        wsm.Replace(_(","), _("."));
+#endif
+        TextCtrl23->SetValue(wsm);
+        /*
+         * Store the new y multiplier so as not to loose precision due to rounding.
+         */
+        values[1] = values[1]*pow((double)current_dpi/new_dpi, values[3]);
+        SpinCtrl4->SetValue(values[1]*100);
+        wsm = wxString::Format(wxT("%.02f"), (double)values[1]);
+#ifndef WIN32
+        wsm.Replace(_(","), _("."));
+#endif
+        TextCtrl24->SetValue(wsm);
+    }
+
+    current_dpi = new_dpi;
+    SpinCtrl9->SetValue(new_dpi);
 }
