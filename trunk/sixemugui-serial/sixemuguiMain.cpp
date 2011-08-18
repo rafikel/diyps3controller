@@ -75,6 +75,7 @@ const long sixemuguiFrame::ID_COMBOBOX1 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT1 = wxNewId();
 const long sixemuguiFrame::ID_COMBOBOX2 = wxNewId();
 const long sixemuguiFrame::ID_STATICTEXT2 = wxNewId();
+const long sixemuguiFrame::ID_CHECKBOX5 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX1 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX4 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX2 = wxNewId();
@@ -316,6 +317,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxStaticBoxSizer* StaticBoxSizer6;
     wxFlexGridSizer* FlexGridSizer8;
     wxMenuBar* MenuBar1;
+    wxFlexGridSizer* FlexGridSizer6;
     wxFlexGridSizer* FlexGridSizer1;
     wxFlexGridSizer* FlexGridSizer11;
     wxMenu* Menu2;
@@ -335,16 +337,21 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer1->Add(StaticBoxSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("emuclient"));
     FlexGridSizer5 = new wxFlexGridSizer(3, 1, 0, 0);
-    FlexGridSizer2 = new wxFlexGridSizer(1, 3, 0, 0);
+    FlexGridSizer2 = new wxFlexGridSizer(2, 1, 0, 0);
+    FlexGridSizer6 = new wxFlexGridSizer(0, 3, 0, 0);
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Update frequency "), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    FlexGridSizer2->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer6->Add(StaticText1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     ComboBox2 = new wxComboBox(Panel1, ID_COMBOBOX2, wxEmptyString, wxDefaultPosition, wxSize(75,-1), 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX2"));
     ComboBox2->SetSelection( ComboBox2->Append(_("100")) );
     ComboBox2->Append(_("125"));
     ComboBox2->Append(_("250"));
-    FlexGridSizer2->Add(ComboBox2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer6->Add(ComboBox2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, _("Hz"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-    FlexGridSizer2->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer6->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2->Add(FlexGridSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CheckBox5 = new wxCheckBox(Panel1, ID_CHECKBOX5, _("Force updates"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
+    CheckBox5->SetValue(true);
+    FlexGridSizer2->Add(CheckBox5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer5->Add(FlexGridSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer8 = new wxFlexGridSizer(2, 2, 0, 0);
     StaticBoxSizer5 = new wxStaticBoxSizer(wxVERTICAL, Panel1, _("Mouse"));
@@ -446,6 +453,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
 {
     string command = "";
     string filename = "";
+    wxString dpi;
     int refresh;
     char crefresh[3];
     int frequency;
@@ -480,6 +488,10 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     {
       refresh = 10;
     }
+    if(CheckBox5->IsChecked())
+    {
+        command.append(" --force-updates");
+    }
     snprintf(crefresh, sizeof(crefresh), "%d", refresh);
     command.append(crefresh);
     command.append(" --port ");
@@ -499,7 +511,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     command.append("\"");
 #endif
 
-    //cout << command << endl;
+    cout << command << endl;
 
     Button3->Disable();
 #ifdef WIN32
