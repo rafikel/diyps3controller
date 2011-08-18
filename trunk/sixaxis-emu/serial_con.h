@@ -24,7 +24,7 @@ typedef struct
 } s_report_data;
 
 int serial_connect(char*);
-void serial_send();
+void serial_send(int);
 void serial_close();
 
 #endif /* SERIAL_CON_H_ */

@@ -43,7 +43,7 @@ int serial_connect(char* portname)
 /*
  * Send a usb report to the serial port.
  */
-void serial_send()
+void serial_send(int force_update)
 {
   s_report_data data =
   { };
@@ -51,7 +51,7 @@ void serial_send()
   struct timeval tv;
   uint8_t* pdata = (uint8_t*) &data;
 
-  if (controller[0].send_command)
+  if (force_update || controller[0].send_command)
   {
     /*
      * Make sure the value is not out of range.
@@ -154,30 +154,34 @@ void serial_send()
       data.Hat = 0x0008;
     }
 
-    /* Dump contents */
-    if (debug)
-    {
-      gettimeofday(&tv, NULL);
-      printf("%ld.%06ld ", tv.tv_sec, tv.tv_usec);
-      for (i = 0; i < sizeof(s_report_data); i++)
-      {
-        printf(" %02x", pdata[i]);
-      }
-      printf("\n");
-    }
-
 #ifdef WIN32
     win_serial_send(&data);
 #else
     lin_serial_send(&data);
 #endif
 
-    if (display)
+    if(controller[0].send_command)
     {
-      sixaxis_dump_state(state, 0);
-    }
+      /* Dump contents */
+      if (debug)
+      {
+        gettimeofday(&tv, NULL);
+        printf("%ld.%06ld ", tv.tv_sec, tv.tv_usec);
+        for (i = 0; i < sizeof(s_report_data); i++)
+        {
+          printf(" %02x", pdata[i]);
+        }
+        printf("\n");
+      }
 
-    controller[0].send_command = 0;
+      if (display)
+      {
+        sixaxis_dump_state(state, 0);
+        //mmap_dump(state);
+      }
+
+      controller[0].send_command = 0;
+    }
   }
 }
 

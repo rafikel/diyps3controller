@@ -99,34 +99,30 @@ int send_single(int c_id, const char* buf, int length)
 /*
  * Send a command to each controller that has its status changed.
  */
-void tcp_send(int serial)
+void tcp_send(int force_update)
 {
   int i;
   unsigned char buf[48];
 
   for (i = 0; i < MAX_CONTROLLERS; ++i)
   {
-    if (controller[i].send_command)
+    if (force_update || controller[i].send_command)
     {
-      if(!serial)
+      if (assemble_input_01(buf, sizeof(buf), state + i) < 0)
       {
-        if (assemble_input_01(buf, sizeof(buf), state + i) < 0)
+        printf("can't assemble\n");
+      }
+      send_single(i, (const char*)buf, 48);
+
+      if (controller[i].send_command)
+      {
+        if(display)
         {
-          printf("can't assemble\n");
+          sixaxis_dump_state(state + i, i);
         }
-        send_single(i, (const char*)buf, 48);
-      }
-      else
-      {
-        send_single(i, (const char*)(state + i), sizeof(struct sixaxis_state));
-      }
 
-      if (display)
-      {
-        sixaxis_dump_state(state + i, i);
+        controller[i].send_command = 0;
       }
-
-      controller[i].send_command = 0;
     }
   }
 }
