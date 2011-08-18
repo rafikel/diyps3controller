@@ -398,7 +398,6 @@ void event_catcher::run()
                     m_DeviceId = wxString::Format(wxT("%i"),0);
                     m_EventType = _("button");
                     event_id = get_chars_from_key(event->key.keysym.sym);
-                    std::cout << event_id << std::endl;
                     m_EventId = wxString(event_id, wxConvUTF8);
                     done = 1;
                     break;
