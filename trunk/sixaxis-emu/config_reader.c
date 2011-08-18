@@ -54,6 +54,7 @@ static e_shape r_shape;
 static e_device_type r_device_type;
 static int r_device_id;
 static char r_device_name[128];
+static int r_config_dpi[MAX_CONTROLLERS];
 
 static int GetDeviceTypeProp(xmlNode * a_node)
 {
@@ -1052,6 +1053,12 @@ static int ProcessControllerElement(xmlNode * a_node)
     }
   }
 
+  if(ret != -1)
+  {
+    /* optional */
+    GetUnsignedIntProp(a_node, X_ATTR_DPI, r_config_dpi+r_controller_id);
+  }
+
   for (cur_node = a_node->children; cur_node && ret != -1; cur_node = cur_node->next)
   {
     if (cur_node->type == XML_ELEMENT_NODE)
@@ -1182,6 +1189,7 @@ static void read_calibration()
             mouse_cal[i][k].dzx = &p_mapper->dead_zone;
             mouse_cal[i][k].dzs = &p_mapper->shape;
             mouse_cal[i][k].rd = DEFAULT_RADIUS;
+            mouse_cal[i][k].dpi = r_config_dpi[j];
           }
           else
           {
