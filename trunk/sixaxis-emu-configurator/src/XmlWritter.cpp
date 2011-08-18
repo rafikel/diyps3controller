@@ -193,6 +193,7 @@ void XmlWritter::CreateControllerNodes(xmlNodePtr parent_node)
 {
     xmlNodePtr node;
     char id[2];
+    char dpi[5];
     int i;
 
     for(i=0; i<MAX_CONTROLLERS; ++i)
@@ -208,6 +209,10 @@ void XmlWritter::CreateControllerNodes(xmlNodePtr parent_node)
 #endif
 
         xmlNewProp(node, BAD_CAST X_ATTR_ID, BAD_CAST id);
+
+        snprintf(dpi, sizeof(dpi), "%u", m_ConfigurationFile->GetController(m_CurrentController)->GetMouseDPI());
+
+        xmlNewProp(node, BAD_CAST X_ATTR_DPI, BAD_CAST dpi);
 
         CreateConfigurationNodes(node);
     }

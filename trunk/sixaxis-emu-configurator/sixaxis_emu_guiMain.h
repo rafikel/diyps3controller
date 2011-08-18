@@ -127,6 +127,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnButton16Click(wxCommandEvent& event);
         void OnButton17Click(wxCommandEvent& event);
         void OnButton18Click(wxCommandEvent& event);
+        void OnMenuSetMouseDPI(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
         void fillButtonAxisChoice(wxChoice* choice);
@@ -241,6 +242,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_MENUITEM18;
         static const long ID_MENUITEM17;
         static const long ID_MENUITEM19;
+        static const long ID_MENUITEM23;
         static const long ID_MENUITEM20;
         static const long ID_MENUITEM22;
         static const long ID_MENUITEM21;
@@ -294,6 +296,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxMenuItem* MenuItem14;
         wxButton* Button14;
         wxMenuItem* MenuItem11;
+        wxMenuItem* MenuItem29;
         wxStaticText* StaticText42;
         wxStaticText* StaticText32;
         wxStaticText* StaticText19;

@@ -500,7 +500,7 @@ void XmlReader::ProcessConfigurationElement(xmlNode * a_node)
             }
         }
     }
-    
+
     if(m_TempConfiguration.GetIntensityList()->empty())
     {
       m_TempIntensity.SetControl(_("left_stick"));
@@ -571,12 +571,30 @@ void XmlReader::ProcessControllerElement(xmlNode * a_node)
 {
     xmlNode* cur_node = NULL;
     unsigned char controller_index;
-    wxString id;
+    wxString id, dpi;
     char* prop;
 
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
-    id = wxString(prop, wxConvUTF8);
-    xmlFree(prop);
+    if(prop)
+    {
+        id = wxString(prop, wxConvUTF8);
+        xmlFree(prop);
+    }
+    else
+    {
+        id = _("-1");
+    }
+
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_DPI);
+    if(prop)
+    {
+        dpi = wxString(prop, wxConvUTF8);
+        xmlFree(prop);
+    }
+    else
+    {
+        dpi = _("0");
+    }
 
     controller_index = wxAtoi(id) - 1;
 
@@ -601,6 +619,9 @@ void XmlReader::ProcessControllerElement(xmlNode * a_node)
             }
         }
     }
+
+    m_TempController.SetMouseDPI(wxAtoi(dpi));
+
     m_TempConfigurationFile.SetController(m_TempController, controller_index);
 }
 

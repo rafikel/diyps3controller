@@ -1111,6 +1111,11 @@
 					<handler function="OnMenuItemPasteController" entry="EVT_MENU" />
 				</object>
 				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM23" variable="MenuItem29" member="yes">
+					<label>Set Mouse DPI</label>
+					<handler function="OnMenuSetMouseDPI" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
 				<object class="wxMenuItem" name="ID_MENUITEM20" variable="MenuItem26" member="yes">
 					<label>Replace Mouse</label>
 					<handler function="OnMenuReplaceMouse" entry="EVT_MENU" />

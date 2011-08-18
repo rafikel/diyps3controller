@@ -158,6 +158,7 @@ const long sixaxis_emu_guiFrame::ID_MENUITEM12 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM18 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM17 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM19 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM23 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM20 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM22 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM21 = wxNewId();
@@ -629,6 +630,9 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     MenuItem25 = new wxMenuItem(Menu5, ID_MENUITEM19, _("Paste Controller"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem25);
     Menu5->AppendSeparator();
+    MenuItem29 = new wxMenuItem(Menu5, ID_MENUITEM23, _("Set Mouse DPI"), wxEmptyString, wxITEM_NORMAL);
+    Menu5->Append(MenuItem29);
+    Menu5->AppendSeparator();
     MenuItem26 = new wxMenuItem(Menu5, ID_MENUITEM20, _("Replace Mouse"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem26);
     MenuItem28 = new wxMenuItem(Menu5, ID_MENUITEM22, _("Replace Mouse DPI"), wxEmptyString, wxITEM_NORMAL);
@@ -720,6 +724,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_MENUITEM18,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemCopyController);
     Connect(ID_MENUITEM17,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteConfiguration);
     Connect(ID_MENUITEM19,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuItemPasteController);
+    Connect(ID_MENUITEM23,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuSetMouseDPI);
     Connect(ID_MENUITEM20,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceMouse);
     Connect(ID_MENUITEM22,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI);
     Connect(ID_MENUITEM21,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnMenuReplaceKeyboard);
@@ -1772,7 +1777,15 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
     std::list<AxisMapper>* axisMappers;
 
     int old_value, new_value;
-    wxNumberEntryDialog dialog1(this, wxT(""), wxT("Enter a number:"), wxT("Old mouse DPI value"), 2000, 100, 10000);
+
+    old_value = configFile.GetController(currentController)->GetMouseDPI();
+
+    if(!old_value)
+    {
+      old_value = 2000;
+    }
+
+    wxNumberEntryDialog dialog1(this, wxT(""), wxT("Enter a number:"), wxT("Old mouse DPI value"), old_value, 100, 10000);
     if (dialog1.ShowModal() == wxID_OK)
     {
         old_value = dialog1.GetValue();
@@ -1826,6 +1839,8 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
                 }
               }
             }
+
+            configFile.GetController(currentController)->SetMouseDPI(new_value);
 
             load_current();
             refresh_gui();
@@ -1921,4 +1936,13 @@ void sixaxis_emu_guiFrame::OnButton18Click(wxCommandEvent& event)
     StaticText9->SetLabel(wxEmptyString);
 
     Panel1->Layout();
+}
+
+void sixaxis_emu_guiFrame::OnMenuSetMouseDPI(wxCommandEvent& event)
+{
+    wxNumberEntryDialog dialog1(this, wxT(""), wxT("Enter a number:"), wxT("Mouse DPI value"), configFile.GetController(currentController)->GetMouseDPI(), 0, 10000);
+    if (dialog1.ShowModal() == wxID_OK)
+    {
+       configFile.GetController(currentController)->SetMouseDPI(dialog1.GetValue());
+    }
 }
