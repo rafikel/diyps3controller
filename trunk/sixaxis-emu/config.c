@@ -546,7 +546,7 @@ void process_event(SDL_Event* event)
 
   /*
    * 'which' should always be at that place
-   * There is no need to check the value, since it's stored as an uint8_t, and MAX_CONTROLLERS is 256.
+   * There is no need to check the value, since it's stored as an uint8_t, and MAX_DEVICES is 256.
    */
   unsigned int device = ((SDL_KeyboardEvent*)event)->which;
 
