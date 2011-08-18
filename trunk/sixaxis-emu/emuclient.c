@@ -87,8 +87,6 @@ extern int mouseVirtualIndex[MAX_DEVICES];
 extern e_current_cal current_cal;
 extern int current_mouse;
 
-extern int dpi;
-
 int main(int argc, char *argv[])
 {
   int grab = 1;
@@ -155,10 +153,6 @@ int main(int argc, char *argv[])
     else if (!strcmp(argv[i], "--subpos"))
     {
       subpos = 1;
-    }
-    else if (!strcmp(argv[i], "--dpi"))
-    {
-      dpi = atoi(argv[++i]);
     }
 //#ifdef WIN32
 //    else if (!strcmp(argv[i], "--ip") && i < argc)
