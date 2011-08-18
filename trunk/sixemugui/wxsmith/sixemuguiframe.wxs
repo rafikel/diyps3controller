@@ -381,6 +381,23 @@
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
+											<object class="wxFlexGridSizer" variable="FlexGridSizer13" member="no">
+												<cols>3</cols>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_CHECKBOX6" variable="CheckBox6" member="yes">
+														<label>Force updates</label>
+														<checked>1</checked>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
 											<object class="wxFlexGridSizer" variable="FlexGridSizer9" member="no">
 												<cols>2</cols>
 												<rows>1</rows>
