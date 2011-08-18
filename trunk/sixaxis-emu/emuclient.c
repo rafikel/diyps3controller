@@ -73,6 +73,7 @@ int subpos = 0;
 int serial = 0;
 int done = 0;
 int display = 0;
+int force_updates = 0;
 
 struct sixaxis_state state[MAX_CONTROLLERS];
 s_controller controller[MAX_CONTROLLERS] =
@@ -153,6 +154,10 @@ int main(int argc, char *argv[])
     else if (!strcmp(argv[i], "--subpos"))
     {
       subpos = 1;
+    }
+    else if (!strcmp(argv[i], "--force-updates"))
+    {
+      force_updates = 1;
     }
 //#ifdef WIN32
 //    else if (!strcmp(argv[i], "--ip") && i < argc)
@@ -325,11 +330,11 @@ int main(int argc, char *argv[])
 #ifndef WIN32
     if(serial)
     {
-      serial_send();
+      serial_send(force_updates);
     }
     else
     {
-      tcp_send(serial);
+      tcp_send(force_updates);
     }
 #else
     serial_send();
