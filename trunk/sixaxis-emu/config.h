@@ -38,6 +38,7 @@
 #define X_NODE_DOWN "down"
 
 #define X_ATTR_ID "id"
+#define X_ATTR_DPI "dpi"
 #define X_ATTR_TYPE "type"
 #define X_ATTR_NAME "name"
 #define X_ATTR_BUTTON_ID "button_id"
@@ -126,6 +127,7 @@ typedef struct
   int* dzx;
   int* dzy;
   e_shape* dzs;
+  int dpi;
 }s_mouse_cal;
 
 typedef struct
