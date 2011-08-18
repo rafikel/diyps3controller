@@ -91,6 +91,7 @@ const long sixemuguiFrame::ID_CHECKBOX4 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX2 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX3 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX6 = wxNewId();
+const long sixemuguiFrame::ID_CHECKBOX7 = wxNewId();
 const long sixemuguiFrame::ID_CHOICE4 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON3 = wxNewId();
 const long sixemuguiFrame::ID_PANEL1 = wxNewId();
@@ -468,7 +469,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer11;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixemugui"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(675,525));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
@@ -578,10 +579,13 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StaticBoxSizer6->Add(FlexGridSizer11, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer8->Add(StaticBoxSizer6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer5->Add(FlexGridSizer8, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer13 = new wxFlexGridSizer(0, 3, 0, 0);
+    FlexGridSizer13 = new wxFlexGridSizer(1, 2, 0, 0);
     CheckBox6 = new wxCheckBox(Panel1, ID_CHECKBOX6, _("Force updates"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
     CheckBox6->SetValue(true);
     FlexGridSizer13->Add(CheckBox6, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CheckBox7 = new wxCheckBox(Panel1, ID_CHECKBOX7, _("Subpositions"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX7"));
+    CheckBox7->SetValue(false);
+    FlexGridSizer13->Add(CheckBox7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer5->Add(FlexGridSizer13, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer9 = new wxFlexGridSizer(1, 2, 0, 0);
     StaticBoxSizer8 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Config"));
@@ -618,7 +622,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(2,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     SingleInstanceChecker1.Create(_T("Sixemugui_") + wxGetUserId() + _T("_Guard"));
-
+    
     Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectSixaxisBdaddr);
     Connect(ID_CHOICE2,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectPS3Bdaddr);
     Connect(ID_CHOICE3,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectBtDongle);
@@ -1041,6 +1045,10 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     if(CheckBox6->IsChecked())
     {
         command.append(" --force-updates");
+    }
+    if(CheckBox7->IsChecked())
+    {
+        command.append(" --subpos");
     }
     command.append(" --config ");
     command.append(Choice4->GetStringSelection().mb_str());
