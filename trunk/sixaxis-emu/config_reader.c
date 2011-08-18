@@ -1056,7 +1056,7 @@ static int ProcessControllerElement(xmlNode * a_node)
   if(ret != -1)
   {
     /* optional */
-    GetUnsignedIntProp(a_node, X_ATTR_DPI, r_config_dpi+r_controller_id);
+    GetIntProp(a_node, X_ATTR_DPI, r_config_dpi+r_controller_id);
   }
 
   for (cur_node = a_node->children; cur_node && ret != -1; cur_node = cur_node->next)
