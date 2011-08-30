@@ -5,7 +5,7 @@
 prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
 
-BINS=bin/Release/sixemugui
+BINS=bin/Release/gimx-bluetooth
 
 WSDIR = `pwd`
 
@@ -36,7 +36,7 @@ LIB_RELEASE = $(LIB)
 LDFLAGS_RELEASE = -s $(LDFLAGS)
 OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
-OUT_RELEASE = bin/Release/sixemugui
+OUT_RELEASE = bin/Release/gimx-bluetooth
 
 OBJ_DEBUG = $(OBJDIR_DEBUG)/sixemuguiApp.o $(OBJDIR_DEBUG)/sixemuguiMain.o
 OBJ_RELEASE = $(OBJDIR_RELEASE)/sixemuguiApp.o $(OBJDIR_RELEASE)/sixemuguiMain.o
@@ -70,12 +70,12 @@ install: all
 	mkdir -p $(bindir)
 	mkdir -p $(prefix)/share/applications
 	for i in $(BINS); do cp $$i $(bindir)/; done
-	cp sixemugui.desktop $(prefix)/share/applications
+	cp gimx-bluetooth.desktop $(prefix)/share/applications
 
 uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
 	-rmdir $(bindir)
 	-rmdir $(prefix)
-	-rm $(prefix)/share/applications/sixemugui.desktop
+	-rm $(prefix)/share/applications/gimx-bluetooth.desktop
 
 really-clean: clean uninstall
