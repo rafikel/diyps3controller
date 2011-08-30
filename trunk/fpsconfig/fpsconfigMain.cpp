@@ -856,6 +856,7 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
     e_axis_index aindex;
     bool warning = false;
     wxButton* button;
+    std::list<Intensity>* intensityList;
 
     double mx, my, exp;
     double xyratio;
@@ -870,6 +871,20 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
 
     current_dpi = configFile.GetController(0)->GetMouseDPI();
     SpinCtrl9->SetValue(current_dpi);
+
+    /*
+     * Delete the stick intensity lists.
+     */
+    intensityList = configFile.GetController(0)->GetConfiguration(0)->GetIntensityList();
+    intensityList->erase(intensityList->begin(), intensityList->end());
+    intensityList = configFile.GetController(0)->GetConfiguration(1)->GetIntensityList();
+    intensityList->erase(intensityList->begin(), intensityList->end());
+
+    /*
+     * Delete the triggers.
+     */
+    configFile.GetController(0)->GetConfiguration(0)->SetTrigger(Trigger());
+    configFile.GetController(0)->GetConfiguration(1)->SetTrigger(Trigger());
 
     /*
      * Load primary config.
@@ -905,6 +920,7 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
         if(button->GetLabel().IsEmpty())
         {
             buttons[bindex] = *it;
+            buttons[bindex].GetDevice()->SetName(_(""));
             button->SetLabel(it->GetEvent()->GetId());
             button->SetToolTip(it->GetEvent()->GetId());
         }
@@ -1004,6 +1020,7 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
             if(button->GetLabel().IsEmpty())
             {
                 axes[aindex] = *it;
+                axes[aindex].GetDevice()->SetName(_(""));
                 button->SetLabel(it->GetEvent()->GetId());
                 button->SetToolTip(it->GetEvent()->GetId());
             }
