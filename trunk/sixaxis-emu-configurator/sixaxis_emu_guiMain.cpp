@@ -302,7 +302,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer17;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-
+    
     Create(parent, wxID_ANY, _("Sixaxis emulator customizer"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     GridSizer1 = new wxGridSizer(1, 1, 0, 0);
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,570), 0, _T("ID_NOTEBOOK1"));
@@ -688,7 +688,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), wxFD_DEFAULT_STYLE|wxFD_OPEN, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     GridSizer1->Fit(this);
     GridSizer1->SetSizeHints(this);
-
+    
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton1Click1);
     Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton10Click1);
     Connect(ID_BUTTON13,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton13Click1);
@@ -1087,7 +1087,7 @@ void sixaxis_emu_guiFrame::save_current()
     configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetTrigger()->SetDelay(SpinCtrl5->GetValue());
     //Save Intensity
     intensityList = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetIntensityList();
-    for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it = intensityList->erase(it)) {}
+    intensityList->erase(intensityList->begin(), intensityList->end());
     //Save left stick Intensity
     intensityList->push_back(Intensity(_("left_stick"),
         StaticText58->GetLabel(), StaticText60->GetLabel(), StaticText59->GetLabel(), StaticText61->GetLabel(),
@@ -1100,7 +1100,7 @@ void sixaxis_emu_guiFrame::save_current()
         SpinCtrl4->GetValue(), SpinCtrl2->GetValue(), Choice3->GetStringSelection()));
     //Save ButtonMappers
     buttonMappers = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetButtonMapperList();
-    for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it = buttonMappers->erase(it)) {}
+    buttonMappers->erase(buttonMappers->begin(), buttonMappers->end());
     for(int i=0; i<Grid1->GetNumberRows(); i++)
     {
         //ButtonMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString threshold, wxString button)
@@ -1108,7 +1108,7 @@ void sixaxis_emu_guiFrame::save_current()
     }
     //Save AxisMappers
     axisMappers = configFile.GetController(currentController)->GetConfiguration(currentConfiguration)->GetAxisMapperList();
-    for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it = axisMappers->erase(it)) {}
+    axisMappers->erase(axisMappers->begin(), axisMappers->end());
     for(int i=0; i<Grid2->GetNumberRows(); i++)
     {
         //AxisMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString axis, wxString deadZone, wxString multiplier, wxString exponent);
