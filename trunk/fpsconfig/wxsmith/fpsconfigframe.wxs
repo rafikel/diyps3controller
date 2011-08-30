@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxFrame" name="fpsconfigFrame">
-		<title>fpsconfig</title>
+		<title>Gimx-fpsconfig</title>
 		<size>620,430</size>
 		<bg>#FFFFFF</bg>
 		<id_arg>0</id_arg>
