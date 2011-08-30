@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=0.12
-Name=Sixemuconf
-GenericName=Sixemuconf
-Icon=
-Exec=/usr/bin/sixemuconf
-Categories=Game;

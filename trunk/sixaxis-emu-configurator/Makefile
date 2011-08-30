@@ -5,7 +5,7 @@
 prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
 
-BINS=bin/Release/sixemuconf
+BINS=bin/Release/gimx-config
 
 WSDIR = `pwd`
 
@@ -36,7 +36,7 @@ LIB_RELEASE = $(LIB)
 LDFLAGS_RELEASE = -s $(LDFLAGS)
 OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
-OUT_RELEASE = bin/Release/sixemuconf
+OUT_RELEASE = bin/Release/gimx-config
 
 OBJ_RELEASE = $(OBJDIR_RELEASE)/src/event_catcher.o $(OBJDIR_RELEASE)/src/XmlWritter.o $(OBJDIR_RELEASE)/src/XmlReader.o $(OBJDIR_RELEASE)/src/Trigger.o $(OBJDIR_RELEASE)/src/Intensity.o $(OBJDIR_RELEASE)/src/Event.o $(OBJDIR_RELEASE)/src/Device.o $(OBJDIR_RELEASE)/src/Controller.o $(OBJDIR_RELEASE)/src/ConfigurationFile.o $(OBJDIR_RELEASE)/src/Configuration.o $(OBJDIR_RELEASE)/src/ButtonMapper.o $(OBJDIR_RELEASE)/src/AxisMapper.o $(OBJDIR_RELEASE)/sixaxis_emu_guiMain.o $(OBJDIR_RELEASE)/sixaxis_emu_guiApp.o
 
@@ -116,12 +116,12 @@ install: all
 	mkdir -p $(bindir)
 	mkdir -p $(prefix)/share/applications
 	for i in $(BINS); do cp $$i $(bindir)/; done
-	cp sixemuconf.desktop $(prefix)/share/applications
+	cp gimx-config.desktop $(prefix)/share/applications
 
 uninstall:
 	-for i in $(BINS); do rm $(bindir)/$$i; done
 	-rmdir $(bindir)
 	-rmdir $(prefix)
-	-rm $(prefix)/share/applications/sixemuconf.desktop
+	-rm $(prefix)/share/applications/gimx-config.desktop
 
 really-clean: clean uninstall
