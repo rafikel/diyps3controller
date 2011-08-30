@@ -13,6 +13,7 @@
 #define DEFAULT_RADIUS 4
 
 void read_config_file(const char*);
+void free_config();
 int read_config_dir();
 
 int GetIntProp(xmlNode*, char*, int*);

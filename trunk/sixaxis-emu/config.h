@@ -183,5 +183,6 @@ void trigger_lookup(SDL_Event*);
 void config_activation();
 void intensity_lookup(SDL_Event*);
 void process_event(SDL_Event*);
+int get_device_id(SDL_Event*);
 
 #endif /* CONFIG_H_ */

@@ -85,6 +85,8 @@ extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
 extern char* mouseName[MAX_DEVICES];
 extern int mouseVirtualIndex[MAX_DEVICES];
 
+extern int merge_all_devices;
+
 extern e_current_cal current_cal;
 extern int current_mouse;
 
@@ -209,6 +211,13 @@ int main(int argc, char *argv[])
   if (read == 1)
   {
     read_config_file(config_file);
+
+    if(merge_all_devices)
+    {
+      free_config();
+      read_config_file(config_file);
+    }
+
     sdl_release_unused();
   }
 
@@ -258,9 +267,9 @@ int main(int argc, char *argv[])
       }
       else
       {
-        mouse_control[event->motion.which].merge_x += event->motion.xrel;
-        mouse_control[event->motion.which].merge_y += event->motion.yrel;
-        mouse_control[event->motion.which].change = 1;
+        mouse_control[get_device_id(event)].merge_x += event->motion.xrel;
+        mouse_control[get_device_id(event)].merge_y += event->motion.yrel;
+        mouse_control[get_device_id(event)].change = 1;
       }
 
       trigger_lookup(event);

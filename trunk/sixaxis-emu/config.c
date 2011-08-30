@@ -25,6 +25,8 @@ extern int mean_axis_value;
 extern int refresh;
 extern int postpone_count;
 
+int merge_all_devices = 0;
+
 /*
  * This tells what's the current config of each controller.
  */
@@ -80,6 +82,35 @@ s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS] = {};
  */
 s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 s_mapper* joystick_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+
+/*
+ * Returns the device id of a given event.
+ */
+int get_device_id(SDL_Event* e)
+{
+  unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
+
+  switch(e->type)
+  {
+    case SDL_JOYHATMOTION:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+    case SDL_JOYAXISMOTION:
+    break;
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+    case SDL_MOUSEMOTION:
+      if(merge_all_devices)
+      {
+        device_id = 0;
+      }
+    break;
+  }
+
+  return device_id;
+}
 
 /*
  * This updates the stick according to the intensity shape.
@@ -174,7 +205,7 @@ void intensity_lookup(SDL_Event* e)
   int i;
   int device_type;
   int button_id;
-  unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
+  unsigned int device_id = get_device_id(e);
 
   switch( e->type )
   {
@@ -222,9 +253,9 @@ void trigger_lookup(SDL_Event* e)
   int device_type;
   int button;
   int up = 0;
-  unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
   int selected;
   int current;
+  unsigned int device_id = get_device_id(e);
 
   switch( e->type )
   {
@@ -548,7 +579,7 @@ void process_event(SDL_Event* event)
    * 'which' should always be at that place
    * There is no need to check the value, since it's stored as an uint8_t, and MAX_DEVICES is 256.
    */
-  unsigned int device = ((SDL_KeyboardEvent*)event)->which;
+  unsigned int device = get_device_id(event);
 
   for(c_id=0; c_id<MAX_CONTROLLERS; ++c_id)
   {

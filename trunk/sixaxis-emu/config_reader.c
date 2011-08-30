@@ -22,7 +22,7 @@ extern char* homedir;
 #endif
 
 extern int mean_axis_value;
-
+extern int merge_all_devices;
 extern const char* joystickName[MAX_DEVICES];
 extern int joystickVirtualIndex[MAX_DEVICES];
 extern const char* mouseName[MAX_DEVICES];
@@ -273,7 +273,13 @@ static int ProcessDeviceElement(xmlNode * a_node)
 #ifndef WIN32
       for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
       {
-        if (!strcmp(r_device_name, mouseName[i]))
+        if(merge_all_devices || strlen(r_device_name) == 0)
+        {
+          merge_all_devices = 1;
+          r_device_id = 0;
+          break;
+        }
+        else if (!strcmp(r_device_name, mouseName[i]))
         {
           if (r_device_id == mouseVirtualIndex[i])
           {
@@ -295,7 +301,13 @@ static int ProcessDeviceElement(xmlNode * a_node)
 #ifndef WIN32
       for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
       {
-        if (!strcmp(r_device_name, keyboardName[i]))
+        if(merge_all_devices || strlen(r_device_name) == 0)
+        {
+          merge_all_devices = 1;
+          r_device_id = 0;
+          break;
+        }
+        else if (!strcmp(r_device_name, keyboardName[i]))
         {
           if (r_device_id == keyboardVirtualIndex[i])
           {
@@ -1205,6 +1217,30 @@ static void read_calibration()
   if(current_mouse < 0)
   {
     current_mouse = 0;
+  }
+}
+
+void free_config()
+{
+  int i, j, k;
+  for(i=0; i<MAX_DEVICES; ++i)
+  {
+    for(j=0; j<MAX_CONTROLLERS; ++j)
+    {
+      for(k=0; k<MAX_CONFIGURATIONS; ++k)
+      {
+        free(keyboard_buttons[i][j][k]);
+        free(mouse_buttons[i][j][k]);
+        free(mouse_axis[i][j][k]);
+        free(joystick_buttons[i][j][k]);
+        free(joystick_axis[i][j][k]);
+        keyboard_buttons[i][j][k] = NULL;
+        mouse_buttons[i][j][k] = NULL;
+        mouse_axis[i][j][k] = NULL;
+        joystick_buttons[i][j][k] = NULL;
+        joystick_axis[i][j][k] = NULL;
+      }
+    }
   }
 }
 
