@@ -2,85 +2,95 @@
 <root>
   <controller id="1">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map>
-        <button id="l2">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_WHEELUP"/>
-        </button>
-        <button id="r2">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_X2"/>
-        </button>
-        <button id="l1">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_RIGHT"/>
-        </button>
-        <button id="r1">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_LEFT"/>
-        </button>
-        <button id="right">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="RIGHT"/>
-        </button>
-        <button id="left">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="LEFT"/>
-        </button>
-        <button id="select">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="TAB"/>
-        </button>
-        <button id="start">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="BACKSPACE"/>
-        </button>
-        <button id="PS">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="RSHIFT"/>
-        </button>
-        <button id="cross">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="UP"/>
-        </button>
         <button id="r3">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
           <event type="button" id="DOWN"/>
-        </button>
-        <button id="triangle">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="e"/>
-        </button>
-        <button id="square">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="r"/>
-        </button>
-        <button id="circle">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="f"/>
         </button>
         <button id="l3">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
           <event type="button" id="LSHIFT"/>
         </button>
-        <button id="start">
+        <button id="r2">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_X2"/>
+        </button>
+        <button id="l2">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_WHEELUP"/>
+        </button>
+        <button id="r1">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_LEFT"/>
+        </button>
+        <button id="l1">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_RIGHT"/>
+        </button>
+        <button id="square">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="c"/>
+          <event type="button" id="r"/>
+        </button>
+        <button id="cross">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="UP"/>
+        </button>
+        <button id="circle">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="f"/>
+        </button>
+        <button id="triangle">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="e"/>
+        </button>
+        <button id="left">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="LEFT"/>
+        </button>
+        <button id="down">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="w"/>
+        </button>
+        <button id="right">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="RIGHT"/>
+        </button>
+        <button id="up">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="a"/>
         </button>
         <button id="PS">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="x"/>
+          <event type="button" id="RSHIFT"/>
+        </button>
+        <button id="start">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="BACKSPACE"/>
+        </button>
+        <button id="select">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="TAB"/>
         </button>
       </button_map>
       <axis_map>
-        <axis id="rstick x">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="x" dead_zone="14" multiplier="10" exponent="1" shape="Circle"/>
-        </axis>
         <axis id="rstick y">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="y" dead_zone="14" multiplier="12" exponent="1" shape="Circle"/>
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="y" dead_zone="31" multiplier="11.25" exponent="0.40" shape="Circle"/>
+        </axis>
+        <axis id="rstick x">
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="x" dead_zone="31" multiplier="9.00" exponent="0.40" shape="Circle"/>
         </axis>
         <axis id="lstick left">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
@@ -101,85 +111,95 @@
       </axis_map>
     </configuration>
     <configuration id="2">
-      <trigger type="mouse" id="0" name="Logitech USB Gaming Mouse" button_id="BUTTON_RIGHT" switch_back="yes"/>
+      <trigger type="mouse" id="0" name="Logitech G500" button_id="BUTTON_RIGHT" switch_back="yes" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map>
-        <button id="l2">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_WHEELUP"/>
-        </button>
-        <button id="r2">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_X2"/>
-        </button>
-        <button id="l1">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_RIGHT"/>
-        </button>
-        <button id="r1">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="button" id="BUTTON_LEFT"/>
-        </button>
-        <button id="right">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="RIGHT"/>
-        </button>
-        <button id="left">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="LEFT"/>
-        </button>
-        <button id="select">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="TAB"/>
-        </button>
-        <button id="start">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="BACKSPACE"/>
-        </button>
-        <button id="PS">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="RSHIFT"/>
-        </button>
-        <button id="cross">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="UP"/>
-        </button>
         <button id="r3">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
           <event type="button" id="DOWN"/>
-        </button>
-        <button id="triangle">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="e"/>
-        </button>
-        <button id="square">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="r"/>
-        </button>
-        <button id="circle">
-          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="f"/>
         </button>
         <button id="l3">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
           <event type="button" id="LSHIFT"/>
         </button>
-        <button id="start">
+        <button id="r2">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_X2"/>
+        </button>
+        <button id="l2">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_WHEELUP"/>
+        </button>
+        <button id="r1">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_LEFT"/>
+        </button>
+        <button id="l1">
+          <device type="mouse" id="0" name="Logitech G500"/>
+          <event type="button" id="BUTTON_RIGHT"/>
+        </button>
+        <button id="square">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="c"/>
+          <event type="button" id="r"/>
+        </button>
+        <button id="cross">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="UP"/>
+        </button>
+        <button id="circle">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="f"/>
+        </button>
+        <button id="triangle">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="e"/>
+        </button>
+        <button id="left">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="LEFT"/>
+        </button>
+        <button id="down">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="w"/>
+        </button>
+        <button id="right">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="RIGHT"/>
+        </button>
+        <button id="up">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="a"/>
         </button>
         <button id="PS">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
-          <event type="button" id="x"/>
+          <event type="button" id="RSHIFT"/>
+        </button>
+        <button id="start">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="BACKSPACE"/>
+        </button>
+        <button id="select">
+          <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
+          <event type="button" id="TAB"/>
         </button>
       </button_map>
       <axis_map>
-        <axis id="rstick x">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="x" dead_zone="14" multiplier="10" exponent="1" shape="Circle"/>
-        </axis>
         <axis id="rstick y">
-          <device type="mouse" id="0" name="Logitech USB Gaming Mouse"/>
-          <event type="axis" id="y" dead_zone="14" multiplier="12" exponent="1" shape="Circle"/>
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="y" dead_zone="31" multiplier="18.75" exponent="0.40" shape="Circle"/>
+        </axis>
+        <axis id="rstick x">
+          <device type="mouse" id="0" name=""/>
+          <event type="axis" id="x" dead_zone="31" multiplier="15.00" exponent="0.40" shape="Circle"/>
         </axis>
         <axis id="lstick left">
           <device type="keyboard" id="0" name="Belkin Belkin n52te"/>
@@ -200,284 +220,824 @@
       </axis_map>
     </configuration>
     <configuration id="3">
-      <trigger type="keyboard" id="0" name="Belkin Belkin n52te" button_id="c" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="5">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="6">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="7">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="8">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="2">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="5">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="6">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="7">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="8">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="3">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="5">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="6">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="7">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="8">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="4">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="5">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="6">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="7">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="8">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="5">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="5">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="6">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="7">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="8">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="6">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="5">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="6">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="7">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="8">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
   </controller>
   <controller id="7">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="2">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="3">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="4">
-      <trigger type="" id="" name="" button_id="" switch_back="no"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="5">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="6">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="7">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
     <configuration id="8">
-      <trigger type="" id="" name="" button_id="" switch_back=""/>
+      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <intensity_list>
+        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+        <intensity control="right_stick" dead_zone="0" shape="Circle" steps="1">
+          <up type="" name="" id="" button_id=""/>
+          <down type="" name="" id="" button_id=""/>
+        </intensity>
+      </intensity_list>
       <button_map/>
       <axis_map/>
     </configuration>
