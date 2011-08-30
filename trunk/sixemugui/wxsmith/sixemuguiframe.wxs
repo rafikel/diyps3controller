@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxFrame" name="sixemuguiFrame">
-		<title>Sixemugui</title>
+		<title>Gimx-bluetooth</title>
 		<size>675,525</size>
 		<id_arg>0</id_arg>
 		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
