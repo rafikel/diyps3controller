@@ -323,8 +323,8 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
     
-    Create(parent, wxID_ANY, _("Sixemugui-serial"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
-    SetClientSize(wxSize(412,370));
+    Create(parent, wxID_ANY, _("Gimx-serial"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
+    SetClientSize(wxSize(412,420));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, Panel1, _("USB to serial"));
@@ -445,7 +445,7 @@ void sixemuguiFrame::OnQuit(wxCommandEvent& event)
 
 void sixemuguiFrame::OnAbout(wxCommandEvent& event)
 {
-  wxString msg = _("Sixemugui-serial\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\n");
+  wxString msg = _("Gimx-serial\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.gimx.fr/forum/\n");
   wxMessageBox(msg, _("Welcome to..."));
 }
 
