@@ -5,7 +5,7 @@
 prefix=$(DESTDIR)/usr
 bindir=$(prefix)/bin
 
-BINS=bin/Release/sixstatus
+BINS=bin/Release/gimx-status
 
 WSDIR = `pwd`
 
@@ -36,7 +36,7 @@ LIB_RELEASE = $(LIB)
 LDFLAGS_RELEASE = -s $(LDFLAGS)
 OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
-OUT_RELEASE = bin/Release/sixstatus
+OUT_RELEASE = bin/Release/gimx-status
 
 OBJ_RELEASE = $(OBJDIR_RELEASE)/sixstatusApp.o $(OBJDIR_RELEASE)/sixstatusMain.o
 

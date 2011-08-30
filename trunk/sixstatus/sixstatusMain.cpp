@@ -483,7 +483,7 @@ sixstatusFrame::sixstatusFrame(wxWindow* parent,wxWindowID id)
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
 
-    Create(parent, wxID_ANY, _("Sixstatus"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
+    Create(parent, wxID_ANY, _("Gimx-status"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     FlexGridSizer1 = new wxFlexGridSizer(2, 1, 0, 0);
     StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Sixaxis status"));
     GridSizer1 = new wxGridSizer(6, 8, 0, 0);
@@ -696,7 +696,7 @@ void sixstatusFrame::OnQuit(wxCommandEvent& event)
 
 void sixstatusFrame::OnAbout(wxCommandEvent& event)
 {
-  wxString msg = _("Sixstatus\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\n");
+  wxString msg = _("Gimx-status\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.gimx.fr/forum/\n");
   wxMessageBox(msg, _("Welcome to..."));
 }
 
