@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxFrame" name="sixaxis_emu_guiFrame">
-		<title>Sixaxis emulator customizer</title>
+		<title>Gimx-config</title>
 		<id_arg>0</id_arg>
 		<object class="wxGridSizer" variable="GridSizer1" member="no">
 			<cols>1</cols>

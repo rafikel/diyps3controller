@@ -303,7 +303,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
     
-    Create(parent, wxID_ANY, _("Sixaxis emulator customizer"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
+    Create(parent, wxID_ANY, _("Gimx-config"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     GridSizer1 = new wxGridSizer(1, 1, 0, 0);
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,570), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
@@ -814,7 +814,7 @@ void sixaxis_emu_guiFrame::OnQuit(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = _("Sixemu configurator\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\n");
+    wxString msg = _("Gimx-config\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.gimx.fr/forum/\n");
     wxMessageBox(msg, _("Welcome to..."));
 }
 
