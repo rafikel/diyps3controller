@@ -488,12 +488,12 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     {
       refresh = 10;
     }
+    snprintf(crefresh, sizeof(crefresh), "%d", refresh);
+    command.append(crefresh);
     if(CheckBox5->IsChecked())
     {
         command.append(" --force-updates");
     }
-    snprintf(crefresh, sizeof(crefresh), "%d", refresh);
-    command.append(crefresh);
     command.append(" --port ");
 #ifndef WIN32
     command.append("/dev/");
