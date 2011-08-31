@@ -1054,7 +1054,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     command.append(Choice4->GetStringSelection().mb_str());
     if(CheckBox2->IsChecked())
     {
-        command.append(" --status | sixstatus");
+        command.append(" --status | gimx-status");
     }
     else if(CheckBox3->IsChecked())
     {
