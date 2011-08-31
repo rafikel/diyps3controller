@@ -25,7 +25,11 @@ extern int mean_axis_value;
 extern int refresh;
 extern int postpone_count;
 
+#ifndef WIN32
 int merge_all_devices = 0;
+#else
+int merge_all_devices = 1;
+#endif
 
 /*
  * This tells what's the current config of each controller.

@@ -15,5 +15,6 @@ void sdl_grab_toggle();
 void sdl_grab();
 void sdl_release_unused();
 void sdl_quit();
+void sdl_free_mk();
 
 #endif /* SDL_TOOLS_H_ */

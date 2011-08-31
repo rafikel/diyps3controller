@@ -215,6 +215,7 @@ int main(int argc, char *argv[])
     if(merge_all_devices)
     {
       free_config();
+      sdl_free_mk();
       read_config_file(config_file);
     }
 

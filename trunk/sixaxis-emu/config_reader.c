@@ -56,6 +56,84 @@ static int r_device_id;
 static char r_device_name[128];
 static int r_config_dpi[MAX_CONTROLLERS];
 
+static int GetDeviceId()
+{
+  int i;
+  int device_id = 0;
+
+  if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+  {
+    for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
+    {
+      if (!strcmp(r_device_name, joystickName[i]))
+      {
+        if (r_device_id == joystickVirtualIndex[i])
+        {
+          device_id = i;
+          break;
+        }
+      }
+    }
+    if(i == MAX_DEVICES || !joystickName[i])
+    {
+      printf("joystick not found: %s %d\n", r_device_name, r_device_id);
+      device_id = -1;
+    }
+  }
+  else if(merge_all_devices)
+  {
+    device_id = 0;
+  }
+  else if(!strlen(r_device_name))
+  {
+    printf("multiple mice and keyboard are merged\n");
+    merge_all_devices = 1;
+  }
+  else
+  {
+    if(r_device_type == E_DEVICE_TYPE_MOUSE)
+    {
+      for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+      {
+        if (!strcmp(r_device_name, mouseName[i]))
+        {
+          if (r_device_id == mouseVirtualIndex[i])
+          {
+            device_id = i;
+            break;
+          }
+        }
+      }
+      if(i == MAX_DEVICES || !mouseName[i])
+      {
+        printf("mouse not found: %s %d\n", r_device_name, r_device_id);
+        device_id = -1;
+      }
+    }
+    else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
+    {
+      for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+      {
+        if (!strcmp(r_device_name, keyboardName[i]))
+        {
+          if (r_device_id == keyboardVirtualIndex[i])
+          {
+            device_id = i;
+            break;
+          }
+        }
+      }
+      if(i == MAX_DEVICES || !keyboardName[i])
+      {
+        printf("keyboard not found: %s %d\n", r_device_name, r_device_id);
+        device_id = -1;
+      }
+    }
+  }
+
+  return device_id;
+}
+
 static int GetDeviceTypeProp(xmlNode * a_node)
 {
   int ret = 0;
@@ -84,9 +162,9 @@ static int GetDeviceTypeProp(xmlNode * a_node)
   return ret;
 }
 
-static int GetEventId(xmlNode * a_node)
+static int GetEventId(xmlNode * a_node, char* attr_label)
 {
-  char* event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_ID);
+  char* event_id = (char*) xmlGetProp(a_node, (xmlChar*) attr_label);
 
   if(!event_id) return -1;
 
@@ -225,7 +303,7 @@ static int ProcessEventElement(xmlNode * a_node)
     ret = GetIntProp(a_node, X_ATTR_THRESHOLD, &r_threshold);
   }
 
-  ret = GetEventId(a_node);
+  ret = GetEventId(a_node, X_ATTR_ID);
 
   xmlFree(type);
   return ret;
@@ -235,7 +313,6 @@ static int ProcessDeviceElement(xmlNode * a_node)
 {
   int ret = 0;
   char* prop;
-  int i;
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -250,80 +327,7 @@ static int ProcessDeviceElement(xmlNode * a_node)
     }
     xmlFree(prop);
 
-    if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
-    {
-      for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
-      {
-        if (!strcmp(r_device_name, joystickName[i]))
-        {
-          if (r_device_id == joystickVirtualIndex[i])
-          {
-            r_device_id = i;
-            break;
-          }
-        }
-      }
-      if(i == MAX_DEVICES || !joystickName[i])
-      {
-        r_device_id = -1;
-      }
-    }
-    else if(r_device_type == E_DEVICE_TYPE_MOUSE)
-    {
-#ifndef WIN32
-      for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
-      {
-        if(merge_all_devices || strlen(r_device_name) == 0)
-        {
-          merge_all_devices = 1;
-          r_device_id = 0;
-          break;
-        }
-        else if (!strcmp(r_device_name, mouseName[i]))
-        {
-          if (r_device_id == mouseVirtualIndex[i])
-          {
-            r_device_id = i;
-            break;
-          }
-        }
-      }
-      if(i == MAX_DEVICES || !mouseName[i])
-      {
-        r_device_id = -1;
-      }
-#else
-      r_device_id = 0;
-#endif
-    }
-    else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
-    {
-#ifndef WIN32
-      for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
-      {
-        if(merge_all_devices || strlen(r_device_name) == 0)
-        {
-          merge_all_devices = 1;
-          r_device_id = 0;
-          break;
-        }
-        else if (!strcmp(r_device_name, keyboardName[i]))
-        {
-          if (r_device_id == keyboardVirtualIndex[i])
-          {
-            r_device_id = i;
-            break;
-          }
-        }
-      }
-      if(i == MAX_DEVICES || !keyboardName[i])
-      {
-        r_device_id = -1;
-      }
-#else
-      r_device_id = 0;
-#endif
-    }
+    r_device_id = GetDeviceId();
   }
 
   return ret;
@@ -637,10 +641,8 @@ static int ProcessTriggerElement(xmlNode * a_node)
   int ret = 0;
   char* device_name;
   char* r_switch_back;
-  char* event_id;
   int switch_back = 0;
   int delay = 0;
-  int i;
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -657,59 +659,13 @@ static int ProcessTriggerElement(xmlNode * a_node)
 
     if(ret != -1)
     {
-      if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+      if((r_device_id = GetDeviceId()) < 0)
       {
-        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-        r_event_id = atoi(event_id);
-        xmlFree(event_id);
-
-        for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
-        {
-          if (!strcmp(r_device_name, joystickName[i]))
-          {
-            if (r_device_id == joystickVirtualIndex[i])
-            {
-              r_device_id = i;
-              break;
-            }
-          }
-        }
+        ret = -1;
       }
-      else if(r_device_type == E_DEVICE_TYPE_MOUSE)
+      else
       {
-        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-        r_event_id = get_mouse_event_id_from_buffer(event_id);
-        xmlFree(event_id);
-
-        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
-        {
-          if (!strcmp(r_device_name, mouseName[i]))
-          {
-            if (r_device_id == mouseVirtualIndex[i])
-            {
-              r_device_id = i;
-              break;
-            }
-          }
-        }
-      }
-      else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
-      {
-        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-        r_event_id = get_key_from_buffer(event_id);
-        xmlFree(event_id);
-
-        for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
-        {
-          if (!strcmp(r_device_name, keyboardName[i]))
-          {
-            if (r_device_id == keyboardVirtualIndex[i])
-            {
-              r_device_id = i;
-              break;
-            }
-          }
-        }
+        ret = GetEventId(a_node, X_ATTR_BUTTON_ID);
       }
     }
 
@@ -744,8 +700,6 @@ static int ProcessUpDownElement(xmlNode * a_node, int* device_type, int* device_
 {
   int ret = 0;
   char* device_name;
-  char* event_id;
-  int i;
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -762,55 +716,13 @@ static int ProcessUpDownElement(xmlNode * a_node, int* device_type, int* device_
 
     if(ret != -1)
     {
-      if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+      if((r_device_id = GetDeviceId()) < 0)
       {
-        for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
-        {
-          if (!strcmp(r_device_name, joystickName[i]))
-          {
-            if (r_device_id == joystickVirtualIndex[i])
-            {
-              r_device_id = i;
-              break;
-            }
-          }
-        }
+        ret = -1;
       }
-      else if(r_device_type == E_DEVICE_TYPE_MOUSE)
+      else
       {
-        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-        r_event_id = get_mouse_event_id_from_buffer(event_id);
-        xmlFree(event_id);
-
-        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
-        {
-          if (!strcmp(r_device_name, mouseName[i]))
-          {
-            if (r_device_id == mouseVirtualIndex[i])
-            {
-              r_device_id = i;
-              break;
-            }
-          }
-        }
-      }
-      else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
-      {
-        event_id = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_BUTTON_ID);
-        r_event_id = get_key_from_buffer(event_id);
-        xmlFree(event_id);
-
-        for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
-        {
-          if (!strcmp(r_device_name, keyboardName[i]))
-          {
-            if (r_device_id == keyboardVirtualIndex[i])
-            {
-              r_device_id = i;
-              break;
-            }
-          }
-        }
+        ret = GetEventId(a_node, X_ATTR_BUTTON_ID);
       }
     }
 
@@ -1242,6 +1154,7 @@ void free_config()
       }
     }
   }
+  memset(mouse_cal, 0x00, sizeof(mouse_cal));
 }
 
 /*

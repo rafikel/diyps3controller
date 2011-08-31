@@ -206,6 +206,21 @@ void sdl_grab()
   grab = 1;
 }
 
+void sdl_free_mk()
+{
+  int i;
+  for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+  {
+    free(mouseName[i]);
+    mouseName[i] = NULL;
+  }
+  for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+  {
+    free(keyboardName[i]);
+    keyboardName[i] = NULL;
+  }
+}
+
 /*
  * Free allocated data.
  */
