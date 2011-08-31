@@ -17,6 +17,8 @@ static char r_device_name[128];
 extern char* mouseName[MAX_DEVICES];
 extern int mouseVirtualIndex[MAX_DEVICES];
 
+extern int merge_all_devices;
+
 extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
 
 extern char* homedir;
@@ -152,25 +154,28 @@ static int ProcessDeviceElement(xmlNode * a_node)
       }
       xmlFree(prop);
 
-#ifndef WIN32
-      for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+      if(merge_all_devices)
       {
-        if (!strcmp(r_device_name, mouseName[i]))
+        r_device_id = 0;
+      }
+      else
+      {
+        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
         {
-          if (r_device_id == mouseVirtualIndex[i])
+          if (!strcmp(r_device_name, mouseName[i]))
           {
-            r_device_id = i;
-            break;
+            if (r_device_id == mouseVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
           }
         }
+        if(i == MAX_DEVICES || !mouseName[i])
+        {
+          r_device_id = -1;
+        }
       }
-      if(i == MAX_DEVICES || !mouseName[i])
-      {
-        r_device_id = -1;
-      }
-#else
-      r_device_id = 0;
-#endif
     }
   }
 

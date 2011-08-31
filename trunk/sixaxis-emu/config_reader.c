@@ -86,7 +86,7 @@ static int GetDeviceId()
   }
   else if(!strlen(r_device_name))
   {
-    printf("multiple mice and keyboard are merged\n");
+    printf("multiple mice and multiple keyboards are merged\n");
     merge_all_devices = 1;
   }
   else
@@ -194,7 +194,7 @@ int GetIntProp(xmlNode * a_node, char* a_attr, int* a_int)
 
   val = (char*)xmlGetProp(a_node, (xmlChar*) a_attr);
 
-  if(val)
+  if(val && strlen(val))
   {
     *a_int = atoi(val);
     ret = 0;
