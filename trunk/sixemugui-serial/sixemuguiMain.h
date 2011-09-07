@@ -44,6 +44,7 @@ class sixemuguiFrame: public wxFrame
         void OnCheckBox3Click(wxCommandEvent& event);
         void OnChoice8Select(wxCommandEvent& event);
         void OnCheckBoxCalibrate(wxCommandEvent& event);
+        void OnButton1Click1(wxCommandEvent& event);
         //*)
 
         //(*Identifiers(sixemuguiFrame)
@@ -58,6 +59,7 @@ class sixemuguiFrame: public wxFrame
         static const long ID_CHECKBOX2;
         static const long ID_CHECKBOX3;
         static const long ID_CHOICE4;
+        static const long ID_BUTTON1;
         static const long ID_BUTTON3;
         static const long ID_PANEL1;
         static const long idMenuQuit;
@@ -67,6 +69,7 @@ class sixemuguiFrame: public wxFrame
 
         //(*Declarations(sixemuguiFrame)
         wxStaticText* StaticText2;
+        wxButton* Button1;
         wxCheckBox* CheckBox3;
         wxCheckBox* CheckBox2;
         wxPanel* Panel1;

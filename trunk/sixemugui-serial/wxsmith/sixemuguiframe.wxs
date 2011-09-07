@@ -212,9 +212,27 @@
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
-											<object class="wxButton" name="ID_BUTTON3" variable="Button3" member="yes">
-												<label>Start</label>
-												<handler function="OnButton3Click" entry="EVT_BUTTON" />
+											<object class="wxFlexGridSizer" variable="FlexGridSizer7" member="no">
+												<cols>1</cols>
+												<rows>2</rows>
+												<object class="sizeritem">
+													<object class="wxButton" name="ID_BUTTON1" variable="Button1" member="yes">
+														<label>Check</label>
+														<handler function="OnButton1Click1" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="ID_BUTTON3" variable="Button3" member="yes">
+														<label>Start</label>
+														<handler function="OnButton3Click" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>

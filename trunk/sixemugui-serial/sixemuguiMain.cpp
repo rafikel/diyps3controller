@@ -81,6 +81,7 @@ const long sixemuguiFrame::ID_CHECKBOX4 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX2 = wxNewId();
 const long sixemuguiFrame::ID_CHECKBOX3 = wxNewId();
 const long sixemuguiFrame::ID_CHOICE4 = wxNewId();
+const long sixemuguiFrame::ID_BUTTON1 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON3 = wxNewId();
 const long sixemuguiFrame::ID_PANEL1 = wxNewId();
 const long sixemuguiFrame::idMenuQuit = wxNewId();
@@ -313,6 +314,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer9;
     wxFlexGridSizer* FlexGridSizer2;
     wxMenu* Menu1;
+    wxFlexGridSizer* FlexGridSizer7;
     wxStaticBoxSizer* StaticBoxSizer8;
     wxStaticBoxSizer* StaticBoxSizer6;
     wxFlexGridSizer* FlexGridSizer8;
@@ -322,7 +324,7 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer11;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
-    
+
     Create(parent, wxID_ANY, _("Gimx-serial"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(412,420));
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(0,0), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
@@ -382,8 +384,12 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer4->Add(Choice4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer8->Add(FlexGridSizer4, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer9->Add(StaticBoxSizer8, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7 = new wxFlexGridSizer(2, 1, 0, 0);
+    Button1 = new wxButton(Panel1, ID_BUTTON1, _("Check"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
+    FlexGridSizer7->Add(Button1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button3 = new wxButton(Panel1, ID_BUTTON3, _("Start"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    FlexGridSizer9->Add(Button3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer7->Add(Button3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer9->Add(FlexGridSizer7, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer5->Add(FlexGridSizer9, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer4->Add(FlexGridSizer5, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(StaticBoxSizer4, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -406,10 +412,11 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(2,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     SingleInstanceChecker1.Create(_T("Sixemugui-serial_") + wxGetUserId() + _T("_Guard"));
-    
+
     Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBoxCalibrate);
     Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox2Click);
     Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox3Click);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton1Click1);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton3Click);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnAbout);
@@ -511,7 +518,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     command.append("\"");
 #endif
 
-    cout << command << endl;
+    //cout << command << endl;
 
     Button3->Disable();
 #ifdef WIN32
@@ -581,5 +588,66 @@ void sixemuguiFrame::OnCheckBoxCalibrate(wxCommandEvent& event)
     else
     {
         CheckBox2->SetValue(false);
+    }
+}
+
+#ifdef WIN32
+#define CHECK_FILE "check_result"
+#else
+#define CHECK_FILE "/tmp/check_result"
+#endif
+
+void sixemuguiFrame::OnButton1Click1(wxCommandEvent& event)
+{
+    string command = "";
+    string filename = "";
+    string result = "";
+    string line = "";
+
+#ifdef WIN32
+    command.append("emuclient.exe");
+#else
+    command.append("emuclient");
+#endif
+    command.append(" --config ");
+    command.append(Choice4->GetStringSelection().mb_str());
+    command.append(" --check --nograb > ");
+    command.append(CHECK_FILE);
+
+    if(system(command.c_str()) != 0)
+    {
+        wxMessageBox( wxT("Can't check the config file!"), wxT("Error"), wxICON_ERROR);
+    }
+    else
+    {
+        ifstream infile (CHECK_FILE);
+        if ( infile.is_open() )
+        {
+            if( infile.good() )
+            {
+                while(getline (infile,line))
+                {
+                    if(result.find(line) == string::npos)
+                    {
+                        result.append(line);
+                        result.append("\n");
+                    }
+                }
+                if(result.empty())
+                {
+                    result.append("This config seems OK!\n");
+                }
+                wxMessageBox( wxString(result.c_str(), wxConvUTF8), wxT("Info"), wxICON_INFORMATION);
+            }
+            infile.close();
+        }
+
+        command.erase();
+        command.append("rm ");
+        command.append(CHECK_FILE);
+        if(system(command.c_str()) != 0)
+        {
+            wxMessageBox( wxT("Error checking the config file!"), wxT("Error"), wxICON_ERROR);
+        }
     }
 }
