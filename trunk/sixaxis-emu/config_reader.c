@@ -23,6 +23,7 @@ extern char* homedir;
 
 extern int mean_axis_value;
 extern int merge_all_devices;
+extern int check_config;
 extern const char* joystickName[MAX_DEVICES];
 extern int joystickVirtualIndex[MAX_DEVICES];
 extern const char* mouseName[MAX_DEVICES];
@@ -56,106 +57,148 @@ static int r_device_id;
 static char r_device_name[128];
 static int r_config_dpi[MAX_CONTROLLERS];
 
-static int GetDeviceId()
+int GetDeviceName(xmlNode* a_node)
 {
-  int i;
-  int device_id = 0;
+  int ret = 0;
+  char* prop;
 
-  if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
+  prop = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
+  if(prop)
   {
-    for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
-    {
-      if (!strcmp(r_device_name, joystickName[i]))
-      {
-        if (r_device_id == joystickVirtualIndex[i])
-        {
-          device_id = i;
-          break;
-        }
-      }
-    }
-    if(i == MAX_DEVICES || !joystickName[i])
-    {
-      printf("joystick not found: %s %d\n", r_device_name, r_device_id);
-      device_id = -1;
-    }
-  }
-  else if(merge_all_devices)
-  {
-    device_id = 0;
-  }
-  else if(!strlen(r_device_name))
-  {
-    printf("multiple mice and multiple keyboards are merged\n");
-    merge_all_devices = 1;
+    strncpy(r_device_name, prop, sizeof(r_device_name));
   }
   else
   {
-    if(r_device_type == E_DEVICE_TYPE_MOUSE)
+    ret = -1;
+  }
+  xmlFree(prop);
+
+  return ret;
+}
+
+/*
+ * Get the device id and store it into r_device_id.
+ * OK, return 0
+ * error, return -1
+ * device not found, return 1
+ */
+static int GetDeviceId(xmlNode* a_node)
+{
+  int i;
+  int ret;
+
+  ret = GetIntProp(a_node, X_ATTR_ID, &r_device_id);
+
+  if(ret != -1)
+  {
+    if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
     {
-      for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+      for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
       {
-        if (!strcmp(r_device_name, mouseName[i]))
+        if (!strcmp(r_device_name, joystickName[i]))
         {
-          if (r_device_id == mouseVirtualIndex[i])
+          if (r_device_id == joystickVirtualIndex[i])
           {
-            device_id = i;
+            r_device_id = i;
             break;
           }
         }
       }
-      if(i == MAX_DEVICES || !mouseName[i])
+      if(i == MAX_DEVICES || !joystickName[i])
       {
-        printf("mouse not found: %s %d\n", r_device_name, r_device_id);
-        device_id = -1;
+        printf("joystick not found: %s %d\n", r_device_name, r_device_id);
+        ret = 1;
       }
     }
-    else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
+    else if(merge_all_devices && !check_config)
     {
-      for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+      r_device_id = 0;
+    }
+    else if(!strlen(r_device_name))
+    {
+#ifndef WIN32
+      if(!merge_all_devices)
       {
-        if (!strcmp(r_device_name, keyboardName[i]))
+        printf("this config doesn't support multiple mice & keyboards\n");
+      }
+#endif
+      merge_all_devices = 1;
+    }
+    else
+    {
+      if(r_device_type == E_DEVICE_TYPE_MOUSE)
+      {
+        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
         {
-          if (r_device_id == keyboardVirtualIndex[i])
+          if (!strcmp(r_device_name, mouseName[i]))
           {
-            device_id = i;
-            break;
+            if (r_device_id == mouseVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
           }
         }
+        if(i == MAX_DEVICES || !mouseName[i])
+        {
+          printf("mouse not found: %s %d\n", r_device_name, r_device_id);
+          ret = 1;
+        }
       }
-      if(i == MAX_DEVICES || !keyboardName[i])
+      else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
       {
-        printf("keyboard not found: %s %d\n", r_device_name, r_device_id);
-        device_id = -1;
+        for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+        {
+          if (!strcmp(r_device_name, keyboardName[i]))
+          {
+            if (r_device_id == keyboardVirtualIndex[i])
+            {
+              r_device_id = i;
+              break;
+            }
+          }
+        }
+        if(i == MAX_DEVICES || !keyboardName[i])
+        {
+          printf("keyboard not found: %s %d\n", r_device_name, r_device_id);
+          ret = 1;
+        }
       }
     }
   }
 
-  return device_id;
+  return ret;
 }
 
-static int GetDeviceTypeProp(xmlNode * a_node)
+int GetDeviceTypeProp(xmlNode * a_node)
 {
   int ret = 0;
   char* type;
 
   type = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
 
-  if (!strncmp(type, X_ATTR_VALUE_KEYBOARD, strlen(X_ATTR_VALUE_KEYBOARD)))
+  if(type)
   {
-    r_device_type = E_DEVICE_TYPE_KEYBOARD;
-  }
-  else if (!strncmp(type, X_ATTR_VALUE_MOUSE, strlen(X_ATTR_VALUE_MOUSE)))
-  {
-    r_device_type = E_DEVICE_TYPE_MOUSE;
-  }
-  else if (!strncmp(type, X_ATTR_VALUE_JOYSTICK, strlen(X_ATTR_VALUE_JOYSTICK)))
-  {
-    r_device_type = E_DEVICE_TYPE_JOYSTICK;
+    if (!strncmp(type, X_ATTR_VALUE_KEYBOARD, strlen(X_ATTR_VALUE_KEYBOARD)))
+    {
+      r_device_type = E_DEVICE_TYPE_KEYBOARD;
+    }
+    else if (!strncmp(type, X_ATTR_VALUE_MOUSE, strlen(X_ATTR_VALUE_MOUSE)))
+    {
+      r_device_type = E_DEVICE_TYPE_MOUSE;
+    }
+    else if (!strncmp(type, X_ATTR_VALUE_JOYSTICK, strlen(X_ATTR_VALUE_JOYSTICK)))
+    {
+      r_device_type = E_DEVICE_TYPE_JOYSTICK;
+    }
+    else
+    {
+      r_device_type = E_DEVICE_TYPE_UNKNOWN;
+    }
   }
   else
   {
-    r_device_type = E_DEVICE_TYPE_UNKNOWN;
+    ret = -1;
   }
 
   xmlFree(type);
@@ -164,27 +207,34 @@ static int GetDeviceTypeProp(xmlNode * a_node)
 
 static int GetEventId(xmlNode * a_node, char* attr_label)
 {
+  int ret = 0;
   char* event_id = (char*) xmlGetProp(a_node, (xmlChar*) attr_label);
 
-  if(!event_id) return -1;
-
-  switch(r_device_type)
+  if(!event_id)
   {
-    case E_DEVICE_TYPE_KEYBOARD:
-      r_event_id = get_key_from_buffer(event_id);
-      break;
-    case E_DEVICE_TYPE_JOYSTICK:
-      r_event_id = atoi(event_id);
-      break;
-    case E_DEVICE_TYPE_MOUSE:
-      r_event_id = get_mouse_event_id_from_buffer(event_id);
-      break;
-    default:
-      break;
+    ret = -1;
+  }
+  else
+  {
+    switch(r_device_type)
+    {
+      case E_DEVICE_TYPE_KEYBOARD:
+        r_event_id = get_key_from_buffer(event_id);
+        break;
+      case E_DEVICE_TYPE_JOYSTICK:
+        r_event_id = atoi(event_id);
+        break;
+      case E_DEVICE_TYPE_MOUSE:
+        r_event_id = get_mouse_event_id_from_buffer(event_id);
+        break;
+      default:
+        ret = -1;
+        break;
+    }
   }
 
   xmlFree(event_id);
-  return 0;
+  return ret;
 }
 
 int GetIntProp(xmlNode * a_node, char* a_attr, int* a_int)
@@ -311,23 +361,16 @@ static int ProcessEventElement(xmlNode * a_node)
 
 static int ProcessDeviceElement(xmlNode * a_node)
 {
-  int ret = 0;
-  char* prop;
-
-  ret = GetDeviceTypeProp(a_node);
+  int ret = GetDeviceTypeProp(a_node);
 
   if(ret != -1)
   {
-    ret = GetIntProp(a_node, X_ATTR_ID, &r_device_id);
+    ret = GetDeviceName(a_node);
 
-    prop = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
-    if(prop)
+    if(ret != -1)
     {
-      strncpy(r_device_name, prop, sizeof(r_device_name));
+      ret = GetDeviceId(a_node);
     }
-    xmlFree(prop);
-
-    r_device_id = GetDeviceId();
   }
 
   return ret;
@@ -428,7 +471,7 @@ static int ProcessAxisElement(xmlNode * a_node)
     ret = -1;
   }
 
-  for (cur_node = cur_node->next; cur_node && ret != -1; cur_node = cur_node->next)
+  for (cur_node = cur_node->next; cur_node && ret == 0; cur_node = cur_node->next)
   {
     if (cur_node->type == XML_ELEMENT_NODE)
     {
@@ -451,7 +494,7 @@ static int ProcessAxisElement(xmlNode * a_node)
     ret = -1;
   }
 
-  if(ret != -1)
+  if(ret == 0)
   {
     pp_mapper = get_mapper_table();
 
@@ -533,7 +576,7 @@ static int ProcessButtonElement(xmlNode * a_node)
     ret = -1;
   }
 
-  for (cur_node = cur_node->next; cur_node && ret != -1; cur_node = cur_node->next)
+  for (cur_node = cur_node->next; cur_node && ret == 0; cur_node = cur_node->next)
   {
     if (cur_node->type == XML_ELEMENT_NODE)
     {
@@ -556,7 +599,7 @@ static int ProcessButtonElement(xmlNode * a_node)
     ret = -1;
   }
 
-  if(ret != -1)
+  if(ret == 0)
   {
     pp_mapper = get_mapper_table();
 
@@ -639,31 +682,21 @@ static int ProcessButtonMapElement(xmlNode * a_node)
 static int ProcessTriggerElement(xmlNode * a_node)
 {
   int ret = 0;
-  char* device_name;
   char* r_switch_back;
   int switch_back = 0;
   int delay = 0;
 
   ret = GetDeviceTypeProp(a_node);
 
-  if(ret != -1)
+  if(ret != -1 && r_device_type != E_DEVICE_TYPE_UNKNOWN)
   {
-    device_name = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
-    if(device_name)
-    {
-      strncpy(r_device_name, device_name, sizeof(r_device_name));
-    }
-    xmlFree(device_name);
-
-    ret = GetIntProp(a_node, X_ATTR_ID, &r_device_id);
+    ret = GetDeviceName(a_node);
 
     if(ret != -1)
     {
-      if((r_device_id = GetDeviceId()) < 0)
-      {
-        ret = -1;
-      }
-      else
+      ret = GetDeviceId(a_node);
+
+      if(ret != -1)
       {
         ret = GetEventId(a_node, X_ATTR_BUTTON_ID);
       }
@@ -682,15 +715,15 @@ static int ProcessTriggerElement(xmlNode * a_node)
 
     //Optional
     GetIntProp(a_node, X_ATTR_DELAY, &delay);
-  }
 
-  if(ret != -1)
-  {
-    triggers[r_controller_id][r_config_id].button = r_event_id;
-    triggers[r_controller_id][r_config_id].device_id = r_device_id;
-    triggers[r_controller_id][r_config_id].device_type = r_device_type;
-    triggers[r_controller_id][r_config_id].switch_back = switch_back;
-    triggers[r_controller_id][r_config_id].delay = delay;
+    if(ret != -1)
+    {
+      triggers[r_controller_id][r_config_id].button = r_event_id;
+      triggers[r_controller_id][r_config_id].device_id = r_device_id;
+      triggers[r_controller_id][r_config_id].device_type = r_device_type;
+      triggers[r_controller_id][r_config_id].switch_back = switch_back;
+      triggers[r_controller_id][r_config_id].delay = delay;
+    }
   }
 
   return ret;
@@ -699,38 +732,25 @@ static int ProcessTriggerElement(xmlNode * a_node)
 static int ProcessUpDownElement(xmlNode * a_node, int* device_type, int* device_id, int* button)
 {
   int ret = 0;
-  char* device_name;
 
   ret = GetDeviceTypeProp(a_node);
 
   if(ret != -1 && r_device_type != E_DEVICE_TYPE_UNKNOWN)
   {
-    device_name = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
-    if(device_name)
-    {
-      strncpy(r_device_name, device_name, sizeof(r_device_name));
-    }
-    xmlFree(device_name);
-
-    ret = GetIntProp(a_node, X_ATTR_ID, &r_device_id);
+    ret = GetDeviceName(a_node);
 
     if(ret != -1)
     {
-      if((r_device_id = GetDeviceId()) < 0)
-      {
-        ret = -1;
-      }
-      else
+      ret = GetDeviceId(a_node);
+
+      if(ret != -1)
       {
         ret = GetEventId(a_node, X_ATTR_BUTTON_ID);
-      }
-    }
 
-    if(ret != -1)
-    {
-      *button = r_event_id;
-      *device_id = r_device_id;
-      *device_type = r_device_type;
+        *button = r_event_id;
+        *device_id = r_device_id;
+        *device_type = r_device_type;
+      }
     }
   }
 

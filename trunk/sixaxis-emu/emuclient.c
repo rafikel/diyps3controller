@@ -74,6 +74,7 @@ int serial = 0;
 int done = 0;
 int display = 0;
 int force_updates = 0;
+int check_config = 0;
 
 struct sixaxis_state state[MAX_CONTROLLERS];
 s_controller controller[MAX_CONTROLLERS] =
@@ -161,6 +162,10 @@ int main(int argc, char *argv[])
     {
       force_updates = 1;
     }
+    else if (!strcmp(argv[i], "--check"))
+    {
+      check_config = 1;
+    }
 //#ifdef WIN32
 //    else if (!strcmp(argv[i], "--ip") && i < argc)
 //    {
@@ -211,6 +216,11 @@ int main(int argc, char *argv[])
   if (read == 1)
   {
     read_config_file(config_file);
+
+    if(check_config)
+    {
+      goto EXIT;
+    }
 
     if(merge_all_devices)
     {
@@ -377,7 +387,9 @@ int main(int argc, char *argv[])
 
   printf("Exiting\n");
 
+EXIT:
   free_macros();
+  free_config();
   sdl_quit();
 #ifdef WIN32
   serial_close();
