@@ -132,6 +132,7 @@ const long sixaxis_emu_guiFrame::ID_STATICTEXT15 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT17 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT18 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT22 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_STATICTEXT33 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT41 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT32 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATICTEXT42 = wxNewId();
@@ -143,6 +144,8 @@ const long sixaxis_emu_guiFrame::ID_TEXTCTRL8 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_TEXTCTRL9 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_TEXTCTRL10 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_CHOICE1 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_TEXTCTRL1 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_TEXTCTRL2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_GRID2 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON3 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON7 = wxNewId();
@@ -268,7 +271,7 @@ void sixaxis_emu_guiFrame::fillButtonChoice(wxChoice* choice)
 char* homedir;
 #endif
 
-sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
+sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWindowID id)
 {
     //(*Initialize(sixaxis_emu_guiFrame)
     wxStaticBoxSizer* StaticBoxSizer2;
@@ -299,6 +302,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer6;
     wxStaticBoxSizer* StaticBoxSizer1;
     wxFlexGridSizer* FlexGridSizer1;
+    wxFlexGridSizer* FlexGridSizer11;
     wxFlexGridSizer* FlexGridSizer17;
     wxMenu* Menu2;
     wxStaticBoxSizer* StaticBoxSizer5;
@@ -516,7 +520,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer9->SetSizeHints(Panel2);
     Panel3 = new wxPanel(Notebook1, ID_PANEL3, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL3"));
     FlexGridSizer5 = new wxFlexGridSizer(2, 1, 0, 0);
-    FlexGridSizer3 = new wxFlexGridSizer(2, 11, 0, 0);
+    FlexGridSizer3 = new wxFlexGridSizer(2, 12, 0, 0);
     StaticText11 = new wxStaticText(Panel3, ID_STATICTEXT11, _("Device type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
     FlexGridSizer3->Add(StaticText11, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText31 = new wxStaticText(Panel3, ID_STATICTEXT31, _("Device name"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT31"));
@@ -531,14 +535,19 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer3->Add(StaticText21, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText16 = new wxStaticText(Panel3, ID_STATICTEXT16, _("Axis"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT16"));
     FlexGridSizer3->Add(StaticText16, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText15 = new wxStaticText(Panel3, ID_STATICTEXT15, _("Dead zone"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT15"));
+    StaticText15 = new wxStaticText(Panel3, ID_STATICTEXT15, _("DZ"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT15"));
+    StaticText15->SetToolTip(_("Dead zone"));
     FlexGridSizer3->Add(StaticText15, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText17 = new wxStaticText(Panel3, ID_STATICTEXT17, _("Multiplier"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT17"));
+    StaticText17 = new wxStaticText(Panel3, ID_STATICTEXT17, _("Sens."), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT17"));
+    StaticText17->SetToolTip(_("Sensitivity"));
     FlexGridSizer3->Add(StaticText17, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText18 = new wxStaticText(Panel3, ID_STATICTEXT18, _("Exponent"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT18"));
+    StaticText18 = new wxStaticText(Panel3, ID_STATICTEXT18, _("Accel."), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT18"));
+    StaticText18->SetToolTip(_("Acceleration"));
     FlexGridSizer3->Add(StaticText18, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText22 = new wxStaticText(Panel3, ID_STATICTEXT22, _("Shape"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT22"));
     FlexGridSizer3->Add(StaticText22, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText33 = new wxStaticText(Panel3, ID_STATICTEXT33, _("Smoothing"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT33"));
+    FlexGridSizer3->Add(StaticText33, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText41 = new wxStaticText(Panel3, ID_STATICTEXT41, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT41"));
     FlexGridSizer3->Add(StaticText41, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText32 = new wxStaticText(Panel3, ID_STATICTEXT32, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT32"));
@@ -552,24 +561,35 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     StaticText43 = new wxStaticText(Panel3, ID_STATICTEXT43, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT43"));
     FlexGridSizer3->Add(StaticText43, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button9 = new wxButton(Panel3, ID_BUTTON9, _("Auto detect"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON9"));
-    FlexGridSizer3->Add(Button9, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
+    FlexGridSizer3->Add(Button9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Choice8 = new wxChoice(Panel3, ID_CHOICE8, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE8"));
     FlexGridSizer3->Add(Choice8, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    TextCtrl8 = new wxTextCtrl(Panel3, ID_TEXTCTRL8, _("8"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL8"));
+    TextCtrl8 = new wxTextCtrl(Panel3, ID_TEXTCTRL8, _("20"), wxDefaultPosition, wxSize(27,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL8"));
+    TextCtrl8->SetToolTip(_("Dead zone [0..99]"));
     FlexGridSizer3->Add(TextCtrl8, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    TextCtrl9 = new wxTextCtrl(Panel3, ID_TEXTCTRL9, _("4"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL9"));
+    TextCtrl9 = new wxTextCtrl(Panel3, ID_TEXTCTRL9, _("1.00"), wxDefaultPosition, wxSize(59,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL9"));
+    TextCtrl9->SetToolTip(_("Sensitivity [-100.00..100.00]"));
     FlexGridSizer3->Add(TextCtrl9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    TextCtrl10 = new wxTextCtrl(Panel3, ID_TEXTCTRL10, _("1"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL10"));
+    TextCtrl10 = new wxTextCtrl(Panel3, ID_TEXTCTRL10, _("1.00"), wxDefaultPosition, wxSize(55,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL10"));
+    TextCtrl10->SetToolTip(_("Acceleration [0.00..2.00]"));
     FlexGridSizer3->Add(TextCtrl10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Choice1 = new wxChoice(Panel3, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
     Choice1->Append(wxEmptyString);
     Choice1->SetSelection( Choice1->Append(_("Circle")) );
     Choice1->Append(_("Rectangle"));
     FlexGridSizer3->Add(Choice1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer11 = new wxFlexGridSizer(1, 2, 0, 0);
+    TextCtrl1 = new wxTextCtrl(Panel3, ID_TEXTCTRL1, _("1"), wxDefaultPosition, wxSize(27,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    TextCtrl1->SetToolTip(_("Buffer size [1..30]"));
+    FlexGridSizer11->Add(TextCtrl1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    TextCtrl2 = new wxTextCtrl(Panel3, ID_TEXTCTRL2, _("0.00"), wxDefaultPosition, wxSize(41,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+    TextCtrl2->SetToolTip(_("Filter [0.00..1.00]"));
+    FlexGridSizer11->Add(TextCtrl2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(FlexGridSizer11, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer5->Add(FlexGridSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer4 = new wxFlexGridSizer(1, 2, 0, 0);
     Grid2 = new wxGrid(Panel3, ID_GRID2, wxDefaultPosition, wxDefaultSize, 0, _T("ID_GRID2"));
-    Grid2->CreateGrid(0,10);
+    Grid2->CreateGrid(0,12);
     Grid2->EnableEditing(false);
     Grid2->EnableGridLines(true);
     Grid2->SetRowLabelSize(25);
@@ -584,6 +604,8 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Grid2->SetColLabelValue(7, _("Multiplier"));
     Grid2->SetColLabelValue(8, _("Exponent"));
     Grid2->SetColLabelValue(9, _("Shape"));
+    Grid2->SetColLabelValue(10, _("Buffer Size"));
+    Grid2->SetColLabelValue(11, _("Filter"));
     Grid2->SetDefaultCellFont( Grid2->GetFont() );
     Grid2->SetDefaultCellTextColour( Grid2->GetForegroundColour() );
     FlexGridSizer4->Add(Grid2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
@@ -711,7 +733,12 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_CHOICE7,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnChoice4Select);
     Connect(ID_BUTTON9,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton9Click);
     Connect(ID_CHOICE8,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnChoice8Select2);
+    Connect(ID_TEXTCTRL8,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL9,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL10,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnTextCtrlText);
     Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnChoice1Select);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnTextCtrlText);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton3Click);
     Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButton7Click);
     Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixaxis_emu_guiFrame::OnButtonModifyAxis);
@@ -799,6 +826,29 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id)
 
     Grid1->AutoSizeColumns();
     Grid2->AutoSizeColumns();
+
+    if(!file.IsEmpty())
+    {
+      wxString wxfile;
+#ifndef WIN32
+      wxfile.Append(wxString(homedir, wxConvUTF8));
+      wxfile.Append(_("/.emuclient/config/"));
+#else
+      wxfile.Append(_("config/"));
+#endif
+      wxfile.Append(file);
+      if(::wxFileExists(wxfile))
+      {
+        configFile.ReadConfigFile(wxfile);
+        load_current();
+        refresh_gui();
+        Menu1->Enable(idMenuSave, true);
+      }
+      else
+      {
+        wxMessageBox( wxT("Cannot open config file: ") + wxString(file, wxConvUTF8), wxT("Error"), wxICON_ERROR);
+      }
+    }
 }
 
 sixaxis_emu_guiFrame::~sixaxis_emu_guiFrame()
@@ -880,6 +930,8 @@ void sixaxis_emu_guiFrame::OnButton3Click(wxCommandEvent& event)
     Grid2->SetCellValue(0, 7, TextCtrl9->GetValue());
     Grid2->SetCellValue(0, 8, TextCtrl10->GetValue());
     Grid2->SetCellValue(0, 9, Choice1->GetStringSelection());
+    Grid2->SetCellValue(0, 10, TextCtrl1->GetValue());
+    Grid2->SetCellValue(0, 11, TextCtrl2->GetValue());
     Grid2->AutoSizeColumns();
     Panel3->Layout();
 }
@@ -949,6 +1001,10 @@ void sixaxis_emu_guiFrame::OnChoice4Select(wxCommandEvent& event)
         TextCtrl10->SetValue(wxEmptyString);
         Choice1->SetSelection(0);
         Choice1->Disable();
+        TextCtrl1->Disable();
+        TextCtrl1->SetValue(wxEmptyString);
+        TextCtrl2->Disable();
+        TextCtrl2->SetValue(wxEmptyString);
     }
     else
     {
@@ -960,6 +1016,10 @@ void sixaxis_emu_guiFrame::OnChoice4Select(wxCommandEvent& event)
         TextCtrl10->SetValue(_("1"));
         Choice1->Enable();
         Choice1->SetSelection(1);
+        TextCtrl1->Enable();
+        TextCtrl1->SetValue(_("1"));
+        TextCtrl2->Enable();
+        TextCtrl2->SetValue(_("0.00"));
     }
     Panel3->Layout();
 }
@@ -1112,7 +1172,7 @@ void sixaxis_emu_guiFrame::save_current()
     for(int i=0; i<Grid2->GetNumberRows(); i++)
     {
         //AxisMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString axis, wxString deadZone, wxString multiplier, wxString exponent);
-        axisMappers->push_front(AxisMapper(Grid2->GetCellValue(i, 0), Grid2->GetCellValue(i, 2), Grid2->GetCellValue(i, 1), Grid2->GetCellValue(i, 3), Grid2->GetCellValue(i, 4), Grid2->GetCellValue(i, 5), Grid2->GetCellValue(i, 6), Grid2->GetCellValue(i, 7), Grid2->GetCellValue(i, 8), Grid2->GetCellValue(i, 9)));
+        axisMappers->push_front(AxisMapper(Grid2->GetCellValue(i, 0), Grid2->GetCellValue(i, 2), Grid2->GetCellValue(i, 1), Grid2->GetCellValue(i, 3), Grid2->GetCellValue(i, 4), Grid2->GetCellValue(i, 5), Grid2->GetCellValue(i, 6), Grid2->GetCellValue(i, 7), Grid2->GetCellValue(i, 8), Grid2->GetCellValue(i, 9), Grid2->GetCellValue(i, 10), Grid2->GetCellValue(i, 11)));
     }
 
 }
@@ -1222,6 +1282,8 @@ void sixaxis_emu_guiFrame::load_current()
         Grid2->SetCellValue(0, 7, it->GetEvent()->GetMultiplier());
         Grid2->SetCellValue(0, 8, it->GetEvent()->GetExponent());
         Grid2->SetCellValue(0, 9, it->GetEvent()->GetShape());
+        Grid2->SetCellValue(0, 10, it->GetEvent()->GetBufferSize());
+        Grid2->SetCellValue(0, 11, it->GetEvent()->GetFilter());
         Grid2->AutoSizeColumns();
     }
 }
@@ -1534,6 +1596,8 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
         TextCtrl8->SetValue(Grid2->GetCellValue(grid2mod, 6));
         TextCtrl9->SetValue(Grid2->GetCellValue(grid2mod, 7));
         TextCtrl10->SetValue(Grid2->GetCellValue(grid2mod, 8));
+        TextCtrl1->SetValue(Grid2->GetCellValue(grid2mod, 10));
+        TextCtrl2->SetValue(Grid2->GetCellValue(grid2mod, 11));
         if(Choice7->GetStringSelection() == _("button"))
         {
             TextCtrl8->Disable();
@@ -1541,6 +1605,8 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
             TextCtrl10->Disable();
             Choice1->Disable();
             Choice1->SetSelection(0);
+            TextCtrl1->Disable();
+            TextCtrl2->Disable();
             fillButtonAxisChoice(Choice8);
         }
         else
@@ -1550,6 +1616,8 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
             TextCtrl10->Enable();
             Choice1->SetSelection(Choice1->FindString(Grid2->GetCellValue(grid2mod, 9)));
             Choice1->Enable();
+            TextCtrl1->Enable();
+            TextCtrl2->Enable();
             fillAxisAxisChoice(Choice8);
         }
         Choice8->SetSelection(Choice8->FindString(Grid2->GetCellValue(grid2mod, 5)));
@@ -1574,6 +1642,8 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
         Grid2->SetCellValue(grid2mod, 7, TextCtrl9->GetValue());
         Grid2->SetCellValue(grid2mod, 8, TextCtrl10->GetValue());
         Grid2->SetCellValue(grid2mod, 9, Choice1->GetStringSelection());
+        Grid2->SetCellValue(grid2mod, 10, TextCtrl1->GetValue());
+        Grid2->SetCellValue(grid2mod, 11, TextCtrl2->GetValue());
         Button3->Enable();
         Button7->Enable();
         Button5->SetLabel(_("Modify"));
@@ -1944,5 +2014,98 @@ void sixaxis_emu_guiFrame::OnMenuSetMouseDPI(wxCommandEvent& event)
     if (dialog1.ShowModal() == wxID_OK)
     {
        configFile.GetController(currentController)->SetMouseDPI(dialog1.GetValue());
+    }
+}
+
+void sixaxis_emu_guiFrame::OnTextCtrlText(wxCommandEvent& event)
+{
+    wxString str;
+    wxTextCtrl* text;
+    double value;
+    long lvalue;
+
+    text = (wxTextCtrl*)event.GetEventObject();
+    str = text->GetValue();
+
+    if(str.IsEmpty())
+    {
+        return;
+    }
+
+    if(str.Replace(_(","), _(".")))
+    {
+        text->SetValue(str);
+    }
+
+#ifndef WIN32
+    str.Replace(_("."), _(","));
+#endif
+
+    if(text == TextCtrl8)
+    {
+        if(!str.ToLong(&lvalue))
+        {
+            text->SetValue(_("20"));
+        }
+        else if(lvalue < 0)
+        {
+            text->SetValue(_("0"));
+        }
+        else if(lvalue > 64)
+        {
+            text->SetValue(_("64"));
+        }
+    }
+    else if(text == TextCtrl9)
+    {
+        if(!str.ToDouble(&value))
+        {
+            text->SetValue(_("1.00"));
+        }
+    }
+    else if(text == TextCtrl10)
+    {
+        if(!str.ToDouble(&value))
+        {
+            text->SetValue(_("1.00"));
+        }
+        else if(value < 0)
+        {
+            text->SetValue(_("0.00"));
+        }
+        else if(value > 2)
+        {
+            text->SetValue(_("2.00"));
+        }
+    }
+    else if(text == TextCtrl1)
+    {
+        if(!str.ToLong(&lvalue))
+        {
+            text->SetValue(_("1"));
+        }
+        else if(lvalue < 1)
+        {
+            text->SetValue(_("1"));
+        }
+        else if(lvalue > 30)
+        {
+            text->SetValue(_("30"));
+        }
+    }
+    else if(text == TextCtrl2)
+    {
+        if(!str.ToDouble(&value))
+        {
+            text->SetValue(_("0.00"));
+        }
+        else if(value < 0)
+        {
+            text->SetValue(_("0.00"));
+        }
+        else if(value > 1)
+        {
+            text->SetValue(_("1.00"));
+        }
     }
 }

@@ -783,7 +783,7 @@
 								<rows>2</rows>
 								<object class="sizeritem">
 									<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
-										<cols>11</cols>
+										<cols>12</cols>
 										<rows>2</rows>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText11" member="yes">
@@ -844,7 +844,8 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT15" variable="StaticText15" member="yes">
-												<label>Dead zone</label>
+												<label>DZ</label>
+												<tooltip>Dead zone</tooltip>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -852,7 +853,8 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT17" variable="StaticText17" member="yes">
-												<label>Multiplier</label>
+												<label>Sens.</label>
+												<tooltip>Sensitivity</tooltip>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -860,7 +862,8 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT18" variable="StaticText18" member="yes">
-												<label>Exponent</label>
+												<label>Accel.</label>
+												<tooltip>Acceleration</tooltip>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -869,6 +872,14 @@
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT22" variable="StaticText22" member="yes">
 												<label>Shape</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT33" variable="StaticText33" member="yes">
+												<label>Smoothing</label>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -924,7 +935,7 @@
 												<label>Auto detect</label>
 												<handler function="OnButton9Click" entry="EVT_BUTTON" />
 											</object>
-											<flag>wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -939,7 +950,10 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_TEXTCTRL8" variable="TextCtrl8" member="yes">
-												<value>8</value>
+												<value>20</value>
+												<size>27,27</size>
+												<tooltip>Dead zone [0..99]</tooltip>
+												<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -947,7 +961,10 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_TEXTCTRL9" variable="TextCtrl9" member="yes">
-												<value>4</value>
+												<value>1.00</value>
+												<size>59,27</size>
+												<tooltip>Sensitivity [-100.00..100.00]</tooltip>
+												<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -955,7 +972,10 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_TEXTCTRL10" variable="TextCtrl10" member="yes">
-												<value>1</value>
+												<value>1.00</value>
+												<size>55,27</size>
+												<tooltip>Acceleration [0.00..2.00]</tooltip>
+												<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -975,6 +995,37 @@
 											<border>5</border>
 											<option>1</option>
 										</object>
+										<object class="sizeritem">
+											<object class="wxFlexGridSizer" variable="FlexGridSizer11" member="no">
+												<cols>2</cols>
+												<rows>1</rows>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrl1" member="yes">
+														<value>1</value>
+														<size>27,27</size>
+														<tooltip>Buffer size [1..30]</tooltip>
+														<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TextCtrl2" member="yes">
+														<value>0.00</value>
+														<size>41,27</size>
+														<tooltip>Filter [0.00..1.00]</tooltip>
+														<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
 									</object>
 									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
@@ -986,7 +1037,7 @@
 										<rows>1</rows>
 										<object class="sizeritem">
 											<object class="wxGrid" name="ID_GRID2" variable="Grid2" member="yes">
-												<cols>10</cols>
+												<cols>12</cols>
 												<readonly>1</readonly>
 												<labelcolwidth>25</labelcolwidth>
 												<defaultcolsize>100</defaultcolsize>
@@ -1001,6 +1052,8 @@
 													<item>Multiplier</item>
 													<item>Exponent</item>
 													<item>Shape</item>
+													<item>Buffer Size</item>
+													<item>Filter</item>
 												</collabels>
 											</object>
 											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

@@ -35,7 +35,7 @@ class sixaxis_emu_guiFrame: public wxFrame
 {
     public:
 
-        sixaxis_emu_guiFrame(wxWindow* parent,wxWindowID id = -1);
+        sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWindowID id = -1);
         virtual ~sixaxis_emu_guiFrame();
 
         void save_current();
@@ -128,6 +128,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnButton17Click(wxCommandEvent& event);
         void OnButton18Click(wxCommandEvent& event);
         void OnMenuSetMouseDPI(wxCommandEvent& event);
+        void OnTextCtrl8Text(wxCommandEvent& event);
+        void OnTextCtrlText(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
         void fillButtonAxisChoice(wxChoice* choice);
@@ -216,6 +218,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_STATICTEXT17;
         static const long ID_STATICTEXT18;
         static const long ID_STATICTEXT22;
+        static const long ID_STATICTEXT33;
         static const long ID_STATICTEXT41;
         static const long ID_STATICTEXT32;
         static const long ID_STATICTEXT42;
@@ -227,6 +230,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_TEXTCTRL9;
         static const long ID_TEXTCTRL10;
         static const long ID_CHOICE1;
+        static const long ID_TEXTCTRL1;
+        static const long ID_TEXTCTRL2;
         static const long ID_GRID2;
         static const long ID_BUTTON3;
         static const long ID_BUTTON7;
@@ -282,6 +287,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxSpinCtrl* SpinCtrl1;
         wxStaticText* StaticText37;
         wxMenuItem* MenuItem5;
+        wxStaticText* StaticText33;
         wxStaticText* StaticText13;
         wxStaticText* StaticText2;
         wxStaticText* StaticText14;
@@ -354,6 +360,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText61;
         wxTextCtrl* TextCtrl8;
         wxStaticLine* StaticLine1;
+        wxTextCtrl* TextCtrl2;
         wxSpinCtrl* SpinCtrl2;
         wxStaticText* StaticText70;
         wxMenuItem* MenuItem23;
@@ -361,6 +368,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText28;
         wxStaticText* StaticText43;
         wxStaticText* StaticText41;
+        wxTextCtrl* TextCtrl1;
         wxStaticText* StaticText15;
         wxButton* Button17;
         wxStaticText* StaticText12;

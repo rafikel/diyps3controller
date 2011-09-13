@@ -11,12 +11,26 @@
 #define SIXAXIS_EMU_GUIAPP_H
 
 #include <wx/app.h>
+#include <wx/cmdline.h>
 
 class sixaxis_emu_guiApp : public wxApp
 {
     public:
         virtual bool OnInit();
         virtual int OnExit();
+        virtual void OnInitCmdLine(wxCmdLineParser& parser);
+        virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+
+    private:
+        wxString file;
+};
+
+static const wxCmdLineEntryDesc g_cmdLineDesc [] =
+{
+     { wxCMD_LINE_OPTION, wxT("f"), wxT("file"), wxT("specifies a file to open"),
+         wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+
+     { wxCMD_LINE_NONE }
 };
 
 #endif // SIXAXIS_EMU_GUIAPP_H

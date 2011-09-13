@@ -28,6 +28,8 @@ void XmlReader::ProcessEventElement(xmlNode * a_node)
     wxString multiplier;
     wxString exponent;
     wxString shape;
+    wxString bufferSize;
+    wxString filter;
     char* prop;
 
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
@@ -65,6 +67,40 @@ void XmlReader::ProcessEventElement(xmlNode * a_node)
         shape = _("");
     }
     xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_BUFFERSIZE);
+    if (type == _("axis"))
+    {
+        if (prop)
+        {
+            bufferSize = wxString(prop, wxConvUTF8);
+        }
+        else
+        {
+            bufferSize = _("1");
+        }
+    }
+    else
+    {
+        bufferSize = _("");
+    }
+    xmlFree(prop);
+    prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_FILTER);
+    if (type == _("axis"))
+    {
+        if (prop)
+        {
+            filter = wxString(prop, wxConvUTF8);
+        }
+        else
+        {
+            filter = _("0.00");
+        }
+    }
+    else
+    {
+        filter = _("");
+    }
+    xmlFree(prop);
 
     m_TempEvent.SetType(type);
     m_TempEvent.SetId(id);
@@ -73,6 +109,8 @@ void XmlReader::ProcessEventElement(xmlNode * a_node)
     m_TempEvent.SetMultiplier(multiplier);
     m_TempEvent.SetExponent(exponent);
     m_TempEvent.SetShape(shape);
+    m_TempEvent.SetBufferSize(bufferSize);
+    m_TempEvent.SetFilter(filter);
 }
 
 void XmlReader::ProcessDeviceElement(xmlNode * a_node)

@@ -6,10 +6,10 @@ class Event
 {
     public:
         Event();
-        Event(wxString type, wxString id, wxString threshold, wxString deadZone, wxString multiplier, wxString exponent, wxString shape);
+        Event(wxString type, wxString id, wxString threshold, wxString deadZone, wxString multiplier, wxString exponent, wxString shape, wxString buffersize, wxString filter);
         Event(wxString type, wxString id, wxString threshold);
         Event(wxString type, wxString id);
-        Event(wxString type, wxString id, wxString deadZone, wxString multiplier, wxString exponent, wxString shape);
+        Event(wxString type, wxString id, wxString deadZone, wxString multiplier, wxString exponent, wxString shape, wxString buffersize, wxString filter);
         Event(wxString id);
         virtual ~Event();
         Event(const Event& other);
@@ -28,6 +28,10 @@ class Event
         void SetExponent(wxString val) { m_Exponent = val; }
         wxString GetShape() { return m_Shape; }
         void SetShape(wxString val) { m_Shape = val; }
+        wxString GetBufferSize() { return m_BufferSize; }
+        void SetBufferSize(wxString val) { m_BufferSize = val; }
+        wxString GetFilter() { return m_Filter; }
+        void SetFilter(wxString val) { m_Filter = val; }
     protected:
     private:
         wxString m_Type;
@@ -37,6 +41,8 @@ class Event
         wxString m_Multiplier;
         wxString m_Exponent;
         wxString m_Shape;
+        wxString m_BufferSize;
+        wxString m_Filter;
 };
 
 #endif // EVENT_H
