@@ -8,7 +8,7 @@ class AxisMapper
 {
     public:
         AxisMapper();
-        AxisMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString axis, wxString deadZone, wxString multiplier, wxString exponent, wxString shape);
+        AxisMapper(wxString dtype, wxString did, wxString dname, wxString etype, wxString eid, wxString axis, wxString deadZone, wxString multiplier, wxString exponent, wxString shape, wxString buffersize, wxString filter);
         virtual ~AxisMapper();
         AxisMapper(const AxisMapper& other);
         AxisMapper& operator=(const AxisMapper& other);

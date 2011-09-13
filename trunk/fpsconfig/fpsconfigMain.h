@@ -48,7 +48,7 @@ class fpsconfigFrame: public wxFrame
 {
     public:
 
-        fpsconfigFrame(wxWindow* parent,wxWindowID id = -1);
+        fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id = -1);
         virtual ~fpsconfigFrame();
 
     private:
@@ -71,19 +71,27 @@ class fpsconfigFrame: public wxFrame
         wxButton* getButtonButton(wxString blabel);
         wxButton* getAxisButton(wxString blabel);
 
+        void LoadConfig();
+
         //(*Identifiers(fpsconfigFrame)
         static const long ID_SPINCTRL8;
         static const long ID_SPINCTRL7;
         static const long ID_SPINCTRL6;
         static const long ID_SPINCTRL5;
         static const long ID_SPINCTRL4;
+        static const long ID_SPINCTRL10;
+        static const long ID_SPINCTRL11;
         static const long ID_SPINCTRL3;
         static const long ID_BUTTON10;
+        static const long ID_SPINCTRL13;
+        static const long ID_SPINCTRL14;
         static const long ID_SPINCTRL1;
         static const long ID_SPINCTRL2;
         static const long ID_TEXTCTRL24;
-        static const long ID_TEXTCTRL23;
+        static const long ID_TEXTCTRL4;
         static const long ID_TEXTCTRL26;
+        static const long ID_TEXTCTRL2;
+        static const long ID_TEXTCTRL3;
         static const long ID_TEXTCTRL22;
         static const long ID_STATICTEXT1;
         static const long ID_STATICTEXT7;
@@ -119,6 +127,7 @@ class fpsconfigFrame: public wxFrame
         static const long ID_SPINCTRL9;
         static const long ID_STATICTEXT8;
         static const long ID_CHECKBOX1;
+        static const long ID_STATICTEXT9;
         static const long ID_PANEL1;
         static const long ID_MENUITEM1;
         static const long ID_MENUITEM4;
@@ -131,13 +140,16 @@ class fpsconfigFrame: public wxFrame
 
         //(*Declarations(fpsconfigFrame)
         wxButton* stickdown;
+        wxStaticText* StaticText9;
         wxSpinCtrl* SpinCtrl4;
+        wxTextCtrl* TextCtrl4;
         wxButton* l1;
         wxButton* r3;
         wxSpinCtrl* SpinCtrl1;
         wxMenuItem* MenuItem5;
         wxButton* stickright;
         wxStaticText* StaticText2;
+        wxSpinCtrl* SpinCtrl13;
         wxButton* start;
         wxStaticText* StaticText6;
         wxTextCtrl* TextCtrl26;
@@ -153,6 +165,7 @@ class fpsconfigFrame: public wxFrame
         wxStaticText* StaticText1;
         wxFileDialog* FileDialog1;
         wxStaticText* StaticText3;
+        wxSpinCtrl* SpinCtrl14;
         wxButton* r2;
         wxCheckBox* CheckBox1;
         wxButton* l2;
@@ -164,7 +177,9 @@ class fpsconfigFrame: public wxFrame
         wxStatusBar* StatusBar1;
         wxMenuItem* MenuItem6;
         wxButton* left;
+        wxSpinCtrl* SpinCtrl10;
         wxTextCtrl* TextCtrl22;
+        wxTextCtrl* TextCtrl2;
         wxSpinCtrl* SpinCtrl2;
         wxButton* triangle;
         wxSpinCtrl* SpinCtrl5;
@@ -172,11 +187,12 @@ class fpsconfigFrame: public wxFrame
         wxTextCtrl* TextCtrl25;
         wxButton* cross;
         wxButton* square;
-        wxTextCtrl* TextCtrl23;
         wxButton* ps;
         wxButton* l3;
+        wxSpinCtrl* SpinCtrl11;
         wxButton* up;
         wxStaticText* StaticText4;
+        wxTextCtrl* TextCtrl3;
         wxButton* r1;
         wxSpinCtrl* SpinCtrl6;
         wxChoice* Choice1;
@@ -194,7 +210,7 @@ class fpsconfigFrame: public wxFrame
 
         unsigned int current_dpi;
 
-        double values[6];
+        double values[8];
 
         DECLARE_EVENT_TABLE()
 };

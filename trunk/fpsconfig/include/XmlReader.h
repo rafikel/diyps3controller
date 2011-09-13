@@ -33,6 +33,8 @@
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
 #define X_ATTR_SHAPE "shape"
+#define X_ATTR_BUFFERSIZE "buffer_size"
+#define X_ATTR_FILTER "filter"
 #define X_ATTR_SWITCH_BACK "switch_back"
 #define X_ATTR_DELAY "delay"
 #define X_ATTR_STEPS "steps"

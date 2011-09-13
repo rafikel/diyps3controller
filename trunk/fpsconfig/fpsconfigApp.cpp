@@ -19,16 +19,34 @@ IMPLEMENT_APP(fpsconfigApp);
 
 bool fpsconfigApp::OnInit()
 {
+    // call default behaviour (mandatory)
+    if (!wxApp::OnInit())
+        return false;
+
     //(*AppInitialize
     bool wxsOK = true;
     wxInitAllImageHandlers();
     if ( wxsOK )
     {
-        fpsconfigFrame* Frame = new fpsconfigFrame(0, -1);
+        fpsconfigFrame* Frame = new fpsconfigFrame(file, 0, -1);
     	Frame->Show();
     	SetTopWindow(Frame);
     }
     //*)
     return wxsOK;
 
+}
+
+void fpsconfigApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+    parser.SetDesc (g_cmdLineDesc);
+    // must refuse '/' as parameter starter or cannot use "/path" style paths
+    parser.SetSwitchChars (wxT("-"));
+}
+
+bool fpsconfigApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+    parser.Found(_("f"), &file);
+
+    return true;
 }

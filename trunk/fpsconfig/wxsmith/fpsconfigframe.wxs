@@ -13,7 +13,7 @@
 				<value>100</value>
 				<min>-10000</min>
 				<max>10000</max>
-				<pos>592,352</pos>
+				<pos>486,352</pos>
 				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
@@ -21,7 +21,7 @@
 				<value>100</value>
 				<min>-10000</min>
 				<max>10000</max>
-				<pos>592,320</pos>
+				<pos>486,320</pos>
 				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
@@ -29,7 +29,7 @@
 				<value>100</value>
 				<min>-10000</min>
 				<max>10000</max>
-				<pos>496,352</pos>
+				<pos>418,352</pos>
 				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
@@ -37,7 +37,7 @@
 				<value>100</value>
 				<min>-10000</min>
 				<max>10000</max>
-				<pos>496,320</pos>
+				<pos>418,320</pos>
 				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
@@ -45,7 +45,23 @@
 				<value>100</value>
 				<min>-10000</min>
 				<max>10000</max>
-				<pos>400,352</pos>
+				<pos>360,352</pos>
+				<size>19,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL10" variable="SpinCtrl10" member="yes">
+				<value>0</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>588,320</pos>
+				<size>19,-1</size>
+				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL11" variable="SpinCtrl11" member="yes">
+				<value>0</value>
+				<min>-10000</min>
+				<max>10000</max>
+				<pos>588,352</pos>
 				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
@@ -53,7 +69,7 @@
 				<value>100</value>
 				<min>-10000</min>
 				<max>10000</max>
-				<pos>400,320</pos>
+				<pos>360,320</pos>
 				<size>19,-1</size>
 				<handler function="OnSpinCtrlChange" entry="EVT_SPINCTRL" />
 			</object>
@@ -65,40 +81,76 @@
 				</font>
 				<handler function="OnButtonClick" entry="EVT_BUTTON" />
 			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL13" variable="SpinCtrl13" member="yes">
+				<value>1</value>
+				<min>1</min>
+				<max>30</max>
+				<pos>506,320</pos>
+				<size>44,-1</size>
+				<tooltip>Buffer size</tooltip>
+			</object>
+			<object class="wxSpinCtrl" name="ID_SPINCTRL14" variable="SpinCtrl14" member="yes">
+				<value>1</value>
+				<min>1</min>
+				<max>30</max>
+				<pos>506,352</pos>
+				<size>44,-1</size>
+				<tooltip>Buffer size</tooltip>
+			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="SpinCtrl1" member="yes">
 				<value>20</value>
 				<max>64</max>
 				<pos>184,320</pos>
-				<size>50,-1</size>
+				<size>44,-1</size>
+				<tooltip>Dead zone</tooltip>
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL2" variable="SpinCtrl2" member="yes">
 				<value>20</value>
 				<max>64</max>
 				<pos>184,352</pos>
-				<size>50,-1</size>
+				<size>44,-1</size>
+				<tooltip>Dead zone</tooltip>
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL24" variable="TextCtrl24" member="yes">
 				<value>1.00</value>
-				<pos>328,352</pos>
-				<size>73,-1</size>
+				<pos>312,352</pos>
+				<size>50,-1</size>
+				<tooltip>Sensitivity</tooltip>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 			</object>
-			<object class="wxTextCtrl" name="ID_TEXTCTRL23" variable="TextCtrl23" member="yes">
+			<object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="TextCtrl4" member="yes">
 				<value>1.00</value>
-				<pos>328,320</pos>
-				<size>73,-1</size>
+				<pos>312,320</pos>
+				<size>50,-1</size>
+				<tooltip>Sensitivity</tooltip>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL26" variable="TextCtrl26" member="yes">
 				<value>1.00</value>
-				<pos>424,352</pos>
-				<size>73,-1</size>
+				<pos>380,352</pos>
+				<size>40,-1</size>
+				<tooltip>Acceleration</tooltip>
+				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+			</object>
+			<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TextCtrl2" member="yes">
+				<value>0.00</value>
+				<pos>550,320</pos>
+				<size>40,27</size>
+				<tooltip>Filter</tooltip>
+				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+			</object>
+			<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="TextCtrl3" member="yes">
+				<value>0.00</value>
+				<pos>550,352</pos>
+				<size>40,27</size>
+				<tooltip>Filter</tooltip>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL22" variable="TextCtrl22" member="yes">
 				<value>1.00</value>
-				<pos>424,320</pos>
-				<size>73,-1</size>
+				<pos>380,320</pos>
+				<size>40,27</size>
+				<tooltip>Acceleration</tooltip>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
@@ -106,28 +158,33 @@
 				<pos>120,328</pos>
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
-				<label>dz shape</label>
-				<pos>256,296</pos>
+				<label>Shape</label>
+				<pos>246,296</pos>
+				<tooltip>Dead zone shape</tooltip>
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
 				<label>secondary</label>
 				<pos>104,360</pos>
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
-				<label>dz value</label>
-				<pos>176,296</pos>
+				<label>DZ</label>
+				<pos>192,296</pos>
+				<tooltip>Dead zone</tooltip>
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
-				<label>sensitivity</label>
-				<pos>336,296</pos>
+				<label>Sens.</label>
+				<pos>320,296</pos>
+				<tooltip>Sensitivity</tooltip>
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
-				<label>acceleration</label>
-				<pos>424,296</pos>
+				<label>Accel.</label>
+				<pos>382,296</pos>
+				<tooltip>Acceleration</tooltip>
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
-				<label>x/y ratio</label>
-				<pos>536,296</pos>
+				<label>x/y</label>
+				<pos>452,296</pos>
+				<tooltip>x/y ratio</tooltip>
 			</object>
 			<object class="wxButton" name="ID_BUTTON1" variable="l2" member="yes">
 				<pos>136,0</pos>
@@ -295,8 +352,9 @@
 					<item>Rectangle</item>
 				</content>
 				<selection>0</selection>
-				<pos>240,320</pos>
+				<pos>230,320</pos>
 				<size>80,-1</size>
+				<tooltip>Dead zone shape</tooltip>
 			</object>
 			<object class="wxChoice" name="ID_CHOICE1" variable="Choice1" member="yes">
 				<content>
@@ -304,19 +362,22 @@
 					<item>Rectangle</item>
 				</content>
 				<selection>0</selection>
-				<pos>240,352</pos>
+				<pos>230,352</pos>
 				<size>80,-1</size>
+				<tooltip>Dead zone shape</tooltip>
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TextCtrl1" member="yes">
 				<value>1.00</value>
-				<pos>520,320</pos>
-				<size>73,-1</size>
+				<pos>438,320</pos>
+				<size>50,27</size>
+				<tooltip>x/y ratio</tooltip>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL25" variable="TextCtrl25" member="yes">
 				<value>1.00</value>
-				<pos>520,352</pos>
-				<size>73,-1</size>
+				<pos>438,352</pos>
+				<size>50,-1</size>
+				<tooltip>x/y ratio</tooltip>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL9" variable="SpinCtrl9" member="yes">
@@ -335,6 +396,11 @@
 				<label>adjust&#x0A;sensitivity</label>
 				<pos>24,280</pos>
 				<tooltip>Let this box unticked to build a new config with unknown calibration parameters.</tooltip>
+			</object>
+			<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
+				<label>Smoothing</label>
+				<pos>514,296</pos>
+				<tooltip>Mouse smoothing</tooltip>
 			</object>
 		</object>
 		<object class="wxMenuBar" variable="MenuBar1" member="no">

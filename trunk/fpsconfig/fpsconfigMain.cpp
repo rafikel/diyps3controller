@@ -63,13 +63,19 @@ const long fpsconfigFrame::ID_SPINCTRL7 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL6 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL5 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL4 = wxNewId();
+const long fpsconfigFrame::ID_SPINCTRL10 = wxNewId();
+const long fpsconfigFrame::ID_SPINCTRL11 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL3 = wxNewId();
 const long fpsconfigFrame::ID_BUTTON10 = wxNewId();
+const long fpsconfigFrame::ID_SPINCTRL13 = wxNewId();
+const long fpsconfigFrame::ID_SPINCTRL14 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL1 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL2 = wxNewId();
 const long fpsconfigFrame::ID_TEXTCTRL24 = wxNewId();
-const long fpsconfigFrame::ID_TEXTCTRL23 = wxNewId();
+const long fpsconfigFrame::ID_TEXTCTRL4 = wxNewId();
 const long fpsconfigFrame::ID_TEXTCTRL26 = wxNewId();
+const long fpsconfigFrame::ID_TEXTCTRL2 = wxNewId();
+const long fpsconfigFrame::ID_TEXTCTRL3 = wxNewId();
 const long fpsconfigFrame::ID_TEXTCTRL22 = wxNewId();
 const long fpsconfigFrame::ID_STATICTEXT1 = wxNewId();
 const long fpsconfigFrame::ID_STATICTEXT7 = wxNewId();
@@ -105,6 +111,7 @@ const long fpsconfigFrame::ID_TEXTCTRL25 = wxNewId();
 const long fpsconfigFrame::ID_SPINCTRL9 = wxNewId();
 const long fpsconfigFrame::ID_STATICTEXT8 = wxNewId();
 const long fpsconfigFrame::ID_CHECKBOX1 = wxNewId();
+const long fpsconfigFrame::ID_STATICTEXT9 = wxNewId();
 const long fpsconfigFrame::ID_PANEL1 = wxNewId();
 const long fpsconfigFrame::ID_MENUITEM1 = wxNewId();
 const long fpsconfigFrame::ID_MENUITEM4 = wxNewId();
@@ -159,7 +166,7 @@ const char* axis_labels[AI_MAX] =
     "lstick left"
 };
 
-fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
+fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
 {
     unsigned int i;
 
@@ -175,36 +182,61 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     SetBackgroundColour(wxColour(255,255,255));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(613,366), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     Panel1->SetBackgroundColour(wxColour(255,255,255));
-    SpinCtrl8 = new wxSpinCtrl(Panel1, ID_SPINCTRL8, _T("100"), wxPoint(592,352), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL8"));
+    SpinCtrl8 = new wxSpinCtrl(Panel1, ID_SPINCTRL8, _T("100"), wxPoint(486,352), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL8"));
     SpinCtrl8->SetValue(_T("100"));
-    SpinCtrl7 = new wxSpinCtrl(Panel1, ID_SPINCTRL7, _T("100"), wxPoint(592,320), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL7"));
+    SpinCtrl7 = new wxSpinCtrl(Panel1, ID_SPINCTRL7, _T("100"), wxPoint(486,320), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL7"));
     SpinCtrl7->SetValue(_T("100"));
-    SpinCtrl6 = new wxSpinCtrl(Panel1, ID_SPINCTRL6, _T("100"), wxPoint(496,352), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL6"));
+    SpinCtrl6 = new wxSpinCtrl(Panel1, ID_SPINCTRL6, _T("100"), wxPoint(418,352), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL6"));
     SpinCtrl6->SetValue(_T("100"));
-    SpinCtrl5 = new wxSpinCtrl(Panel1, ID_SPINCTRL5, _T("100"), wxPoint(496,320), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL5"));
+    SpinCtrl5 = new wxSpinCtrl(Panel1, ID_SPINCTRL5, _T("100"), wxPoint(418,320), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL5"));
     SpinCtrl5->SetValue(_T("100"));
-    SpinCtrl4 = new wxSpinCtrl(Panel1, ID_SPINCTRL4, _T("100"), wxPoint(400,352), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL4"));
+    SpinCtrl4 = new wxSpinCtrl(Panel1, ID_SPINCTRL4, _T("100"), wxPoint(360,352), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL4"));
     SpinCtrl4->SetValue(_T("100"));
-    SpinCtrl3 = new wxSpinCtrl(Panel1, ID_SPINCTRL3, _T("100"), wxPoint(400,320), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL3"));
+    SpinCtrl10 = new wxSpinCtrl(Panel1, ID_SPINCTRL10, _T("0"), wxPoint(588,320), wxSize(19,-1), 0, -10000, 10000, 0, _T("ID_SPINCTRL10"));
+    SpinCtrl10->SetValue(_T("0"));
+    SpinCtrl11 = new wxSpinCtrl(Panel1, ID_SPINCTRL11, _T("0"), wxPoint(588,352), wxSize(19,-1), 0, -10000, 10000, 0, _T("ID_SPINCTRL11"));
+    SpinCtrl11->SetValue(_T("0"));
+    SpinCtrl3 = new wxSpinCtrl(Panel1, ID_SPINCTRL3, _T("100"), wxPoint(360,320), wxSize(19,-1), 0, -10000, 10000, 100, _T("ID_SPINCTRL3"));
     SpinCtrl3->SetValue(_T("100"));
     stickright = new wxButton(Panel1, ID_BUTTON10, wxEmptyString, wxPoint(256,222), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_BUTTON10"));
     wxFont stickrightFont(6,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     stickright->SetFont(stickrightFont);
-    SpinCtrl1 = new wxSpinCtrl(Panel1, ID_SPINCTRL1, _T("20"), wxPoint(184,320), wxSize(50,-1), 0, 0, 64, 20, _T("ID_SPINCTRL1"));
+    SpinCtrl13 = new wxSpinCtrl(Panel1, ID_SPINCTRL13, _T("1"), wxPoint(506,320), wxSize(44,-1), 0, 1, 30, 1, _T("ID_SPINCTRL13"));
+    SpinCtrl13->SetValue(_T("1"));
+    SpinCtrl13->SetToolTip(_("Buffer size"));
+    SpinCtrl14 = new wxSpinCtrl(Panel1, ID_SPINCTRL14, _T("1"), wxPoint(506,352), wxSize(44,-1), 0, 1, 30, 1, _T("ID_SPINCTRL14"));
+    SpinCtrl14->SetValue(_T("1"));
+    SpinCtrl14->SetToolTip(_("Buffer size"));
+    SpinCtrl1 = new wxSpinCtrl(Panel1, ID_SPINCTRL1, _T("20"), wxPoint(184,320), wxSize(44,-1), 0, 0, 64, 20, _T("ID_SPINCTRL1"));
     SpinCtrl1->SetValue(_T("20"));
-    SpinCtrl2 = new wxSpinCtrl(Panel1, ID_SPINCTRL2, _T("20"), wxPoint(184,352), wxSize(50,-1), 0, 0, 64, 20, _T("ID_SPINCTRL2"));
+    SpinCtrl1->SetToolTip(_("Dead zone"));
+    SpinCtrl2 = new wxSpinCtrl(Panel1, ID_SPINCTRL2, _T("20"), wxPoint(184,352), wxSize(44,-1), 0, 0, 64, 20, _T("ID_SPINCTRL2"));
     SpinCtrl2->SetValue(_T("20"));
-    TextCtrl24 = new wxTextCtrl(Panel1, ID_TEXTCTRL24, _("1.00"), wxPoint(328,352), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL24"));
-    TextCtrl23 = new wxTextCtrl(Panel1, ID_TEXTCTRL23, _("1.00"), wxPoint(328,320), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL23"));
-    TextCtrl26 = new wxTextCtrl(Panel1, ID_TEXTCTRL26, _("1.00"), wxPoint(424,352), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL26"));
-    TextCtrl22 = new wxTextCtrl(Panel1, ID_TEXTCTRL22, _("1.00"), wxPoint(424,320), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL22"));
+    SpinCtrl2->SetToolTip(_("Dead zone"));
+    TextCtrl24 = new wxTextCtrl(Panel1, ID_TEXTCTRL24, _("1.00"), wxPoint(312,352), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL24"));
+    TextCtrl24->SetToolTip(_("Sensitivity"));
+    TextCtrl4 = new wxTextCtrl(Panel1, ID_TEXTCTRL4, _("1.00"), wxPoint(312,320), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL4"));
+    TextCtrl4->SetToolTip(_("Sensitivity"));
+    TextCtrl26 = new wxTextCtrl(Panel1, ID_TEXTCTRL26, _("1.00"), wxPoint(380,352), wxSize(40,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL26"));
+    TextCtrl26->SetToolTip(_("Acceleration"));
+    TextCtrl2 = new wxTextCtrl(Panel1, ID_TEXTCTRL2, _("0.00"), wxPoint(550,320), wxSize(40,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+    TextCtrl2->SetToolTip(_("Filter"));
+    TextCtrl3 = new wxTextCtrl(Panel1, ID_TEXTCTRL3, _("0.00"), wxPoint(550,352), wxSize(40,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
+    TextCtrl3->SetToolTip(_("Filter"));
+    TextCtrl22 = new wxTextCtrl(Panel1, ID_TEXTCTRL22, _("1.00"), wxPoint(380,320), wxSize(40,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL22"));
+    TextCtrl22->SetToolTip(_("Acceleration"));
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("primary"), wxPoint(120,328), wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    StaticText7 = new wxStaticText(Panel1, ID_STATICTEXT7, _("dz shape"), wxPoint(256,296), wxDefaultSize, 0, _T("ID_STATICTEXT7"));
+    StaticText7 = new wxStaticText(Panel1, ID_STATICTEXT7, _("Shape"), wxPoint(246,296), wxDefaultSize, 0, _T("ID_STATICTEXT7"));
+    StaticText7->SetToolTip(_("Dead zone shape"));
     StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, _("secondary"), wxPoint(104,360), wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-    StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("dz value"), wxPoint(176,296), wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-    StaticText4 = new wxStaticText(Panel1, ID_STATICTEXT4, _("sensitivity"), wxPoint(336,296), wxDefaultSize, 0, _T("ID_STATICTEXT4"));
-    StaticText5 = new wxStaticText(Panel1, ID_STATICTEXT5, _("acceleration"), wxPoint(424,296), wxDefaultSize, 0, _T("ID_STATICTEXT5"));
-    StaticText6 = new wxStaticText(Panel1, ID_STATICTEXT6, _("x/y ratio"), wxPoint(536,296), wxDefaultSize, 0, _T("ID_STATICTEXT6"));
+    StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("DZ"), wxPoint(192,296), wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+    StaticText3->SetToolTip(_("Dead zone"));
+    StaticText4 = new wxStaticText(Panel1, ID_STATICTEXT4, _("Sens."), wxPoint(320,296), wxDefaultSize, 0, _T("ID_STATICTEXT4"));
+    StaticText4->SetToolTip(_("Sensitivity"));
+    StaticText5 = new wxStaticText(Panel1, ID_STATICTEXT5, _("Accel."), wxPoint(382,296), wxDefaultSize, 0, _T("ID_STATICTEXT5"));
+    StaticText5->SetToolTip(_("Acceleration"));
+    StaticText6 = new wxStaticText(Panel1, ID_STATICTEXT6, _("x/y"), wxPoint(452,296), wxDefaultSize, 0, _T("ID_STATICTEXT6"));
+    StaticText6->SetToolTip(_("x/y ratio"));
     l2 = new wxButton(Panel1, ID_BUTTON1, wxEmptyString, wxPoint(136,0), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_BUTTON1"));
     wxFont l2Font(6,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     l2->SetFont(l2Font);
@@ -265,14 +297,18 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     r3 = new wxButton(Panel1, ID_BUTTON21, wxEmptyString, wxPoint(368,222), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_BUTTON21"));
     wxFont r3Font(6,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     r3->SetFont(r3Font);
-    Choice2 = new wxChoice(Panel1, ID_CHOICE2, wxPoint(240,320), wxSize(80,-1), 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE2"));
+    Choice2 = new wxChoice(Panel1, ID_CHOICE2, wxPoint(230,320), wxSize(80,-1), 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE2"));
     Choice2->SetSelection( Choice2->Append(_("Circle")) );
     Choice2->Append(_("Rectangle"));
-    Choice1 = new wxChoice(Panel1, ID_CHOICE1, wxPoint(240,352), wxSize(80,-1), 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
+    Choice2->SetToolTip(_("Dead zone shape"));
+    Choice1 = new wxChoice(Panel1, ID_CHOICE1, wxPoint(230,352), wxSize(80,-1), 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
     Choice1->SetSelection( Choice1->Append(_("Circle")) );
     Choice1->Append(_("Rectangle"));
-    TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("1.00"), wxPoint(520,320), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-    TextCtrl25 = new wxTextCtrl(Panel1, ID_TEXTCTRL25, _("1.00"), wxPoint(520,352), wxSize(73,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL25"));
+    Choice1->SetToolTip(_("Dead zone shape"));
+    TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("1.00"), wxPoint(438,320), wxSize(50,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    TextCtrl1->SetToolTip(_("x/y ratio"));
+    TextCtrl25 = new wxTextCtrl(Panel1, ID_TEXTCTRL25, _("1.00"), wxPoint(438,352), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL25"));
+    TextCtrl25->SetToolTip(_("x/y ratio"));
     SpinCtrl9 = new wxSpinCtrl(Panel1, ID_SPINCTRL9, _T("0"), wxPoint(24,256), wxSize(64,27), 0, 0, 9900, 0, _T("ID_SPINCTRL9"));
     SpinCtrl9->SetValue(_T("0"));
     SpinCtrl9->SetToolTip(_("Set your mouse DPI if you are building a new config with unknown calibration parameters.\nTo use someone else\'s calibration parameters: set the parameters and the corresponding DPI, tick the box below, and set the new DPI."));
@@ -280,6 +316,8 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     CheckBox1 = new wxCheckBox(Panel1, ID_CHECKBOX1, _("adjust\nsensitivity"), wxPoint(24,280), wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     CheckBox1->SetValue(false);
     CheckBox1->SetToolTip(_("Let this box unticked to build a new config with unknown calibration parameters."));
+    StaticText9 = new wxStaticText(Panel1, ID_STATICTEXT9, _("Smoothing"), wxPoint(514,296), wxDefaultSize, 0, _T("ID_STATICTEXT9"));
+    StaticText9->SetToolTip(_("Mouse smoothing"));
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
     MenuItem3 = new wxMenuItem(Menu1, ID_MENUITEM1, _("New"), wxEmptyString, wxITEM_NORMAL);
@@ -312,11 +350,15 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_SPINCTRL6,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL5,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL4,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
+    Connect(ID_SPINCTRL10,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
+    Connect(ID_SPINCTRL11,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL3,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_TEXTCTRL24,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
-    Connect(ID_TEXTCTRL23,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL4,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL26,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL22,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
@@ -395,6 +437,27 @@ fpsconfigFrame::fpsconfigFrame(wxWindow* parent,wxWindowID id)
     {
       values[i] = 1;
     }
+
+    if(!file.IsEmpty())
+    {
+      wxString wxfile;
+#ifndef WIN32
+      wxfile.Append(wxString(homedir, wxConvUTF8));
+      wxfile.Append(_("/.emuclient/config/"));
+#else
+      wxfile.Append(_("config/"));
+#endif
+      wxfile.Append(file);
+      if(::wxFileExists(wxfile))
+      {
+        configFile.ReadConfigFile(wxfile);
+        LoadConfig();
+      }
+      else
+      {
+        wxMessageBox( wxT("Cannot open config file: ") + wxString(file, wxConvUTF8), wxT("Error"), wxICON_ERROR);
+      }
+    }
 }
 
 fpsconfigFrame::~fpsconfigFrame()
@@ -431,7 +494,7 @@ void fpsconfigFrame::OnSpinCtrlChange(wxSpinEvent& event)
 
     if(spin == SpinCtrl3)
     {
-        updateTextCtrlValue(TextCtrl23, event, values);
+        updateTextCtrlValue(TextCtrl4, event, values);
     }
     else if(spin == SpinCtrl4)
     {
@@ -452,6 +515,14 @@ void fpsconfigFrame::OnSpinCtrlChange(wxSpinEvent& event)
     else if(spin == SpinCtrl8)
     {
         updateTextCtrlValue(TextCtrl25, event, values+5);
+    }
+    else if(spin == SpinCtrl10)
+    {
+        updateTextCtrlValue(TextCtrl2, event, values+6);
+    }
+    else if(spin == SpinCtrl11)
+    {
+        updateTextCtrlValue(TextCtrl3, event, values+7);
     }
 }
 
@@ -703,7 +774,7 @@ void fpsconfigFrame::OnMenuNew(wxCommandEvent& event)
     SpinCtrl2->SetValue(20);
     Choice1->SetSelection(0);
     Choice2->SetSelection(0);
-    TextCtrl23->SetValue(_("1.00"));
+    TextCtrl4->SetValue(_("1.00"));
     TextCtrl24->SetValue(_("1.00"));
     TextCtrl22->SetValue(_("1.00"));
     TextCtrl26->SetValue(_("1.00"));
@@ -774,8 +845,8 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
             axisMappers->push_front(axes[i]);
         }
     }
-    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("x"), _("rstick x"), wxString::Format(wxT("%i"),SpinCtrl1->GetValue()), TextCtrl23->GetValue(), TextCtrl22->GetValue(), Choice2->GetStringSelection()));
-    wsmx = TextCtrl23->GetValue();
+    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("x"), _("rstick x"), wxString::Format(wxT("%i"),SpinCtrl1->GetValue()), TextCtrl4->GetValue(), TextCtrl22->GetValue(), Choice2->GetStringSelection(), wxString::Format(wxT("%i"),SpinCtrl13->GetValue()), TextCtrl2->GetValue()));
+    wsmx = TextCtrl4->GetValue();
     wsxyratio = TextCtrl1->GetValue();
 #ifndef WIN32
     wsmx.Replace(_("."), _(","));
@@ -793,7 +864,7 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
 #ifndef WIN32
     wsmy.Replace(_(","), _("."));
 #endif
-    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("y"), _("rstick y"), wxString::Format(wxT("%i"),SpinCtrl1->GetValue()), wsmy, TextCtrl22->GetValue(), Choice2->GetStringSelection()));
+    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("y"), _("rstick y"), wxString::Format(wxT("%i"),SpinCtrl1->GetValue()), wsmy, TextCtrl22->GetValue(), Choice2->GetStringSelection(), wxString::Format(wxT("%i"),SpinCtrl13->GetValue()), TextCtrl2->GetValue()));
     /*
      * Save secondary config.
      */
@@ -824,7 +895,7 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
             axisMappers->push_front(axes[i]);
         }
     }
-    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("x"), _("rstick x"), wxString::Format(wxT("%i"),SpinCtrl2->GetValue()), TextCtrl24->GetValue(), TextCtrl26->GetValue(), Choice2->GetStringSelection()));
+    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("x"), _("rstick x"), wxString::Format(wxT("%i"),SpinCtrl2->GetValue()), TextCtrl24->GetValue(), TextCtrl26->GetValue(), Choice2->GetStringSelection(), wxString::Format(wxT("%i"), SpinCtrl14->GetValue()), TextCtrl3->GetValue()));
     wsmx = TextCtrl24->GetValue();
     wsxyratio = TextCtrl25->GetValue();
 #ifndef WIN32
@@ -843,25 +914,300 @@ void fpsconfigFrame::OnMenuSave(wxCommandEvent& event)
 #ifndef WIN32
     wsmy.Replace(_(","), _("."));
 #endif
-    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("y"), _("rstick y"), wxString::Format(wxT("%i"),SpinCtrl2->GetValue()), wsmy, TextCtrl26->GetValue(), Choice1->GetStringSelection()));
+    axisMappers->push_front(AxisMapper(_("mouse"), _("0"), _(""), _("axis"), _("y"), _("rstick y"), wxString::Format(wxT("%i"),SpinCtrl2->GetValue()), wsmy, TextCtrl26->GetValue(), Choice1->GetStringSelection(), wxString::Format(wxT("%i"), SpinCtrl14->GetValue()), TextCtrl3->GetValue()));
 
     configFile.WriteConfigFile();
 }
 
+void fpsconfigFrame::LoadConfig()
+{
+  std::list<ButtonMapper>* buttonMappers;
+  std::list<AxisMapper>* axisMappers;
+  e_button_index bindex;
+  e_axis_index aindex;
+  bool warning = false;
+  wxButton* button;
+  std::list<Intensity>* intensityList;
+
+  double mx, my, exp, f;
+  double xyratio;
+  wxString wsmx, wsmy, wsexp, wsxyratio, wsf;
+
+  current_dpi = configFile.GetController(0)->GetMouseDPI();
+  SpinCtrl9->SetValue(current_dpi);
+
+  /*
+   * Delete the stick intensity lists.
+   */
+  intensityList = configFile.GetController(0)->GetConfiguration(0)->GetIntensityList();
+  intensityList->erase(intensityList->begin(), intensityList->end());
+  intensityList = configFile.GetController(0)->GetConfiguration(1)->GetIntensityList();
+  intensityList->erase(intensityList->begin(), intensityList->end());
+
+  /*
+   * Delete the triggers.
+   */
+  configFile.GetController(0)->GetConfiguration(0)->SetTrigger(Trigger());
+  configFile.GetController(0)->GetConfiguration(1)->SetTrigger(Trigger());
+
+  /*
+   * Load primary config.
+   */
+  //Load ButtonMappers
+  for(int i=bi_select; i<BI_MAX; i++)
+  {
+      buttons[i] = ButtonMapper();
+      button = getButtonButton(wxString(button_labels[i], wxConvUTF8));
+      if(button != NULL)
+      {
+          button->SetLabel(_(""));
+          button->SetToolTip(_(""));
+      }
+  }
+  buttonMappers = configFile.GetController(0)->GetConfiguration(0)->GetButtonMapperList();
+  for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
+  {
+      button = getButtonButton(it->GetButton());
+
+      if(button == NULL)
+      {
+          continue;
+      }
+
+      bindex = getButtonIndex(button);
+
+      if(bindex == bi_undef)
+      {
+          continue;
+      }
+
+      if(button->GetLabel().IsEmpty())
+      {
+          buttons[bindex] = *it;
+          buttons[bindex].GetDevice()->SetName(_(""));
+          button->SetLabel(it->GetEvent()->GetId());
+          button->SetToolTip(it->GetEvent()->GetId());
+      }
+      else
+      {
+          warning = true;
+      }
+  }
+  //Load AxisMappers
+  for(int i=ai_ls_up; i<AI_MAX; i++)
+  {
+      axes[i] = AxisMapper();
+      button = getAxisButton(wxString(axis_labels[i], wxConvUTF8));
+      if(button != NULL)
+      {
+          button->SetLabel(_(""));
+          button->SetToolTip(_(""));
+      }
+  }
+  wsmx.erase();
+  wsmy.erase();
+  mx = 0;
+  my = 0;
+  axisMappers = configFile.GetController(0)->GetConfiguration(0)->GetAxisMapperList();
+  for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
+  {
+      button = getAxisButton(it->GetAxis());
+
+      if(button == NULL)
+      {
+          if(it->GetAxis() == _("rstick x"))
+          {
+              SpinCtrl1->SetValue(wxAtoi(it->GetEvent()->GetDeadZone()));
+              Choice2->SetStringSelection(it->GetEvent()->GetShape());
+
+              SpinCtrl13->SetValue(wxAtoi(it->GetEvent()->GetBufferSize()));
+
+              wsf = it->GetEvent()->GetFilter();
+#ifndef WIN32
+              wsf.Replace(_("."), _(","));
+#endif
+              if(wsf.ToDouble(&f))
+              {
+#ifndef WIN32
+                wsf.Replace(_(","), _("."));
+#endif
+                TextCtrl2->SetValue(wsf);
+                SpinCtrl10->SetValue(f*100);
+              }
+
+              wsmx = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
+              wsmx.Replace(_("."), _(","));
+#endif
+              if(wsmx.ToDouble(&mx))
+              {
+                  TextCtrl4->SetValue(wsmx);
+                  SpinCtrl3->SetValue(mx*100);
+                  if(my && mx)
+                  {
+                      xyratio = my / mx;
+                      wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
+                      wsxyratio.Replace(_(","), _("."));
+#endif
+                      TextCtrl1->SetValue(wsxyratio);
+                      SpinCtrl7->SetValue(xyratio*100);
+                  }
+              }
+
+              wsexp = it->GetEvent()->GetExponent();
+#ifndef WIN32
+              wsexp.Replace(_("."), _(","));
+#endif
+              if(wsexp.ToDouble(&exp))
+              {
+                TextCtrl22->SetValue(it->GetEvent()->GetExponent());
+                SpinCtrl5->SetValue(exp*100);
+              }
+          }
+          else if(it->GetAxis() == _("rstick y"))
+          {
+              wsmy = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
+              wsmy.Replace(_("."), _(","));
+#endif
+              if(wsmy.ToDouble(&my) && mx && my)
+              {
+                  xyratio = my / mx;
+                  wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
+                  wsxyratio.Replace(_(","), _("."));
+#endif
+                  TextCtrl1->SetValue(wsxyratio);
+                  SpinCtrl7->SetValue(xyratio*100);
+              }
+          }
+          else
+          {
+              warning = true;
+          }
+      }
+      else
+      {
+          aindex = getAxisIndex(button);
+
+          if(aindex == ai_undef)
+          {
+              continue;
+          }
+
+          if(button->GetLabel().IsEmpty())
+          {
+              axes[aindex] = *it;
+              axes[aindex].GetDevice()->SetName(_(""));
+              button->SetLabel(it->GetEvent()->GetId());
+              button->SetToolTip(it->GetEvent()->GetId());
+          }
+          else
+          {
+              warning = true;
+          }
+      }
+  }
+
+  /*
+   * Load secondary config.
+   */
+  wsmx.erase();
+  wsmy.erase();
+  mx = 0;
+  my = 0;
+  axisMappers = configFile.GetController(0)->GetConfiguration(1)->GetAxisMapperList();
+  for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
+  {
+      button = getAxisButton(it->GetAxis());
+
+      if(button == NULL)
+      {
+          if(it->GetAxis() == _("rstick x"))
+          {
+              SpinCtrl2->SetValue(wxAtoi(it->GetEvent()->GetDeadZone()));
+              Choice1->SetStringSelection(it->GetEvent()->GetShape());
+
+              SpinCtrl14->SetValue(wxAtoi(it->GetEvent()->GetBufferSize()));
+
+              wsf = it->GetEvent()->GetFilter();
+#ifndef WIN32
+              wsf.Replace(_("."), _(","));
+#endif
+              if(wsf.ToDouble(&f))
+              {
+#ifndef WIN32
+                wsf.Replace(_(","), _("."));
+#endif
+                TextCtrl3->SetValue(wsf);
+                SpinCtrl11->SetValue(f*100);
+              }
+
+              wsmx = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
+              wsmx.Replace(_("."), _(","));
+#endif
+              if(wsmx.ToDouble(&mx))
+              {
+                  TextCtrl24->SetValue(wsmx);
+                  SpinCtrl4->SetValue(mx*100);
+                  if(my && mx)
+                  {
+                      xyratio = my / mx;
+                      wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
+                      wsxyratio.Replace(_(","), _("."));
+#endif
+                      TextCtrl25->SetValue(wsxyratio);
+                      SpinCtrl8->SetValue(xyratio*100);
+                  }
+              }
+
+              wsexp = it->GetEvent()->GetExponent();
+#ifndef WIN32
+              wsexp.Replace(_("."), _(","));
+#endif
+              if(wsexp.ToDouble(&exp))
+              {
+                TextCtrl26->SetValue(it->GetEvent()->GetExponent());
+                SpinCtrl6->SetValue(exp*100);
+              }
+          }
+          else if(it->GetAxis() == _("rstick y"))
+          {
+              wsmy = it->GetEvent()->GetMultiplier();
+#ifndef WIN32
+              wsmy.Replace(_("."), _(","));
+#endif
+              if(wsmy.ToDouble(&my) && mx && my)
+              {
+                  xyratio = my / mx;
+                  wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
+#ifndef WIN32
+                  wsxyratio.Replace(_(","), _("."));
+#endif
+                  TextCtrl25->SetValue(wsxyratio);
+                  SpinCtrl8->SetValue(xyratio*100);
+              }
+          }
+          else
+          {
+              warning = true;
+          }
+      }
+  }
+
+  if(warning)
+  {
+      wxMessageBox( wxT("Some parts of this config file are not supported\nand will be lost if the file is edited.\n"), wxT("Info"), wxICON_INFORMATION);
+  }
+
+  MenuItem4->Enable(true);
+}
+
 void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
 {
-    std::list<ButtonMapper>* buttonMappers;
-    std::list<AxisMapper>* axisMappers;
-    e_button_index bindex;
-    e_axis_index aindex;
-    bool warning = false;
-    wxButton* button;
-    std::list<Intensity>* intensityList;
-
-    double mx, my, exp;
-    double xyratio;
-    wxString wsmx, wsmy, wsexp, wsxyratio;
-
     if ( FileDialog1->ShowModal() != wxID_OK ) return;
 
     wxString FileName = FileDialog1->GetPath();
@@ -869,247 +1215,7 @@ void fpsconfigFrame::OnMenuOpen(wxCommandEvent& event)
 
     configFile.ReadConfigFile(FileName);
 
-    current_dpi = configFile.GetController(0)->GetMouseDPI();
-    SpinCtrl9->SetValue(current_dpi);
-
-    /*
-     * Delete the stick intensity lists.
-     */
-    intensityList = configFile.GetController(0)->GetConfiguration(0)->GetIntensityList();
-    intensityList->erase(intensityList->begin(), intensityList->end());
-    intensityList = configFile.GetController(0)->GetConfiguration(1)->GetIntensityList();
-    intensityList->erase(intensityList->begin(), intensityList->end());
-
-    /*
-     * Delete the triggers.
-     */
-    configFile.GetController(0)->GetConfiguration(0)->SetTrigger(Trigger());
-    configFile.GetController(0)->GetConfiguration(1)->SetTrigger(Trigger());
-
-    /*
-     * Load primary config.
-     */
-    //Load ButtonMappers
-    for(int i=bi_select; i<BI_MAX; i++)
-    {
-        buttons[i] = ButtonMapper();
-        button = getButtonButton(wxString(button_labels[i], wxConvUTF8));
-        if(button != NULL)
-        {
-            button->SetLabel(_(""));
-            button->SetToolTip(_(""));
-        }
-    }
-    buttonMappers = configFile.GetController(0)->GetConfiguration(0)->GetButtonMapperList();
-    for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
-    {
-        button = getButtonButton(it->GetButton());
-
-        if(button == NULL)
-        {
-            continue;
-        }
-
-        bindex = getButtonIndex(button);
-
-        if(bindex == bi_undef)
-        {
-            continue;
-        }
-
-        if(button->GetLabel().IsEmpty())
-        {
-            buttons[bindex] = *it;
-            buttons[bindex].GetDevice()->SetName(_(""));
-            button->SetLabel(it->GetEvent()->GetId());
-            button->SetToolTip(it->GetEvent()->GetId());
-        }
-        else
-        {
-            warning = true;
-        }
-    }
-    //Load AxisMappers
-    for(int i=ai_ls_up; i<AI_MAX; i++)
-    {
-        axes[i] = AxisMapper();
-        button = getAxisButton(wxString(axis_labels[i], wxConvUTF8));
-        if(button != NULL)
-        {
-            button->SetLabel(_(""));
-            button->SetToolTip(_(""));
-        }
-    }
-    wsmx.erase();
-    wsmy.erase();
-    mx = 0;
-    my = 0;
-    axisMappers = configFile.GetController(0)->GetConfiguration(0)->GetAxisMapperList();
-    for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
-    {
-        button = getAxisButton(it->GetAxis());
-
-        if(button == NULL)
-        {
-            if(it->GetAxis() == _("rstick x"))
-            {
-                SpinCtrl1->SetValue(wxAtoi(it->GetEvent()->GetDeadZone()));
-                Choice2->SetStringSelection(it->GetEvent()->GetShape());
-
-                wsmx = it->GetEvent()->GetMultiplier();
-#ifndef WIN32
-                wsmx.Replace(_("."), _(","));
-#endif
-                if(wsmx.ToDouble(&mx))
-                {
-                    TextCtrl23->SetValue(wsmx);
-                    SpinCtrl3->SetValue(mx*100);
-                    if(my && mx)
-                    {
-                        xyratio = my / mx;
-                        wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
-#ifndef WIN32
-                        wsxyratio.Replace(_(","), _("."));
-#endif
-                        TextCtrl1->SetValue(wsxyratio);
-                        SpinCtrl7->SetValue(xyratio*100);
-                    }
-                }
-
-                wsexp = it->GetEvent()->GetExponent();
-#ifndef WIN32
-                wsexp.Replace(_("."), _(","));
-#endif
-                if(wsexp.ToDouble(&exp))
-                {
-                  TextCtrl22->SetValue(it->GetEvent()->GetExponent());
-                  SpinCtrl5->SetValue(exp*100);
-                }
-            }
-            else if(it->GetAxis() == _("rstick y"))
-            {
-                wsmy = it->GetEvent()->GetMultiplier();
-#ifndef WIN32
-                wsmy.Replace(_("."), _(","));
-#endif
-                if(wsmy.ToDouble(&my) && mx && my)
-                {
-                    xyratio = my / mx;
-                    wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
-#ifndef WIN32
-                    wsxyratio.Replace(_(","), _("."));
-#endif
-                    TextCtrl1->SetValue(wsxyratio);
-                    SpinCtrl7->SetValue(xyratio*100);
-                }
-            }
-            else
-            {
-                warning = true;
-            }
-        }
-        else
-        {
-            aindex = getAxisIndex(button);
-
-            if(aindex == ai_undef)
-            {
-                continue;
-            }
-
-            if(button->GetLabel().IsEmpty())
-            {
-                axes[aindex] = *it;
-                axes[aindex].GetDevice()->SetName(_(""));
-                button->SetLabel(it->GetEvent()->GetId());
-                button->SetToolTip(it->GetEvent()->GetId());
-            }
-            else
-            {
-                warning = true;
-            }
-        }
-    }
-
-    /*
-     * Load secondary config.
-     */
-    wsmx.erase();
-    wsmy.erase();
-    mx = 0;
-    my = 0;
-    axisMappers = configFile.GetController(0)->GetConfiguration(1)->GetAxisMapperList();
-    for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
-    {
-        button = getAxisButton(it->GetAxis());
-
-        if(button == NULL)
-        {
-            if(it->GetAxis() == _("rstick x"))
-            {
-                SpinCtrl2->SetValue(wxAtoi(it->GetEvent()->GetDeadZone()));
-                Choice1->SetStringSelection(it->GetEvent()->GetShape());
-
-                wsmx = it->GetEvent()->GetMultiplier();
-#ifndef WIN32
-                wsmx.Replace(_("."), _(","));
-#endif
-                if(wsmx.ToDouble(&mx))
-                {
-                    TextCtrl24->SetValue(wsmx);
-                    SpinCtrl4->SetValue(mx*100);
-                    if(my && mx)
-                    {
-                        xyratio = my / mx;
-                        wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
-#ifndef WIN32
-                        wsxyratio.Replace(_(","), _("."));
-#endif
-                        TextCtrl25->SetValue(wsxyratio);
-                        SpinCtrl8->SetValue(xyratio*100);
-                    }
-                }
-
-                wsexp = it->GetEvent()->GetExponent();
-#ifndef WIN32
-                wsexp.Replace(_("."), _(","));
-#endif
-                if(wsexp.ToDouble(&exp))
-                {
-                  TextCtrl26->SetValue(it->GetEvent()->GetExponent());
-                  SpinCtrl6->SetValue(exp*100);
-                }
-            }
-            else if(it->GetAxis() == _("rstick y"))
-            {
-                wsmy = it->GetEvent()->GetMultiplier();
-#ifndef WIN32
-                wsmy.Replace(_("."), _(","));
-#endif
-                if(wsmy.ToDouble(&my) && mx && my)
-                {
-                    xyratio = my / mx;
-                    wsxyratio = wxString::Format(wxT("%.02f"), xyratio);
-#ifndef WIN32
-                    wsxyratio.Replace(_(","), _("."));
-#endif
-                    TextCtrl25->SetValue(wsxyratio);
-                    SpinCtrl8->SetValue(xyratio*100);
-                }
-            }
-            else
-            {
-                warning = true;
-            }
-        }
-    }
-
-    if(warning)
-    {
-        wxMessageBox( wxT("Some parts of this config file are not supported\nand will be lost if the file is edited.\n"), wxT("Info"), wxICON_INFORMATION);
-    }
-
-    MenuItem4->Enable(true);
+    LoadConfig();
 }
 
 void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
@@ -1138,28 +1244,75 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
 
     if(!str.ToDouble(&value))
     {
-        text->SetValue(_("1.00"));
+        if (text == TextCtrl2 || text == TextCtrl3)
+        {
+            text->SetValue(_("0.00"));
+        }
+        else
+        {
+            text->SetValue(_("1.00"));
+        }
     }
     else
     {
         ivalue = round(value * 100);
-        if(text == TextCtrl23)
+        if(text == TextCtrl4)
         {
+            if(value > 100)
+            {
+                value = 100;
+                ivalue = value * 100;
+            }
+            else if(value < -100)
+            {
+                value = -100;
+                ivalue = value * 100;
+            }
             SpinCtrl3->SetValue(ivalue);
             values[0] = value;
         }
         else if(text == TextCtrl24)
         {
+            if(value > 100)
+            {
+                value = 100;
+                ivalue = value * 100;
+            }
+            else if(value < -100)
+            {
+                value = -100;
+                ivalue = value * 100;
+            }
             SpinCtrl4->SetValue(ivalue);
             values[1] = value;
         }
         else if(text == TextCtrl22)
         {
+            if(value > 2)
+            {
+                value = 2;
+                ivalue = value * 100;
+            }
+            else if(value < 0)
+            {
+                value = 0;
+                ivalue = value * 100;
+            }
             SpinCtrl5->SetValue(ivalue);
             values[2] = value;
         }
         else if(text == TextCtrl26)
         {
+            if(value > 2)
+            {
+                value = 2;
+                ivalue = value * 100;
+            }
+            else if(value < 0)
+            {
+                value = 0;
+                ivalue = value * 100;
+            }
             SpinCtrl6->SetValue(ivalue);
             values[3] = value;
         }
@@ -1172,6 +1325,36 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
         {
             SpinCtrl8->SetValue(ivalue);
             values[5] = value;
+        }
+        else if(text == TextCtrl2)
+        {
+            if(value > 1)
+            {
+                value = 1;
+                ivalue = value * 100;
+            }
+            else if(value < 0)
+            {
+                value = 0;
+                ivalue = value * 100;
+            }
+            SpinCtrl10->SetValue(ivalue);
+            values[6] = value;
+        }
+        else if(text == TextCtrl3)
+        {
+            if(value > 1)
+            {
+                value = 1;
+                ivalue = value * 100;
+            }
+            else if(value < 0)
+            {
+                value = 0;
+                ivalue = value * 100;
+            }
+            SpinCtrl11->SetValue(ivalue);
+            values[7] = value;
         }
     }
 }
@@ -1205,7 +1388,7 @@ void fpsconfigFrame::OnMouseDPIChange(wxSpinEvent& event)
 #ifndef WIN32
         wsm.Replace(_(","), _("."));
 #endif
-        TextCtrl23->SetValue(wsm);
+        TextCtrl4->SetValue(wsm);
         /*
          * Store the new y multiplier so as not to loose precision due to rounding.
          */
