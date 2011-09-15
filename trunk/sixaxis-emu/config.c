@@ -8,6 +8,7 @@
 #include "conversion.h"
 #include <unistd.h>
 #include <sys/time.h>
+#include "sdl_tools.h"
 
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
@@ -18,18 +19,14 @@ extern int joystickSixaxis[MAX_DEVICES];
 
 extern int current_mouse;
 extern e_current_cal current_cal;
+extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
 
 extern double axis_scale;
 extern double frequency_scale;
 extern int mean_axis_value;
 extern int refresh;
 extern int postpone_count;
-
-#ifndef WIN32
-int merge_all_devices = 0;
-#else
-int merge_all_devices = 1;
-#endif
+extern int subpos;
 
 /*
  * This tells what's the current config of each controller.
@@ -69,51 +66,139 @@ s_mapper* keyboard_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
  */
 s_mapper* mouse_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
-s_mapper* mouse_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+s_mapper* mouse_axes[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
  * Used to tweak mouse controls.
  */
-s_mouse_control mouse_control[MAX_DEVICES];
-
-/*
- * Used to calibrate mouse controls.
- */
-s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS] = {};
+s_mouse_control mouse_control[MAX_DEVICES] = {};
 
 /*
  * This lists controls of each controller configuration for all joysticks.
  */
 s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-s_mapper* joystick_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+s_mapper* joystick_axes[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
-/*
- * Returns the device id of a given event.
- */
-int get_device_id(SDL_Event* e)
+s_mapper** cfg_get_joystick_axes(int device, int controller, int config)
 {
-  unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
+  return &(joystick_axes[device][controller][config]);
+}
 
-  switch(e->type)
+s_mapper** cfg_get_joystick_buttons(int device, int controller, int config)
+{
+  return &(joystick_buttons[device][controller][config]);
+}
+
+s_mapper** cfg_get_mouse_axes(int device, int controller, int config)
+{
+  return &(mouse_axes[device][controller][config]);
+}
+
+s_mapper** cfg_get_mouse_buttons(int device, int controller, int config)
+{
+  return &(mouse_buttons[device][controller][config]);
+}
+
+s_mapper** cfg_get_keyboard_buttons(int device, int controller, int config)
+{
+  return &(keyboard_buttons[device][controller][config]);
+}
+
+s_trigger* cfg_get_trigger(int controller, int config)
+{
+  return &(triggers[controller][config]);
+}
+
+s_intensity* cfg_get_left_intensity(int controller, int config)
+{
+  return &(left_intensity[controller][config]);
+}
+
+s_intensity* cfg_get_right_intensity(int controller, int config)
+{
+  return &(right_intensity[controller][config]);
+}
+
+int cfg_is_joystick_used(int id)
+{
+  int j, k;
+  int used = 0;
+  for(j=0; j<MAX_CONTROLLERS && !used; ++j)
   {
-    case SDL_JOYHATMOTION:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
-    case SDL_JOYAXISMOTION:
-    break;
-    case SDL_KEYDOWN:
-    case SDL_KEYUP:
-    case SDL_MOUSEBUTTONDOWN:
-    case SDL_MOUSEBUTTONUP:
-    case SDL_MOUSEMOTION:
-      if(merge_all_devices)
+    for(k=0; k<MAX_CONFIGURATIONS && !used; ++k)
+    {
+      if((joystick_buttons[id][j][k] && joystick_buttons[id][j][k]->nb_mappers)
+          || (joystick_axes[id][j][k] && joystick_axes[id][j][k]->nb_mappers))
       {
-        device_id = 0;
+        used = 1;
       }
-    break;
+    }
   }
+  return used;
+}
 
-  return device_id;
+s_mouse_control* cfg_get_mouse_control(int id)
+{
+  if(id >= 0)
+  {
+    return mouse_control + id;
+  }
+  return NULL;
+}
+
+void cfg_process_motion_event(SDL_Event* event)
+{
+  s_mouse_control* mc = cfg_get_mouse_control(sdl_get_device_id(event));
+  if(mc)
+  {
+    mc->merge_x[mc->merge_x_index] += event->motion.xrel;
+    mc->merge_y[mc->merge_y_index] += event->motion.yrel;
+    mc->change = 1;
+  }
+}
+
+void cfg_process_motion()
+{
+  int i;
+  s_mouse_control* mc;
+  SDL_Event mouse_evt = { };
+  /*
+   * Process a single (merged) motion event for each mouse.
+   */
+  for (i = 0; i < MAX_DEVICES; ++i)
+  {
+    mc = cfg_get_mouse_control(i);
+    if (mc->changed || mc->change)
+    {
+      if (subpos)
+      {
+        /*
+         * Add the residual motion vector from the last iteration.
+         */
+        mc->merge_x[mc->merge_x_index++] += mc->residue_x;
+        mc->merge_y[mc->merge_y_index++] += mc->residue_y;
+        /*
+         * If no motion was received this iteration, the residual motion vector from the last iteration is reset.
+         */
+        if (!mc->change)
+        {
+          mc->residue_x = 0;
+          mc->residue_y = 0;
+        }
+      }
+      mouse_evt.motion.which = i;
+      mouse_evt.type = SDL_MOUSEMOTION;
+      cfg_process_event(&mouse_evt);
+    }
+    mc->merge_x[mc->merge_x_index] = 0;
+    mc->merge_y[mc->merge_y_index] = 0;
+    mc->changed = mc->change;
+    mc->change = 0;
+    if (i == current_mouse && (current_cal == DZX || current_cal == DZY || current_cal == DZS))
+    {
+      mc->changed = 0;
+    }
+  }
 }
 
 /*
@@ -204,12 +289,12 @@ static int update_intensity(s_intensity* intensity, int device_type, int device_
 /*
  * Check if stick intensities need to be updated.
  */
-void intensity_lookup(SDL_Event* e)
+void cfg_intensity_lookup(SDL_Event* e)
 {
   int i;
   int device_type;
   int button_id;
-  unsigned int device_id = get_device_id(e);
+  unsigned int device_id = sdl_get_device_id(e);
 
   switch( e->type )
   {
@@ -251,7 +336,7 @@ void intensity_lookup(SDL_Event* e)
 /*
  * Check if current configurations of controllers need to be updated.
  */
-void trigger_lookup(SDL_Event* e)
+void cfg_trigger_lookup(SDL_Event* e)
 {
   int i, j;
   int device_type;
@@ -259,7 +344,7 @@ void trigger_lookup(SDL_Event* e)
   int up = 0;
   int selected;
   int current;
-  unsigned int device_id = get_device_id(e);
+  unsigned int device_id = sdl_get_device_id(e);
 
   switch( e->type )
   {
@@ -339,7 +424,7 @@ void trigger_lookup(SDL_Event* e)
 /*
  * Check if a config activation has to be performed.
  */
-void config_activation()
+void cfg_config_activation()
 {
   int i;
   struct timeval tv;
@@ -381,56 +466,57 @@ static int postpone_event(unsigned int device, SDL_Event* event)
 {
   int i;
   int ret = 0;
+  s_mouse_control* mc = mouse_control + device;
   if (event->button.button == SDL_BUTTON_WHEELUP)
   {
-    if (mouse_control[device].postpone_wheel_up < postpone_count)
+    if (mc->postpone_wheel_up < postpone_count)
     {
       SDL_PushEvent(event);
-      mouse_control[device].postpone_wheel_up++;
+      mc->postpone_wheel_up++;
       ret = 1;
     }
     else
     {
-      mouse_control[device].postpone_wheel_up = 0;
+      mc->postpone_wheel_up = 0;
     }
   }
   else if (event->button.button == SDL_BUTTON_WHEELDOWN)
   {
-    if (mouse_control[device].postpone_wheel_down < postpone_count)
+    if (mc->postpone_wheel_down < postpone_count)
     {
       SDL_PushEvent(event);
-      mouse_control[device].postpone_wheel_down++;
+      mc->postpone_wheel_down++;
       ret = 1;
     }
     else
     {
-      mouse_control[device].postpone_wheel_down = 0;
+      mc->postpone_wheel_down = 0;
     }
   }
   else if (event->button.button == SDL_BUTTON_X1)
   {
-    if (mouse_control[device].postpone_button_x1 < postpone_count)
+    if (mc->postpone_button_x1 < postpone_count)
     {
       SDL_PushEvent(event);
-      mouse_control[device].postpone_button_x1++;
+      mc->postpone_button_x1++;
       ret = 1;
     }
     else
     {
-      mouse_control[device].postpone_button_x1 = 0;
+      mc->postpone_button_x1 = 0;
     }
   }
   else if (event->button.button == SDL_BUTTON_X2)
   {
-    if (mouse_control[device].postpone_button_x2 < postpone_count)
+    if (mc->postpone_button_x2 < postpone_count)
     {
       SDL_PushEvent(event);
-      mouse_control[device].postpone_button_x2++;
+      mc->postpone_button_x2++;
       ret = 1;
     }
     else
     {
-      mouse_control[device].postpone_button_x2 = 0;
+      mc->postpone_button_x2 = 0;
     }
   }
 
@@ -558,7 +644,7 @@ static double mouse2axis(int device, struct sixaxis_state* state, int which, dou
  * Updates the state table.
  * Too long function, but not hard to understand.
  */
-void process_event(SDL_Event* event)
+void cfg_process_event(SDL_Event* event)
 {
   s_mapper* mapper;
   int button;
@@ -578,12 +664,13 @@ void process_event(SDL_Event* event)
   double mx;
   double my;
   double residue;
+  s_mouse_control* mc;
 
   /*
    * 'which' should always be at that place
    * There is no need to check the value, since it's stored as an uint8_t, and MAX_DEVICES is 256.
    */
-  unsigned int device = get_device_id(event);
+  unsigned int device = sdl_get_device_id(event);
 
   for(c_id=0; c_id<MAX_CONTROLLERS; ++c_id)
   {
@@ -599,49 +686,49 @@ void process_event(SDL_Event* event)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       if(event->jhat.value & SDL_HAT_RIGHT)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+1;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+1;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       if(event->jhat.value & SDL_HAT_DOWN)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+2;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+2;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       if(event->jhat.value & SDL_HAT_LEFT)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+3;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
         event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+3;
-        process_event(&event_jb);
+        cfg_process_event(&event_jb);
       }
       break;
       case SDL_JOYBUTTONDOWN:
@@ -656,9 +743,9 @@ void process_event(SDL_Event* event)
       {
         event->jaxis.value = (event->jaxis.value + 32767) / 2;
       }
-      if(joystick_axis[device][c_id][config])
+      if(joystick_axes[device][c_id][config])
       {
-        nb_controls = joystick_axis[device][c_id][config]->nb_mappers;
+        nb_controls = joystick_axes[device][c_id][config]->nb_mappers;
       }
       break;
       case SDL_KEYDOWN:
@@ -676,9 +763,9 @@ void process_event(SDL_Event* event)
       }
       break;
       case SDL_MOUSEMOTION:
-      if(mouse_axis[device][c_id][config])
+      if(mouse_axes[device][c_id][config])
       {
-        nb_controls = mouse_axis[device][c_id][config]->nb_mappers;
+        nb_controls = mouse_axes[device][c_id][config]->nb_mappers;
       }
       break;
     }
@@ -753,7 +840,7 @@ void process_event(SDL_Event* event)
           }
           break;
         case SDL_JOYAXISMOTION:
-          mapper = joystick_axis[device][c_id][config]+control;
+          mapper = joystick_axes[device][c_id][config]+control;
           /*
            * Check that it's the right axis.
            */
@@ -977,7 +1064,7 @@ void process_event(SDL_Event* event)
           }
           break;
         case SDL_MOUSEMOTION:
-          mapper = mouse_axis[device][c_id][config]+control;
+          mapper = mouse_axes[device][c_id][config]+control;
           /*
            * Check the mouse axis.
            */
@@ -1027,10 +1114,11 @@ void process_event(SDL_Event* event)
           exp = mapper->exponent;
           dead_zone = mapper->dead_zone;
           shape = mapper->shape;
-          if(mouse_control[device].change)
+          mc = mouse_control + device;
+          if(mc->change)
           {
-            mx = mouse_control[device].merge_x;
-            my = mouse_control[device].merge_y;
+            mx = mc->merge_x[mc->merge_x_index];
+            my = mc->merge_y[mc->merge_y_index];
           }
           else
           {
@@ -1042,11 +1130,11 @@ void process_event(SDL_Event* event)
             residue = mouse2axis(device, state+c_id, mapper->axis, mx, my, ts, ts_axis, exp, multiplier, dead_zone, shape);
             if(mapper->axis == AXIS_X)
             {
-              mouse_control[device].residue_x = residue;
+              mc->residue_x = residue;
             }
             else if(mapper->axis == AXIS_Y)
             {
-              mouse_control[device].residue_y = residue;
+              mc->residue_y = residue;
             }
           }
           break;

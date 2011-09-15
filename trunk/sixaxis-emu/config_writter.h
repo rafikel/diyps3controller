@@ -8,6 +8,6 @@
 #ifndef CONFIG_WRITTER_H_
 #define CONFIG_WRITTER_H_
 
-int modify_file(char*);
+int cfgw_modify_file(char*);
 
 #endif /* CONFIG_WRITTER_H_ */

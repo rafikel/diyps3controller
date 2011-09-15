@@ -29,12 +29,14 @@ int mouseVirtualIndex[MAX_DEVICES] = {};
 char* keyboardName[MAX_DEVICES] = {};
 int keyboardVirtualIndex[MAX_DEVICES] = {};
 
-//needed to release unused joysticks
-extern s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_mapper* joystick_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-
 static SDL_Surface *screen = NULL;
 static int grab = 0;
+
+#ifndef WIN32
+int merge_all_devices = 0;
+#else
+int merge_all_devices = 1;
+#endif
 
 /*
  * Initializes the SDL library.
@@ -145,23 +147,10 @@ int sdl_initialize()
 void sdl_release_unused()
 {
   int i, j, k;
-  int used;
   int none = 1;
   for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
   {
-    used = 0;
-    for(j=0; j<MAX_CONTROLLERS && !used; ++j)
-    {
-      for(k=0; k<MAX_CONFIGURATIONS && !used; ++k)
-      {
-        if((joystick_buttons[i][j][k] && joystick_buttons[i][j][k]->nb_mappers)
-            || (joystick_axis[i][j][k] && joystick_axis[i][j][k]->nb_mappers))
-        {
-          used = 1;
-        }
-      }
-    }
-    if(!used)
+    if(!cfg_is_joystick_used(i))
     {
       printf("close unused joystick: %s\n", joystickName[i]);
       free(joystickName[i]);
@@ -248,4 +237,87 @@ void sdl_quit()
   SDL_FreeSurface(screen);
   SDL_Quit();
 #endif
+}
+
+char* sdl_get_mouse_name(int id)
+{
+  if(id >= 0)
+  {
+    return mouseName[id];
+  }
+  return NULL;
+}
+
+char* sdl_get_keyboard_name(int id)
+{
+  if(id >= 0)
+  {
+    return keyboardName[id];
+  }
+  return NULL;
+}
+
+char* sdl_get_joystick_name(int id)
+{
+  if(id >= 0)
+  {
+    return joystickName[id];
+  }
+  return NULL;
+}
+
+int sdl_get_joystick_virtual_id(int id)
+{
+  if(id >= 0)
+  {
+    return joystickVirtualIndex[id];
+  }
+  return 0;
+}
+
+int sdl_get_mouse_virtual_id(int id)
+{
+  if(id >= 0)
+  {
+    return mouseVirtualIndex[id];
+  }
+  return 0;
+}
+
+int sdl_get_keyboard_virtual_id(int id)
+{
+  if(id >= 0)
+  {
+    return keyboardVirtualIndex[id];
+  }
+  return 0;
+}
+
+/*
+ * Returns the device id of a given event.
+ */
+int sdl_get_device_id(SDL_Event* e)
+{
+  unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
+
+  switch(e->type)
+  {
+    case SDL_JOYHATMOTION:
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+    case SDL_JOYAXISMOTION:
+    break;
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+    case SDL_MOUSEMOTION:
+      if(merge_all_devices)
+      {
+        device_id = 0;
+      }
+    break;
+  }
+
+  return device_id;
 }

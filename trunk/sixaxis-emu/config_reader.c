@@ -8,6 +8,8 @@
 #include "config_reader.h"
 #include "config.h"
 #include "conversion.h"
+#include "sdl_tools.h"
+#include "calibration.h"
 #include <limits.h>
 #include <dirent.h>
 #include <libxml/xmlreader.h>
@@ -24,21 +26,6 @@ extern char* homedir;
 extern int mean_axis_value;
 extern int merge_all_devices;
 extern int check_config;
-extern const char* joystickName[MAX_DEVICES];
-extern int joystickVirtualIndex[MAX_DEVICES];
-extern const char* mouseName[MAX_DEVICES];
-extern int mouseVirtualIndex[MAX_DEVICES];
-extern const char* keyboardName[MAX_DEVICES];
-extern int keyboardVirtualIndex[MAX_DEVICES];
-extern s_trigger triggers[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_intensity left_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_intensity right_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_mapper* keyboard_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_mapper* mouse_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_mapper* mouse_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
-extern s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-extern s_mapper* joystick_axis[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
  * These variables are used to read the configuration.
@@ -57,6 +44,11 @@ static int r_device_id;
 static char r_device_name[128];
 static int r_config_dpi[MAX_CONTROLLERS];
 
+/*
+ * Get the device name and store it into r_device_name.
+ * OK, return 0
+ * error, return -1
+ */
 int GetDeviceName(xmlNode* a_node)
 {
   int ret = 0;
@@ -93,18 +85,18 @@ static int GetDeviceId(xmlNode* a_node)
   {
     if(r_device_type == E_DEVICE_TYPE_JOYSTICK)
     {
-      for (i = 0; i < MAX_DEVICES && joystickName[i]; ++i)
+      for (i = 0; i < MAX_DEVICES && sdl_get_joystick_name(i); ++i)
       {
-        if (!strcmp(r_device_name, joystickName[i]))
+        if (!strcmp(r_device_name, sdl_get_joystick_name(i)))
         {
-          if (r_device_id == joystickVirtualIndex[i])
+          if (r_device_id == sdl_get_joystick_virtual_id(i))
           {
             r_device_id = i;
             break;
           }
         }
       }
-      if(i == MAX_DEVICES || !joystickName[i])
+      if(i == MAX_DEVICES || !sdl_get_joystick_name(i))
       {
         printf("joystick not found: %s %d\n", r_device_name, r_device_id);
         ret = 1;
@@ -128,18 +120,18 @@ static int GetDeviceId(xmlNode* a_node)
     {
       if(r_device_type == E_DEVICE_TYPE_MOUSE)
       {
-        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+        for (i = 0; i < MAX_DEVICES && sdl_get_mouse_name(i); ++i)
         {
-          if (!strcmp(r_device_name, mouseName[i]))
+          if (!strcmp(r_device_name, sdl_get_mouse_name(i)))
           {
-            if (r_device_id == mouseVirtualIndex[i])
+            if (r_device_id == sdl_get_mouse_virtual_id(i))
             {
               r_device_id = i;
               break;
             }
           }
         }
-        if(i == MAX_DEVICES || !mouseName[i])
+        if(i == MAX_DEVICES || !sdl_get_mouse_name(i))
         {
           printf("mouse not found: %s %d\n", r_device_name, r_device_id);
           ret = 1;
@@ -147,18 +139,18 @@ static int GetDeviceId(xmlNode* a_node)
       }
       else if(r_device_type == E_DEVICE_TYPE_KEYBOARD)
       {
-        for (i = 0; i < MAX_DEVICES && keyboardName[i]; ++i)
+        for (i = 0; i < MAX_DEVICES && sdl_get_keyboard_name(i); ++i)
         {
-          if (!strcmp(r_device_name, keyboardName[i]))
+          if (!strcmp(r_device_name, sdl_get_keyboard_name(i)))
           {
-            if (r_device_id == keyboardVirtualIndex[i])
+            if (r_device_id == sdl_get_keyboard_virtual_id(i))
             {
               r_device_id = i;
               break;
             }
           }
         }
-        if(i == MAX_DEVICES || !keyboardName[i])
+        if(i == MAX_DEVICES || !sdl_get_keyboard_name(i))
         {
           printf("keyboard not found: %s %d\n", r_device_name, r_device_id);
           ret = 1;
@@ -170,6 +162,11 @@ static int GetDeviceId(xmlNode* a_node)
   return ret;
 }
 
+/*
+ * Get the device type and store it into r_device_type.
+ * OK, return 0
+ * error, return -1
+ */
 int GetDeviceTypeProp(xmlNode * a_node)
 {
   int ret = 0;
@@ -205,6 +202,11 @@ int GetDeviceTypeProp(xmlNode * a_node)
   return ret;
 }
 
+/*
+ * Get the event id and store it into r_event_id.
+ * OK, return 0
+ * error, return -1
+ */
 static int GetEventId(xmlNode * a_node, char* attr_label)
 {
   int ret = 0;
@@ -385,16 +387,16 @@ static s_mapper** get_mapper_table()
   switch(r_device_type)
   {
     case E_DEVICE_TYPE_KEYBOARD:
-      pp_mapper = &(keyboard_buttons[r_device_id][r_controller_id][r_config_id]);
+      pp_mapper = cfg_get_keyboard_buttons(r_device_id, r_controller_id, r_config_id);
       break;
     case E_DEVICE_TYPE_MOUSE:
       switch(r_event_type)
       {
         case E_EVENT_TYPE_BUTTON:
-          pp_mapper = &(mouse_buttons[r_device_id][r_controller_id][r_config_id]);
+          pp_mapper = cfg_get_mouse_buttons(r_device_id, r_controller_id, r_config_id);
           break;
         case E_EVENT_TYPE_AXIS:
-          pp_mapper = &(mouse_axis[r_device_id][r_controller_id][r_config_id]);
+          pp_mapper = cfg_get_mouse_axes(r_device_id, r_controller_id, r_config_id);
           break;
         default:
           break;
@@ -404,10 +406,10 @@ static s_mapper** get_mapper_table()
       switch(r_event_type)
       {
         case E_EVENT_TYPE_BUTTON:
-          pp_mapper = &(joystick_buttons[r_device_id][r_controller_id][r_config_id]);
+          pp_mapper = cfg_get_joystick_buttons(r_device_id, r_controller_id, r_config_id);
           break;
         case E_EVENT_TYPE_AXIS:
-          pp_mapper = &(joystick_axis[r_device_id][r_controller_id][r_config_id]);
+          pp_mapper = cfg_get_joystick_axes(r_device_id, r_controller_id, r_config_id);
           break;
         default:
           break;
@@ -685,6 +687,7 @@ static int ProcessTriggerElement(xmlNode * a_node)
   char* r_switch_back;
   int switch_back = 0;
   int delay = 0;
+  s_trigger* trigger;
 
   ret = GetDeviceTypeProp(a_node);
 
@@ -718,11 +721,13 @@ static int ProcessTriggerElement(xmlNode * a_node)
 
     if(ret != -1)
     {
-      triggers[r_controller_id][r_config_id].button = r_event_id;
-      triggers[r_controller_id][r_config_id].device_id = r_device_id;
-      triggers[r_controller_id][r_config_id].device_type = r_device_type;
-      triggers[r_controller_id][r_config_id].switch_back = switch_back;
-      triggers[r_controller_id][r_config_id].delay = delay;
+      trigger = cfg_get_trigger(r_controller_id, r_config_id);
+      trigger->button = r_event_id;
+      trigger->device_id = r_device_id;
+      trigger->device_type = r_device_type;
+      trigger->switch_back = switch_back;
+      trigger->delay = delay;
+
     }
   }
 
@@ -838,11 +843,11 @@ static int ProcessIntensityListElement(xmlNode * a_node)
         control = (char*) xmlGetProp(cur_node, (xmlChar*) X_ATTR_CONTROL);
         if(!strcmp(control, "left_stick"))
         {
-          ret = ProcessIntensityElement(cur_node, &left_intensity[r_controller_id][r_config_id]);
+          ret = ProcessIntensityElement(cur_node, cfg_get_left_intensity(r_controller_id, r_config_id));
         }
         else if(!strcmp(control, "right_stick"))
         {
-          ret = ProcessIntensityElement(cur_node, &right_intensity[r_controller_id][r_config_id]);
+          ret = ProcessIntensityElement(cur_node, cfg_get_right_intensity(r_controller_id, r_config_id));
         }
         xmlFree(control);
       }
@@ -860,6 +865,7 @@ static int ProcessConfigurationElement(xmlNode * a_node)
 {
   int ret = 0;
   xmlNode* cur_node = NULL;
+  s_intensity* intensity;
 
   ret = GetUnsignedIntProp(a_node, X_ATTR_ID, &r_config_id);
 
@@ -899,19 +905,21 @@ static int ProcessConfigurationElement(xmlNode * a_node)
     ret = -1;
   }
 
-  left_intensity[r_controller_id][r_config_id].device_up_id = -1;
-  left_intensity[r_controller_id][r_config_id].device_down_id = -1;
-  left_intensity[r_controller_id][r_config_id].up_button = -1;
-  left_intensity[r_controller_id][r_config_id].down_button = -1;
-  left_intensity[r_controller_id][r_config_id].value = mean_axis_value;
-  left_intensity[r_controller_id][r_config_id].shape = E_SHAPE_RECTANGLE;
+  intensity = cfg_get_left_intensity(r_controller_id, r_config_id);
+  intensity->device_up_id = -1;
+  intensity->device_down_id = -1;
+  intensity->up_button = -1;
+  intensity->down_button = -1;
+  intensity->value = mean_axis_value;
+  intensity->shape = E_SHAPE_RECTANGLE;
 
-  right_intensity[r_controller_id][r_config_id].device_up_id = -1;
-  right_intensity[r_controller_id][r_config_id].device_down_id = -1;
-  right_intensity[r_controller_id][r_config_id].up_button = -1;
-  right_intensity[r_controller_id][r_config_id].down_button = -1;
-  right_intensity[r_controller_id][r_config_id].value = mean_axis_value;
-  right_intensity[r_controller_id][r_config_id].shape = E_SHAPE_RECTANGLE;
+  intensity = cfg_get_right_intensity(r_controller_id, r_config_id);
+  intensity->device_up_id = -1;
+  intensity->device_down_id = -1;
+  intensity->up_button = -1;
+  intensity->down_button = -1;
+  intensity->value = mean_axis_value;
+  intensity->shape = E_SHAPE_RECTANGLE;
 
   for (cur_node = cur_node->next; cur_node; cur_node = cur_node->next)
   {
@@ -1110,7 +1118,9 @@ extern int current_mouse;
 static void read_calibration()
 {
   int i, j, k;
+  s_mapper** pp_mapper;
   s_mapper* p_mapper;
+  s_mouse_cal* mcal;
 
   current_mouse = -1;
 
@@ -1120,7 +1130,9 @@ static void read_calibration()
     {
       for(k=0; k<MAX_CONFIGURATIONS; ++k)
       {
-        for(p_mapper = mouse_axis[i][j][k]; p_mapper && p_mapper<mouse_axis[i][j][k]+mouse_axis[i][j][k]->nb_mappers; p_mapper++)
+        pp_mapper = cfg_get_mouse_axes(i, j, k);
+        mcal = cal_get_mouse(i, k);
+        for(p_mapper = *pp_mapper; p_mapper && p_mapper<*pp_mapper+(*pp_mapper)->nb_mappers; p_mapper++)
         {
           if(current_mouse < 0)
           {
@@ -1128,18 +1140,18 @@ static void read_calibration()
           }
           if(p_mapper->axis == 0)
           {
-            mouse_cal[i][k].mx = &p_mapper->multiplier;
-            mouse_cal[i][k].ex = &p_mapper->exponent;
-            mouse_cal[i][k].dzx = &p_mapper->dead_zone;
-            mouse_cal[i][k].dzs = &p_mapper->shape;
-            mouse_cal[i][k].rd = DEFAULT_RADIUS;
-            mouse_cal[i][k].dpi = r_config_dpi[j];
+            mcal->mx = &p_mapper->multiplier;
+            mcal->ex = &p_mapper->exponent;
+            mcal->dzx = &p_mapper->dead_zone;
+            mcal->dzs = &p_mapper->shape;
+            mcal->rd = DEFAULT_RADIUS;
+            mcal->dpi = r_config_dpi[j];
           }
           else
           {
-            mouse_cal[i][k].my = &p_mapper->multiplier;
-            mouse_cal[i][k].ey = &p_mapper->exponent;
-            mouse_cal[i][k].dzy = &p_mapper->dead_zone;
+            mcal->my = &p_mapper->multiplier;
+            mcal->ey = &p_mapper->exponent;
+            mcal->dzy = &p_mapper->dead_zone;
           }
         }
       }
@@ -1154,6 +1166,7 @@ static void read_calibration()
 
 void free_config()
 {
+  s_mapper** mapper;
   int i, j, k;
   for(i=0; i<MAX_DEVICES; ++i)
   {
@@ -1161,20 +1174,25 @@ void free_config()
     {
       for(k=0; k<MAX_CONFIGURATIONS; ++k)
       {
-        free(keyboard_buttons[i][j][k]);
-        free(mouse_buttons[i][j][k]);
-        free(mouse_axis[i][j][k]);
-        free(joystick_buttons[i][j][k]);
-        free(joystick_axis[i][j][k]);
-        keyboard_buttons[i][j][k] = NULL;
-        mouse_buttons[i][j][k] = NULL;
-        mouse_axis[i][j][k] = NULL;
-        joystick_buttons[i][j][k] = NULL;
-        joystick_axis[i][j][k] = NULL;
+        mapper = cfg_get_keyboard_buttons(i, j, k);
+        free(*mapper);
+        *mapper = NULL;
+        mapper = cfg_get_mouse_buttons(i, j, k);
+        free(*mapper);
+        *mapper = NULL;
+        mapper = cfg_get_mouse_axes(i, j, k);
+        free(*mapper);
+        *mapper = NULL;
+        mapper = cfg_get_joystick_buttons(i, j, k);
+        free(*mapper);
+        *mapper = NULL;
+        mapper = cfg_get_joystick_axes(i, j, k);
+        free(*mapper);
+        *mapper = NULL;
       }
     }
   }
-  memset(mouse_cal, 0x00, sizeof(mouse_cal));
+  cal_init();
 }
 
 /*

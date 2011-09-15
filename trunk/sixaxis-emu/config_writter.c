@@ -1,6 +1,8 @@
 #include "config.h"
 #include "config_reader.h"
 #include "conversion.h"
+#include "sdl_tools.h"
+#include "calibration.h"
 #include <libxml/xmlreader.h>
 #include <libxml/xmlwriter.h>
 #include <limits.h>
@@ -14,12 +16,7 @@ static e_device_type r_device_type;
 static int r_device_id;
 static char r_device_name[128];
 
-extern char* mouseName[MAX_DEVICES];
-extern int mouseVirtualIndex[MAX_DEVICES];
-
 extern int merge_all_devices;
-
-extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
 
 extern char* homedir;
 
@@ -32,6 +29,7 @@ static int ProcessEventElement(xmlNode * a_node)
   char dead_zone[32];
   char exponent[32];
   char* shape;
+  s_mouse_cal* mcal = cal_get_mouse(r_device_id, r_config_id);
 
   type = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
 
@@ -53,27 +51,27 @@ static int ProcessEventElement(xmlNode * a_node)
       {
         if (!strncmp(event_id, MOUSE_AXIS_X, sizeof(MOUSE_AXIS_X)))
         {
-          if(mouse_cal[r_device_id][r_config_id].mx)
+          if(mcal->mx)
           {
-            sprintf(multiplier, "%.2f", *mouse_cal[r_device_id][r_config_id].mx);
+            sprintf(multiplier, "%.2f", *mcal->mx);
             xmlSetProp(a_node, BAD_CAST X_ATTR_MULTIPLIER, BAD_CAST (const char*) multiplier);
           }
 
-          if(mouse_cal[r_device_id][r_config_id].dzx)
+          if(mcal->dzx)
           {
-            sprintf(dead_zone, "%d", *mouse_cal[r_device_id][r_config_id].dzx);
+            sprintf(dead_zone, "%d", *mcal->dzx);
             xmlSetProp(a_node, BAD_CAST X_ATTR_DEADZONE, BAD_CAST (const char*) dead_zone);
           }
 
-          if(mouse_cal[r_device_id][r_config_id].ex)
+          if(mcal->ex)
           {
-            sprintf(exponent, "%.2f", *mouse_cal[r_device_id][r_config_id].ex);
+            sprintf(exponent, "%.2f", *mcal->ex);
             xmlSetProp(a_node, BAD_CAST X_ATTR_EXPONENT, BAD_CAST (const char*) exponent);
           }
 
-          if(mouse_cal[r_device_id][r_config_id].dzs)
+          if(mcal->dzs)
           {
-            if(*mouse_cal[r_device_id][r_config_id].dzs == E_SHAPE_RECTANGLE)
+            if(*mcal->dzs == E_SHAPE_RECTANGLE)
             {
               shape = X_ATTR_VALUE_RECTANGLE;
             }
@@ -86,27 +84,27 @@ static int ProcessEventElement(xmlNode * a_node)
         }
         else if (!strncmp(event_id, MOUSE_AXIS_Y, sizeof(MOUSE_AXIS_Y)))
         {
-          if(mouse_cal[r_device_id][r_config_id].my)
+          if(mcal->my)
           {
-            sprintf(multiplier, "%.2f", *mouse_cal[r_device_id][r_config_id].my);
+            sprintf(multiplier, "%.2f", *mcal->my);
             xmlSetProp(a_node, BAD_CAST X_ATTR_MULTIPLIER, BAD_CAST (const char*) multiplier);
           }
 
-          if(mouse_cal[r_device_id][r_config_id].dzy)
+          if(mcal->dzy)
           {
-            sprintf(dead_zone, "%d", *mouse_cal[r_device_id][r_config_id].dzy);
+            sprintf(dead_zone, "%d", *mcal->dzy);
             xmlSetProp(a_node, BAD_CAST X_ATTR_DEADZONE, BAD_CAST (const char*) dead_zone);
           }
 
-          if(mouse_cal[r_device_id][r_config_id].ey)
+          if(mcal->ey)
           {
-            sprintf(exponent, "%.2f", *mouse_cal[r_device_id][r_config_id].ey);
+            sprintf(exponent, "%.2f", *mcal->ey);
             xmlSetProp(a_node, BAD_CAST X_ATTR_EXPONENT, BAD_CAST (const char*) exponent);
           }
 
-          if(mouse_cal[r_device_id][r_config_id].dzs)
+          if(mcal->dzs)
           {
-            if(*mouse_cal[r_device_id][r_config_id].dzs == E_SHAPE_RECTANGLE)
+            if(*mcal->dzs == E_SHAPE_RECTANGLE)
             {
               shape = X_ATTR_VALUE_RECTANGLE;
             }
@@ -160,18 +158,18 @@ static int ProcessDeviceElement(xmlNode * a_node)
       }
       else
       {
-        for (i = 0; i < MAX_DEVICES && mouseName[i]; ++i)
+        for (i = 0; i < MAX_DEVICES && sdl_get_mouse_name(i); ++i)
         {
-          if (!strcmp(r_device_name, mouseName[i]))
+          if (!strcmp(r_device_name, sdl_get_mouse_name(i)))
           {
-            if (r_device_id == mouseVirtualIndex[i])
+            if (r_device_id == sdl_get_mouse_virtual_id(i))
             {
               r_device_id = i;
               break;
             }
           }
         }
-        if(i == MAX_DEVICES || !mouseName[i])
+        if(i == MAX_DEVICES || !sdl_get_mouse_name(i))
         {
           r_device_id = -1;
         }
@@ -378,7 +376,7 @@ static int ProcessRootElement(xmlNode * a_node)
 /*
  * This function modifies a config file according to the calibrated values.
  */
-int modify_file(char* file)
+int cfgw_modify_file(char* file)
 {
   xmlDoc *doc = NULL;
   xmlNode *root_element = NULL;

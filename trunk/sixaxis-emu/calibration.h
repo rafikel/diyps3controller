@@ -8,7 +8,10 @@
 #ifndef CALIBRATION_H_
 #define CALIBRATION_H_
 
-void calibration_button(int, int);
-void calibration_key(int, int, int);
+void cal_button(int, int);
+void cal_key(int, int, int);
+s_mouse_cal* cal_get_mouse(int, int);
+int cal_skip_event(SDL_Event*);
+void cal_init();
 
 #endif /* CALIBRATION_H_ */

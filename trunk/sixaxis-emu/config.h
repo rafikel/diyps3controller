@@ -22,6 +22,8 @@
 #define MAX_DEVICES 256
 #define MAX_CONTROLS 256
 
+#define MAX_BUFFERSIZE 256
+
 #define X_NODE_ROOT "root"
 #define X_NODE_CONTROLLER "controller"
 #define X_NODE_CONFIGURATION "configuration"
@@ -107,8 +109,10 @@ typedef struct
 {
   int change;
   int changed;
-  double merge_x;
-  double merge_y;
+  double merge_x[MAX_BUFFERSIZE];
+  double merge_y[MAX_BUFFERSIZE];
+  int merge_x_index;
+  int merge_y_index;
   double residue_x;
   double residue_y;
   int postpone_wheel_up;
@@ -179,10 +183,21 @@ typedef struct
   double value;
 }s_intensity;
 
-void trigger_lookup(SDL_Event*);
-void config_activation();
-void intensity_lookup(SDL_Event*);
-void process_event(SDL_Event*);
-int get_device_id(SDL_Event*);
+void cfg_trigger_lookup(SDL_Event*);
+void cfg_config_activation();
+void cfg_intensity_lookup(SDL_Event*);
+void cfg_process_event(SDL_Event*);
+s_mouse_control* cfg_get_mouse_control(int);
+int cfg_is_joystick_used(int);
+void cfg_process_motion_event(SDL_Event*);
+void cfg_process_motion();
+s_trigger* cfg_get_trigger(int, int);
+s_intensity* cfg_get_left_intensity(int, int);
+s_intensity* cfg_get_right_intensity(int, int);
+s_mapper** cfg_get_joystick_axes(int, int, int);
+s_mapper** cfg_get_joystick_buttons(int, int, int);
+s_mapper** cfg_get_mouse_axes(int, int, int);
+s_mapper** cfg_get_mouse_buttons(int, int, int);
+s_mapper** cfg_get_keyboard_buttons(int, int, int);
 
 #endif /* CONFIG_H_ */

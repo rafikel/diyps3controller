@@ -80,24 +80,13 @@ struct sixaxis_state state[MAX_CONTROLLERS];
 s_controller controller[MAX_CONTROLLERS] =
 { };
 
-extern s_mouse_control mouse_control[MAX_DEVICES];
-extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
-
-extern char* mouseName[MAX_DEVICES];
-extern int mouseVirtualIndex[MAX_DEVICES];
-
 extern int merge_all_devices;
-
-extern e_current_cal current_cal;
-extern int current_mouse;
 
 int main(int argc, char *argv[])
 {
   int grab = 1;
   SDL_Event events[EVENT_BUFFER_SIZE];
   SDL_Event* event;
-  SDL_Event mouse_evt =
-  { };
   int i;
   int num_evt;
   int read = 0;
@@ -269,22 +258,18 @@ int main(int argc, char *argv[])
     {
       if (event->type != SDL_MOUSEMOTION)
       {
-        //if calibration is on, all mouse wheel events are skipped
-        if (current_cal == NONE || event->type != SDL_MOUSEBUTTONDOWN
-            || (event->button.button != SDL_BUTTON_WHEELDOWN && event->button.button != SDL_BUTTON_WHEELUP))
+        if (!cal_skip_event(event))
         {
-          process_event(event);
+          cfg_process_event(event);
         }
       }
       else
       {
-        mouse_control[get_device_id(event)].merge_x += event->motion.xrel;
-        mouse_control[get_device_id(event)].merge_y += event->motion.yrel;
-        mouse_control[get_device_id(event)].change = 1;
+        cfg_process_motion_event(event);
       }
 
-      trigger_lookup(event);
-      intensity_lookup(event);
+      cfg_trigger_lookup(event);
+      cfg_intensity_lookup(event);
 
       switch (event->type)
       {
@@ -292,7 +277,7 @@ int main(int argc, char *argv[])
           done = 1;
           break;
         case SDL_KEYDOWN:
-          calibration_key(event->key.which, event->key.keysym.sym, 1);
+          cal_key(event->key.which, event->key.keysym.sym, 1);
           macro_lookup(event->key.which, event->key.keysym.sym);
           if(event->key.keysym.sym == SDLK_ESCAPE)
           {
@@ -300,52 +285,17 @@ int main(int argc, char *argv[])
           }
           break;
         case SDL_KEYUP:
-          calibration_key(event->key.which, event->key.keysym.sym, 0);
+          cal_key(event->key.which, event->key.keysym.sym, 0);
           break;
         case SDL_MOUSEBUTTONDOWN:
-          calibration_button(event->button.which, event->button.button);
+          cal_button(event->button.which, event->button.button);
           break;
       }
     }
 
-    config_activation();
+    cfg_process_motion();
 
-    /*
-     * Process a single (merged) motion event for each mouse.
-     */
-    for (i = 0; i < MAX_DEVICES; ++i)
-    {
-      if (mouse_control[i].changed || mouse_control[i].change)
-      {
-        if (subpos)
-        {
-          /*
-           * Add the residual motion vector from the last iteration.
-           */
-          mouse_control[i].merge_x += mouse_control[i].residue_x;
-          mouse_control[i].merge_y += mouse_control[i].residue_y;
-          /*
-           * If no motion was received this iteration, the residual motion vector from the last iteration is reset.
-           */
-          if (!mouse_control[i].change)
-          {
-            mouse_control[i].residue_x = 0;
-            mouse_control[i].residue_y = 0;
-          }
-        }
-        mouse_evt.motion.which = i;
-        mouse_evt.type = SDL_MOUSEMOTION;
-        process_event(&mouse_evt);
-      }
-      mouse_control[i].merge_x = 0;
-      mouse_control[i].merge_y = 0;
-      mouse_control[i].changed = mouse_control[i].change;
-      mouse_control[i].change = 0;
-      if (i == current_mouse && (current_cal == DZX || current_cal == DZY || current_cal == DZS))
-      {
-        mouse_control[i].changed = 0;
-      }
-    }
+    cfg_config_activation();
 
 #ifndef WIN32
     if(serial)
