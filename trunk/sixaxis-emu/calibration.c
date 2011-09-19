@@ -17,6 +17,7 @@
 
 #define DEFAULT_MULTIPLIER_STEP 0.01
 #define EXPONENT_STEP 0.01
+#define DURATION 1000000 //1s
 
 extern int refresh;
 extern int mean_axis_value;
@@ -43,14 +44,19 @@ static int test_time = 1000;
  */
 s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS] = {};
 
-#define DURATION 1000000 //1s
+int mouse_controller[MAX_DEVICES];
+
+inline int cal_get_controller(int controller)
+{
+  return mouse_controller[controller];
+}
 
 void cal_init()
 {
   memset(mouse_cal, 0x00, sizeof(mouse_cal));
 }
 
-s_mouse_cal* cal_get_mouse(int mouse, int conf)
+inline s_mouse_cal* cal_get_mouse(int mouse, int conf)
 {
   return &(mouse_cal[mouse][conf]);
 }
@@ -368,8 +374,8 @@ void cal_key(int device_id, int sym, int down)
         {
           printf("calibrating dead zone x\n");
           current_cal = DZX;
-          mc->merge_x[mc->merge_x_index] = 1;
-          mc->merge_y[mc->merge_y_index] = 0;
+          mc->merge_x[mc->index] = 1;
+          mc->merge_y[mc->index] = 0;
           mc->change = 1;
         }
       }
@@ -381,8 +387,8 @@ void cal_key(int device_id, int sym, int down)
         {
           printf("calibrating dead zone y\n");
           current_cal = DZY;
-          mc->merge_x[mc->merge_x_index] = 0;
-          mc->merge_y[mc->merge_y_index] = 1;
+          mc->merge_x[mc->index] = 0;
+          mc->merge_y[mc->index] = 1;
           mc->change = 1;
         }
       }
@@ -394,8 +400,8 @@ void cal_key(int device_id, int sym, int down)
         {
           printf("calibrating dead zone shape\n");
           current_cal = DZS;
-          mc->merge_x[mc->merge_x_index] = 1;
-          mc->merge_y[mc->merge_y_index] = 1;
+          mc->merge_x[mc->index] = 1;
+          mc->merge_y[mc->index] = 1;
           mc->change = 1;
         }
       }
@@ -525,8 +531,8 @@ void cal_button(int which, int button)
             {
               *mcal->dzx = mean_axis_value;
             }
-            mc->merge_x[mc->merge_x_index] = 1;
-            mc->merge_y[mc->merge_y_index] = 0;
+            mc->merge_x[mc->index] = 1;
+            mc->merge_y[mc->index] = 0;
             mc->change = 1;
           }
           break;
@@ -538,8 +544,8 @@ void cal_button(int which, int button)
             {
               *mcal->dzy = mean_axis_value;
             }
-            mc->merge_x[mc->merge_x_index] = 0;
-            mc->merge_y[mc->merge_y_index] = 1;
+            mc->merge_x[mc->index] = 0;
+            mc->merge_y[mc->index] = 1;
             mc->change = 1;
           }
           break;
@@ -554,8 +560,8 @@ void cal_button(int which, int button)
             {
               *mcal->dzs = E_SHAPE_CIRCLE;
             }
-            mc->merge_x[mc->merge_x_index] = 1;
-            mc->merge_y[mc->merge_y_index] = 1;
+            mc->merge_x[mc->index] = 1;
+            mc->merge_y[mc->index] = 1;
             mc->change = 1;
           }
           break;
@@ -620,8 +626,8 @@ void cal_button(int which, int button)
             {
               *mcal->dzx = 0;
             }
-            mc->merge_x[mc->merge_x_index] = -1;
-            mc->merge_y[mc->merge_y_index] = 0;
+            mc->merge_x[mc->index] = -1;
+            mc->merge_y[mc->index] = 0;
             mc->change = 1;
           }
           break;
@@ -633,8 +639,8 @@ void cal_button(int which, int button)
             {
               *mcal->dzy = 0;
             }
-            mc->merge_x[mc->merge_x_index] = 0;
-            mc->merge_y[mc->merge_y_index] = -1;
+            mc->merge_x[mc->index] = 0;
+            mc->merge_y[mc->index] = -1;
             mc->change = 1;
           }
           break;
@@ -649,8 +655,8 @@ void cal_button(int which, int button)
             {
               *mcal->dzs = E_SHAPE_CIRCLE;
             }
-            mc->merge_x[mc->merge_x_index] = -1;
-            mc->merge_y[mc->merge_y_index] = -1;
+            mc->merge_x[mc->index] = -1;
+            mc->merge_y[mc->index] = -1;
             mc->change = 1;
           }
           break;

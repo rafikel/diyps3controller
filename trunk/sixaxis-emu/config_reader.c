@@ -42,7 +42,9 @@ static e_shape r_shape;
 static e_device_type r_device_type;
 static int r_device_id;
 static char r_device_name[128];
-static int r_config_dpi[MAX_CONTROLLERS];
+static unsigned int r_config_dpi[MAX_CONTROLLERS];
+static unsigned int r_buffer_size;
+static double r_filter;
 
 /*
  * Get the device name and store it into r_device_name.
@@ -343,6 +345,10 @@ static int ProcessEventElement(xmlNode * a_node)
       }
     }
     xmlFree(shape);
+    r_buffer_size = 1;//default value
+    GetUnsignedIntProp(a_node, X_ATTR_BUFFERSIZE, &r_buffer_size);
+    r_filter = 0;//default value
+    GetDoubleProp(a_node, X_ATTR_FILTER, &r_filter);
   }
   else if (!strncmp(type, X_ATTR_VALUE_AXIS_DOWN, strlen(X_ATTR_VALUE_AXIS_DOWN)))
   {
@@ -525,6 +531,8 @@ static int ProcessAxisElement(xmlNode * a_node)
           p_mapper->multiplier = r_multiplier;
           p_mapper->exponent = r_exponent;
           p_mapper->shape = r_shape;
+          p_mapper->buffer_size = r_buffer_size;
+          p_mapper->filter = r_filter;
           break;
         default:
           break;
@@ -1008,7 +1016,7 @@ static int ProcessControllerElement(xmlNode * a_node)
   if(ret != -1)
   {
     /* optional */
-    GetIntProp(a_node, X_ATTR_DPI, r_config_dpi+r_controller_id);
+    GetUnsignedIntProp(a_node, X_ATTR_DPI, r_config_dpi+r_controller_id);
   }
 
   for (cur_node = a_node->children; cur_node && ret != -1; cur_node = cur_node->next)
@@ -1113,6 +1121,8 @@ static int read_file(char* file_path)
   return ret;
 }
 
+extern int mouse_controller[MAX_DEVICES];
+
 extern int current_mouse;
 
 static void read_calibration()
@@ -1121,12 +1131,14 @@ static void read_calibration()
   s_mapper** pp_mapper;
   s_mapper* p_mapper;
   s_mouse_cal* mcal;
+  int found;
 
   current_mouse = -1;
 
   for(i=0; i<MAX_DEVICES; ++i)
   {
-    for(j=0; j<MAX_CONTROLLERS; ++j)
+    found = 0;
+    for(j=0; j<MAX_CONTROLLERS && !found; ++j)
     {
       for(k=0; k<MAX_CONFIGURATIONS; ++k)
       {
@@ -1140,18 +1152,26 @@ static void read_calibration()
           }
           if(p_mapper->axis == 0)
           {
+            found = 1;
+            mouse_controller[i] = j;
             mcal->mx = &p_mapper->multiplier;
             mcal->ex = &p_mapper->exponent;
             mcal->dzx = &p_mapper->dead_zone;
             mcal->dzs = &p_mapper->shape;
             mcal->rd = DEFAULT_RADIUS;
             mcal->dpi = r_config_dpi[j];
+            mcal->bsx = &p_mapper->buffer_size;
+            mcal->fix = &p_mapper->filter;
           }
           else
           {
+            found = 1;
+            mouse_controller[i] = j;
             mcal->my = &p_mapper->multiplier;
             mcal->ey = &p_mapper->exponent;
             mcal->dzy = &p_mapper->dead_zone;
+            mcal->bsy = &p_mapper->buffer_size;
+            mcal->fiy = &p_mapper->filter;
           }
         }
       }

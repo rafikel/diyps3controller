@@ -9,17 +9,14 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include "sdl_tools.h"
+#include "calibration.h"
 
 extern struct sixaxis_state state[MAX_CONTROLLERS];
 extern s_controller controller[MAX_CONTROLLERS];
 extern int display;
 
-extern int joystickNbButton[255];
-extern int joystickSixaxis[MAX_DEVICES];
-
 extern int current_mouse;
 extern e_current_cal current_cal;
-extern s_mouse_cal mouse_cal[MAX_DEVICES][MAX_CONFIGURATIONS];
 
 extern double axis_scale;
 extern double frequency_scale;
@@ -48,73 +45,73 @@ static int previous_config[MAX_CONTROLLERS];
 /*
  * This lists config triggers for all controllers.
  */
-s_trigger triggers[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_trigger triggers[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
  * This lists controller stick intensity modifiers.
  */
-s_intensity left_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-s_intensity right_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_intensity left_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_intensity right_intensity[MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
  * This lists controls of each controller configuration for all keyboards.
  */
-s_mapper* keyboard_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_mapper* keyboard_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
  * This lists controls of each controller configuration for all mice.
  */
-s_mapper* mouse_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_mapper* mouse_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
-s_mapper* mouse_axes[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_mapper* mouse_axes[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
 /*
  * Used to tweak mouse controls.
  */
-s_mouse_control mouse_control[MAX_DEVICES] = {};
+static s_mouse_control mouse_control[MAX_DEVICES] = {};
 
 /*
  * This lists controls of each controller configuration for all joysticks.
  */
-s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
-s_mapper* joystick_axes[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_mapper* joystick_buttons[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
+static s_mapper* joystick_axes[MAX_DEVICES][MAX_CONTROLLERS][MAX_CONFIGURATIONS];
 
-s_mapper** cfg_get_joystick_axes(int device, int controller, int config)
+inline s_mapper** cfg_get_joystick_axes(int device, int controller, int config)
 {
   return &(joystick_axes[device][controller][config]);
 }
 
-s_mapper** cfg_get_joystick_buttons(int device, int controller, int config)
+inline s_mapper** cfg_get_joystick_buttons(int device, int controller, int config)
 {
   return &(joystick_buttons[device][controller][config]);
 }
 
-s_mapper** cfg_get_mouse_axes(int device, int controller, int config)
+inline s_mapper** cfg_get_mouse_axes(int device, int controller, int config)
 {
   return &(mouse_axes[device][controller][config]);
 }
 
-s_mapper** cfg_get_mouse_buttons(int device, int controller, int config)
+inline s_mapper** cfg_get_mouse_buttons(int device, int controller, int config)
 {
   return &(mouse_buttons[device][controller][config]);
 }
 
-s_mapper** cfg_get_keyboard_buttons(int device, int controller, int config)
+inline s_mapper** cfg_get_keyboard_buttons(int device, int controller, int config)
 {
   return &(keyboard_buttons[device][controller][config]);
 }
 
-s_trigger* cfg_get_trigger(int controller, int config)
+inline s_trigger* cfg_get_trigger(int controller, int config)
 {
   return &(triggers[controller][config]);
 }
 
-s_intensity* cfg_get_left_intensity(int controller, int config)
+inline s_intensity* cfg_get_left_intensity(int controller, int config)
 {
   return &(left_intensity[controller][config]);
 }
 
-s_intensity* cfg_get_right_intensity(int controller, int config)
+inline s_intensity* cfg_get_right_intensity(int controller, int config)
 {
   return &(right_intensity[controller][config]);
 }
@@ -137,7 +134,7 @@ int cfg_is_joystick_used(int id)
   return used;
 }
 
-s_mouse_control* cfg_get_mouse_control(int id)
+inline s_mouse_control* cfg_get_mouse_control(int id)
 {
   if(id >= 0)
   {
@@ -151,16 +148,22 @@ void cfg_process_motion_event(SDL_Event* event)
   s_mouse_control* mc = cfg_get_mouse_control(sdl_get_device_id(event));
   if(mc)
   {
-    mc->merge_x[mc->merge_x_index] += event->motion.xrel;
-    mc->merge_y[mc->merge_y_index] += event->motion.yrel;
+    mc->merge_x[mc->index] += event->motion.xrel;
+    mc->merge_y[mc->index] += event->motion.yrel;
     mc->change = 1;
   }
 }
 
+#define MOTION_NB 1
+#define RATIO 1
+int weight;
+int divider;
+
 void cfg_process_motion()
 {
-  int i;
+  int i, j, k;
   s_mouse_control* mc;
+  s_mouse_cal* mcal;
   SDL_Event mouse_evt = { };
   /*
    * Process a single (merged) motion event for each mouse.
@@ -168,6 +171,7 @@ void cfg_process_motion()
   for (i = 0; i < MAX_DEVICES; ++i)
   {
     mc = cfg_get_mouse_control(i);
+    mcal = cal_get_mouse(i, current_config[cal_get_controller(i)]);
     if (mc->changed || mc->change)
     {
       if (subpos)
@@ -175,8 +179,8 @@ void cfg_process_motion()
         /*
          * Add the residual motion vector from the last iteration.
          */
-        mc->merge_x[mc->merge_x_index++] += mc->residue_x;
-        mc->merge_y[mc->merge_y_index++] += mc->residue_y;
+        mc->merge_x[mc->index] += mc->residue_x;
+        mc->merge_y[mc->index] += mc->residue_y;
         /*
          * If no motion was received this iteration, the residual motion vector from the last iteration is reset.
          */
@@ -186,12 +190,53 @@ void cfg_process_motion()
           mc->residue_y = 0;
         }
       }
+
+      if(mcal->bsx)
+      {
+        mc->x = 0;
+        weight = 1;
+        divider = 0;
+        for(j=0; j<*mcal->bsx; ++j)
+        {
+          k = mc->index - j;
+          if (k < 0)
+          {
+            k += MAX_BUFFERSIZE;
+          }
+          mc->x += (mc->merge_x[k]*weight);
+          divider += weight;
+          weight *= *mcal->fix;
+        }
+        mc->x /= divider;
+      }
+
+      if(mcal->bsy)
+      {
+        mc->y = 0;
+        weight = 1;
+        divider = 0;
+        for(j=0; j<*mcal->bsy; ++j)
+        {
+          k = mc->index - j;
+          if (k < 0)
+          {
+            k += MAX_BUFFERSIZE;
+          }
+          mc->y += (mc->merge_y[k]*weight);
+          divider += weight;
+          weight *= *mcal->fiy;
+        }
+        mc->y /= divider;
+      }
+
       mouse_evt.motion.which = i;
       mouse_evt.type = SDL_MOUSEMOTION;
       cfg_process_event(&mouse_evt);
     }
-    mc->merge_x[mc->merge_x_index] = 0;
-    mc->merge_y[mc->merge_y_index] = 0;
+    mc->index++;
+    mc->index %= MAX_BUFFERSIZE;
+    mc->merge_x[mc->index] = 0;
+    mc->merge_y[mc->index] = 0;
     mc->changed = mc->change;
     mc->change = 0;
     if (i == current_mouse && (current_cal == DZX || current_cal == DZY || current_cal == DZS))
@@ -665,6 +710,7 @@ void cfg_process_event(SDL_Event* event)
   double my;
   double residue;
   s_mouse_control* mc;
+  int nb_buttons;
 
   /*
    * 'which' should always be at that place
@@ -682,52 +728,53 @@ void cfg_process_event(SDL_Event* event)
     {
       case SDL_JOYHATMOTION:
       event_jb.jbutton.which = event->jhat.which;
+      nb_buttons = sdl_get_joystick_buttons(event->jhat.which);
       if(event->jhat.value & SDL_HAT_UP)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat;
         cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat;
         cfg_process_event(&event_jb);
       }
       if(event->jhat.value & SDL_HAT_RIGHT)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+1;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat+1;
         cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+1;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat+1;
         cfg_process_event(&event_jb);
       }
       if(event->jhat.value & SDL_HAT_DOWN)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+2;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat+2;
         cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+2;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat+2;
         cfg_process_event(&event_jb);
       }
       if(event->jhat.value & SDL_HAT_LEFT)
       {
         event_jb.jbutton.type = SDL_JOYBUTTONDOWN;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+3;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat+3;
         cfg_process_event(&event_jb);
       }
       else
       {
         event_jb.jbutton.type = SDL_JOYBUTTONUP;
-        event_jb.jbutton.button=joystickNbButton[event->jhat.which]+4*event->jhat.hat+3;
+        event_jb.jbutton.button=nb_buttons+4*event->jhat.hat+3;
         cfg_process_event(&event_jb);
       }
       break;
@@ -739,7 +786,7 @@ void cfg_process_event(SDL_Event* event)
       }
       break;
       case SDL_JOYAXISMOTION:
-      if(joystickSixaxis[device] && event->jaxis.axis > 3)
+      if(sdl_is_sixaxis(device) && event->jaxis.axis > 3)
       {
         event->jaxis.value = (event->jaxis.value + 32767) / 2;
       }
@@ -1117,8 +1164,8 @@ void cfg_process_event(SDL_Event* event)
           mc = mouse_control + device;
           if(mc->change)
           {
-            mx = mc->merge_x[mc->merge_x_index];
-            my = mc->merge_y[mc->merge_y_index];
+            mx = mc->x;
+            my = mc->y;
           }
           else
           {

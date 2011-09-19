@@ -17,12 +17,14 @@ void sdl_release_unused();
 void sdl_quit();
 void sdl_free_mk();
 
-char* sdl_get_mouse_name(int);
-char* sdl_get_keyboard_name(int);
-int sdl_get_mouse_virtual_id(int);
-int sdl_get_keyboard_virtual_id(int);
-int sdl_get_device_id(SDL_Event*);
-char* sdl_get_joystick_name(int);
-int sdl_get_joystick_virtual_id(int);
+inline char* sdl_get_mouse_name(int);
+inline char* sdl_get_keyboard_name(int);
+inline int sdl_get_mouse_virtual_id(int);
+inline int sdl_get_keyboard_virtual_id(int);
+inline int sdl_get_device_id(SDL_Event*);
+inline char* sdl_get_joystick_name(int);
+inline int sdl_get_joystick_virtual_id(int);
+inline int sdl_get_joystick_buttons(int);
+int sdl_is_sixaxis(int);
 
 #endif /* SDL_TOOLS_H_ */

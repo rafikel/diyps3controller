@@ -10,8 +10,9 @@
 
 void cal_button(int, int);
 void cal_key(int, int, int);
-s_mouse_cal* cal_get_mouse(int, int);
+inline s_mouse_cal* cal_get_mouse(int, int);
 int cal_skip_event(SDL_Event*);
 void cal_init();
+inline int cal_get_controller(int);
 
 #endif /* CALIBRATION_H_ */

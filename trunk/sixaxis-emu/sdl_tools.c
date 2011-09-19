@@ -146,7 +146,7 @@ int sdl_initialize()
  */
 void sdl_release_unused()
 {
-  int i, j, k;
+  int i;
   int none = 1;
   for(i=0; i<MAX_DEVICES && joystickName[i]; ++i)
   {
@@ -239,7 +239,7 @@ void sdl_quit()
 #endif
 }
 
-char* sdl_get_mouse_name(int id)
+inline char* sdl_get_mouse_name(int id)
 {
   if(id >= 0)
   {
@@ -248,7 +248,7 @@ char* sdl_get_mouse_name(int id)
   return NULL;
 }
 
-char* sdl_get_keyboard_name(int id)
+inline char* sdl_get_keyboard_name(int id)
 {
   if(id >= 0)
   {
@@ -257,7 +257,7 @@ char* sdl_get_keyboard_name(int id)
   return NULL;
 }
 
-char* sdl_get_joystick_name(int id)
+inline char* sdl_get_joystick_name(int id)
 {
   if(id >= 0)
   {
@@ -266,7 +266,7 @@ char* sdl_get_joystick_name(int id)
   return NULL;
 }
 
-int sdl_get_joystick_virtual_id(int id)
+inline int sdl_get_joystick_virtual_id(int id)
 {
   if(id >= 0)
   {
@@ -275,7 +275,7 @@ int sdl_get_joystick_virtual_id(int id)
   return 0;
 }
 
-int sdl_get_mouse_virtual_id(int id)
+inline int sdl_get_mouse_virtual_id(int id)
 {
   if(id >= 0)
   {
@@ -284,7 +284,7 @@ int sdl_get_mouse_virtual_id(int id)
   return 0;
 }
 
-int sdl_get_keyboard_virtual_id(int id)
+inline int sdl_get_keyboard_virtual_id(int id)
 {
   if(id >= 0)
   {
@@ -293,10 +293,28 @@ int sdl_get_keyboard_virtual_id(int id)
   return 0;
 }
 
+inline int sdl_get_joystick_buttons(int id)
+{
+  if(id >= 0)
+  {
+    return joystickNbButton[id];
+  }
+  return 0;
+}
+
+inline int sdl_is_sixaxis(int id)
+{
+  if(id >= 0)
+  {
+    return joystickSixaxis[id];
+  }
+  return 0;
+}
+
 /*
  * Returns the device id of a given event.
  */
-int sdl_get_device_id(SDL_Event* e)
+inline int sdl_get_device_id(SDL_Event* e)
 {
   unsigned int device_id = ((SDL_KeyboardEvent*)e)->which;
 

@@ -49,6 +49,8 @@
 #define X_ATTR_MULTIPLIER "multiplier"
 #define X_ATTR_EXPONENT "exponent"
 #define X_ATTR_SHAPE "shape"
+#define X_ATTR_BUFFERSIZE "buffer_size"
+#define X_ATTR_FILTER "filter"
 #define X_ATTR_SWITCH_BACK "switch_back"
 #define X_ATTR_DELAY "delay"
 #define X_ATTR_STEPS "steps"
@@ -111,8 +113,9 @@ typedef struct
   int changed;
   double merge_x[MAX_BUFFERSIZE];
   double merge_y[MAX_BUFFERSIZE];
-  int merge_x_index;
-  int merge_y_index;
+  int index;
+  double x;
+  double y;
   double residue_x;
   double residue_y;
   int postpone_wheel_up;
@@ -131,6 +134,10 @@ typedef struct
   int* dzx;
   int* dzy;
   e_shape* dzs;
+  unsigned int* bsx;
+  double* fix;
+  unsigned int* bsy;
+  double* fiy;
   int dpi;
 }s_mouse_cal;
 
@@ -138,7 +145,7 @@ typedef struct
 {
   int change;
   int send_command;
-  int ts_axis[TS_MAX][TS_AXIS_MAX][2];
+  int ts_axis[TS_MAX][TS_AXIS_MAX][2]; //issue 15
 } s_controller;
 
 typedef struct
@@ -152,6 +159,8 @@ typedef struct
   double exponent;
   e_shape shape;
   int dead_zone;
+  unsigned int buffer_size;
+  double filter;
 
   int controller_button;
   int controller_button_axis;
@@ -187,17 +196,17 @@ void cfg_trigger_lookup(SDL_Event*);
 void cfg_config_activation();
 void cfg_intensity_lookup(SDL_Event*);
 void cfg_process_event(SDL_Event*);
-s_mouse_control* cfg_get_mouse_control(int);
+inline s_mouse_control* cfg_get_mouse_control(int);
 int cfg_is_joystick_used(int);
 void cfg_process_motion_event(SDL_Event*);
 void cfg_process_motion();
-s_trigger* cfg_get_trigger(int, int);
-s_intensity* cfg_get_left_intensity(int, int);
-s_intensity* cfg_get_right_intensity(int, int);
-s_mapper** cfg_get_joystick_axes(int, int, int);
-s_mapper** cfg_get_joystick_buttons(int, int, int);
-s_mapper** cfg_get_mouse_axes(int, int, int);
-s_mapper** cfg_get_mouse_buttons(int, int, int);
-s_mapper** cfg_get_keyboard_buttons(int, int, int);
+inline s_trigger* cfg_get_trigger(int, int);
+inline s_intensity* cfg_get_left_intensity(int, int);
+inline s_intensity* cfg_get_right_intensity(int, int);
+inline s_mapper** cfg_get_joystick_axes(int, int, int);
+inline s_mapper** cfg_get_joystick_buttons(int, int, int);
+inline s_mapper** cfg_get_mouse_axes(int, int, int);
+inline s_mapper** cfg_get_mouse_buttons(int, int, int);
+inline s_mapper** cfg_get_keyboard_buttons(int, int, int);
 
 #endif /* CONFIG_H_ */
