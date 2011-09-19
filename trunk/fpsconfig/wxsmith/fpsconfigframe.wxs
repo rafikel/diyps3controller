@@ -116,42 +116,54 @@
 				<pos>312,352</pos>
 				<size>50,-1</size>
 				<tooltip>Sensitivity</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="TextCtrl4" member="yes">
 				<value>1.00</value>
 				<pos>312,320</pos>
 				<size>50,-1</size>
 				<tooltip>Sensitivity</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL26" variable="TextCtrl26" member="yes">
 				<value>1.00</value>
 				<pos>380,352</pos>
 				<size>40,-1</size>
 				<tooltip>Acceleration</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TextCtrl2" member="yes">
 				<value>0.00</value>
 				<pos>550,320</pos>
 				<size>40,27</size>
 				<tooltip>Filter</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="TextCtrl3" member="yes">
 				<value>0.00</value>
 				<pos>550,352</pos>
 				<size>40,27</size>
 				<tooltip>Filter</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL22" variable="TextCtrl22" member="yes">
 				<value>1.00</value>
 				<pos>380,320</pos>
 				<size>40,27</size>
 				<tooltip>Acceleration</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
 				<label>primary</label>
@@ -371,14 +383,18 @@
 				<pos>438,320</pos>
 				<size>50,27</size>
 				<tooltip>x/y ratio</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxTextCtrl" name="ID_TEXTCTRL25" variable="TextCtrl25" member="yes">
 				<value>1.00</value>
 				<pos>438,352</pos>
 				<size>50,-1</size>
 				<tooltip>x/y ratio</tooltip>
+				<style>wxTE_PROCESS_ENTER</style>
 				<handler function="OnTextCtrlText" entry="EVT_TEXT" />
+				<handler function="OnTextCtrlText" entry="EVT_TEXT_ENTER" />
 			</object>
 			<object class="wxSpinCtrl" name="ID_SPINCTRL9" variable="SpinCtrl9" member="yes">
 				<value>0</value>
@@ -408,14 +424,17 @@
 				<label>&amp;File</label>
 				<object class="wxMenuItem" name="ID_MENUITEM1" variable="MenuItem3" member="yes">
 					<label>New</label>
+					<accel>Ctrl+N</accel>
 					<handler function="OnMenuNew" entry="EVT_MENU" />
 				</object>
 				<object class="wxMenuItem" name="ID_MENUITEM4" variable="MenuItem6" member="yes">
 					<label>Open</label>
+					<accel>Ctrl+O</accel>
 					<handler function="OnMenuOpen" entry="EVT_MENU" />
 				</object>
 				<object class="wxMenuItem" name="ID_MENUITEM2" variable="MenuItem4" member="yes">
 					<label>Save</label>
+					<accel>Ctrl+S</accel>
 					<enabled>0</enabled>
 					<handler function="OnMenuSave" entry="EVT_MENU" />
 				</object>

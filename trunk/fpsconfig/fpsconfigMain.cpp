@@ -176,7 +176,7 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     wxMenu* Menu1;
     wxMenuBar* MenuBar1;
     wxMenu* Menu2;
-    
+
     Create(parent, wxID_ANY, _("Gimx-fpsconfig"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetClientSize(wxSize(620,430));
     SetBackgroundColour(wxColour(255,255,255));
@@ -213,17 +213,17 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     SpinCtrl2 = new wxSpinCtrl(Panel1, ID_SPINCTRL2, _T("20"), wxPoint(184,352), wxSize(44,-1), 0, 0, 64, 20, _T("ID_SPINCTRL2"));
     SpinCtrl2->SetValue(_T("20"));
     SpinCtrl2->SetToolTip(_("Dead zone"));
-    TextCtrl24 = new wxTextCtrl(Panel1, ID_TEXTCTRL24, _("1.00"), wxPoint(312,352), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL24"));
+    TextCtrl24 = new wxTextCtrl(Panel1, ID_TEXTCTRL24, _("1.00"), wxPoint(312,352), wxSize(50,-1), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL24"));
     TextCtrl24->SetToolTip(_("Sensitivity"));
-    TextCtrl4 = new wxTextCtrl(Panel1, ID_TEXTCTRL4, _("1.00"), wxPoint(312,320), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL4"));
+    TextCtrl4 = new wxTextCtrl(Panel1, ID_TEXTCTRL4, _("1.00"), wxPoint(312,320), wxSize(50,-1), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL4"));
     TextCtrl4->SetToolTip(_("Sensitivity"));
-    TextCtrl26 = new wxTextCtrl(Panel1, ID_TEXTCTRL26, _("1.00"), wxPoint(380,352), wxSize(40,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL26"));
+    TextCtrl26 = new wxTextCtrl(Panel1, ID_TEXTCTRL26, _("1.00"), wxPoint(380,352), wxSize(40,-1), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL26"));
     TextCtrl26->SetToolTip(_("Acceleration"));
-    TextCtrl2 = new wxTextCtrl(Panel1, ID_TEXTCTRL2, _("0.00"), wxPoint(550,320), wxSize(40,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+    TextCtrl2 = new wxTextCtrl(Panel1, ID_TEXTCTRL2, _("0.00"), wxPoint(550,320), wxSize(40,27), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL2"));
     TextCtrl2->SetToolTip(_("Filter"));
-    TextCtrl3 = new wxTextCtrl(Panel1, ID_TEXTCTRL3, _("0.00"), wxPoint(550,352), wxSize(40,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
+    TextCtrl3 = new wxTextCtrl(Panel1, ID_TEXTCTRL3, _("0.00"), wxPoint(550,352), wxSize(40,27), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL3"));
     TextCtrl3->SetToolTip(_("Filter"));
-    TextCtrl22 = new wxTextCtrl(Panel1, ID_TEXTCTRL22, _("1.00"), wxPoint(380,320), wxSize(40,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL22"));
+    TextCtrl22 = new wxTextCtrl(Panel1, ID_TEXTCTRL22, _("1.00"), wxPoint(380,320), wxSize(40,27), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL22"));
     TextCtrl22->SetToolTip(_("Acceleration"));
     StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("primary"), wxPoint(120,328), wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     StaticText7 = new wxStaticText(Panel1, ID_STATICTEXT7, _("Shape"), wxPoint(246,296), wxDefaultSize, 0, _T("ID_STATICTEXT7"));
@@ -305,9 +305,9 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     Choice1->SetSelection( Choice1->Append(_("Circle")) );
     Choice1->Append(_("Rectangle"));
     Choice1->SetToolTip(_("Dead zone shape"));
-    TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("1.00"), wxPoint(438,320), wxSize(50,27), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    TextCtrl1 = new wxTextCtrl(Panel1, ID_TEXTCTRL1, _("1.00"), wxPoint(438,320), wxSize(50,27), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     TextCtrl1->SetToolTip(_("x/y ratio"));
-    TextCtrl25 = new wxTextCtrl(Panel1, ID_TEXTCTRL25, _("1.00"), wxPoint(438,352), wxSize(50,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL25"));
+    TextCtrl25 = new wxTextCtrl(Panel1, ID_TEXTCTRL25, _("1.00"), wxPoint(438,352), wxSize(50,-1), wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL25"));
     TextCtrl25->SetToolTip(_("x/y ratio"));
     SpinCtrl9 = new wxSpinCtrl(Panel1, ID_SPINCTRL9, _T("0"), wxPoint(24,256), wxSize(64,27), 0, 0, 9900, 0, _T("ID_SPINCTRL9"));
     SpinCtrl9->SetValue(_T("0"));
@@ -320,11 +320,11 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     StaticText9->SetToolTip(_("Mouse smoothing"));
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
-    MenuItem3 = new wxMenuItem(Menu1, ID_MENUITEM1, _("New"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem3 = new wxMenuItem(Menu1, ID_MENUITEM1, _("New\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem3);
-    MenuItem6 = new wxMenuItem(Menu1, ID_MENUITEM4, _("Open"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem6 = new wxMenuItem(Menu1, ID_MENUITEM4, _("Open\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem6);
-    MenuItem4 = new wxMenuItem(Menu1, ID_MENUITEM2, _("Save"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem4 = new wxMenuItem(Menu1, ID_MENUITEM2, _("Save\tCtrl+S"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem4);
     MenuItem4->Enable(false);
     MenuItem5 = new wxMenuItem(Menu1, ID_MENUITEM3, _("Save As"), wxEmptyString, wxITEM_NORMAL);
@@ -344,7 +344,7 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     StatusBar1->SetStatusStyles(1,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
     FileDialog1 = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    
+
     Connect(ID_SPINCTRL8,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL7,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_SPINCTRL6,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
@@ -355,11 +355,17 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     Connect(ID_SPINCTRL3,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnSpinCtrlChange);
     Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_TEXTCTRL24,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL24,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL4,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL4,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL26,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL26,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL22,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL22,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
@@ -381,7 +387,9 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     Connect(ID_BUTTON20,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_BUTTON21,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&fpsconfigFrame::OnButtonClick);
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_TEXTCTRL25,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
+    Connect(ID_TEXTCTRL25,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&fpsconfigFrame::OnTextCtrlText);
     Connect(ID_SPINCTRL9,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&fpsconfigFrame::OnMouseDPIChange);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&fpsconfigFrame::OnMenuNew);
     Connect(ID_MENUITEM4,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&fpsconfigFrame::OnMenuOpen);
@@ -1228,7 +1236,7 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
     text = (wxTextCtrl*)event.GetEventObject();
     str = text->GetValue();
 
-    if(str.IsEmpty())
+    if(str.IsEmpty() && event.GetEventType() != wxEVT_COMMAND_TEXT_ENTER)
     {
         return;
     }
@@ -1262,11 +1270,13 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
             {
                 value = 100;
                 ivalue = value * 100;
+                text->SetValue(_("100.00"));
             }
             else if(value < -100)
             {
                 value = -100;
                 ivalue = value * 100;
+                text->SetValue(_("-100.00"));
             }
             SpinCtrl3->SetValue(ivalue);
             values[0] = value;
@@ -1277,11 +1287,13 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
             {
                 value = 100;
                 ivalue = value * 100;
+                text->SetValue(_("100.00"));
             }
             else if(value < -100)
             {
                 value = -100;
                 ivalue = value * 100;
+                text->SetValue(_("-100.00"));
             }
             SpinCtrl4->SetValue(ivalue);
             values[1] = value;
@@ -1292,11 +1304,13 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
             {
                 value = 2;
                 ivalue = value * 100;
+                text->SetValue(_("2.00"));
             }
             else if(value < 0)
             {
                 value = 0;
                 ivalue = value * 100;
+                text->SetValue(_("0.00"));
             }
             SpinCtrl5->SetValue(ivalue);
             values[2] = value;
@@ -1307,11 +1321,13 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
             {
                 value = 2;
                 ivalue = value * 100;
+                text->SetValue(_("2.00"));
             }
             else if(value < 0)
             {
                 value = 0;
                 ivalue = value * 100;
+                text->SetValue(_("0.00"));
             }
             SpinCtrl6->SetValue(ivalue);
             values[3] = value;
@@ -1332,11 +1348,13 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
             {
                 value = 1;
                 ivalue = value * 100;
+                text->SetValue(_("1.00"));
             }
             else if(value < 0)
             {
                 value = 0;
                 ivalue = value * 100;
+                text->SetValue(_("0.00"));
             }
             SpinCtrl10->SetValue(ivalue);
             values[6] = value;
@@ -1347,11 +1365,13 @@ void fpsconfigFrame::OnTextCtrlText(wxCommandEvent& event)
             {
                 value = 1;
                 ivalue = value * 100;
+                text->SetValue(_("1.00"));
             }
             else if(value < 0)
             {
                 value = 0;
                 ivalue = value * 100;
+                text->SetValue(_("0.00"));
             }
             SpinCtrl11->SetValue(ivalue);
             values[7] = value;
