@@ -1,5 +1,4 @@
 #include "event_catcher.h"
-#include <SDL/SDL.h>
 #include <unistd.h>
 
 #define SCREEN_WIDTH  320
@@ -336,10 +335,25 @@ void event_catcher::init()
 #ifndef WIN32
     const char* name;
 #endif
-    SDL_Joystick* joystick;
+    SDL_Surface *screen = NULL;
+
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+    {
+        fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+        return;
+    }
+
+    SDL_WM_SetCaption("Event Catcher", "Event Catcher");
+
+    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_ANYFORMAT);
+    if (screen == NULL)
+    {
+        fprintf(stderr, "Unable to create video surface: %s\n", SDL_GetError());
+        return;
+    }
 
     i = 0;
-    while((joystick = SDL_JoystickOpen(i)))
+    while(i < MAX_DEVICES && (jstick[i] = SDL_JoystickOpen(i)))
     {
         joystickName[i] = wxString(SDL_JoystickName(i), wxConvUTF8);
         if(joystickName[i].StartsWith(_(BT_SIXAXIS_NAME)))
@@ -358,12 +372,16 @@ void event_catcher::init()
         {
           joystickVirtualIndex[i] = 0;
         }
-        joystickNbButton[i] = SDL_JoystickNumButtons(joystick);
+        joystickNbButton[i] = SDL_JoystickNumButtons(jstick[i]);
         if(joystickName[i] == _("Sony PLAYSTATION(R)3 Controller"))
         {
           joystickSixaxis[i] = 1;
         }
         i++;
+    }
+    if(i < MAX_DEVICES)
+    {
+        jstick[i] = NULL;
     }
 #ifndef WIN32
     i = 0;
@@ -385,6 +403,10 @@ void event_catcher::init()
       }
       i++;
     }
+    if(i < MAX_DEVICES)
+    {
+      mouseName[i].Empty();
+    }
 
     i = 0;
     while ((name = SDL_GetKeyboardName(i)))
@@ -405,13 +427,89 @@ void event_catcher::init()
       }
       i++;
     }
+    if(i < MAX_DEVICES)
+    {
+      keyboardName[i].Empty();
+    }
 #endif
+}
+
+void event_catcher::close_devices()
+{
+    int i;
+    for(i=0; i<MAX_DEVICES && jstick[i]; ++i)
+    {
+      SDL_JoystickClose(jstick[i]);
+    }
+}
+
+bool event_catcher::check_device(wxString device_type, wxString device_name, wxString device_id)
+{
+    int i;
+    int nb = 0;
+    if(device_type == _("keyboard"))
+    {
+      for(i=0; i<MAX_DEVICES && !keyboardName[i].IsEmpty(); ++i)
+      {
+        if(keyboardName[i] == device_name)
+        {
+          if(nb == wxAtoi(device_id))
+          {
+            return true;
+          }
+          else
+          {
+            nb++;
+          }
+        }
+      }
+    }
+    else if(device_type == _("mouse"))
+    {
+      for(i=0; i<MAX_DEVICES && !mouseName[i].IsEmpty(); ++i)
+      {
+        if(mouseName[i] == device_name)
+        {
+          if(nb == wxAtoi(device_id))
+          {
+            return true;
+          }
+          else
+          {
+            nb++;
+          }
+        }
+      }
+    }
+    else if(device_type == _("joystick"))
+    {
+      for(i=0; i<MAX_DEVICES && jstick[i]; ++i)
+      {
+        if(joystickName[i] == device_name)
+        {
+          if(nb == wxAtoi(device_id))
+          {
+            return true;
+          }
+          else
+          {
+            nb++;
+          }
+        }
+      }
+    }
+    return false;
+}
+
+void event_catcher::clean()
+{
+    close_devices();
+    SDL_Quit();
 }
 
 void event_catcher::run(wxString device_type, wxString event_type)
 {
     done = 0;
-    SDL_Surface *screen = NULL;
     SDL_Event events[EVENT_BUFFER_SIZE];
     SDL_Event* event;
     int num_evt;
@@ -423,28 +521,13 @@ void event_catcher::run(wxString device_type, wxString event_type)
     m_EventType = wxEmptyString;
     m_EventId = wxEmptyString;
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
-    {
-        fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
-        return;
-    }
-
-    SDL_WM_SetCaption("Event Catcher", "Event Catcher");
-
-    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWSURFACE | SDL_ANYFORMAT);
-    if (screen == NULL)
-    {
-        fprintf(stderr, "Unable to create video surface: %s\n", SDL_GetError());
-        return;
-    }
+    init();
 
     sleep(1);
 
     SDL_WM_GrabInput(SDL_GRAB_ON);
 
     SDL_ShowCursor(SDL_DISABLE);
-
-    init();
 
     done = 0;
 
@@ -664,5 +747,5 @@ void event_catcher::run(wxString device_type, wxString event_type)
         usleep(10000);
     }
 
-    SDL_Quit();
+    clean();
 }

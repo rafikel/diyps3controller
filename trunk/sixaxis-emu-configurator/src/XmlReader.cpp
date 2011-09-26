@@ -2,10 +2,13 @@
 #include <stdexcept>
 using namespace std;
 
+#define EMPTY_NAME_MSG _("A device name is empty. Multiple mice and keyboards are not managed.")
+
 XmlReader::XmlReader()
 {
     //ctor
     m_ConfigurationFile = NULL;
+    m_evtcatch = NULL;
 }
 
 XmlReader::XmlReader(ConfigurationFile* configFile)
@@ -118,6 +121,7 @@ void XmlReader::ProcessDeviceElement(xmlNode * a_node)
     wxString type;
     wxString id;
     wxString name;
+    wxString info = _("");
     char* prop;
 
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_TYPE);
@@ -129,6 +133,30 @@ void XmlReader::ProcessDeviceElement(xmlNode * a_node)
     prop = (char*)xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
     name = wxString(prop, wxConvUTF8);
     xmlFree(prop);
+
+    if(name.IsEmpty())
+    {
+        info.Append(EMPTY_NAME_MSG);
+
+        if(!m_info.Contains(info))
+        {
+            m_info.Append(info);
+        }
+    }
+    else if(m_evtcatch && !m_evtcatch->check_device(type, name, id))
+    {
+        info.Append(type);
+        info.Append(_(" not found: "));
+        info.Append(name);
+        info.Append(_(" "));
+        info.Append(id);
+        info.Append(_("\n"));
+
+        if(!m_info.Contains(info))
+        {
+            m_info.Append(info);
+        }
+    }    
 
     m_TempDevice.SetType(type);
     m_TempDevice.SetId(id);
@@ -695,10 +723,29 @@ void XmlReader::ProcessRootElement(xmlNode * a_node)
   }
 }
 
+bool XmlReader::MultipleMK()
+{
+    if(m_info.Contains(EMPTY_NAME_MSG))
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+}
+
 void XmlReader::ReadConfigFile(wxString filePath)
 {
     xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
+
+    m_info.Empty();
+
+    if(m_evtcatch)
+    {
+      m_evtcatch->init();
+    }
 
     /*
      * this initialize the library and check potential ABI mismatches
@@ -735,6 +782,15 @@ void XmlReader::ReadConfigFile(wxString filePath)
     catch(exception& e)
     {
         wxMessageBox(wxString(e.what(), wxConvUTF8));
+    }
+
+    if(m_evtcatch)
+    {
+      m_evtcatch->clean();
+    }
+    if(!m_info.IsEmpty())
+    {
+      wxMessageBox( m_info, wxT("Info"), wxICON_INFORMATION);
     }
 
     /*free the document */

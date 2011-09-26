@@ -180,6 +180,7 @@ const long sixaxis_emu_guiFrame::ID_MENUITEM13 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM14 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM15 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM16 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM24 = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuAbout = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATUSBAR1 = wxNewId();
 //*)
@@ -696,6 +697,10 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
     MenuItem22 = new wxMenuItem(Menu4, ID_MENUITEM16, _("8"), wxEmptyString, wxITEM_RADIO);
     Menu4->Append(MenuItem22);
     MenuBar1->Append(Menu4, _("Configuration"));
+    Menu6 = new wxMenu();
+    MenuItem30 = new wxMenuItem(Menu6, ID_MENUITEM24, _("Multiple Mice and Keyboards"), wxEmptyString, wxITEM_CHECK);
+    Menu6->Append(MenuItem30);
+    MenuBar1->Append(Menu6, _("Advanced"));
     Menu2 = new wxMenu();
     MenuItem2 = new wxMenuItem(Menu2, idMenuAbout, _("About\tF1"), _("Show info about this application"), wxITEM_NORMAL);
     Menu2->Append(MenuItem2);
@@ -840,6 +845,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
       if(::wxFileExists(wxfile))
       {
         configFile.ReadConfigFile(wxfile);
+        MenuItem30->Check(configFile.MultipleMK());
         load_current();
         refresh_gui();
         Menu1->Enable(idMenuSave, true);
@@ -849,6 +855,8 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
         wxMessageBox( wxT("Cannot open config file: ") + wxString(file, wxConvUTF8), wxT("Error"), wxICON_ERROR);
       }
     }
+
+    configFile.SetEvCatch(&evcatch);
 }
 
 sixaxis_emu_guiFrame::~sixaxis_emu_guiFrame()
@@ -864,7 +872,7 @@ void sixaxis_emu_guiFrame::OnQuit(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = _("Gimx-config\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.gimx.fr/forum/\n");
+    wxString msg = _("Gimx-config\n(c) Matlo GNU GPL\nHomepage: http://www.gimx.fr/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.forum.gimx.fr/\n");
     wxMessageBox(msg, _("Welcome to..."));
 }
 
@@ -1050,9 +1058,16 @@ void sixaxis_emu_guiFrame::auto_detect(wxStaticText* device_type, wxStaticText* 
 
     device_type->SetLabel(wxString(evcatch.GetDeviceType()));
 
-    device_name->SetLabel(wxString(evcatch.GetDeviceName()));
-
-    device_id->SetLabel( wxString(evcatch.GetDeviceId()));
+    if(MenuItem30->IsChecked())
+    {
+      device_name->SetLabel(wxString(evcatch.GetDeviceName()));
+      device_id->SetLabel( wxString(evcatch.GetDeviceId()));
+    }
+    else
+    {
+      device_name->SetLabel(wxEmptyString);
+      device_id->SetLabel(_("0"));
+    }
 
     event_id->SetLabel( wxString(evcatch.GetEventId()));
 }
@@ -1303,6 +1318,8 @@ void sixaxis_emu_guiFrame::OnMenuOpen(wxCommandEvent& event)
     if ( FileName.IsEmpty() ) return;
 
     configFile.ReadConfigFile(FileName);
+
+    MenuItem30->Check(configFile.MultipleMK());
 
     currentController = 0;
     currentConfiguration = 0;
@@ -1746,16 +1763,19 @@ void sixaxis_emu_guiFrame::OnButton10Click1(wxCommandEvent& event)
 void sixaxis_emu_guiFrame::replaceDevice(wxString device_type)
 {
     int k;
-    wxString device_name;
-    wxString device_id;
+    wxString device_name = wxEmptyString;
+    wxString device_id = _("0");
 
     std::list<ButtonMapper>* buttonMappers;
     std::list<AxisMapper>* axisMappers;
     std::list<Intensity>* intensityList;
 
     evcatch.run(device_type, _("button"));
-    device_name = evcatch.GetDeviceName();
-    device_id = evcatch.GetDeviceId();
+    if(MenuItem30->IsChecked())
+    {
+        device_name = evcatch.GetDeviceName();
+        device_id = evcatch.GetDeviceId();
+    }
 
     save_current();
 
@@ -1840,8 +1860,8 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
      return;
     }
     int k;
-    wxString device_name;
-    wxString device_id;
+    wxString device_name = wxEmptyString;
+    wxString device_id = _("0");
     wxString device_type = _("mouse");
 
     std::list<AxisMapper>* axisMappers;
@@ -1868,8 +1888,11 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
 
 #ifndef WIN32
             evcatch.run(device_type, _("button"));
-            device_name = evcatch.GetDeviceName();
-            device_id = evcatch.GetDeviceId();
+            if(MenuItem30->IsChecked())
+            {
+                device_name = evcatch.GetDeviceName();
+                device_id = evcatch.GetDeviceId();
+            }
 #endif
 
             save_current();
@@ -1885,7 +1908,7 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
               {
                 if(it->GetDevice()->GetType() == device_type
 #ifndef WIN32
-                    && it->GetDevice()->GetName() == device_name && it->GetDevice()->GetId() == device_id
+                    || (MenuItem30->IsChecked() && it->GetDevice()->GetName() == device_name && it->GetDevice()->GetId() == device_id)
 #endif
                 )
                 {

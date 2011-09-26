@@ -1263,6 +1263,13 @@
 					<radio>1</radio>
 				</object>
 			</object>
+			<object class="wxMenu" variable="Menu6" member="yes">
+				<label>Advanced</label>
+				<object class="wxMenuItem" name="ID_MENUITEM24" variable="MenuItem30" member="yes">
+					<label>Multiple Mice and Keyboards</label>
+					<checkable>1</checkable>
+				</object>
+			</object>
 			<object class="wxMenu" variable="Menu2" member="no">
 				<label>Help</label>
 				<object class="wxMenuItem" name="idMenuAbout" variable="MenuItem2" member="no">

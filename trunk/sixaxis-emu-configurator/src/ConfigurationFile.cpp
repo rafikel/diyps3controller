@@ -31,7 +31,11 @@ void ConfigurationFile::ReadConfigFile(wxString filePath)
 {
     XmlReader reader(this);
 
+    reader.SetEvtCatch(m_evcatch);
+
     reader.ReadConfigFile(filePath);
+
+    m_multipleMK = reader.MultipleMK();
 
     m_FilePath = filePath;
 }
