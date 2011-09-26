@@ -96,6 +96,8 @@ const long sixemuguiFrame::ID_CHOICE4 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON4 = wxNewId();
 const long sixemuguiFrame::ID_BUTTON3 = wxNewId();
 const long sixemuguiFrame::ID_PANEL1 = wxNewId();
+const long sixemuguiFrame::ID_MENUITEM3 = wxNewId();
+const long sixemuguiFrame::ID_MENUITEM4 = wxNewId();
 const long sixemuguiFrame::ID_MENUITEM1 = wxNewId();
 const long sixemuguiFrame::ID_MENUITEM2 = wxNewId();
 const long sixemuguiFrame::idMenuQuit = wxNewId();
@@ -609,6 +611,10 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     FlexGridSizer1->SetSizeHints(Panel1);
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
+    MenuItem5 = new wxMenuItem(Menu1, ID_MENUITEM3, _("Edit config"), wxEmptyString, wxITEM_NORMAL);
+    Menu1->Append(MenuItem5);
+    MenuItem6 = new wxMenuItem(Menu1, ID_MENUITEM4, _("Edit fps config"), wxEmptyString, wxITEM_NORMAL);
+    Menu1->Append(MenuItem6);
     MenuItem3 = new wxMenuItem(Menu1, ID_MENUITEM1, _("Refresh\tF5"), wxEmptyString, wxITEM_NORMAL);
     Menu1->Append(MenuItem3);
     MenuItem4 = new wxMenuItem(Menu1, ID_MENUITEM2, _("Save"), wxEmptyString, wxITEM_NORMAL);
@@ -643,6 +649,8 @@ sixemuguiFrame::sixemuguiFrame(wxWindow* parent,wxWindowID id)
     Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnCheckBox3Click);
     Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton4Click);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&sixemuguiFrame::OnButton3Click);
+    Connect(ID_MENUITEM3,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnMenuEditConfig);
+    Connect(ID_MENUITEM4,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnMenuEditFpsConfig);
     Connect(ID_MENUITEM1,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSelectRefresh);
     Connect(ID_MENUITEM2,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnSave);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&sixemuguiFrame::OnQuit);
@@ -734,7 +742,7 @@ void sixemuguiFrame::OnQuit(wxCommandEvent& event)
 
 void sixemuguiFrame::OnAbout(wxCommandEvent& event)
 {
-    wxString msg = _("Gimx-bluetooth\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.gimx.fr/forum/\n");
+    wxString msg = _("Gimx-bluetooth\n(c) Matlo GNU GPL\nHomepage: http://www.gimx.fr/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.forum.gimx.fr/\n");
     wxMessageBox(msg, _("Welcome to..."));
 }
 
@@ -1208,4 +1216,40 @@ void sixemuguiFrame::OnButton4Click(wxCommandEvent& event)
           wxMessageBox( wxT("Error checking the config file!"), wxT("Error"), wxICON_ERROR);
       }
   }
+}
+
+void sixemuguiFrame::OnMenuEditConfig(wxCommandEvent& event)
+{
+    string command = "";
+#ifdef WIN32
+    command.append("gimx-config.exe");
+#else
+    command.append("gimx-config");
+#endif
+    command.append(" -f ");
+    command.append(Choice4->GetStringSelection().mb_str());
+    command.append(" &");
+
+    if(system(command.c_str()) != 0)
+    {
+        wxMessageBox( wxT("Error editing the config file!"), wxT("Error"), wxICON_ERROR);
+    }
+}
+
+void sixemuguiFrame::OnMenuEditFpsConfig(wxCommandEvent& event)
+{
+    string command = "";
+#ifdef WIN32
+    command.append("gimx-fpsconfig.exe");
+#else
+    command.append("gimx-fpsconfig");
+#endif
+    command.append(" -f ");
+    command.append(Choice4->GetStringSelection().mb_str());
+    command.append(" &");
+
+    if(system(command.c_str()) != 0)
+    {
+        wxMessageBox( wxT("Error editing the config file!"), wxT("Error"), wxICON_ERROR);
+    }
 }
