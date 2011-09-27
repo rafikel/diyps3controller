@@ -17,7 +17,7 @@ cd ..</code>
 
 = Download GIMX sources =
 
-<code language="bash">
+<code>
 mkdir GIMX
 cd GIMX
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu
@@ -34,7 +34,7 @@ svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile</code>
 
 = Copy SDL headers and .so =
 
-<code language="bash">
+<code>
 mkdir -p libsdl/lib
 mkdir -p libsdl/include/SDL
 cp ../SDL-1.2.14/build/.libs/libSDL.so libsdl/lib
@@ -43,10 +43,10 @@ cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
 
 = Compile =
 
-<code language="bash">
+<code>
 make -j 4</code>
 
 = Install =
 
-<code language="bash">
+<code>
 sudo make install</code>
