@@ -21,20 +21,16 @@ cd ..</code>
 <code>
 mkdir GIMX
 cd GIMX</code>
-<code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
-
+<code>
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
 <code>
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator</code>
-
 <code>
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui</code>
-
 <code>
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixstatus</code>
-
 <code>
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/fpsconfig</code>
-
 <code>
 svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile</code>
 
