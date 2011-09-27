@@ -20,7 +20,6 @@ cd ..</code>
 <code language="bash">
 mkdir GIMX
 cd GIMX
-
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui
