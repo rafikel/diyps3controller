@@ -31,7 +31,7 @@ svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile
 mkdir -p libsdl/lib
 mkdir -p libsdl/include/SDL
 cp ../SDL-1.2.14/build/.libs/libSDL.so libsdl/lib
-cp ../SDL-1.2.14/include/* libsdl/include/SDL
+cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
 
 = Compile =
 
