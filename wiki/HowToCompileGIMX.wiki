@@ -18,38 +18,34 @@ cd ..
 
 = Download GIMX sources =
 
-
-<code>
+{{{
 mkdir GIMX
-cd GIMX</code>
-<code>
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
-<code>
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator</code>
-<code>
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui</code>
-<code>
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixstatus</code>
-<code>
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/fpsconfig</code>
-<code>
-svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile</code>
+cd GIMX
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixstatus
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/fpsconfig
+svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile
+}}}
 
 = Copy SDL headers and .so =
 
-<code>
+{{{
 mkdir -p libsdl/lib
 mkdir -p libsdl/include/SDL
 cp ../SDL-1.2.14/build/.libs/libSDL.so libsdl/lib
 cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
-</code>
+}}}
 
 = Compile =
 
-<code>
-make -j 4</code>
+{{{
+make -j 4
+}}}
 
 = Install =
 
-<code>
-sudo make install</code>
+{{{
+sudo make install
+}}}
