@@ -6,7 +6,7 @@ If you run through these instructions, be prepared to solve dependency issues...
 
 = Compile a patched SDL library =
 
-<code language="bash">
+<code>
 wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
 tar xzvf SDL-1.2.14.tar.gz
 svn export http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch
