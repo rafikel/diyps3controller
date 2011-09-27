@@ -113,7 +113,7 @@ static int GetDeviceId(xmlNode* a_node)
 #ifndef WIN32
       if(!merge_all_devices)
       {
-        printf("this config doesn't support multiple mice & keyboards\n");
+        printf("A device name is empty. Multiple mice and keyboards are not managed.\n");
       }
 #endif
       merge_all_devices = 1;
