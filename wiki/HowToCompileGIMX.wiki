@@ -6,14 +6,15 @@ If you run through these instructions, be prepared to solve dependency issues...
 
 = Compile a patched SDL library =
 
-<code>
-wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz</code>
-<code>tar xzvf SDL-1.2.14.tar.gz
+{{{
+wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
+tar xzvf SDL-1.2.14.tar.gz
 svn export http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch
 cd SDL-1.2.14
 patch -p1 < ../patch
 ./configure ; make
-cd ..</code>
+cd ..
+}}}
 
 = Download GIMX sources =
 
