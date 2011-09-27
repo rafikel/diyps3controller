@@ -20,10 +20,8 @@ cd ..</code>
 
 <code>
 mkdir GIMX
-cd GIMX</code>
-<code>
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
-<code>
+cd GIMX</code><code>
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code><code>
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator</code>
 <code>
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui</code>
