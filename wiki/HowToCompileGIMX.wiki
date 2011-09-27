@@ -1,4 +1,4 @@
-#This page explains how to compile GIMX from a Linux terminal.
+#summary This page explains how to compile GIMX from a Linux terminal.
 
 = Introduction =
 
