@@ -47,6 +47,6 @@ make -j 4
 
 = Install =
 
-{{{
+<code language="bash">
 sudo make install
-}}}
+</code>
