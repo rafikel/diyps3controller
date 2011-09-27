@@ -523,7 +523,9 @@ void event_catcher::run(wxString device_type, wxString event_type)
 
     init();
 
-    sleep(1);
+#ifndef WIN32
+    usleep(250000);
+#endif
 
     SDL_WM_GrabInput(SDL_GRAB_ON);
 
