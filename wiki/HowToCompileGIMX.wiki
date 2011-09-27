@@ -6,6 +6,7 @@ If you run through these instructions, be prepared to solve dependency issues...
 
 = Compile a patched SDL library =
 
+{{{
 wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
 tar xzvf SDL-1.2.14.tar.gz
 svn export http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch
@@ -13,9 +14,11 @@ cd SDL-1.2.14
 patch -p1 < ../patch
 ./configure ; make
 cd ..
+}}}
 
 = Download GIMX sources =
 
+{{{
 mkdir GIMX
 cd GIMX
 
@@ -25,18 +28,25 @@ svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixstatus
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/fpsconfig
 svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile
+}}}
 
 = Copy libsdl headers and .so =
 
+{{{
 mkdir -p libsdl/lib
 mkdir -p libsdl/include/SDL
 cp ../SDL-1.2.14/build/.libs/libSDL.so libsdl/lib
 cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
+}}}
 
 = Compile =
 
+{{{
 make
+}}}
 
 = Install =
 
+{{{
 sudo make install
+}}}
