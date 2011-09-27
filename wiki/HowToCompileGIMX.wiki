@@ -6,7 +6,7 @@ If you run through these instructions, be prepared to solve dependency issues...
 
 = Compile a patched SDL library =
 
-<code>
+<code langage="sh">
 wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
 tar xzvf SDL-1.2.14.tar.gz
 svn export http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch
@@ -17,7 +17,7 @@ cd ..</code>
 
 = Download GIMX sources =
 
-<code>
+<code langage="sh">
 mkdir GIMX
 cd GIMX
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu
