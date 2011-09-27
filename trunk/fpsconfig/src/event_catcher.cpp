@@ -362,7 +362,9 @@ void event_catcher::run()
         return;
     }
 
+#ifndef WIN32
     usleep(250000);
+#endif
 
     SDL_WM_GrabInput(SDL_GRAB_ON);
 
