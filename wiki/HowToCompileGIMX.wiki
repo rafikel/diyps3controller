@@ -30,7 +30,7 @@ svn checkout http://diyps3controller.googlecode.com/svn/trunk/fpsconfig
 svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile
 }}}
 
-= Copy libsdl headers and .so =
+= Copy SDL headers and .so =
 
 {{{
 mkdir -p libsdl/lib
