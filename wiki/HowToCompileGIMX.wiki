@@ -6,7 +6,7 @@ If you run through these instructions, be prepared to solve dependency issues...
 
 = Compile a patched SDL library =
 
-<code langage="sh">
+<code>
 wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
 tar xzvf SDL-1.2.14.tar.gz
 svn export http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch
@@ -17,15 +17,16 @@ cd ..</code>
 
 = Download GIMX sources =
 
-<code langage="sh">
+<code>
 mkdir GIMX
 cd GIMX
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixstatus
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/fpsconfig
-svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile</code>
+svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
+<code>
+<code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator</code>
+<code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui</code>
+<code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixstatus</code>
+<code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/fpsconfig</code>
+<code>svn export http://diyps3controller.googlecode.com/svn/trunk/Makefile</code>
 
 = Copy SDL headers and .so =
 
