@@ -3,7 +3,7 @@ bindir=$(prefix)/bin
 confdir=$(DESTDIR)/etc/emuclient
 BINS=emu emuclient sixaddr bdaddr hcirevision
 CC=gcc
-CFLAGS=-Wall -g
+CFLAGS=-Wall -O2
 LIB=-L../libsdl/lib -lSDL -lxml2 -lXi
 INC=-I../libsdl/include -I/usr/include/libxml2
 
