@@ -6,8 +6,7 @@ If you run through these instructions, be prepared to solve dependency issues...
 
 = Compile a patched SDL library =
 
-<code>
-wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
+<code>wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
 tar xzvf SDL-1.2.14.tar.gz
 svn export http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch
 cd SDL-1.2.14
@@ -17,10 +16,10 @@ cd ..</code>
 
 = Download GIMX sources =
 
-<code>
-mkdir GIMX
-cd GIMX
-svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
+
+<code>mkdir GIMX
+cd GIMX</code>
+<code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
 
 <code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator</code>
 
@@ -34,8 +33,7 @@ svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
 
 = Copy SDL headers and .so =
 
-<code>
-mkdir -p libsdl/lib
+<code>mkdir -p libsdl/lib
 mkdir -p libsdl/include/SDL
 cp ../SDL-1.2.14/build/.libs/libSDL.so libsdl/lib
 cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
@@ -43,10 +41,8 @@ cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
 
 = Compile =
 
-<code>
-make -j 4</code>
+<code>make -j 4</code>
 
 = Install =
 
-<code>
-sudo make install</code>
+<code>sudo make install</code>
