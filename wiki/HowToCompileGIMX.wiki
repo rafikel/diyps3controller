@@ -22,7 +22,6 @@ mkdir GIMX
 cd GIMX
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu</code>
 
-<code>
 <code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixaxis-emu-configurator</code>
 
 <code>svn checkout http://diyps3controller.googlecode.com/svn/trunk/sixemugui</code>
