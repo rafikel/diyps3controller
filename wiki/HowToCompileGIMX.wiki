@@ -42,7 +42,7 @@ cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
 = Compile =
 
 {{{
-make
+make -j 4
 }}}
 
 = Install =
