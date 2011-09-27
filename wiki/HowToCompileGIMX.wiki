@@ -41,9 +41,9 @@ cp ../SDL-1.2.14/include/`*` libsdl/include/SDL
 
 = Compile =
 
-{{{
+<code language="bash">
 make -j 4
-}}}
+</code>
 
 = Install =
 
