@@ -307,7 +307,7 @@ int main(int argc, char *argv[])
       tcp_send(force_updates);
     }
 #else
-    serial_send();
+    serial_send(force_updates);
 #endif
 
 #ifdef WIN32
