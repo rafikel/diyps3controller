@@ -1043,6 +1043,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
 {
     string command = "";
     string filename = "";
+    wxString configname;
 
     if(CheckBox3->IsChecked())
     {
@@ -1066,7 +1067,9 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
         command.append(" --subpos");
     }
     command.append(" --config ");
-    command.append(Choice4->GetStringSelection().mb_str());
+    configname = Choice4->GetStringSelection();
+    configname.Replace(_(" "), _("\\ "));
+    command.append(configname.mb_str());
     if(CheckBox2->IsChecked())
     {
         command.append(" --status | gimx-status");
@@ -1169,6 +1172,7 @@ void sixemuguiFrame::OnButton4Click(wxCommandEvent& event)
   string filename = "";
   string result = "";
   string line = "";
+  wxString configname;
 
 #ifdef WIN32
   command.append("emuclient.exe");
@@ -1176,7 +1180,9 @@ void sixemuguiFrame::OnButton4Click(wxCommandEvent& event)
   command.append("emuclient");
 #endif
   command.append(" --config ");
-  command.append(Choice4->GetStringSelection().mb_str());
+  configname = Choice4->GetStringSelection();
+  configname.Replace(_(" "), _("\\ "));
+  command.append(configname.mb_str());
   command.append(" --check --nograb > ");
   command.append(CHECK_FILE);
 

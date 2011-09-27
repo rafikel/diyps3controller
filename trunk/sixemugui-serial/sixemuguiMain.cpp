@@ -472,6 +472,7 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
     int refresh;
     char crefresh[3];
     int frequency;
+    wxString configname;
 
 #ifdef WIN32
     command.append("emuclient.exe");
@@ -492,7 +493,9 @@ void sixemuguiFrame::OnButton3Click(wxCommandEvent& event)
         command.append(" --nograb");
     }
     command.append(" --config ");
-    command.append(Choice4->GetStringSelection().mb_str());
+    configname = Choice4->GetStringSelection();
+    configname.Replace(_(" "), _("\\ "));
+    command.append(configname.mb_str());
     command.append(" --refresh ");
     frequency = wxAtoi(ComboBox2->GetValue());
     if(frequency)
@@ -611,6 +614,7 @@ void sixemuguiFrame::OnButton1Click1(wxCommandEvent& event)
     string filename = "";
     string result = "";
     string line = "";
+    wxString configname;
 
 #ifdef WIN32
     command.append("emuclient.exe");
@@ -618,7 +622,9 @@ void sixemuguiFrame::OnButton1Click1(wxCommandEvent& event)
     command.append("emuclient");
 #endif
     command.append(" --config ");
-    command.append(Choice4->GetStringSelection().mb_str());
+    configname = Choice4->GetStringSelection();
+    configname.Replace(_(" "), _("\\ "));
+    command.append(configname.mb_str());
     command.append(" --check --nograb > ");
     command.append(CHECK_FILE);
 
