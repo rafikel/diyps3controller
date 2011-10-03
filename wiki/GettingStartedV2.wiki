@@ -17,7 +17,7 @@ Add C:\MinGW\bin and C:\MinGW\msys\1.0\bin to your system PATH.
 
 == SDL ==
 
-Run C:\MinGW\msys\1.0\msys.bat and install the patch ($ mingw-get install msys-patch) and wget ($ mingw-get install wget).
+Run C:\MinGW\msys\1.0\msys.bat and install patch ($ mingw-get install msys-patch) and wget ($ mingw-get install wget).
 
 Download and extract <a href="http://www.libsdl.org/release/SDL-1.2.14.tar.gz">SDL 1.2.4</a> to C:\SDL-1.2.14.
 
