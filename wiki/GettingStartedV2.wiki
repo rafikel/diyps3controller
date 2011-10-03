@@ -43,7 +43,7 @@ type filter text: svn
 
 Select "Subversive SVN Integration for the Mylyn Project" and "Subversive SVN Team Provider".
 
-Proceed to installation (select latest SVN Kit), and restart eclipse.
+Proceed to installation (select latest SVN Kit - 1.3.5 as of this writing), and restart eclipse.
 
 = Project checkout =
 
