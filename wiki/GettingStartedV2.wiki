@@ -7,11 +7,31 @@ It also explains how to perform a checkout and build the project.
 
 Target OS is Windows, but it can be easily adapted to Linux.
 
-= Eclipse CDT =
+= MinGW =
 
-Follow this great tutorial:
+Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version.
+The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
+Add C:\MinGW\bin and C:\MinGW\msys\1.0\bin to your system PATH.
 
-http://max.berger.name/howto/cdt/cdt.jsp
+= wxWidgets =
+
+These instructions are taken from this wiki: <a href="http://wiki.wxwidgets.org/Compiling_wxWidgets_with_MSYS-MinGW">link</a>.
+
+Download and install <a href="http://www.wxwidgets.org/downloads/#latest_stable">the latest wxMSW installer for windows</a>. As of this writing, the latest version is 2.8.12.
+
+Run C:\MinGW\msys\1.0\msys.bat and change to the directory you installed the wx source ($ cd /c/wxWidgets-2.8.12/).
+
+Create a new build directory ($ mkdir msw-gimx) and enter that directory ($ cd msw-gimx).
+
+Configure ($ ../configure --disable-shared --enable-unicode) and make ($ make) and install ($ make install).
+
+= Eclipse =
+
+Be sure to have a <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">java JRE</a> installed on your system.
+
+Download <a href="http://www.eclipse.org/downloads/">Eclipse IDE for C/C++ Developers</a>. Unzip it to wherever you want.
+
+
 
 = SVN Plugin =
 
