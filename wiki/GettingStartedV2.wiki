@@ -45,6 +45,8 @@ Run C:\MinGW\msys\1.0\msys.bat, install mingw32-libiconv (mingw-get install ming
 
 Copy libxml headers and binary to the MinGW directory ($ cp -a /c/MinGW/msys/1.0/include/libxml2/libxml/ /c/MinGW/include/) ($ cp /c/MinGW/msys/1.0/lib/libxml2.dll.a /c/MinGW/lib).
 
+Edit C:\MinGW\include\libxml\xmlexports.h: replace line 116 with "  #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)".
+
 = Eclipse =
 
 Be sure to have a <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">java JRE</a> installed on your system.
