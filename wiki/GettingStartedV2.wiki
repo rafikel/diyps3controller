@@ -31,13 +31,13 @@ Be sure to have a <a href="http://www.oracle.com/technetwork/java/javase/downloa
 
 Download <a href="http://www.eclipse.org/downloads/">Eclipse IDE for C/C++ Developers</a>. Unzip it to wherever you want.
 
+Run eclipse.exe.
 
-
-= SVN Plugin =
+== SVN Plugin ==
 
 Help>Install New Software
 
-Work with: select Galileo
+Work with: select your eclipse release name (as of this writing, Indigo).
 
 type filter text: svn
 
