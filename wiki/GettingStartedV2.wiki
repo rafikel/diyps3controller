@@ -15,15 +15,15 @@ Add C:\MinGW\bin and C:\MinGW\msys\1.0\bin to your system PATH.
 
 = SDL =
 
-Run C:\MinGW\msys\1.0\msys.bat and install the patch tool ($ mingw-get install msys-patch).
+Run C:\MinGW\msys\1.0\msys.bat and install the patch ($ mingw-get install msys-patch) and wget ($ mingw-get install wget).
 
 Download and extract <a href="http://www.libsdl.org/release/SDL-1.2.14.tar.gz">SDL 1.2.4</a> to C:\SDL-1.2.14.
 
-Download <a href="http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win">the SDL patch</a> and save it to C:\SDL-1.2.14.
+Run C:\MinGW\msys\1.0\msys.bat, change to the directory you installed the SDL source ($ cd /c/SDL-1.2.14/).
 
-Run C:\MinGW\msys\1.0\msys.bat, change to the directory you installed the SDL source ($ cd /c/SDL-1.2.14/), and patch the source ($ patch -p1 < patch.win).
+Download the SDL patch ($ wget http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win), and patch the source ($ patch -p1 < patch.win).
 
-Configure ($ ./configure), make ($ make) and install ($ make install).
+Configure ($ ./configure --prefix=/c/MinGW), make ($ make) and install ($ make install).
 
 = wxWidgets =
 
@@ -35,7 +35,7 @@ Run C:\MinGW\msys\1.0\msys.bat and change to the directory you installed the wx 
 
 Create a new build directory ($ mkdir msw-gimx) and enter that directory ($ cd msw-gimx).
 
-Configure ($ ../configure --disable-shared --enable-unicode), make ($ make) and install ($ make install).
+Configure ($ ../configure --disable-shared --enable-unicode --prefix=/c/MinGW), make ($ make) and install ($ make install).
 
 = Eclipse =
 
