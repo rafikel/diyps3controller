@@ -2,7 +2,7 @@
 
 = Introduction =
 
-This wiki explains how to install Eclipse CDT with SVN.
+This wiki explains how to install a compilation environment (based on MinGW) and Eclipse CDT (with SVN).
 It also explains how to perform a checkout and build the project.
 
 Target OS is Windows, but it can be easily adapted to Linux.
