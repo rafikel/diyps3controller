@@ -22,24 +22,32 @@ Run C:\MinGW\msys\1.0\msys.bat
 
 Install patch and wget:
 
-$ mingw-get install msys-patch msys-wget
+{{{
+mingw-get install msys-patch msys-wget
+}}}
 
 Download and extract SDL 1.2.4 source:
 
-$ wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
-$ tar xzvf SDL-1.2.14.tar.gz
-$ cd SDL-1.2.14
+{{{
+wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
+tar xzvf SDL-1.2.14.tar.gz
+cd SDL-1.2.14
+}}}
 
 Download the SDL patch and patch the source:
 
-$ wget http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win
-$ patch -p1 < patch.win
+{{{
+wget http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win
+patch -p1 < patch.win
+}}}
 
 Configure, make, and install:
 
-$ ./configure --prefix=/c/MinGW
-$ make
-$ make install
+{{{
+./configure --prefix=/c/MinGW
+make
+make install
+}}}
 
 === wxWidgets ===
 
