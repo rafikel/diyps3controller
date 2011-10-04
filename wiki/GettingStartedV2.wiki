@@ -55,17 +55,46 @@ These instructions are taken from this wiki: <a href="http://wiki.wxwidgets.org/
 
 Download and install <a href="http://www.wxwidgets.org/downloads/#latest_stable">the latest stable wxMSW installer for windows</a>. As of this writing, the latest version is 2.8.12.
 
-Run C:\MinGW\msys\1.0\msys.bat and change to the directory you installed the wx source ($ cd /c/wxWidgets-2.8.12/).
+Run C:\MinGW\msys\1.0\msys.bat
 
-Create a new build directory ($ mkdir msw-gimx) and enter that directory ($ cd msw-gimx).
+Change to the directory you installed the wx source:
 
-Configure ($ ../configure --disable-shared --enable-unicode --prefix=/c/MinGW), make ($ make) and install ($ make install).
+{{{
+cd /c/wxWidgets-2.8.12
+}}}
+
+Create a new build directory and enter that directory:
+
+{{{
+mkdir msw-gimx
+cd msw-gimx
+}}}
+
+Configure, make and install
+
+{{{
+../configure --disable-shared --enable-unicode --prefix=/c/MinGW
+make
+make install
+}}}
 
 === libxml ===
 
-Run C:\MinGW\msys\1.0\msys.bat, install mingw32-libiconv (mingw-get install mingw32-libiconv) and install msys-libxml2 ($ mingw-get  install msys-libxml2).
+Run C:\MinGW\msys\1.0\msys.bat
 
-Copy libxml headers and binary to the MinGW directory ($ cp -a /c/MinGW/msys/1.0/include/libxml2/libxml/ /c/MinGW/include/) ($ cp /c/MinGW/msys/1.0/lib/libxml2.dll.a /c/MinGW/lib).
+Install mingw32-libiconv and msys-libxml2
+
+{{{
+mingw-get install mingw32-libiconv
+mingw-get  install msys-libxml2
+}}}
+
+Copy libxml headers and binary to the MinGW directory:
+
+{{{
+cp -a /c/MinGW/msys/1.0/include/libxml2/libxml /c/MinGW/include
+cp /c/MinGW/msys/1.0/lib/libxml2.dll.a /c/MinGW/lib
+}}}
 
 Edit C:\MinGW\include\libxml\xmlexports.h: replace line 116 with "  #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)".
 
