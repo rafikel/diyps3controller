@@ -8,6 +8,15 @@ It also explains how to perform a checkout and build the project.
 Target OS is Windows, but it can be easily adapted to Linux.
 Unless otherwise specified, perform a default installation (default directories, etc).
 
+= Note =
+
+To speed up the compilation (make), specify how many processes the CPU can run at the same time.
+
+If the CPU can run 4 processes at the same time:
+{{{
+make -j 4
+}}}
+
 = Compiler & librairies =
 
 === MinGW ===
