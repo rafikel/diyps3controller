@@ -12,7 +12,7 @@ Target OS is Windows, but it can be easily adapted to Linux.
 === MinGW ===
 
 Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version.
-The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
+Perform a default installation. Don't change the installation directory. The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
 Add C:\MinGW\bin and C:\MinGW\msys\1.0\bin to your system PATH.
 
 === SDL ===
