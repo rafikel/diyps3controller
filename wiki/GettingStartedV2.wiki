@@ -6,13 +6,14 @@ This wiki explains how to install a compilation environment (based on MinGW) and
 It also explains how to perform a checkout and build the project.
 
 Target OS is Windows, but it can be easily adapted to Linux.
+Unless otherwise specified, perform a default installation (default directories, etc).
 
 = Compiler & librairies =
 
 === MinGW ===
 
 Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version.
-Perform a default installation. Don't change the installation directory. The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
+The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
 Add C:\MinGW\bin and C:\MinGW\msys\1.0\bin to your system PATH.
 
 === SDL ===
