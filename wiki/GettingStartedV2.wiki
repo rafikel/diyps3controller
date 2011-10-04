@@ -1,4 +1,4 @@
-#summary This wiki explains a simple way to install development tools for GIMX.
+#summary This wiki explains how to install Windows development tools for GIMX.
 
 = Introduction =
 
