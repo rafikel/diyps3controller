@@ -85,8 +85,7 @@ Run C:\MinGW\msys\1.0\msys.bat
 Install mingw32-libiconv and msys-libxml2
 
 {{{
-mingw-get install mingw32-libiconv
-mingw-get  install msys-libxml2
+mingw-get install mingw32-libiconv msys-libxml2
 }}}
 
 Copy libxml headers and binary to the MinGW directory:
