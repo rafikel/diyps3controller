@@ -60,28 +60,19 @@ make install
 
 === wxWidgets ===
 
-These instructions are taken from this wiki: <a href="http://wiki.wxwidgets.org/Compiling_wxWidgets_with_MSYS-MinGW">link</a>.
-
-Download and install <a href="http://www.wxwidgets.org/downloads/#latest_stable">the latest stable wxMSW installer for windows</a> (as of this writing, 2.8.12).
+These instructions are inspired by this wiki: <a href="http://wiki.wxwidgets.org/Compiling_wxWidgets_with_MSYS-MinGW">link</a>.
 
 Run C:\MinGW\msys\1.0\msys.bat
 
-Change to the directory you installed the wx source:
+Download and install <a href="http://www.wxwidgets.org/downloads/#latest_stable">the latest stable wxMSW installer for windows</a> (as of this writing, 2.8.12):
 
 {{{
-cd /c/wxWidgets-2.8.12
-}}}
-
-Create a new build directory and enter that directory:
-
-{{{
+wget http://prdownloads.sourceforge.net/wxwindows/wxMSW-2.8.12.zip
+mingw-get install msys-unzip
+unzip wxMSW-2.8.12.zip
+cd wxMSW-2.8.12
 mkdir msw-gimx
 cd msw-gimx
-}}}
-
-Configure, make and install
-
-{{{
 ../configure --disable-shared --enable-unicode --prefix=/c/MinGW
 make
 make install
