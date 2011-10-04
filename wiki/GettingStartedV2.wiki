@@ -32,7 +32,7 @@ Configure ($ ./configure --prefix=/c/MinGW), make ($ make) and install ($ make i
 
 These instructions are taken from this wiki: <a href="http://wiki.wxwidgets.org/Compiling_wxWidgets_with_MSYS-MinGW">link</a>.
 
-Download and install <a href="http://www.wxwidgets.org/downloads/#latest_stable">the latest wxMSW installer for windows</a>. As of this writing, the latest version is 2.8.12.
+Download and install <a href="http://www.wxwidgets.org/downloads/#latest_stable">the latest stable wxMSW installer for windows</a>. As of this writing, the latest version is 2.8.12.
 
 Run C:\MinGW\msys\1.0\msys.bat and change to the directory you installed the wx source ($ cd /c/wxWidgets-2.8.12/).
 
