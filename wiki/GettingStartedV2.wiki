@@ -91,8 +91,8 @@ mingw-get install mingw32-libiconv msys-libxml2
 Copy libxml headers and binary to the MinGW directory:
 
 {{{
-cp -a /c/MinGW/msys/1.0/include/libxml2/libxml /c/MinGW/include
-cp /c/MinGW/msys/1.0/lib/libxml2.dll.a /c/MinGW/lib
+cp -a /include/libxml2/libxml /c/MinGW/include
+cp /lib/libxml2.dll.a /c/MinGW/lib
 }}}
 
 Edit C:\MinGW\include\libxml\xmlexports.h: replace line 116 with "  #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)".
