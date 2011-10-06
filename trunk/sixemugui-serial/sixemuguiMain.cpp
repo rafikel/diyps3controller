@@ -655,15 +655,8 @@ void sixemuguiFrame::OnButton1Click1(wxCommandEvent& event)
             }
             infile.close();
         }
-
-        command.erase();
-        command.append("rm ");
-        command.append(CHECK_FILE);
-        if(system(command.c_str()) != 0)
-        {
-            wxMessageBox( wxT("Error checking the config file!"), wxT("Error"), wxICON_ERROR);
-        }
     }
+    remove(CHECK_FILE);
 }
 
 void sixemuguiFrame::OnMenuEditConfig(wxCommandEvent& event)
