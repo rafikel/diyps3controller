@@ -39,7 +39,7 @@ Note: to speed up the compilation (make), specify how many cores the CPU has. Ch
 CPU=4
 }}}
 
-= Automated build =
+= Automated command-line build =
 
 Run C:\MinGW\msys\1.0\msys.bat
 
