@@ -1120,13 +1120,13 @@
 				</object>
 				<object class="wxMenuItem" name="idMenuOpen" variable="MenuItem6" member="no">
 					<label>Open</label>
-					<accel>Ctrl-o</accel>
+					<accel>Ctrl-O</accel>
 					<help>Open a configuration file</help>
 					<handler function="OnMenuOpen" entry="EVT_MENU" />
 				</object>
 				<object class="wxMenuItem" name="idMenuSave" variable="MenuItem4" member="yes">
 					<label>Save</label>
-					<accel>Ctrl-s</accel>
+					<accel>Ctrl-S</accel>
 					<help>Save configuration</help>
 					<enabled>0</enabled>
 					<handler function="OnMenuSave" entry="EVT_MENU" />
