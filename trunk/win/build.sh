@@ -1,6 +1,16 @@
 #!/bin/bash
 
 CPU=4
+SVN_VERSION=1.6.17
+
+#install svn
+if ! test -f /usr/local/bin/svn.exe
+then
+  wget http://sourceforge.net/projects/win32svn/files/$SVN_VERSION/svn-win32-$SVN_VERSION.zip/download
+  unzip svn-win32-$SVN_VERSION.zip
+  mkdir -p /usr/local/bin
+  mv svn-win32-$SVN_VERSION/bin/* /usr/local/bin/
+fi
 
 #checkout & compile GIMX
 if ! test -d GIMX
