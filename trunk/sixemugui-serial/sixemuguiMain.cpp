@@ -160,7 +160,7 @@ static void read_devices(wxComboBox* choice)
   for(i=0; i<MAX_PORT_ID; ++i)
   {
     snprintf(portname, sizeof(portname), "COM%d", i);
-    hSerial = CreateFile(portname, accessdirection, 0, 0, OPEN_EXISTING, 0, 0);
+    hSerial = CreateFile((const WCHAR*) portname, accessdirection, 0, 0, OPEN_EXISTING, 0, 0);
     if (hSerial != INVALID_HANDLE_VALUE)
     {
       choice->SetSelection(choice->Append(wxString(portname, wxConvUTF8)));
