@@ -14,90 +14,39 @@ Unless otherwise specified, perform a default installation (default directories,
 
 To speed up the compilation (make), specify how many processes the CPU can run at the same time.
 
+Change the CPU variable of the install.sh script.
+
 If the CPU can run 4 processes at the same time:
 {{{
-make -j 4
+CPU=4
 }}}
 
 = Compiler & librairies =
 
-=== MinGW ===
+=== MinGW installation ===
 
 Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version (as of this writing, 20110802).
 The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
 Add ";C:\MinGW\bin;C:\MinGW\msys\1.0\bin" (without quotes) to your system PATH.
 
-=== SDL ===
+=== Build ===
 
 Run C:\MinGW\msys\1.0\msys.bat
 
-Install patch and wget:
+Install wget:
 
 {{{
-mingw-get install msys-patch msys-wget
+mingw-get install msys-wget
 }}}
 
-Download and extract SDL 1.2.4 source:
+Download and run the build script:
 
 {{{
-wget http://www.libsdl.org/release/SDL-1.2.14.tar.gz
-tar xzvf SDL-1.2.14.tar.gz
-cd SDL-1.2.14
+wget http://diyps3controller.googlecode.com/svn/trunk/win/install.sh
+./install.sh
 }}}
 
-Download the SDL patch and patch the source:
-
-{{{
-wget http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win
-patch -p1 < patch.win
-}}}
-
-Configure, make, and install:
-
-{{{
-./configure --prefix=/c/MinGW
-make
-make install
-}}}
-
-=== wxWidgets ===
-
-These instructions are inspired by this wiki: <a href="http://wiki.wxwidgets.org/Compiling_wxWidgets_with_MSYS-MinGW">link</a>.
-
-Run C:\MinGW\msys\1.0\msys.bat
-
-Download and install <a href="http://www.wxwidgets.org/downloads/#latest_stable">the latest stable wxMSW installer for windows</a> (as of this writing, 2.8.12):
-
-{{{
-wget http://prdownloads.sourceforge.net/wxwindows/wxMSW-2.8.12.zip
-mingw-get install msys-unzip
-unzip wxMSW-2.8.12.zip
-cd wxMSW-2.8.12
-mkdir msw-gimx
-cd msw-gimx
-../configure --disable-shared --enable-unicode --prefix=/c/MinGW
-make
-make install
-}}}
-
-=== libxml ===
-
-Run C:\MinGW\msys\1.0\msys.bat
-
-Install mingw32-libiconv and msys-libxml2
-
-{{{
-mingw-get install mingw32-libiconv msys-libxml2
-}}}
-
-Copy libxml headers and binary to the MinGW directory:
-
-{{{
-cp -a /include/libxml2/libxml /c/MinGW/include
-cp /lib/libxml2.dll.a /c/MinGW/lib
-}}}
-
-Edit C:\MinGW\include\libxml\xmlexports.h: replace line 116 with "  #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)".
+The installation folder is GIMX/setup.
 
 = Eclipse =
 
