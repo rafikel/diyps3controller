@@ -50,7 +50,7 @@ then
   ../configure --disable-shared --enable-unicode --prefix=$PREFIX
   make -j $CPU
   make install
-  cd ..
+  cd ../..
 fi
 
 #Get libxml
