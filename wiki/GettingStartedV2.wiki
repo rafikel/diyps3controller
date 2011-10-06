@@ -10,26 +10,13 @@ It also explains how to perform a checkout and build the project.
 Target OS is Windows, but it can be easily adapted to Linux.
 Unless otherwise specified, perform a default installation (default directories, etc).
 
-= Note =
-
-To speed up the compilation (make), specify how many processes the CPU can run at the same time.
-
-Change the CPU variable of the install.sh script.
-
-If the CPU can run 4 processes at the same time:
-{{{
-CPU=4
-}}}
-
-= Compiler & librairies =
-
-=== MinGW installation ===
+= MinGW installation =
 
 Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version (as of this writing, 20110802).
 The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
 Add ";C:\MinGW\bin;C:\MinGW\msys\1.0\bin" (without quotes) to your system PATH.
 
-=== Build ===
+= Build =
 
 Run C:\MinGW\msys\1.0\msys.bat
 
@@ -46,7 +33,14 @@ wget http://diyps3controller.googlecode.com/svn/trunk/win/install.sh
 ./install.sh
 }}}
 
-The installation folder is GIMX/setup.
+Note: to speed up the compilation (make), specify how many cores the CPU has. Change the CPU variable of the install.sh script.
+
+If the CPU has 4 cores:
+{{{
+CPU=4
+}}}
+
+The installation folder is GIMX/setup. Binaries can be launched from that folder as it contains all required libraries and configuration files.
 
 = Eclipse =
 
