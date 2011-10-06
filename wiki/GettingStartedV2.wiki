@@ -57,7 +57,7 @@ CPU=4
 
 The installation folder is GIMX/setup. Binaries can be launched from that folder as it contains all required libraries and configuration files.
 
-= Eclipse =
+= Eclipse IDE =
 
 Be sure to have a <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">java JRE</a> installed on your system.
 
