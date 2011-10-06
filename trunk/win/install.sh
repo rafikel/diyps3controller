@@ -9,7 +9,7 @@ ZLIB=1.2.3
 #install required tools/librairies
 test -f /bin/patch || mingw-get install msys-patch
 test -f /bin/wget || mingw-get install msys-wget
-test -f /bin/unsizp || mingw-get install msys-unzip
+test -f /bin/unzip || mingw-get install msys-unzip
 test -f $PREFIX/bin/libiconv-2.dll || mingw-get install mingw32-libiconv
 
 #build the SDL library
