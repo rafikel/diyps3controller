@@ -631,9 +631,9 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
     Menu1 = new wxMenu();
     MenuItem3 = new wxMenuItem(Menu1, idMenuNew, _("New\tCtrl-N"), _("Create a new configuration"), wxITEM_NORMAL);
     Menu1->Append(MenuItem3);
-    MenuItem6 = new wxMenuItem(Menu1, idMenuOpen, _("Open\tCtrl-o"), _("Open a configuration file"), wxITEM_NORMAL);
+    MenuItem6 = new wxMenuItem(Menu1, idMenuOpen, _("Open\tCtrl-O"), _("Open a configuration file"), wxITEM_NORMAL);
     Menu1->Append(MenuItem6);
-    MenuItem4 = new wxMenuItem(Menu1, idMenuSave, _("Save\tCtrl-s"), _("Save configuration"), wxITEM_NORMAL);
+    MenuItem4 = new wxMenuItem(Menu1, idMenuSave, _("Save\tCtrl-S"), _("Save configuration"), wxITEM_NORMAL);
     Menu1->Append(MenuItem4);
     MenuItem4->Enable(false);
     MenuItem5 = new wxMenuItem(Menu1, idMenuSaveAs, _("Save As..."), _("Save configuration to specified file"), wxITEM_NORMAL);
