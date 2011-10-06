@@ -33,9 +33,7 @@ wget http://diyps3controller.googlecode.com/svn/trunk/win/install.sh
 ./install.sh
 }}}
 
-Note: to speed up the compilation (make), specify how many cores the CPU has. Change the CPU variable of the install.sh script.
-
-If the CPU has 4 cores:
+Note: to speed up the compilation (make), specify how many cores the CPU has. Change the CPU variable of the install.sh script. If the CPU has 4 cores:
 {{{
 CPU=4
 }}}
