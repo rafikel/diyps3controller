@@ -7,12 +7,15 @@ SDL=SDL-1.2.14
 ZLIB=1.2.3
 
 #install required tools/librairies
-mingw-get install msys-patch msys-wget msys-unzip mingw32-libiconv
+test -f /bin/patch || mingw-get install msys-patch
+test -f /bin/wget || mingw-get install msys-wget
+test -f /bin/unsizp || mingw-get install msys-unzip
+test -f $PREFIX/bin/libiconv-2.dll || mingw-get install mingw32-libiconv
 
 #build the SDL library
-if ! test -d $SDL
+if ! test -f $PREFIX/bin/SDL.dll
 then
-  if ! test -f $SDL.tar.gz
+  if ! test -d $SDL
   then
     wget http://www.libsdl.org/release/$SDL.tar.gz
     tar xzvf $SDL.tar.gz
@@ -27,9 +30,9 @@ then
 fi
 
 #build wxWidgets
-if ! test -d $WXMSW
+if ! test -f libwx_baseu-*
 then
-  if ! test -f $WXMSW.zip
+  if ! test -d $WXMSW
   then
     wget http://prdownloads.sourceforge.net/wxwindows/$WXMSW.zip
     unzip $WXMSW.zip
@@ -49,7 +52,7 @@ then
   if ! test -d libxml
   then
     mkdir libxml
-	cd libxml
+	  cd libxml
     wget http://sourceforge.net/projects/devpaks/files/libxml2/LibXML2%20-%202.6.27/libxml2-2.6.27-1cm.DevPak/download
 	tar xjvf libxml2-2.6.27-1cm.DevPak
   fi  
