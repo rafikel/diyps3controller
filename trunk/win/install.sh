@@ -20,7 +20,7 @@ then
     wget http://www.libsdl.org/release/$SDL.tar.gz
     tar xzvf $SDL.tar.gz
   fi
-  svn export http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win
+  wget http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win
   cd $SDL
   patch -p1 < ../patch.win
   ./configure --enable-stdio-redirect=no --prefix=$PREFIX
