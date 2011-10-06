@@ -41,7 +41,7 @@ CPU=4
 
 = Automated command-line build =
 
-This part explains how to checkout and compile GIMX from the command-line.
+This part explains how to checkout and build GIMX from the command-line.
 
 Run C:\MinGW\msys\1.0\msys.bat
 
