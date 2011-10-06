@@ -4,4 +4,4 @@ all:
 	+for i in $(DIRS); do cd $$i; make -f Makefile.win all; cd ..; done
 
 clean:
-	for i in $(DIRS); do cd $$i; make -f Makefile.win clean; cd ..; done
+	+for i in $(DIRS); do cd $$i; make -f Makefile.win clean; cd ..; done
