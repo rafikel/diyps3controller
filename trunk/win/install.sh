@@ -4,20 +4,10 @@ CPU=4
 PREFIX=/mingw
 WXMSW=wxMSW-2.8.12
 SDL=SDL-1.2.14
-SVN_VERSION=1.6.17
 ZLIB=1.2.3
 
 #install required tools/librairies
 mingw-get install msys-patch msys-wget msys-unzip mingw32-libiconv
-
-#install svn
-if ! test -f /usr/local/bin/svn.exe
-then
-  wget http://sourceforge.net/projects/win32svn/files/$SVN_VERSION/svn-win32-$SVN_VERSION.zip/download
-  unzip svn-win32-$SVN_VERSION.zip
-  mkdir -p /usr/local/bin
-  mv svn-win32-$SVN_VERSION/bin/* /usr/local/bin/
-fi
 
 #build the SDL library
 if ! test -d $SDL
