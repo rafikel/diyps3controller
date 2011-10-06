@@ -7,7 +7,7 @@ It also explains how to perform a checkout and build the project.
 
 Unless otherwise specified, perform a default installation (default directories, etc).
 
-= MinGW+MSYS installation =
+= MinGW+MSYS =
 
 This part explains how to install the compilation toolchain.
 
@@ -15,9 +15,9 @@ Download and run the latest <a href="http://sourceforge.net/projects/mingw/files
 The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
 Add ";C:\MinGW\bin;C:\MinGW\msys\1.0\bin" (without quotes) to your system PATH.
 
-= Libraries installation =
+= Libraries =
 
-This part explains how to install the compilation toolchain.
+This part explains how to install the required libraries (libiconv, SDL, wxWidgets, libxml, zlib).
 
 Run C:\MinGW\msys\1.0\msys.bat
 
