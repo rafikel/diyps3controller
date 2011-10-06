@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
   }
 
 #ifdef WIN32
-  if (!portname)
+  if (!portname && !check_config)
   {
     err(1, "no serial port specified!\n");
   }
