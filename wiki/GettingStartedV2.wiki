@@ -55,7 +55,7 @@ Note: to speed up the compilation (make), specify how many cores the CPU has. Ch
 CPU=4
 }}}
 
-The installation folder is GIMX/setup. Binaries can be launched from that folder as it contains all required libraries and configuration files.
+All binaries are copied into GIMX/setup. Binaries can be launched from that folder as it contains all required libraries and configuration files.
 
 = Eclipse IDE =
 
