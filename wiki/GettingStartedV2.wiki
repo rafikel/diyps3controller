@@ -7,7 +7,7 @@ It also explains how to perform a checkout and build the project.
 
 Unless otherwise specified, perform a default installation (default directories, etc).
 
-= MinGW+MSYS =
+= MinGW/MSYS =
 
 This part explains how to install the compilation toolchain.
 
@@ -61,6 +61,8 @@ All binaries are copied into GIMX/setup. Binaries can be launched from that fold
 
 = Eclipse IDE =
 
+Eclipse is an IDE that can be stacked onto the MinGW/MSYS compilation toolchain.
+
 Be sure to have a <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">java JRE</a> installed on your system.
 
 Download <a href="http://www.eclipse.org/downloads/">Eclipse IDE for C/C++ Developers</a>. Unzip it to wherever you want.
@@ -97,8 +99,10 @@ Select a wizard: Select "C project" and click next.
 
 Enter a Project name, and select "Makefile Project > Empty Project", and click next.
 
+Click on "Advanced Settings", click on "C/C++ build", uncheck "Use default build command", and write "make -f Makefile.win" as "Build command".
+
+Click on the "Behaviour" panel, check "Use parallel build" and set the "Use parallel jobs" to the right number of CPU cores.
+
 Click Finish.
 
-Check out is performed, and the new project appears in the Project Explorer view.
-
-The project is build automatically.
+Check out is performed, and the new project appears in the Project Explorer view. The project is build automatically.
