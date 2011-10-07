@@ -10,7 +10,7 @@ then
   unzip svn-win32-$SVN_VERSION.zip
   mkdir -p /usr/local/bin
   mv svn-win32-$SVN_VERSION/bin/* /usr/local/bin/
-  rm -rf svn-win32-$SVN_VERSION
+  rm -rf svn-win32-$SVN_VERSION svn-win32-$SVN_VERSION.zip
 fi
 
 #checkout & compile GIMX
