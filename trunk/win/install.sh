@@ -15,11 +15,8 @@ test -f $PREFIX/bin/libiconv-2.dll || mingw-get install mingw32-libiconv
 #build the SDL library
 if ! test -f $PREFIX/bin/SDL.dll
 then
-  if ! test -d $SDL
-  then
-    wget http://www.libsdl.org/release/$SDL.tar.gz
-    tar xzvf $SDL.tar.gz
-  fi
+  wget http://www.libsdl.org/release/$SDL.tar.gz
+  tar xzvf $SDL.tar.gz
   wget http://diyps3controller.googlecode.com/svn/trunk/libsdl/patch.win
   cd $SDL
   patch -p1 < ../patch.win
@@ -27,16 +24,14 @@ then
   make -j $CPU
   make install
   cd ..
+  rm -rf $SDL.tar.gz patch.win $SDL
 fi
 
 #build wxWidgets
-if ! test -f libwx_baseu-*
+if ! test -f $PREFIX/bin/libwx_baseu-*
 then
-  if ! test -d $WXMSW
-  then
-    wget http://prdownloads.sourceforge.net/wxwindows/$WXMSW.zip
-    unzip $WXMSW.zip
-  fi
+  wget http://prdownloads.sourceforge.net/wxwindows/$WXMSW.zip
+  unzip $WXMSW.zip
   cd $WXMSW
   mkdir msw-gimx
   cd msw-gimx
@@ -44,22 +39,21 @@ then
   make -j $CPU
   make install
   cd ../..
+  rm -rf $WXMSW
 fi
 
 #Get libxml
 if ! test -f $PREFIX/bin/libxml2.dll
 then
-  if ! test -d libxml
-  then
-    mkdir libxml
-	  cd libxml
-    wget http://sourceforge.net/projects/devpaks/files/libxml2/LibXML2%20-%202.6.27/libxml2-2.6.27-1cm.DevPak/download
+  mkdir libxml
+	cd libxml
+  wget http://sourceforge.net/projects/devpaks/files/libxml2/LibXML2%20-%202.6.27/libxml2-2.6.27-1cm.DevPak/download
 	tar xjvf libxml2-2.6.27-1cm.DevPak
-  fi  
   cp bin/* $PREFIX/bin
   cp -r include/libxml $PREFIX/include
   cp lib/* $PREFIX/lib
   cd ..
+  rm -rf libxml
 fi
 
 #Get zlib
@@ -74,5 +68,6 @@ then
   unzip zlib-$ZLIB-bin.zip
   cp bin/zlib1.dll $PREFIX/bin
   cd ..
+  rm -rf zlib
 fi
 
