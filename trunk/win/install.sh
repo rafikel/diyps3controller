@@ -39,7 +39,7 @@ then
   make -j $CPU
   make install
   cd ../..
-  rm -rf $WXMSW
+  rm -rf $WXMSW $WXMSW.zip
 fi
 
 #Get libxml
@@ -53,21 +53,18 @@ then
   cp -r include/libxml $PREFIX/include
   cp lib/* $PREFIX/lib
   cd ..
-  rm -rf libxml
+  rm -rf libxml libxml2-2.6.27-1cm.DevPak
 fi
 
 #Get zlib
 if ! test -f $PREFIX/bin/zlib1.dll
 then
-  if ! test -d zlib
-  then
-    mkdir zlib
+  mkdir zlib
 	cd zlib
-    wget http://sourceforge.net/projects/gnuwin32/files/zlib/$ZLIB/zlib-$ZLIB-bin.zip/download
-  fi
+  wget http://sourceforge.net/projects/gnuwin32/files/zlib/$ZLIB/zlib-$ZLIB-bin.zip/download
   unzip zlib-$ZLIB-bin.zip
   cp bin/zlib1.dll $PREFIX/bin
   cd ..
-  rm -rf zlib
+  rm -rf zlib zlib-$ZLIB-bin.zip
 fi
 
