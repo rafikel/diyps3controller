@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CPU=4
+PREFIX=/mingw
 SVN_VERSION=1.6.17
 
 #install svn
