@@ -53,7 +53,7 @@ then
   cp -r include/libxml $PREFIX/include
   cp lib/* $PREFIX/lib
   cd ..
-  rm -rf libxml libxml2-2.6.27-1cm.DevPak
+  rm -rf libxml
 fi
 
 #Get zlib
@@ -65,6 +65,6 @@ then
   unzip zlib-$ZLIB-bin.zip
   cp bin/zlib1.dll $PREFIX/bin
   cd ..
-  rm -rf zlib zlib-$ZLIB-bin.zip
+  rm -rf zlib
 fi
 
