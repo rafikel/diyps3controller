@@ -7,9 +7,6 @@ bindir=$(prefix)/bin
 
 BINS=bin/Release/gimx-config
 
-WSDIR = `pwd`
-
-
 CC = gcc
 CPP = g++
 F77 = f77
