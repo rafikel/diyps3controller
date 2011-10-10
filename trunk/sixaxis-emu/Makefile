@@ -4,7 +4,7 @@ confdir=$(DESTDIR)/etc/emuclient
 BINS=emu emuclient sixaddr bdaddr hcirevision
 CC=gcc
 CFLAGS=-Wall -O2
-LIB=-L../libsdl/lib -lSDL -lxml2 -lXi
+LIB=-L../libsdl/lib -lSDL -lxml2 -lXi -lm -lpthread
 INC=-I../libsdl/include -I/usr/include/libxml2
 
 all: $(BINS)
