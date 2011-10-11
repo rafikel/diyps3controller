@@ -28,7 +28,9 @@ int win_serial_connect(char* portname)
 {
   int ret = 0;
   DWORD accessdirection = /*GENERIC_READ |*/GENERIC_WRITE;
-  serial = CreateFile(portname, accessdirection, 0, 0, OPEN_EXISTING, 0, 0);
+  char scom[16];
+  snprintf(scom, sizeof(scom), "\\\\.\\%s", portname);
+  serial = CreateFile(scom, accessdirection, 0, 0, OPEN_EXISTING, 0, 0);
   if (serial == INVALID_HANDLE_VALUE)
   {
     ret = -1;

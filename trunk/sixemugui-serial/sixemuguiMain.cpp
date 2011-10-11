@@ -152,17 +152,19 @@ static void read_devices(wxComboBox* choice)
 {
   HANDLE hSerial;
   DWORD accessdirection = /*GENERIC_READ |*/GENERIC_WRITE;
-  char portname[6];
+  char portname[16];
+  wchar_t szCOM[16];
   int i;
 
   choice->Clear();
 
   for(i=0; i<MAX_PORT_ID; ++i)
   {
-    snprintf(portname, sizeof(portname), "COM%d", i);
-    hSerial = CreateFile((const WCHAR*) portname, accessdirection, 0, 0, OPEN_EXISTING, 0, 0);
+    wsprintf(szCOM, L"\\\\.\\COM%d", i);
+    hSerial = CreateFile(szCOM, accessdirection, 0, 0, OPEN_EXISTING, 0, 0);
     if (hSerial != INVALID_HANDLE_VALUE)
     {
+      snprintf(portname, sizeof(portname), "COM%d", i);
       choice->SetSelection(choice->Append(wxString(portname, wxConvUTF8)));
     }
     CloseHandle(hSerial);
