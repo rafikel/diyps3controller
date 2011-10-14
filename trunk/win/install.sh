@@ -28,7 +28,7 @@ then
 fi
 
 #build wxWidgets
-if ! test -f $PREFIX/bin/libwx_baseu-*
+if ! test -f $PREFIX/lib/libwx_baseu-*
 then
   wget http://prdownloads.sourceforge.net/wxwindows/$WXMSW.zip
   unzip $WXMSW.zip
