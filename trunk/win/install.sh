@@ -1,10 +1,14 @@
 #!/bin/bash
 
-CPU=4
 PREFIX=/mingw
 WXMSW=wxMSW-2.8.12
 SDL=SDL-1.2.14
 ZLIB=1.2.3
+
+wget http://diyps3controller.googlecode.com/svn/trunk/win/cpu.c
+gcc -o cpu cpu.c
+
+CPU=$(./cpu)
 
 #install required tools/librairies
 test -f /bin/patch || mingw-get install msys-patch
