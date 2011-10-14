@@ -13,6 +13,7 @@ This part explains how to install the compilation toolchain.
 
 Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version (as of this writing, 20110802).
 The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
+
 Add ";C:\MinGW\bin;C:\MinGW\msys\1.0\bin" (without quotes) to your system PATH (Control Panel > System > Advanced > Environment Variables > System variables > Path > Edit).
 
 = Libraries =
