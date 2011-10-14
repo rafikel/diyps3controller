@@ -1,6 +1,11 @@
 #!/bin/bash
 
-CPU=4
+if test -f cpu
+then
+  CPU=$(./cpu)
+else
+  CPU=1
+fi
 PREFIX=/mingw
 SVN_VERSION=1.6.17
 
