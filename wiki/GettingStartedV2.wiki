@@ -32,7 +32,7 @@ Download and run the install.sh script:
 
 {{{
 wget http://diyps3controller.googlecode.com/svn/trunk/win/install.sh
-./install.sh
+./install.sh precomp
 }}}
 
 = Automated command-line build =
