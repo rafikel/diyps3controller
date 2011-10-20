@@ -11,7 +11,7 @@ test -f /bin/wget || mingw-get install msys-wget
 test -f /bin/unzip || mingw-get install msys-unzip
 test -f $PREFIX/bin/iconv.h || mingw-get install mingw32-libiconv
 
-if ! test $1 = "precomp"
+if ! test $1 = "sources"
 then
   wget http://www.gimx.fr/archive/GIMX-libs-dev.tar.gz
   tar xzvf GIMX-libs-dev.tar.gz
@@ -83,3 +83,4 @@ else
     rm -rf zlib
   fi
 fi
+
