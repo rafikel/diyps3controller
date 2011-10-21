@@ -58,7 +58,7 @@ wget http://diyps3controller.googlecode.com/svn/trunk/win/build.sh
 ./build.sh
 }}}
 
-All binaries are copied into C:\MinGW\msys\1.0\home\<username>\GIMX\setup. Binaries gimx-config, gimx-fpsconfig and gimx-serial can be launched from that folder as it contains all required libraries and configuration files.
+All binaries are copied into C:\MinGW\msys\1.0\home\username\GIMX\setup. Binaries gimx-config, gimx-fpsconfig and gimx-serial can be launched from that folder as it contains all required libraries and configuration files.
 
 = Eclipse IDE =
 
