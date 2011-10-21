@@ -3,6 +3,7 @@
 = Introduction =
 
 This wiki explains how to install a compilation environment (based on MinGW) to build GIMX.
+
 It also explains how to install Eclipse CDT (with SVN), perform a checkout, and build the project.
 
 Unless otherwise specified, perform a default installation (default directories, etc).
