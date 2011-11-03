@@ -17,7 +17,7 @@ The only thing to configure during the installation process: in the "Select Comp
 
 http://www.gimx.fr/img/wiki/MinGW.jpg
 
-Append ";C:\MinGW\bin;C:\MinGW\msys\1.0\bin" (without quotes) to your system PATH (Control Panel > System > Advanced > Environment Variables > System variables > Path > Edit).
+Append ";C:\MinGW\bin;C:\MinGW\msys\1.0\bin" (without quotes, don't forget the first semicolon) to your system PATH (Control Panel > System > Advanced > Environment Variables > System variables > Path > Edit).
 
 http://www.gimx.fr/img/wiki/System.jpg
 
