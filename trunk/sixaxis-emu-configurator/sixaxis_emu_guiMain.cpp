@@ -115,7 +115,6 @@ const long sixaxis_emu_guiFrame::ID_STATICTEXT40 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_TEXTCTRL3 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON8 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_CHOICE5 = wxNewId();
-const long sixaxis_emu_guiFrame::ID_STATICLINE1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_GRID1 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON4 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_BUTTON6 = wxNewId();
@@ -488,8 +487,6 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
     FlexGridSizer1->Add(Button8, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     Choice5 = new wxChoice(Panel2, ID_CHOICE5, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE5"));
     FlexGridSizer1->Add(Choice5, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticLine1 = new wxStaticLine(Panel2, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
-    FlexGridSizer1->Add(StaticLine1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer9->Add(FlexGridSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer8 = new wxFlexGridSizer(1, 2, 0, 0);
     Grid1 = new wxGrid(Panel2, ID_GRID1, wxDefaultPosition, wxDefaultSize, wxVSCROLL, _T("ID_GRID1"));

@@ -18,7 +18,6 @@
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
-#include <wx/statline.h>
 #include <wx/panel.h>
 #include <wx/grid.h>
 #include <wx/filedlg.h>
@@ -201,7 +200,6 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_TEXTCTRL3;
         static const long ID_BUTTON8;
         static const long ID_CHOICE5;
-        static const long ID_STATICLINE1;
         static const long ID_GRID1;
         static const long ID_BUTTON4;
         static const long ID_BUTTON6;
@@ -360,7 +358,6 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxButton* Button9;
         wxStaticText* StaticText61;
         wxTextCtrl* TextCtrl8;
-        wxStaticLine* StaticLine1;
         wxTextCtrl* TextCtrl2;
         wxSpinCtrl* SpinCtrl2;
         wxStaticText* StaticText70;
