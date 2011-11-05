@@ -214,7 +214,7 @@ static void read_devices(wxComboBox* choice)
   dirp = opendir("/dev");
   if (dirp == NULL)
   {
-    printf("Warning: can't open config directory %s\n", dir_path);
+    printf("Warning: can't open /dev directory %s\n", dir_path);
     return;
   }
 
