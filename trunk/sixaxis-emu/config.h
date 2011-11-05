@@ -102,6 +102,7 @@ typedef enum
   DZY,
   DZS,
   RD,
+  VEL,
   EX,
   EY,
   TEST
@@ -131,6 +132,7 @@ typedef struct
   double* ex;
   double* ey;
   double rd;
+  double vel;
   int* dzx;
   int* dzy;
   e_shape* dzs;

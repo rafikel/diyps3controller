@@ -13,6 +13,7 @@
 #include <limits.h>
 #include <dirent.h>
 #include <libxml/xmlreader.h>
+#include <iconv.h>
 
 #ifdef WIN32
 #include <sys/stat.h>
@@ -55,11 +56,18 @@ int GetDeviceName(xmlNode* a_node)
 {
   int ret = 0;
   char* prop;
+  iconv_t cd;
+  size_t in = 0;
+  size_t out = 0;
+  char name[128];
 
   prop = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
   if(prop)
   {
-    strncpy(r_device_name, prop, sizeof(r_device_name));
+    strncpy(name, prop, sizeof(name));
+    cd = iconv_open("ASCII", "UTF-8//TRANSLIT");
+    iconv(cd, (const char**)&name, &in, (char**)&r_device_name, &out);
+    iconv_close(cd);
   }
   else
   {
@@ -110,12 +118,10 @@ static int GetDeviceId(xmlNode* a_node)
     }
     else if(!strlen(r_device_name))
     {
-#ifndef WIN32
       if(!merge_all_devices)
       {
         printf("A device name is empty. Multiple mice and keyboards are not managed.\n");
       }
-#endif
       merge_all_devices = 1;
     }
     else
@@ -1159,6 +1165,7 @@ static void read_calibration()
             mcal->dzx = &p_mapper->dead_zone;
             mcal->dzs = &p_mapper->shape;
             mcal->rd = DEFAULT_RADIUS;
+            mcal->vel = DEFAULT_VELOCITY;
             mcal->dpi = r_config_dpi[j];
             mcal->bsx = &p_mapper->buffer_size;
             mcal->fix = &p_mapper->filter;

@@ -177,19 +177,22 @@ static void circle_test()
   
   if(dpi <= 0)
   {
-    return;
+    dpi = 5700;
   }
 
-  for (i = 1; i < 360; i += step)
+  while(current_cal == RD || current_cal == VEL)
   {
-    for (j = 0; j < DEFAULT_REFRESH_PERIOD / refresh; ++j)
+    for (i = 1; i < 360; i += step)
     {
-      mouse_evt.motion.xrel = round(128 * pow((double)dpi/5700, *mcal->ex) * (cos(i * 2 * pi / 360) - cos((i - 1) * 2 * pi / 360)));
-      mouse_evt.motion.yrel = round(128 * pow((double)dpi/5700, *mcal->ex) * (sin(i * 2 * pi / 360) - sin((i - 1) * 2 * pi / 360)));
-      mouse_evt.motion.which = current_mouse;
-      mouse_evt.type = SDL_MOUSEMOTION;
-      SDL_PushEvent(&mouse_evt);
-      usleep(refresh / 2);
+      for (j = 0; j < DEFAULT_REFRESH_PERIOD / refresh; ++j)
+      {
+        mouse_evt.motion.xrel = round(128 * mcal->vel * pow((double)dpi/5700, *mcal->ex) * (cos(i * 2 * pi / 360) - cos((i - 1) * 2 * pi / 360)));
+        mouse_evt.motion.yrel = round(128 * mcal->vel * pow((double)dpi/5700, *mcal->ex) * (sin(i * 2 * pi / 360) - sin((i - 1) * 2 * pi / 360)));
+        mouse_evt.motion.which = current_mouse;
+        mouse_evt.type = SDL_MOUSEMOTION;
+        SDL_PushEvent(&mouse_evt);
+        usleep(refresh / 2);
+      }
     }
   }
 }
@@ -273,6 +276,7 @@ static void display_calibration()
       printf(" NA\n");
     }
     printf("radius: %.2f\n", mcal->rd);
+    printf("velocity: %.2f\n", mcal->vel);
     printf("time: %d\n", test_time);
   }
 }
@@ -431,17 +435,35 @@ void cal_key(int device_id, int sym, int down)
       {
         if (current_conf >= 0 && current_mouse >= 0)
         {
+          if(current_cal != RD && current_cal != VEL)
+          {
+            current_cal = RD;
+            pthread_attr_init(&thread_attr);
+            pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+            pthread_create(&thread, &thread_attr, (void*) circle_test, NULL);
+          }
+
           printf("adjusting circle test radius\n");
           current_cal = RD;
         }
       }
       break;
     case SDLK_F11:
-      if (down && rctrl)
+      if (down && rctrl && current_cal != NONE)
       {
-        pthread_attr_init(&thread_attr);
-        pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-        pthread_create(&thread, &thread_attr, (void*) circle_test, NULL);
+        if (current_conf >= 0 && current_mouse >= 0)
+        {
+          if(current_cal != RD && current_cal != VEL)
+          {
+            current_cal = VEL;
+            pthread_attr_init(&thread_attr);
+            pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+            pthread_create(&thread, &thread_attr, (void*) circle_test, NULL);
+          }
+
+          printf("adjusting circle test velocity\n");
+          current_cal = VEL;
+        }
       }
       break;
     case SDLK_F12:
@@ -568,6 +590,9 @@ void cal_button(int which, int button)
         case RD:
           mcal->rd += 0.5;
           break;
+        case VEL:
+          mcal->vel += 0.01;
+          break;
         case EX:
           if (mcal->ex)
           {
@@ -662,6 +687,9 @@ void cal_button(int which, int button)
           break;
         case RD:
           mcal->rd -= 0.5;
+          break;
+        case VEL:
+          mcal->vel -= 0.01;
           break;
         case EX:
           if (mcal->ex)
