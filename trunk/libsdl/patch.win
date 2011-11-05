@@ -1,5 +1,5 @@
-diff -uNr SDL-1.2.14_orig//configure SDL-1.2.14/configure
---- SDL-1.2.14_orig//configure	2009-10-17 08:35:14 +0000
+diff -uNr SDL-1.2.14_orig/configure SDL-1.2.14/configure
+--- SDL-1.2.14_orig/configure	2009-10-17 08:35:14 +0000
 +++ SDL-1.2.14/configure	2011-06-05 16:13:37 +0000
 @@ -1,18 +1,22 @@
  #! /bin/sh
@@ -31001,8 +31001,8 @@ diff -uNr SDL-1.2.14_orig//configure SDL-1.2.14/configure
  $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
  fi
  
-diff -uNr SDL-1.2.14_orig//configure.in SDL-1.2.14/configure.in
---- SDL-1.2.14_orig//configure.in	2009-10-17 08:35:04 +0000
+diff -uNr SDL-1.2.14_orig/configure.in SDL-1.2.14/configure.in
+--- SDL-1.2.14_orig/configure.in	2009-10-17 08:35:04 +0000
 +++ SDL-1.2.14/configure.in	2011-06-05 15:28:49 +0000
 @@ -2027,6 +2027,7 @@
          AC_DEFINE(SDL_VIDEO_DRIVER_WINDIB)
@@ -31012,9 +31012,170 @@ diff -uNr SDL-1.2.14_orig//configure.in SDL-1.2.14/configure.in
          have_video=yes
      fi
  }
-diff -uNr SDL-1.2.14_orig//src/video/bwindow/SDL_sysevents.cc SDL-1.2.14/src/video/bwindow/SDL_sysevents.cc
---- SDL-1.2.14_orig//src/video/bwindow/SDL_sysevents.cc	2009-10-12 14:07:16 +0000
-+++ SDL-1.2.14/src/video/bwindow/SDL_sysevents.cc	2011-06-05 18:07:12 +0000
+diff -uNr SDL-1.2.14_orig/include/SDL_events.h SDL-1.2.14/include/SDL_events.h
+--- SDL-1.2.14_orig/include/SDL_events.h	2009-10-12 14:07:20 +0000
++++ SDL-1.2.14/include/SDL_events.h	2011-10-14 18:30:02 +0000
+@@ -138,6 +138,7 @@
+ 	Uint16 x, y;	/**< The X/Y coordinates of the mouse */
+ 	Sint16 xrel;	/**< The relative motion in the X direction */
+ 	Sint16 yrel;	/**< The relative motion in the Y direction */
++	Uint32 timestamp; /* matlo */
+ } SDL_MouseMotionEvent;
+ 
+ /** Mouse button event structure */
+@@ -347,6 +348,9 @@
+ */
+ extern DECLSPEC Uint8 SDLCALL SDL_EventState(Uint8 type, int state);
+ 
++extern DECLSPEC const char* SDLCALL SDL_GetMouseName(int id);
++extern DECLSPEC const char* SDLCALL SDL_GetKeyboardName(int id);
++
+ /* Ends C function definitions when using C++ */
+ #ifdef __cplusplus
+ }
+diff -uNr SDL-1.2.14_orig/sdl.pc SDL-1.2.14/sdl.pc
+--- SDL-1.2.14_orig/sdl.pc	1970-01-01 00:00:00 +0000
++++ SDL-1.2.14/sdl.pc	2011-10-29 15:01:50 +0000
+@@ -0,0 +1,15 @@
++# sdl pkg-config source file
++
++prefix=/mingw
++exec_prefix=${prefix}
++libdir=${exec_prefix}/lib
++includedir=${prefix}/include
++
++Name: sdl
++Description: Simple DirectMedia Layer is a cross-platform multimedia library designed to provide low level access to audio, keyboard, mouse, joystick, 3D hardware via OpenGL, and 2D video framebuffer.
++Version: 1.2.14
++Requires:
++Conflicts:
++Libs: -L${libdir}  -lmingw32 -lSDLmain -lSDL  -mwindows
++Libs.private: -lmingw32 -lSDLmain -lSDL  -mwindows  -liconv -lm -luser32 -lgdi32 -lwinmm
++Cflags: -I${includedir}/SDL -D_GNU_SOURCE=1 -Dmain=SDL_main
+diff -uNr SDL-1.2.14_orig/src/events/SDL_keyboard.c SDL-1.2.14/src/events/SDL_keyboard.c
+--- SDL-1.2.14_orig/src/events/SDL_keyboard.c	2009-10-12 14:07:14 +0000
++++ SDL-1.2.14/src/events/SDL_keyboard.c	2011-10-27 18:58:10 +0000
+@@ -395,6 +395,8 @@
+ 	return (char *)(keyname);
+ }
+ 
++Uint8 keyboard_id; /* Matlo */
++
+ /* These are global for SDL_eventloop.c */
+ int SDL_PrivateKeyboard(Uint8 state, SDL_keysym *keysym)
+ {
+@@ -404,6 +406,8 @@
+ 
+ 	SDL_memset(&event, 0, sizeof(event));
+ 
++	event.key.which = keyboard_id; /* Matlo */
++
+ #if 0
+ printf("The '%s' key has been %s\n", SDL_GetKeyName(keysym->sym), 
+ 				state == SDL_PRESSED ? "pressed" : "released");
+@@ -419,20 +423,12 @@
+ 			case SDLK_UNKNOWN:
+ 				break;
+ 			case SDLK_NUMLOCK:
+-				modstate ^= KMOD_NUM;
+-				if ( SDL_NoLockKeys & SDL_NLK_NUM )
+-					break;
+-				if ( ! (modstate&KMOD_NUM) )
+-					state = SDL_RELEASED;
+-				keysym->mod = (SDLMod)modstate;
++			  //Matlo
++				modstate |= KMOD_NUM;
+ 				break;
+ 			case SDLK_CAPSLOCK:
+-				modstate ^= KMOD_CAPS;
+-				if ( SDL_NoLockKeys & SDL_NLK_CAPS )
+-					break;
+-				if ( ! (modstate&KMOD_CAPS) )
+-					state = SDL_RELEASED;
+-				keysym->mod = (SDLMod)modstate;
++			  //Matlo
++				modstate |= KMOD_CAPS;
+ 				break;
+ 			case SDLK_LCTRL:
+ 				modstate |= KMOD_LCTRL;
+@@ -470,15 +466,13 @@
+ 			case SDLK_UNKNOWN:
+ 				break;
+ 			case SDLK_NUMLOCK:
+-				if ( SDL_NoLockKeys & SDL_NLK_NUM )
+-					break;
+-				/* Only send keydown events */
+-				return(0);
++        //Matlo
++        modstate &= ~KMOD_NUM;
++        break;
+ 			case SDLK_CAPSLOCK:
+-				if ( SDL_NoLockKeys & SDL_NLK_CAPS )
+-					break;
+-				/* Only send keydown events */
+-				return(0);
++        //Matlo
++        modstate &= ~KMOD_CAPS;
++        break;
+ 			case SDLK_LCTRL:
+ 				modstate &= ~KMOD_LCTRL;
+ 				break;
+@@ -533,13 +527,14 @@
+ 	}
+ 
+ 	if ( keysym->sym != SDLK_UNKNOWN ) {
+-		/* Drop events that don't change state */
+-		if ( SDL_KeyState[keysym->sym] == state ) {
+-#if 0
+-printf("Keyboard event didn't change state - dropped!\n");
+-#endif
+-			return(0);
+-		}
++// Matlo
++//		/* Drop events that don't change state */
++//		if ( SDL_KeyState[keysym->sym] == state ) {
++//#if 0
++//printf("Keyboard event didn't change state - dropped!\n");
++//#endif
++//			return(0);
++//		}
+ 
+ 		/* Update internal keyboard state */
+ 		SDL_ModState = (SDLMod)modstate;
+diff -uNr SDL-1.2.14_orig/src/events/SDL_mouse.c SDL-1.2.14/src/events/SDL_mouse.c
+--- SDL-1.2.14_orig/src/events/SDL_mouse.c	2009-10-12 14:07:14 +0000
++++ SDL-1.2.14/src/events/SDL_mouse.c	2011-10-27 18:57:45 +0000
+@@ -109,6 +109,10 @@
+ 	SDL_MouseMaxY = (Sint16)maxY;
+ }
+ 
++//Matlo
++Uint8 mouse_id;
++Uint32 timestamp;
++
+ /* These are global for SDL_eventloop.c */
+ int SDL_PrivateMouseMotion(Uint8 buttonstate, int relative, Sint16 x, Sint16 y)
+ {
+@@ -180,6 +184,8 @@
+ 	if ( SDL_ProcessEvents[SDL_MOUSEMOTION] == SDL_ENABLE ) {
+ 		SDL_Event event;
+ 		SDL_memset(&event, 0, sizeof(event));
++		event.motion.which = mouse_id; //Matlo
++		event.motion.timestamp = timestamp;
+ 		event.type = SDL_MOUSEMOTION;
+ 		event.motion.state = buttonstate;
+ 		event.motion.x = X;
+@@ -203,6 +209,7 @@
+ 
+ 	SDL_memset(&event, 0, sizeof(event));
+ 
++	event.motion.which = mouse_id; //Matlo
+ 	/* Check parameters */
+ 	if ( x || y ) {
+ 		ClipOffset(&x, &y);
+diff -uNr SDL-1.2.14_orig/src/video/bwindow/SDL_sysevents.cc SDL-1.2.14/src/video/bwindow/SDL_sysevents.cc
+--- SDL-1.2.14_orig/src/video/bwindow/SDL_sysevents.cc	2009-10-12 14:07:16 +0000
++++ SDL-1.2.14/src/video/bwindow/SDL_sysevents.cc	2011-10-29 14:48:30 +0000
 @@ -160,149 +160,150 @@
  void SDL_BWin::DispatchMessage(BMessage *msg, BHandler *target)
  {
@@ -31309,214 +31470,9 @@ diff -uNr SDL-1.2.14_orig//src/video/bwindow/SDL_sysevents.cc SDL-1.2.14/src/vid
  
  		case B_KEY_DOWN:
  		case B_UNMAPPED_KEY_DOWN: /* modifier keys are unmapped */
-diff -uNr SDL-1.2.14_orig//src/video/wincommon/SDL_sysevents.c SDL-1.2.14/src/video/wincommon/SDL_sysevents.c
---- SDL-1.2.14_orig//src/video/wincommon/SDL_sysevents.c	2009-10-12 14:07:14 +0000
-+++ SDL-1.2.14/src/video/wincommon/SDL_sysevents.c	2011-06-05 20:03:44 +0000
-@@ -417,106 +417,107 @@
- 		case WM_RBUTTONUP:
- 		case WM_XBUTTONDOWN:
- 		case WM_XBUTTONUP: {
--			/* Mouse is handled by DirectInput when fullscreen */
--			if ( SDL_VideoSurface && ! DINPUT() ) {
--				WORD xbuttonval = 0;
--				Uint8 button, state;
--
--				/* DJM:
--				   We want the SDL window to take focus so that
--				   it acts like a normal windows "component"
--				   (e.g. gains keyboard focus on a mouse click).
--				 */
--				SetFocus(SDL_Window);
--
--				/* Figure out which button to use */
--				switch (msg) {
--					case WM_LBUTTONDOWN:
--						button = SDL_BUTTON_LEFT;
--						state = SDL_PRESSED;
--						break;
--					case WM_LBUTTONUP:
--						button = SDL_BUTTON_LEFT;
--						state = SDL_RELEASED;
--						break;
--					case WM_MBUTTONDOWN:
--						button = SDL_BUTTON_MIDDLE;
--						state = SDL_PRESSED;
--						break;
--					case WM_MBUTTONUP:
--						button = SDL_BUTTON_MIDDLE;
--						state = SDL_RELEASED;
--						break;
--					case WM_RBUTTONDOWN:
--						button = SDL_BUTTON_RIGHT;
--						state = SDL_PRESSED;
--						break;
--					case WM_RBUTTONUP:
--						button = SDL_BUTTON_RIGHT;
--						state = SDL_RELEASED;
--						break;
--					case WM_XBUTTONDOWN:
--						xbuttonval = GET_XBUTTON_WPARAM(wParam);
--						button = SDL_BUTTON_X1 + xbuttonval - 1;
--						state = SDL_PRESSED;
--						break;
--					case WM_XBUTTONUP:
--						xbuttonval = GET_XBUTTON_WPARAM(wParam);
--						button = SDL_BUTTON_X1 + xbuttonval - 1;
--						state = SDL_RELEASED;
--						break;
--					default:
--						/* Eh? Unknown button? */
--						return(0);
--				}
--				if ( state == SDL_PRESSED ) {
--					/* Grab mouse so we get up events */
--					if ( ++mouse_pressed > 0 ) {
--						SetCapture(hwnd);
--					}
--				} else {
--					/* Release mouse after all up events */
--					if ( --mouse_pressed <= 0 ) {
--						ReleaseCapture();
--						mouse_pressed = 0;
--					}
--				}
--				posted = SDL_PrivateMouseButton(
--							state, button, 0, 0);
--
--				/*
--				 * MSDN says:
--				 *  "Unlike the WM_LBUTTONUP, WM_MBUTTONUP, and WM_RBUTTONUP
--				 *   messages, an application should return TRUE from [an 
--				 *   XBUTTON message] if it processes it. Doing so will allow
--				 *   software that simulates this message on Microsoft Windows
--				 *   systems earlier than Windows 2000 to determine whether
--				 *   the window procedure processed the message or called
--				 *   DefWindowProc to process it.
--				 */
--				if (xbuttonval > 0)
--					return(TRUE);
--			}
-+//Matlo
-+//			/* Mouse is handled by DirectInput when fullscreen */
-+//			if ( SDL_VideoSurface && ! DINPUT() ) {
-+//				WORD xbuttonval = 0;
-+//				Uint8 button, state;
-+//
-+//				/* DJM:
-+//				   We want the SDL window to take focus so that
-+//				   it acts like a normal windows "component"
-+//				   (e.g. gains keyboard focus on a mouse click).
-+//				 */
-+//				SetFocus(SDL_Window);
-+//
-+//				/* Figure out which button to use */
-+//				switch (msg) {
-+//					case WM_LBUTTONDOWN:
-+//						button = SDL_BUTTON_LEFT;
-+//						state = SDL_PRESSED;
-+//						break;
-+//					case WM_LBUTTONUP:
-+//						button = SDL_BUTTON_LEFT;
-+//						state = SDL_RELEASED;
-+//						break;
-+//					case WM_MBUTTONDOWN:
-+//						button = SDL_BUTTON_MIDDLE;
-+//						state = SDL_PRESSED;
-+//						break;
-+//					case WM_MBUTTONUP:
-+//						button = SDL_BUTTON_MIDDLE;
-+//						state = SDL_RELEASED;
-+//						break;
-+//					case WM_RBUTTONDOWN:
-+//						button = SDL_BUTTON_RIGHT;
-+//						state = SDL_PRESSED;
-+//						break;
-+//					case WM_RBUTTONUP:
-+//						button = SDL_BUTTON_RIGHT;
-+//						state = SDL_RELEASED;
-+//						break;
-+//					case WM_XBUTTONDOWN:
-+//						xbuttonval = GET_XBUTTON_WPARAM(wParam);
-+//						button = SDL_BUTTON_X1 + xbuttonval - 1;
-+//						state = SDL_PRESSED;
-+//						break;
-+//					case WM_XBUTTONUP:
-+//						xbuttonval = GET_XBUTTON_WPARAM(wParam);
-+//						button = SDL_BUTTON_X1 + xbuttonval - 1;
-+//						state = SDL_RELEASED;
-+//						break;
-+//					default:
-+//						/* Eh? Unknown button? */
-+//						return(0);
-+//				}
-+//				if ( state == SDL_PRESSED ) {
-+//					/* Grab mouse so we get up events */
-+//					if ( ++mouse_pressed > 0 ) {
-+//						SetCapture(hwnd);
-+//					}
-+//				} else {
-+//					/* Release mouse after all up events */
-+//					if ( --mouse_pressed <= 0 ) {
-+//						ReleaseCapture();
-+//						mouse_pressed = 0;
-+//					}
-+//				}
-+//				posted = SDL_PrivateMouseButton(
-+//							state, button, 0, 0);
-+//
-+//				/*
-+//				 * MSDN says:
-+//				 *  "Unlike the WM_LBUTTONUP, WM_MBUTTONUP, and WM_RBUTTONUP
-+//				 *   messages, an application should return TRUE from [an
-+//				 *   XBUTTON message] if it processes it. Doing so will allow
-+//				 *   software that simulates this message on Microsoft Windows
-+//				 *   systems earlier than Windows 2000 to determine whether
-+//				 *   the window procedure processed the message or called
-+//				 *   DefWindowProc to process it.
-+//				 */
-+//				if (xbuttonval > 0)
-+//					return(TRUE);
-+//			}
- 		}
- 		return(0);
- 
- 
- #if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
- 		case WM_MOUSEWHEEL: 
--			if ( SDL_VideoSurface && ! DINPUT() ) {
--				int move = (short)HIWORD(wParam);
--				if ( move ) {
--					Uint8 button;
--					if ( move > 0 )
--						button = SDL_BUTTON_WHEELUP;
--					else
--						button = SDL_BUTTON_WHEELDOWN;
--					posted = SDL_PrivateMouseButton(
--						SDL_PRESSED, button, 0, 0);
--					posted |= SDL_PrivateMouseButton(
--						SDL_RELEASED, button, 0, 0);
--				}
--			}
-+//			if ( SDL_VideoSurface && ! DINPUT() ) {
-+//				int move = (short)HIWORD(wParam);
-+//				if ( move ) {
-+//					Uint8 button;
-+//					if ( move > 0 )
-+//						button = SDL_BUTTON_WHEELUP;
-+//					else
-+//						button = SDL_BUTTON_WHEELDOWN;
-+//					posted = SDL_PrivateMouseButton(
-+//						SDL_PRESSED, button, 0, 0);
-+//					posted |= SDL_PrivateMouseButton(
-+//						SDL_RELEASED, button, 0, 0);
-+//				}
-+//			}
- 			return(0);
- #endif
- 
-diff -uNr SDL-1.2.14_orig//src/video/windib/SDL_dibevents.c SDL-1.2.14/src/video/windib/SDL_dibevents.c
---- SDL-1.2.14_orig//src/video/windib/SDL_dibevents.c	2009-10-17 07:59:12 +0000
-+++ SDL-1.2.14/src/video/windib/SDL_dibevents.c	2011-06-05 20:04:35 +0000
+diff -uNr SDL-1.2.14_orig/src/video/windib/SDL_dibevents.c SDL-1.2.14/src/video/windib/SDL_dibevents.c
+--- SDL-1.2.14_orig/src/video/windib/SDL_dibevents.c	2009-10-17 07:59:12 +0000
++++ SDL-1.2.14/src/video/windib/SDL_dibevents.c	2011-11-03 19:36:15 +0000
 @@ -33,6 +33,9 @@
  #include "SDL_gapidibvideo.h"
  #include "SDL_vkeys.h"
@@ -31527,23 +31483,37 @@ diff -uNr SDL-1.2.14_orig//src/video/windib/SDL_dibevents.c SDL-1.2.14/src/video
  #ifdef SDL_VIDEO_DRIVER_GAPI
  #include "../gapi/SDL_gapivideo.h"
  #endif
-@@ -368,8 +371,63 @@
+@@ -357,6 +360,10 @@
+ 	}
+ }
+ 
++/* Matlo */
++extern Uint8 mouse_id;
++extern Uint8 keyboard_id;
++
+ void DIB_PumpEvents(_THIS)
+ {
+ 	MSG msg;
+@@ -368,8 +375,73 @@
  		}
  	}
  
 -	if ( SDL_GetAppState() & SDL_APPMOUSEFOCUS ) {
++  //Matlo
 +	/*if ( SDL_GetAppState() & SDL_APPMOUSEFOCUS ) {
  		DIB_GenerateMouseMotionEvent( this );
 +	}*/
 +
-+	//Matlo
 +	ManyMouseEvent event;
 +	short x = 0;
 +	short y = 0;
 +	Uint8 button = 0;
++	int pressed;
 +
 +	while (ManyMouse_PollEvent(&event))
 +  {
++	    mouse_id = event.device;
++
 +      if (event.type == MANYMOUSE_EVENT_RELMOTION)
 +      {
 +          if(event.item == 0)
@@ -31584,6 +31554,13 @@ diff -uNr SDL-1.2.14_orig//src/video/windib/SDL_dibevents.c SDL-1.2.14/src/video
 +          SDL_PrivateMouseButton(SDL_PRESSED, (event.value > 0) ? SDL_BUTTON_WHEELUP : SDL_BUTTON_WHEELDOWN, 0, 0);
 +          SDL_PrivateMouseButton(SDL_RELEASED, (event.value > 0) ? SDL_BUTTON_WHEELUP : SDL_BUTTON_WHEELDOWN, 0, 0);
 +      }
++
++      else if(event.type == MANYMOUSE_EVENT_KEY)
++      {
++        keyboard_id = event.device;
++        pressed = event.value ? SDL_PRESSED : SDL_RELEASED;
++        DIB_HandleMessage(current_video, SDL_Window, event.value ? WM_KEYDOWN : WM_KEYUP, event.item, event.scancode);
++      }
 +  }
 +
 +	if(x || y)
@@ -31592,9 +31569,38 @@ diff -uNr SDL-1.2.14_orig//src/video/windib/SDL_dibevents.c SDL-1.2.14/src/video
  	}
  }
  
-diff -uNr SDL-1.2.14_orig//src/video/windib/SDL_dibvideo.c SDL-1.2.14/src/video/windib/SDL_dibvideo.c
---- SDL-1.2.14_orig//src/video/windib/SDL_dibvideo.c	2009-10-16 22:45:42 +0000
-+++ SDL-1.2.14/src/video/windib/SDL_dibvideo.c	2011-06-05 17:26:00 +0000
+@@ -676,6 +748,10 @@
+ 			SDL_SetError("Couldn't create window");
+ 			return(-1);
+ 		}
++
++	  //Matlo
++	  ManyMouse_Init();
++
+ 		ShowWindow(SDL_Window, SW_HIDE);
+ 	}
+ 
+@@ -703,3 +779,17 @@
+ 	*/
+ 	WIN_FlushMessageQueue();
+ }
++
++//Matlo
++static char keyboardName[256] = {};
++static char mouseName[256] = {};
++
++const char* SDL_GetKeyboardName(int id)
++{
++  return ManyMouse_KeyboardName(id);
++}
++
++const char* SDL_GetMouseName(int id)
++{
++  return ManyMouse_MouseName(id);
++}
+diff -uNr SDL-1.2.14_orig/src/video/windib/SDL_dibvideo.c SDL-1.2.14/src/video/windib/SDL_dibvideo.c
+--- SDL-1.2.14_orig/src/video/windib/SDL_dibvideo.c	2009-10-16 22:45:42 +0000
++++ SDL-1.2.14/src/video/windib/SDL_dibvideo.c	2011-10-26 11:26:35 +0000
 @@ -41,6 +41,9 @@
  #include "SDL_dibevents_c.h"
  #include "../wincommon/SDL_wingl_c.h"
@@ -31605,17 +31611,7 @@ diff -uNr SDL-1.2.14_orig//src/video/windib/SDL_dibvideo.c SDL-1.2.14/src/video/
  #ifdef _WIN32_WCE
  
  #ifndef DM_DISPLAYORIENTATION
-@@ -221,6 +224,9 @@
- 
- 	device->free = DIB_DeleteDevice;
- 
-+	//Matlo
-+	ManyMouse_Init();
-+
- 	/* We're finally ready */
- 	return device;
- }
-@@ -1236,6 +1242,9 @@
+@@ -1236,6 +1239,9 @@
  		SDL_modelist[i] = NULL;
  		SDL_nummodes[i] = 0;
  	}
@@ -31625,8 +31621,8 @@ diff -uNr SDL-1.2.14_orig//src/video/windib/SDL_dibvideo.c SDL-1.2.14/src/video/
  }
  
  /* Exported for the windows message loop only */
-diff -uNr SDL-1.2.14_orig//src/video/winmm/linux_evdev.c SDL-1.2.14/src/video/winmm/linux_evdev.c
---- SDL-1.2.14_orig//src/video/winmm/linux_evdev.c	1970-01-01 00:00:00 +0000
+diff -uNr SDL-1.2.14_orig/src/video/winmm/linux_evdev.c SDL-1.2.14/src/video/winmm/linux_evdev.c
+--- SDL-1.2.14_orig/src/video/winmm/linux_evdev.c	1970-01-01 00:00:00 +0000
 +++ SDL-1.2.14/src/video/winmm/linux_evdev.c	2011-06-05 11:16:08 +0000
 @@ -0,0 +1,339 @@
 +/*
@@ -31968,8 +31964,8 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/linux_evdev.c SDL-1.2.14/src/video/wi
 +
 +/* end of linux_evdev.c ... */
 +
-diff -uNr SDL-1.2.14_orig//src/video/winmm/macosx_hidmanager.c SDL-1.2.14/src/video/winmm/macosx_hidmanager.c
---- SDL-1.2.14_orig//src/video/winmm/macosx_hidmanager.c	1970-01-01 00:00:00 +0000
+diff -uNr SDL-1.2.14_orig/src/video/winmm/macosx_hidmanager.c SDL-1.2.14/src/video/winmm/macosx_hidmanager.c
+--- SDL-1.2.14_orig/src/video/winmm/macosx_hidmanager.c	1970-01-01 00:00:00 +0000
 +++ SDL-1.2.14/src/video/winmm/macosx_hidmanager.c	2011-06-05 11:16:08 +0000
 @@ -0,0 +1,427 @@
 +/*
@@ -32399,8 +32395,8 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/macosx_hidmanager.c SDL-1.2.14/src/vi
 +
 +/* end of macosx_hidmanager.c ... */
 +
-diff -uNr SDL-1.2.14_orig//src/video/winmm/macosx_hidutilities.c SDL-1.2.14/src/video/winmm/macosx_hidutilities.c
---- SDL-1.2.14_orig//src/video/winmm/macosx_hidutilities.c	1970-01-01 00:00:00 +0000
+diff -uNr SDL-1.2.14_orig/src/video/winmm/macosx_hidutilities.c SDL-1.2.14/src/video/winmm/macosx_hidutilities.c
+--- SDL-1.2.14_orig/src/video/winmm/macosx_hidutilities.c	1970-01-01 00:00:00 +0000
 +++ SDL-1.2.14/src/video/winmm/macosx_hidutilities.c	2011-06-05 11:16:08 +0000
 @@ -0,0 +1,1672 @@
 +/*
@@ -34075,10 +34071,10 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/macosx_hidutilities.c SDL-1.2.14/src/
 +
 +/* end of macosx_hidutilities.c ... */
 +
-diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.c SDL-1.2.14/src/video/winmm/manymouse.c
---- SDL-1.2.14_orig//src/video/winmm/manymouse.c	1970-01-01 00:00:00 +0000
-+++ SDL-1.2.14/src/video/winmm/manymouse.c	2011-06-05 11:16:08 +0000
-@@ -0,0 +1,100 @@
+diff -uNr SDL-1.2.14_orig/src/video/winmm/manymouse.c SDL-1.2.14/src/video/winmm/manymouse.c
+--- SDL-1.2.14_orig/src/video/winmm/manymouse.c	1970-01-01 00:00:00 +0000
++++ SDL-1.2.14/src/video/winmm/manymouse.c	2011-10-17 17:32:04 +0000
+@@ -0,0 +1,105 @@
 +/*
 + * ManyMouse foundation code; apps talks to this and it talks to the lowlevel
 + *  code for various platforms.
@@ -34167,9 +34163,14 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.c SDL-1.2.14/src/video/winm
 +    return (driver) ? driver->driver_name : NULL;
 +} /* ManyMouse_DriverName */
 +
-+const char *ManyMouse_DeviceName(unsigned int index)
++const char *ManyMouse_MouseName(unsigned int index)
 +{
-+    return (driver) ? driver->name(index) : NULL;
++    return (driver) ? driver->mouse_name(index) : NULL;
++} /* ManyMouse_DeviceName */
++
++const char *ManyMouse_KeyboardName(unsigned int index)
++{
++    return (driver) ? driver->keyboard_name(index) : NULL;
 +} /* ManyMouse_DeviceName */
 +
 +int ManyMouse_PollEvent(ManyMouseEvent *event)
@@ -34179,10 +34180,10 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.c SDL-1.2.14/src/video/winm
 +
 +/* end of manymouse.c ... */
 +
-diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.h SDL-1.2.14/src/video/winmm/manymouse.h
---- SDL-1.2.14_orig//src/video/winmm/manymouse.h	1970-01-01 00:00:00 +0000
-+++ SDL-1.2.14/src/video/winmm/manymouse.h	2011-06-05 11:16:08 +0000
-@@ -0,0 +1,63 @@
+diff -uNr SDL-1.2.14_orig/src/video/winmm/manymouse.h SDL-1.2.14/src/video/winmm/manymouse.h
+--- SDL-1.2.14_orig/src/video/winmm/manymouse.h	1970-01-01 00:00:00 +0000
++++ SDL-1.2.14/src/video/winmm/manymouse.h	2011-10-27 16:43:09 +0000
+@@ -0,0 +1,67 @@
 +/*
 + * ManyMouse main header. Include this from your app.
 + *
@@ -34207,6 +34208,7 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.h SDL-1.2.14/src/video/winm
 +    MANYMOUSE_EVENT_BUTTON,
 +    MANYMOUSE_EVENT_SCROLL,
 +    MANYMOUSE_EVENT_DISCONNECT,
++    MANYMOUSE_EVENT_KEY,
 +    MANYMOUSE_EVENT_MAX
 +} ManyMouseEventType;
 +
@@ -34216,6 +34218,7 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.h SDL-1.2.14/src/video/winm
 +    unsigned int device;
 +    unsigned int item;
 +    int value;
++    unsigned int scancode;
 +    int minval;
 +    int maxval;
 +} ManyMouseEvent;
@@ -34227,16 +34230,18 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.h SDL-1.2.14/src/video/winm
 +    const char *driver_name;
 +    int (*init)(void);
 +    void (*quit)(void);
-+    const char *(*name)(unsigned int index);
++    const char *(*mouse_name)(unsigned int index);
 +    int (*poll)(ManyMouseEvent *event);
++    const char *(*keyboard_name)(unsigned int index);
 +} ManyMouseDriver;
 +
 +
 +int ManyMouse_Init(void);
 +const char *ManyMouse_DriverName(void);
 +void ManyMouse_Quit(void);
-+const char *ManyMouse_DeviceName(unsigned int index);
++const char *ManyMouse_MouseName(unsigned int index);
 +int ManyMouse_PollEvent(ManyMouseEvent *event);
++const char *ManyMouse_KeyboardName(unsigned int index);
 +
 +#ifdef __cplusplus
 +}
@@ -34246,10 +34251,10 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/manymouse.h SDL-1.2.14/src/video/winm
 +
 +/* end of manymouse.h ... */
 +
-diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/video/winmm/windows_wminput.c
---- SDL-1.2.14_orig//src/video/winmm/windows_wminput.c	1970-01-01 00:00:00 +0000
-+++ SDL-1.2.14/src/video/winmm/windows_wminput.c	2011-06-05 16:35:43 +0000
-@@ -0,0 +1,713 @@
+diff -uNr SDL-1.2.14_orig/src/video/winmm/windows_wminput.c SDL-1.2.14/src/video/winmm/windows_wminput.c
+--- SDL-1.2.14_orig/src/video/winmm/windows_wminput.c	1970-01-01 00:00:00 +0000
++++ SDL-1.2.14/src/video/winmm/windows_wminput.c	2011-11-03 18:57:10 +0000
+@@ -0,0 +1,897 @@
 +/*
 + * Support for Windows via the WM_INPUT message.
 + *
@@ -34279,7 +34284,7 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +#endif
 +
 +/* that should be enough, knock on wood. */
-+#define MAX_MICE 32
++#define MAX_DEVICES 256
 +
 +/*
 + * Just trying to avoid malloc() here...we statically allocate a buffer
@@ -34291,6 +34296,7 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +static volatile int input_events_read = 0;
 +static volatile int input_events_write = 0;
 +static int available_mice = 0;
++static int available_keyboards = 0;
 +static int did_api_lookup = 0;
 +static HWND raw_hwnd = NULL;
 +static const char *class_name = "ManyMouseRawInputCatcher";
@@ -34303,7 +34309,14 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    HANDLE handle;
 +    char name[256];
 +} MouseStruct;
-+static MouseStruct mice[MAX_MICE];
++static MouseStruct mice[MAX_DEVICES];
++
++typedef struct
++{
++    HANDLE handle;
++    char name[256];
++} KeyboardStruct;
++static KeyboardStruct keyboards[MAX_DEVICES];
 +
 +
 +/*
@@ -34465,102 +34478,244 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    } /* if */
 +} /* queue_event */
 +
++#define MAPVK_VK_TO_VSC    0
++#define MAPVK_VSC_TO_VK_EX 3
 +
 +static void queue_from_rawinput(const RAWINPUT *raw)
 +{
 +    int i;
 +    const RAWINPUTHEADER *header = &raw->header;
 +    const RAWMOUSE *mouse = &raw->data.mouse;
-+    ManyMouseEvent event;
++    const RAWKEYBOARD *keyboard = &raw->data.keyboard;
++    ManyMouseEvent event = {0};
++    UINT virtualKey;
++    UINT scanCode;
++    UINT flags;
++    UINT isE0;
 +
-+    if (raw->header.dwType != RIM_TYPEMOUSE)
-+        return;
-+
-+    for (i = 0; i < available_mice; i++)  /* find the device for event. */
++    if (raw->header.dwType == RIM_TYPEMOUSE)
 +    {
-+        if (mice[i].handle == header->hDevice)
-+            break;
-+    } /* for */
++      for (i = 0; i < available_mice; i++)  /* find the device for event. */
++      {
++          if (mice[i].handle == header->hDevice)
++              break;
++      } /* for */
 +
-+    if (i == available_mice)
-+        return;  /* not found?! */
++      if (i == available_mice)
++          return;  /* not found?! */
 +
-+    /*
-+     * RAWINPUT packs a bunch of events into one, so we split it up into
-+     *  a bunch of ManyMouseEvents here and store them in an internal queue.
-+     *  Then ManyMouse_PollEvent() just shuffles items off that queue
-+     *  without any complicated processing.
-+     */
++      /*
++       * RAWINPUT packs a bunch of events into one, so we split it up into
++       *  a bunch of ManyMouseEvents here and store them in an internal queue.
++       *  Then ManyMouse_PollEvent() just shuffles items off that queue
++       *  without any complicated processing.
++       */
 +
-+    event.device = i;
++      event.device = i;
 +
-+    pEnterCriticalSection(&mutex);
++      pEnterCriticalSection(&mutex);
 +
-+    if (mouse->usFlags & MOUSE_MOVE_ABSOLUTE)
++      if (mouse->usFlags & MOUSE_MOVE_ABSOLUTE)
++      {
++          /* !!! FIXME: How do we get the min and max values for absmotion? */
++          event.type = MANYMOUSE_EVENT_ABSMOTION;
++          event.item = 0;
++          event.value = mouse->lLastX;
++          queue_event(&event);
++          event.item = 1;
++          event.value = mouse->lLastY;
++          queue_event(&event);
++      } /* if */
++
++      else /*if (mouse->usFlags & MOUSE_MOVE_RELATIVE)*/
++      {
++          event.type = MANYMOUSE_EVENT_RELMOTION;
++          if (mouse->lLastX != 0)
++          {
++              event.item = 0;
++              event.value = mouse->lLastX;
++              queue_event(&event);
++          } /* if */
++
++          if (mouse->lLastY != 0)
++          {
++              event.item = 1;
++              event.value = mouse->lLastY;
++              queue_event(&event);
++          } /* if */
++      } /* else if */
++
++      event.type = MANYMOUSE_EVENT_BUTTON;
++
++      #define QUEUE_BUTTON(x) { \
++          if (mouse->usButtonFlags & RI_MOUSE_BUTTON_##x##_DOWN) { \
++              event.item = x-1; \
++              event.value = 1; \
++              queue_event(&event); \
++          } \
++          if (mouse->usButtonFlags & RI_MOUSE_BUTTON_##x##_UP) { \
++              event.item = x-1; \
++              event.value = 0; \
++              queue_event(&event); \
++          } \
++      }
++
++      QUEUE_BUTTON(1);
++      QUEUE_BUTTON(2);
++      QUEUE_BUTTON(3);
++      QUEUE_BUTTON(4);
++      QUEUE_BUTTON(5);
++
++      #undef QUEUE_BUTTON
++
++      if (mouse->usButtonFlags & RI_MOUSE_WHEEL)
++      {
++          if (mouse->usButtonData != 0)  /* !!! FIXME: can this ever be zero? */
++          {
++              event.type = MANYMOUSE_EVENT_SCROLL;
++              event.item = 0;  /* !!! FIXME: horizontal wheel? */
++              event.value = ( ((SHORT) mouse->usButtonData) > 0) ? 1 : -1;
++              queue_event(&event);
++          } /* if */
++      } /* if */
++
++      pLeaveCriticalSection(&mutex);
++    }
++    else if(raw->header.dwType == RIM_TYPEKEYBOARD)
 +    {
-+        /* !!! FIXME: How do we get the min and max values for absmotion? */
-+        event.type = MANYMOUSE_EVENT_ABSMOTION;
-+        event.item = 0;
-+        event.value = mouse->lLastX;
-+        queue_event(&event);
-+        event.item = 1;
-+        event.value = mouse->lLastY;
-+        queue_event(&event);
-+    } /* if */
++      for (i = 0; i < available_keyboards; i++)  /* find the device for event. */
++      {
++          if (keyboards[i].handle == header->hDevice)
++              break;
++      } /* for */
 +
-+    else /*if (mouse->usFlags & MOUSE_MOVE_RELATIVE)*/
++      if (i == available_keyboards)
++          return;  /* not found?! */
++
++      virtualKey = keyboard->VKey;
++      flags = keyboard->Flags;
++      scanCode = 0;
++      isE0 = flags & RI_KEY_E0;
++
++      switch (virtualKey)
++      {
++        // right-hand CONTROL and ALT have their e0 bit set
++        case VK_CONTROL:
++          if (isE0)
++            virtualKey = VK_RCONTROL;
++          else
++            virtualKey = VK_LCONTROL;
++          break;
++
++        case VK_MENU:
++          if (isE0)
++            virtualKey = VK_RMENU;
++          else
++            virtualKey = VK_LMENU;
++          break;
++
++        case VK_SHIFT:
++          if (isE0)
++            virtualKey = VK_RSHIFT;
++          else
++            virtualKey = VK_LSHIFT;
++          break;
++
++        // NUMPAD ENTER has its e0 bit set
++        case VK_RETURN:
++          if (isE0)
++            scanCode = (1 << 24);
++          break;
++
++        // the standard INSERT, DELETE, HOME, END, PRIOR and NEXT keys will always have their e0 bit set, but the
++        // corresponding keys on the NUMPAD will not.
++        case VK_INSERT:
++          if (!isE0)
++          virtualKey = VK_NUMPAD0;
++          break;
++
++        case VK_DELETE:
++          if (!isE0)
++            virtualKey = VK_DECIMAL;
++          break;
++
++        case VK_HOME:
++          if (!isE0)
++            virtualKey = VK_NUMPAD7;
++          break;
++
++        case VK_END:
++          if (!isE0)
++            virtualKey = VK_NUMPAD1;
++          break;
++
++        case VK_PRIOR:
++          if (!isE0)
++            virtualKey = VK_NUMPAD9;
++          break;
++
++        case VK_NEXT:
++          if (!isE0)
++            virtualKey = VK_NUMPAD3;
++          break;
++
++        // the standard arrow keys will always have their e0 bit set, but the
++        // corresponding keys on the NUMPAD will not.
++        case VK_LEFT:
++          if (!isE0)
++            virtualKey = VK_NUMPAD4;
++          break;
++
++        case VK_RIGHT:
++          if (!isE0)
++            virtualKey = VK_NUMPAD6;
++          break;
++
++        case VK_UP:
++          if (!isE0)
++            virtualKey = VK_NUMPAD8;
++          break;
++
++        case VK_DOWN:
++          if (!isE0)
++            virtualKey = VK_NUMPAD2;
++          break;
++
++        // NUMPAD 5 doesn't have its e0 bit set
++        case VK_CLEAR:
++          if (!isE0)
++            virtualKey = VK_NUMPAD5;
++          break;
++
++        case 0xFF:
++          return;
++      }
++
++      pEnterCriticalSection(&mutex);
++
++      event.device = i;
++      event.type = MANYMOUSE_EVENT_KEY;
++      event.item = virtualKey;
++      event.scancode = scanCode;
++
++      if(flags & RI_KEY_BREAK)
++      {
++        event.value = 0;
++      }
++      else
++      {
++        event.value = 1;
++      }
++      queue_event(&event);
++
++      pLeaveCriticalSection(&mutex);
++    }
++    else
 +    {
-+        event.type = MANYMOUSE_EVENT_RELMOTION;
-+        if (mouse->lLastX != 0)
-+        {
-+            event.item = 0;
-+            event.value = mouse->lLastX;
-+            queue_event(&event);
-+        } /* if */
-+
-+        if (mouse->lLastY != 0)
-+        {
-+            event.item = 1;
-+            event.value = mouse->lLastY;
-+            queue_event(&event);
-+        } /* if */
-+    } /* else if */
-+
-+    event.type = MANYMOUSE_EVENT_BUTTON;
-+
-+    #define QUEUE_BUTTON(x) { \
-+        if (mouse->usButtonFlags & RI_MOUSE_BUTTON_##x##_DOWN) { \
-+            event.item = x-1; \
-+            event.value = 1; \
-+            queue_event(&event); \
-+        } \
-+        if (mouse->usButtonFlags & RI_MOUSE_BUTTON_##x##_UP) { \
-+            event.item = x-1; \
-+            event.value = 0; \
-+            queue_event(&event); \
-+        } \
++      return;
 +    }
 +
-+    QUEUE_BUTTON(1);
-+    QUEUE_BUTTON(2);
-+    QUEUE_BUTTON(3);
-+    QUEUE_BUTTON(4);
-+    QUEUE_BUTTON(5);
 +
-+    #undef QUEUE_BUTTON
-+
-+    if (mouse->usButtonFlags & RI_MOUSE_WHEEL)
-+    {
-+        if (mouse->usButtonData != 0)  /* !!! FIXME: can this ever be zero? */
-+        {
-+            event.type = MANYMOUSE_EVENT_SCROLL;
-+            event.item = 0;  /* !!! FIXME: horizontal wheel? */
-+            event.value = ( ((SHORT) mouse->usButtonData) > 0) ? 1 : -1;
-+            queue_event(&event);
-+        } /* if */
-+    } /* if */
-+
-+    pLeaveCriticalSection(&mutex);
 +} /* queue_from_rawinput */
 +
 +
@@ -34572,7 +34727,7 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    pGetRawInputData((HRAWINPUT) lParam, RID_INPUT, NULL, &dwSize,
 +                      sizeof (RAWINPUTHEADER));
 +
-+    if (dwSize < sizeof (RAWINPUT))
++    if (dwSize == 0)
 +        return;  /* unexpected packet? */
 +
 +    lpb = (LPBYTE) alloca(dwSize);
@@ -34580,7 +34735,9 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +        return;
 +    if (pGetRawInputData((HRAWINPUT) lParam, RID_INPUT, lpb, &dwSize,
 +                          sizeof (RAWINPUTHEADER)) != dwSize)
++    {
 +        return;
++    }
 +
 +    queue_from_rawinput((RAWINPUT *) lpb);
 +} /* wminput_handler */
@@ -34597,12 +34754,13 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    return pDefWindowProcA(hWnd, Msg, wParam, lParam);
 +} /* RawWndProc */
 +
++extern HWND SDL_Window;
 +
 +static int init_event_queue(void)
 +{
 +    HINSTANCE hInstance = pGetModuleHandleA(NULL);
 +    WNDCLASSEX wce;
-+    RAWINPUTDEVICE rid;
++    RAWINPUTDEVICE rid[2];
 +
 +    ZeroMemory(input_events, sizeof (input_events));
 +    input_events_read = input_events_write = 0;
@@ -34625,12 +34783,19 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +
 +    pInitializeCriticalSection(&mutex);
 +
-+    ZeroMemory(&rid, sizeof (rid));
-+    rid.usUsagePage = 1; /* GenericDesktop page */
-+    rid.usUsage = 2; /* GeneralDestop Mouse usage. */
-+    rid.dwFlags = RIDEV_INPUTSINK;
-+    rid.hwndTarget = raw_hwnd;
-+    if (!pRegisterRawInputDevices(&rid, 1, sizeof (rid)))
++    ZeroMemory(&rid[0], sizeof (rid[0]));
++    rid[0].usUsagePage = 1; /* GenericDesktop page */
++    rid[0].usUsage = 2; /* GeneralDestop Mouse usage. */
++    rid[0].dwFlags = RIDEV_INPUTSINK | RIDEV_NOLEGACY;
++    rid[0].hwndTarget = raw_hwnd;
++
++    ZeroMemory(&rid[1], sizeof (rid[1]));
++    rid[1].usUsagePage = 1;
++    rid[1].usUsage = 6;
++    rid[1].dwFlags = RIDEV_INPUTSINK | RIDEV_NOLEGACY;
++    rid[1].hwndTarget = raw_hwnd;
++
++    if (!pRegisterRawInputDevices(rid, 2, sizeof (rid[0])))
 +    {
 +        pDeleteCriticalSection(&mutex);
 +        return 0;
@@ -34734,11 +34899,12 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +{
 +    const char rdp_ident[] = "ROOT\\RDP_MOU\\";
 +    MouseStruct *mouse = &mice[available_mice];
++    KeyboardStruct *keyboard = &keyboards[available_keyboards];
 +    char *buf = NULL;
 +    char *ptr = NULL;
 +    UINT ct = 0;
 +
-+    if (dev->dwType != RIM_TYPEMOUSE)
++    if (dev->dwType != RIM_TYPEMOUSE && dev->dwType != RIM_TYPEKEYBOARD)
 +        return;  /* keyboard or some other fruity thing. */
 +
 +    if (pGetRawInputDeviceInfoA(dev->hDevice, RIDI_DEVICENAME, NULL, &ct) < 0)
@@ -34804,10 +34970,20 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    } /* if */
 +
 +    /* accept this mouse! */
-+    ZeroMemory(mouse, sizeof (MouseStruct));
-+    get_device_product_name(mouse->name, sizeof (mouse->name), buf);
-+    mouse->handle = dev->hDevice;
-+    available_mice++;
++    if (dev->dwType == RIM_TYPEMOUSE)
++    {
++      ZeroMemory(mouse, sizeof (MouseStruct));
++      get_device_product_name(mouse->name, sizeof (mouse->name), buf);
++      mouse->handle = dev->hDevice;
++      available_mice++;
++    }
++    else if(dev->dwType == RIM_TYPEKEYBOARD)
++    {
++      ZeroMemory(keyboard, sizeof (KeyboardStruct));
++      get_device_product_name(keyboard->name, sizeof (keyboard->name), buf);
++      keyboard->handle = dev->hDevice;
++      available_keyboards++;
++    }
 +} /* init_mouse */
 +
 +
@@ -34818,6 +34994,7 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    UINT i;
 +
 +    available_mice = 0;
++    available_keyboards = 0;
 +
 +    if (!find_api_symbols())  /* only supported on WinXP and later. */
 +        return -1;
@@ -34835,6 +35012,7 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    {
 +        cleanup_window();
 +        available_mice = 0;
++        available_keyboards = 0;
 +    } /* if */
 +
 +    return available_mice;
@@ -34844,21 +35022,31 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +static void windows_wminput_quit(void)
 +{
 +    /* unregister WM_INPUT devices... */
-+    RAWINPUTDEVICE rid;
-+    ZeroMemory(&rid, sizeof (rid));
-+    rid.usUsagePage = 1; /* GenericDesktop page */
-+    rid.usUsage = 2; /* GeneralDestop Mouse usage. */
-+    rid.dwFlags |= RIDEV_REMOVE;
-+    pRegisterRawInputDevices(&rid, 1, sizeof (rid));
++    RAWINPUTDEVICE rid[2];
++    ZeroMemory(&rid[0], sizeof (rid[0]));
++    rid[0].usUsagePage = 1; /* GenericDesktop page */
++    rid[0].usUsage = 2; /* GeneralDestop Mouse usage. */
++    rid[0].dwFlags |= RIDEV_REMOVE;
++    ZeroMemory(&rid[1], sizeof (rid[1]));
++    rid[1].usUsagePage = 1; /* GenericDesktop page */
++    rid[1].usUsage = 6; /* GeneralDestop Keyboard usage. */
++    rid[1].dwFlags |= RIDEV_REMOVE;
++    pRegisterRawInputDevices(rid, 2, sizeof (rid[0]));
 +    cleanup_window();
 +    available_mice = 0;
++    available_keyboards = 0;
 +    pDeleteCriticalSection(&mutex);
 +} /* windows_wminput_quit */
 +
 +
-+static const char *windows_wminput_name(unsigned int index)
++static const char *windows_wminput_mouse_name(unsigned int index)
 +{
 +    return (index < available_mice) ? mice[index].name : NULL;
++} /* windows_wminput_name */
++
++static const char *windows_wminput_keyboard_name(unsigned int index)
++{
++    return (index < available_keyboards) ? keyboards[index].name : NULL;
 +} /* windows_wminput_name */
 +
 +
@@ -34940,8 +35128,8 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +     *  disconnect event through ManyMouse and then later give a valid
 +     *  event to the app for a device that is now missing.
 +     */
-+    if (!found)
-+        found = check_for_disconnects(ev);
++    /*if (!found)
++        found = check_for_disconnects(ev);*/
 +
 +    return found;
 +} /* windows_wminput_poll */
@@ -34951,8 +35139,9 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +    "Windows XP and later WM_INPUT interface",
 +    windows_wminput_init,
 +    windows_wminput_quit,
-+    windows_wminput_name,
-+    windows_wminput_poll
++    windows_wminput_mouse_name,
++    windows_wminput_poll,
++    windows_wminput_keyboard_name
 +};
 +
 +const ManyMouseDriver *ManyMouseDriver_windows = &ManyMouseDriver_interface;
@@ -34963,8 +35152,8 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/windows_wminput.c SDL-1.2.14/src/vide
 +
 +/* end of windows_wminput.c ... */
 +
-diff -uNr SDL-1.2.14_orig//src/video/winmm/x11_xinput2.c SDL-1.2.14/src/video/winmm/x11_xinput2.c
---- SDL-1.2.14_orig//src/video/winmm/x11_xinput2.c	1970-01-01 00:00:00 +0000
+diff -uNr SDL-1.2.14_orig/src/video/winmm/x11_xinput2.c SDL-1.2.14/src/video/winmm/x11_xinput2.c
+--- SDL-1.2.14_orig/src/video/winmm/x11_xinput2.c	1970-01-01 00:00:00 +0000
 +++ SDL-1.2.14/src/video/winmm/x11_xinput2.c	2011-06-05 11:16:08 +0000
 @@ -0,0 +1,528 @@
 +/*
@@ -35495,8 +35684,8 @@ diff -uNr SDL-1.2.14_orig//src/video/winmm/x11_xinput2.c SDL-1.2.14/src/video/wi
 +
 +/* end of x11_xinput2.c ... */
 +
-diff -uNr SDL-1.2.14_orig//test/configure SDL-1.2.14/test/configure
---- SDL-1.2.14_orig//test/configure	2009-10-17 08:35:14 +0000
+diff -uNr SDL-1.2.14_orig/test/configure SDL-1.2.14/test/configure
+--- SDL-1.2.14_orig/test/configure	2009-10-17 08:35:14 +0000
 +++ SDL-1.2.14/test/configure	2011-06-05 16:13:46 +0000
 @@ -1,18 +1,22 @@
  #! /bin/sh
@@ -39733,3 +39922,4 @@ diff -uNr SDL-1.2.14_orig//test/configure SDL-1.2.14/test/configure
  $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
  fi
  
+Files SDL-1.2.14_orig/test/testjoystick.exe and SDL-1.2.14/test/testjoystick.exe differ
