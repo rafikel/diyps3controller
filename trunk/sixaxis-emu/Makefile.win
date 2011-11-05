@@ -1,7 +1,7 @@
 BINS=emuclient
 CC=gcc
 CFLAGS=-Wall -O2
-LIB=-lmingw32 -lSDLmain -lSDL -llibxml2 -lpthread -lws2_32
+LIB=-lmingw32 -lSDLmain -lSDL -llibxml2 -lpthread -lws2_32 -liconv
 INC=
 
 all: $(BINS)
