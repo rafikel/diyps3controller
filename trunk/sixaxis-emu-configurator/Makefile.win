@@ -45,61 +45,9 @@ $(OUT_RELEASE): $(OBJ_RELEASE) $(DEP_RELEASE)
 	test -d bin/Release || mkdir -p bin/Release
 	$(LD) $(LDFLAGS_RELEASE) $(LIBDIR_RELEASE) -o $(OUT_RELEASE) $(OBJ_RELEASE) $(LIB_RELEASE)
 
-$(OBJDIR_RELEASE)/src/event_catcher.o: src/event_catcher.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/event_catcher.o src/event_catcher.cpp
-
-$(OBJDIR_RELEASE)/src/XmlWritter.o: src/XmlWritter.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/XmlWritter.o src/XmlWritter.cpp
-
-$(OBJDIR_RELEASE)/src/XmlReader.o: src/XmlReader.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/XmlReader.o src/XmlReader.cpp
-
-$(OBJDIR_RELEASE)/src/Trigger.o: src/Trigger.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/Trigger.o src/Trigger.cpp
-
-$(OBJDIR_RELEASE)/src/Intensity.o: src/Intensity.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/Intensity.o src/Intensity.cpp
-
-$(OBJDIR_RELEASE)/src/Event.o: src/Event.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/Event.o src/Event.cpp
-
-$(OBJDIR_RELEASE)/src/Device.o: src/Device.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/Device.o src/Device.cpp
-
-$(OBJDIR_RELEASE)/src/Controller.o: src/Controller.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/Controller.o src/Controller.cpp
-
-$(OBJDIR_RELEASE)/src/ConfigurationFile.o: src/ConfigurationFile.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/ConfigurationFile.o src/ConfigurationFile.cpp
-
-$(OBJDIR_RELEASE)/src/Configuration.o: src/Configuration.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/Configuration.o src/Configuration.cpp
-
-$(OBJDIR_RELEASE)/src/ButtonMapper.o: src/ButtonMapper.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/ButtonMapper.o src/ButtonMapper.cpp
-
-$(OBJDIR_RELEASE)/src/AxisMapper.o: src/AxisMapper.cpp
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/src/AxisMapper.o src/AxisMapper.cpp
-
-$(OBJDIR_RELEASE)/sixaxis_emu_guiMain.o: sixaxis_emu_guiMain.cpp
+$(OBJDIR_RELEASE)/%.o: %.cpp
 	test -d $(OBJDIR_RELEASE) || mkdir -p $(OBJDIR_RELEASE)
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/sixaxis_emu_guiMain.o sixaxis_emu_guiMain.cpp
-
-$(OBJDIR_RELEASE)/sixaxis_emu_guiApp.o: sixaxis_emu_guiApp.cpp
-	test -d $(OBJDIR_RELEASE) || mkdir -p $(OBJDIR_RELEASE)
-	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $(OBJDIR_RELEASE)/sixaxis_emu_guiApp.o sixaxis_emu_guiApp.cpp
+	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $@ $<
 
 clean_release:
 	rm -f $(OBJ_RELEASE) $(OUT_RELEASE)
