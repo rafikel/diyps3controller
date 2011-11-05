@@ -332,9 +332,7 @@ event_catcher::~event_catcher()
 void event_catcher::init()
 {
     int i, j;
-#ifndef WIN32
     const char* name;
-#endif
     SDL_Surface *screen = NULL;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
@@ -355,7 +353,7 @@ void event_catcher::init()
     i = 0;
     while(i < MAX_DEVICES && (jstick[i] = SDL_JoystickOpen(i)))
     {
-        joystickName[i] = wxString(SDL_JoystickName(i), wxConvUTF8);
+        joystickName[i] = wxString(SDL_JoystickName(i), wxConvISO8859_1);
         if(joystickName[i].StartsWith(_(BT_SIXAXIS_NAME)))
         {
           joystickName[i] = _(BT_SIXAXIS_NAME);
@@ -383,11 +381,11 @@ void event_catcher::init()
     {
         jstick[i] = NULL;
     }
-#ifndef WIN32
+
     i = 0;
     while ((name = SDL_GetMouseName(i)))
     {
-      mouseName[i] = wxString(name, wxConvUTF8);
+      mouseName[i] = wxString(name, wxConvISO8859_1);
 
       for (j = i - 1; j >= 0; --j)
       {
@@ -411,7 +409,7 @@ void event_catcher::init()
     i = 0;
     while ((name = SDL_GetKeyboardName(i)))
     {
-      keyboardName[i] = wxString(name, wxConvUTF8);
+      keyboardName[i] = wxString(name, wxConvISO8859_1);
 
       for (j = i - 1; j >= 0; --j)
       {
@@ -431,7 +429,6 @@ void event_catcher::init()
     {
       keyboardName[i].Empty();
     }
-#endif
 }
 
 void event_catcher::close_devices()
