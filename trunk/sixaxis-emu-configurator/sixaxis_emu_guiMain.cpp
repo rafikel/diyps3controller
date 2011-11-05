@@ -810,8 +810,6 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
 
 #else
     string cmd = "config";
-    MenuItem26->Enable(false);
-    MenuItem27->Enable(false);
     MenuItem8->Enable(false);
     MenuItem9->Enable(false);
     MenuItem10->Enable(false);
@@ -1883,14 +1881,12 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
         {
             new_value = dialog2.GetValue();
 
-#ifndef WIN32
             evcatch.run(device_type, _("button"));
             if(MenuItem30->IsChecked())
             {
                 device_name = evcatch.GetDeviceName();
                 device_id = evcatch.GetDeviceId();
             }
-#endif
 
             save_current();
 
@@ -1904,9 +1900,7 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
               for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
               {
                 if(it->GetDevice()->GetType() == device_type
-#ifndef WIN32
                     || (MenuItem30->IsChecked() && it->GetDevice()->GetName() == device_name && it->GetDevice()->GetId() == device_id)
-#endif
                 )
                 {
                     double val, exp;
