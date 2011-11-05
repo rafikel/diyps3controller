@@ -32,11 +32,7 @@ int keyboardVirtualIndex[MAX_DEVICES] = {};
 static SDL_Surface *screen = NULL;
 static int grab = 0;
 
-#ifndef WIN32
 int merge_all_devices = 0;
-#else
-int merge_all_devices = 1;
-#endif
 
 /*
  * Initializes the SDL library.
@@ -45,9 +41,7 @@ int sdl_initialize()
 {
   int i = 0;
   int j;
-#ifndef WIN32
   const char* name;
-#endif
 
   /* Init SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
@@ -97,7 +91,7 @@ int sdl_initialize()
     }
     i++;
   }
-#ifndef WIN32
+
   i = 0;
   while ((name = SDL_GetMouseName(i)))
   {
@@ -136,7 +130,7 @@ int sdl_initialize()
     }
     i++;
   }
-#endif
+
   return 1;
 }
 
