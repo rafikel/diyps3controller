@@ -704,7 +704,7 @@ int changed = 0;
 
 static void set_text(wxStaticText* text, string s)
 {
-  wxString ws = wxString(s.c_str(), wxConvUTF8);
+  wxString ws = wxString(s.c_str(), wxConvISO8859_1);
   if(text->GetLabel() != ws)
   {
     text->SetLabel(ws);
