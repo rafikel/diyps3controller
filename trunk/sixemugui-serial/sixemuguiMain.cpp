@@ -135,11 +135,11 @@ static void read_filenames(wxChoice* choice)
         {
           if(!line.empty() && line == d->d_name)
           {
-            choice->SetSelection(choice->Append(wxString(d->d_name, wxConvUTF8)));
+            choice->SetSelection(choice->Append(wxString(d->d_name, wxConvFile)));
           }
           else
           {
-            choice->Append(wxString(d->d_name, wxConvUTF8));
+            choice->Append(wxString(d->d_name, wxConvFile));
           }
         }
       }
