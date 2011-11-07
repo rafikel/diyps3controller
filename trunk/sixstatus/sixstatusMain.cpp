@@ -696,7 +696,7 @@ void sixstatusFrame::OnQuit(wxCommandEvent& event)
 
 void sixstatusFrame::OnAbout(wxCommandEvent& event)
 {
-  wxString msg = _("Gimx-status\n(c) Matlo GNU GPL\nHomepage: http://diy-machine.blogspot.com/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.gimx.fr/forum/\n");
+  wxString msg = _("Gimx-status\n(c) Matlo GNU GPL\nHomepage: http://www.gimx.fr/\nSource code: http://code.google.com/p/diyps3controller/\nForum: http://www.forum.gimx.fr/\n");
   wxMessageBox(msg, _("Welcome to..."));
 }
 
