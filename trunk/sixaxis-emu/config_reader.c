@@ -57,16 +57,18 @@ int GetDeviceName(xmlNode* a_node)
   int ret = 0;
   char* prop;
   iconv_t cd;
-  size_t in = 0;
-  size_t out = 0;
-  char name[128];
+  char* input;
+  size_t in;
+  char* output = r_device_name;
+  size_t out = sizeof(r_device_name);
 
   prop = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_NAME);
   if(prop)
   {
-    strncpy(name, prop, sizeof(name));
-    cd = iconv_open("ASCII", "UTF-8//TRANSLIT");
-    iconv(cd, (const char**)&name, &in, (char**)&r_device_name, &out);
+    cd = iconv_open("ISO-8859-1//TRANSLIT", "UTF-8");
+    input = prop;
+    in = strlen(prop) + 1;
+    iconv(cd, (const char**)&input, &in, (char**)&output, &out);
     iconv_close(cd);
   }
   else
