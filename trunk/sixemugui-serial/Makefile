@@ -23,8 +23,8 @@ CFLAGS = -Wall `wx-config --cflags` -Winvalid-pch -include wx_pch.h -DWX_PRECOMP
 RESINC = 
 RCFLAGS = 
 LIBDIR =
-LIB =
-LDFLAGS = `wx-config --libs`
+LIB = `wx-config --libs`
+LDFLAGS =
 
 INC_RELEASE = $(INC)
 CFLAGS_RELEASE = $(CFLAGS) -O2
