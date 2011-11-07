@@ -24,8 +24,8 @@ CFLAGS = -Wall `pkg-config --cflags glib-2.0` `wx-config --cflags` -Winvalid-pch
 RESINC = 
 RCFLAGS = 
 LIBDIR =
-LIB =
-LDFLAGS = `wx-config --libs` `pkg-config --libs glib-2.0`
+LIB = `wx-config --libs` `pkg-config --libs glib-2.0`
+LDFLAGS =
 
 INC_RELEASE = $(INC)
 CFLAGS_RELEASE = $(CFLAGS) -O2
