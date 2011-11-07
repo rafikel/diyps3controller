@@ -556,7 +556,7 @@ static int ProcessButtonElement(xmlNode * a_node)
   int ret = 0;
   xmlNode* cur_node = NULL;
   char* bid;
-  e_sixaxis_button_index bindex;
+  e_sixaxis_button_index bindex = 0;
   s_mapper* p_mapper = NULL;
   s_mapper** pp_mapper = NULL;
 
