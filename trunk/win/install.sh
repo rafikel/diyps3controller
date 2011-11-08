@@ -14,8 +14,7 @@ test -f $PREFIX/bin/iconv.h || mingw-get install mingw32-libiconv
 if ! test $1 = "sources"
 then
   wget http://www.gimx.fr/archive/GIMX-libs-dev.tar.gz
-  tar xzvf GIMX-libs-dev.tar.gz
-  cp -a GIMX-libs-dev/* $PREFIX
+  tar --strip-components=1 -C $PREFIX -xzvf GIMX-libs-dev.tar.gz
   rm -rf GIMX-libs-dev GIMX-libs-dev.tar.gz
 else
   if ! test -f cpu
