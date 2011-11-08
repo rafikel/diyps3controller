@@ -178,7 +178,7 @@ fpsconfigFrame::fpsconfigFrame(wxString file,wxWindow* parent,wxWindowID id)
     wxMenu* Menu2;
 
     Create(parent, wxID_ANY, _("Gimx-fpsconfig"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
-    SetClientSize(wxSize(620,430));
+    SetClientSize(wxSize(614,423));
     SetBackgroundColour(wxColour(255,255,255));
     Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(0,0), wxSize(613,366), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     Panel1->SetBackgroundColour(wxColour(255,255,255));
