@@ -47,6 +47,7 @@ $(OUT_RELEASE): $(OBJ_RELEASE) $(DEP_RELEASE)
 
 $(OBJDIR_RELEASE)/%.o: %.cpp
 	test -d $(OBJDIR_RELEASE) || mkdir -p $(OBJDIR_RELEASE)
+	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
 	$(CPP) $(CFLAGS_RELEASE) $(INC_RELEASE) -c -o $@ $<
 
 clean_release:
