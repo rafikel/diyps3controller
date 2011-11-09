@@ -180,6 +180,7 @@ const long sixaxis_emu_guiFrame::ID_MENUITEM14 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM15 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM16 = wxNewId();
 const long sixaxis_emu_guiFrame::ID_MENUITEM24 = wxNewId();
+const long sixaxis_emu_guiFrame::ID_MENUITEM25 = wxNewId();
 const long sixaxis_emu_guiFrame::idMenuAbout = wxNewId();
 const long sixaxis_emu_guiFrame::ID_STATUSBAR1 = wxNewId();
 //*)
@@ -312,7 +313,7 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
     Notebook1 = new wxNotebook(this, ID_NOTEBOOK1, wxDefaultPosition, wxSize(-1,570), 0, _T("ID_NOTEBOOK1"));
     Panel1 = new wxPanel(Notebook1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     FlexGridSizer10 = new wxFlexGridSizer(2, 1, 0, 0);
-    StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Trigger"));
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("Profile trigger"));
     FlexGridSizer13 = new wxFlexGridSizer(1, 9, 0, 0);
     StaticText35 = new wxStaticText(Panel1, ID_STATICTEXT35, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT35"));
     FlexGridSizer13->Add(StaticText35, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -640,12 +641,12 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
     Menu1->Append(MenuItem1);
     MenuBar1->Append(Menu1, _("&File"));
     Menu5 = new wxMenu();
-    MenuItem18 = new wxMenuItem(Menu5, ID_MENUITEM12, _("Copy Configuration"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem18 = new wxMenuItem(Menu5, ID_MENUITEM12, _("Copy Profile"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem18);
     MenuItem24 = new wxMenuItem(Menu5, ID_MENUITEM18, _("Copy Controller"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem24);
     Menu5->AppendSeparator();
-    MenuItem23 = new wxMenuItem(Menu5, ID_MENUITEM17, _("Paste Configuration"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem23 = new wxMenuItem(Menu5, ID_MENUITEM17, _("Paste Profile"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem23);
     MenuItem25 = new wxMenuItem(Menu5, ID_MENUITEM19, _("Paste Controller"), wxEmptyString, wxITEM_NORMAL);
     Menu5->Append(MenuItem25);
@@ -693,10 +694,13 @@ sixaxis_emu_guiFrame::sixaxis_emu_guiFrame(wxString file,wxWindow* parent,wxWind
     Menu4->Append(MenuItem21);
     MenuItem22 = new wxMenuItem(Menu4, ID_MENUITEM16, _("8"), wxEmptyString, wxITEM_RADIO);
     Menu4->Append(MenuItem22);
-    MenuBar1->Append(Menu4, _("Configuration"));
+    MenuBar1->Append(Menu4, _("Profile"));
     Menu6 = new wxMenu();
     MenuItem30 = new wxMenuItem(Menu6, ID_MENUITEM24, _("Multiple Mice and Keyboards"), wxEmptyString, wxITEM_CHECK);
     Menu6->Append(MenuItem30);
+    MenuItem31 = new wxMenuItem(Menu6, ID_MENUITEM25, _("Link controls"), wxEmptyString, wxITEM_CHECK);
+    Menu6->Append(MenuItem31);
+    MenuItem31->Check(true);
     MenuBar1->Append(Menu6, _("Advanced"));
     Menu2 = new wxMenu();
     MenuItem2 = new wxMenuItem(Menu2, idMenuAbout, _("About\tF1"), _("Show info about this application"), wxITEM_NORMAL);
@@ -1069,7 +1073,37 @@ void sixaxis_emu_guiFrame::auto_detect(wxStaticText* device_type, wxStaticText* 
 
 void sixaxis_emu_guiFrame::OnButton1Click1(wxCommandEvent& event)
 {
+    wxString old_device_type = StaticText35->GetLabel();
+    wxString old_device_name = StaticText27->GetLabel();
+    wxString old_device_id = StaticText36->GetLabel();
+    wxString old_event_id = StaticText37->GetLabel();
+    Device* dev;
+    Event* ev;
+
     auto_detect(StaticText35, StaticText27, StaticText36, _("button"), StaticText37);
+
+    if(old_device_type != wxEmptyString)
+    {
+      int k;
+
+      Controller* controller = configFile.GetController(currentController);
+
+      for(k=0; k<MAX_CONFIGURATIONS; ++k)
+      {
+        Configuration* config = controller->GetConfiguration(k);
+
+        dev = config->GetTrigger()->GetDevice();
+        ev = config->GetTrigger()->GetEvent();
+
+        if(dev->GetType() == old_device_type && dev->GetType() == old_device_type && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+        {
+          dev->SetType(StaticText35->GetLabel());
+          dev->SetName(StaticText27->GetLabel());
+          dev->SetId(StaticText36->GetLabel());
+          ev->SetId(StaticText37->GetLabel());
+        }
+      }
+    }
 
     Panel1->Layout();
 }
@@ -1564,6 +1598,10 @@ void sixaxis_emu_guiFrame::OnButtonModifyButton(wxCommandEvent& event)
             wxMessageBox( wxT("Please select a Button!"), wxT("Error"), wxICON_ERROR);
             return;
         }
+        if(MenuItem31->IsChecked())
+        {
+          updateButtonConfigurations();
+        }
         Grid1->SetCellValue(grid1mod, 0, StaticText38->GetLabel());
         Grid1->SetCellValue(grid1mod, 1, StaticText30->GetLabel());
         Grid1->SetCellValue(grid1mod, 2, StaticText39->GetLabel());
@@ -1579,7 +1617,39 @@ void sixaxis_emu_guiFrame::OnButtonModifyButton(wxCommandEvent& event)
     Panel2->Layout();
 }
 
+void sixaxis_emu_guiFrame::updateButtonConfigurations()
+{
+    int k;
 
+    std::list<ButtonMapper>* buttonMappers;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      buttonMappers = config->GetButtonMapperList();
+      for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); it++)
+      {
+          if(it->GetDevice()->GetType() == Grid1->GetCellValue(grid1mod, 0)
+              && it->GetDevice()->GetName() == Grid1->GetCellValue(grid1mod, 1)
+              && it->GetDevice()->GetId() == Grid1->GetCellValue(grid1mod, 2)
+              && it->GetEvent()->GetType() == Grid1->GetCellValue(grid1mod, 3)
+              && it->GetEvent()->GetId() == Grid1->GetCellValue(grid1mod, 4)
+              && it->GetButton() == Grid1->GetCellValue(grid1mod, 6))
+          {
+              it->GetDevice()->SetType(StaticText38->GetLabel());
+              it->GetDevice()->SetId(StaticText39->GetLabel());
+              it->GetDevice()->SetName(StaticText30->GetLabel());
+              it->GetEvent()->SetType(Choice4->GetStringSelection());
+              it->GetEvent()->SetId(StaticText40->GetLabel());
+              it->GetEvent()->SetThreshold(TextCtrl3->GetValue());
+              it->SetButton(Choice5->GetStringSelection());
+          }
+      }
+    }
+}
 
 void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
 {
@@ -1644,6 +1714,10 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
             wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
             return;
         }
+        if(MenuItem31->IsChecked())
+        {
+          updateAxisConfigurations();
+        }
         Grid2->SetCellValue(grid2mod, 0, StaticText41->GetLabel());
         Grid2->SetCellValue(grid2mod, 1, StaticText32->GetLabel());
         Grid2->SetCellValue(grid2mod, 2, StaticText42->GetLabel());
@@ -1662,6 +1736,39 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
     }
     Grid2->AutoSizeColumns();
     Panel3->Layout();
+}
+
+void sixaxis_emu_guiFrame::updateAxisConfigurations()
+{
+    int k;
+
+    std::list<AxisMapper>* axisMappers;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      axisMappers = config->GetAxisMapperList();
+      for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); it++)
+      {
+          if(it->GetDevice()->GetType() == Grid2->GetCellValue(grid2mod, 0)
+              && it->GetDevice()->GetName() == Grid2->GetCellValue(grid2mod, 1)
+              && it->GetDevice()->GetId() == Grid2->GetCellValue(grid2mod, 2)
+              && it->GetEvent()->GetType() == Grid2->GetCellValue(grid2mod, 3)
+              && it->GetEvent()->GetId() == Grid2->GetCellValue(grid2mod, 4)
+              && it->GetAxis() == Grid2->GetCellValue(grid2mod, 5))
+          {
+              it->GetDevice()->SetType(StaticText41->GetLabel());
+              it->GetDevice()->SetId(StaticText42->GetLabel());
+              it->GetDevice()->SetName(StaticText32->GetLabel());
+              it->GetEvent()->SetType(Choice7->GetStringSelection());
+              it->GetEvent()->SetId(StaticText43->GetLabel());
+              it->SetAxis(Choice8->GetStringSelection());
+          }
+      }
+    }
 }
 
 void sixaxis_emu_guiFrame::OnChoice1Select(wxCommandEvent& event)
@@ -1934,36 +2041,178 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnButton13Click1(wxCommandEvent& event)
 {
-    auto_detect(StaticText58, StaticText59, StaticText60, _("button"), StaticText61);
+  wxString old_device_type = StaticText58->GetLabel();
+  wxString old_device_name = StaticText59->GetLabel();
+  wxString old_device_id = StaticText60->GetLabel();
+  wxString old_event_id = StaticText61->GetLabel();
 
-    Panel1->Layout();
+  auto_detect(StaticText58, StaticText59, StaticText60, _("button"), StaticText61);
+
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("left_stick"))
+        {
+          Device* dev = it->GetDeviceUp();
+          Event* ev = it->GetEventUp();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(StaticText58->GetLabel());
+            dev->SetName(StaticText59->GetLabel());
+            dev->SetId(StaticText60->GetLabel());
+            ev->SetId(StaticText61->GetLabel());
+          }
+        }
+      }
+    }
+  }
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnButton14Click(wxCommandEvent& event)
 {
-    StaticText58->SetLabel(wxEmptyString);
-    StaticText59->SetLabel(wxEmptyString);
-    StaticText60->SetLabel(wxEmptyString);
-    StaticText61->SetLabel(wxEmptyString);
+  wxString old_device_type = StaticText58->GetLabel();
+  wxString old_device_name = StaticText59->GetLabel();
+  wxString old_device_id = StaticText60->GetLabel();
+  wxString old_event_id = StaticText61->GetLabel();
 
-    Panel1->Layout();
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("left_stick"))
+        {
+          Device* dev = it->GetDeviceUp();
+          Event* ev = it->GetEventUp();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(wxEmptyString);
+            dev->SetName(wxEmptyString);
+            dev->SetId(wxEmptyString);
+            ev->SetId(wxEmptyString);
+          }
+        }
+      }
+    }
+  }
+
+  StaticText58->SetLabel(wxEmptyString);
+  StaticText59->SetLabel(wxEmptyString);
+  StaticText60->SetLabel(wxEmptyString);
+  StaticText61->SetLabel(wxEmptyString);
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnButton11Click1(wxCommandEvent& event)
 {
-    auto_detect(StaticText48, StaticText49, StaticText50, _("button"), StaticText51);
 
-    Panel1->Layout();
+  wxString old_device_type = StaticText48->GetLabel();
+  wxString old_device_name = StaticText49->GetLabel();
+  wxString old_device_id = StaticText50->GetLabel();
+  wxString old_event_id = StaticText51->GetLabel();
+
+  auto_detect(StaticText48, StaticText49, StaticText50, _("button"), StaticText51);
+
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("right_stick"))
+        {
+          Device* dev = it->GetDeviceUp();
+          Event* ev = it->GetEventUp();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(StaticText48->GetLabel());
+            dev->SetName(StaticText49->GetLabel());
+            dev->SetId(StaticText50->GetLabel());
+            ev->SetId(StaticText51->GetLabel());
+          }
+        }
+      }
+    }
+  }
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnButton12Click(wxCommandEvent& event)
 {
-    StaticText48->SetLabel(wxEmptyString);
-    StaticText49->SetLabel(wxEmptyString);
-    StaticText50->SetLabel(wxEmptyString);
-    StaticText51->SetLabel(wxEmptyString);
 
-    Panel1->Layout();
+  wxString old_device_type = StaticText48->GetLabel();
+  wxString old_device_name = StaticText49->GetLabel();
+  wxString old_device_id = StaticText50->GetLabel();
+  wxString old_event_id = StaticText51->GetLabel();
+
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("right_stick"))
+        {
+          Device* dev = it->GetDeviceUp();
+          Event* ev = it->GetEventUp();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(wxEmptyString);
+            dev->SetName(wxEmptyString);
+            dev->SetId(wxEmptyString);
+            ev->SetId(wxEmptyString);
+          }
+        }
+      }
+    }
+  }
+
+  StaticText48->SetLabel(wxEmptyString);
+  StaticText49->SetLabel(wxEmptyString);
+  StaticText50->SetLabel(wxEmptyString);
+  StaticText51->SetLabel(wxEmptyString);
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnSpinCtrl3Change(wxSpinEvent& event)
@@ -1990,36 +2239,178 @@ void sixaxis_emu_guiFrame::OnSpinCtrl4Change(wxSpinEvent& event)
 
 void sixaxis_emu_guiFrame::OnButton15Click(wxCommandEvent& event)
 {
-    auto_detect(StaticText67, StaticText68, StaticText69, _("button"), StaticText70);
+  wxString old_device_type = StaticText67->GetLabel();
+  wxString old_device_name = StaticText68->GetLabel();
+  wxString old_device_id = StaticText69->GetLabel();
+  wxString old_event_id = StaticText70->GetLabel();
 
-    Panel1->Layout();
+  auto_detect(StaticText67, StaticText68, StaticText69, _("button"), StaticText70);
+
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("left_stick"))
+        {
+          Device* dev = it->GetDeviceDown();
+          Event* ev = it->GetEventDown();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(StaticText67->GetLabel());
+            dev->SetName(StaticText68->GetLabel());
+            dev->SetId(StaticText69->GetLabel());
+            ev->SetId(StaticText70->GetLabel());
+          }
+        }
+      }
+    }
+  }
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnButton16Click(wxCommandEvent& event)
 {
-    StaticText67->SetLabel(wxEmptyString);
-    StaticText68->SetLabel(wxEmptyString);
-    StaticText69->SetLabel(wxEmptyString);
-    StaticText70->SetLabel(wxEmptyString);
 
-    Panel1->Layout();
+  wxString old_device_type = StaticText67->GetLabel();
+  wxString old_device_name = StaticText68->GetLabel();
+  wxString old_device_id = StaticText69->GetLabel();
+  wxString old_event_id = StaticText70->GetLabel();
+
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("left_stick"))
+        {
+          Device* dev = it->GetDeviceDown();
+          Event* ev = it->GetEventDown();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(wxEmptyString);
+            dev->SetName(wxEmptyString);
+            dev->SetId(wxEmptyString);
+            ev->SetId(wxEmptyString);
+          }
+        }
+      }
+    }
+  }
+
+  StaticText67->SetLabel(wxEmptyString);
+  StaticText68->SetLabel(wxEmptyString);
+  StaticText69->SetLabel(wxEmptyString);
+  StaticText70->SetLabel(wxEmptyString);
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnButton17Click(wxCommandEvent& event)
 {
-    auto_detect(StaticText1, StaticText2, StaticText3, _("button"), StaticText9);
+  wxString old_device_type = StaticText1->GetLabel();
+  wxString old_device_name = StaticText2->GetLabel();
+  wxString old_device_id = StaticText3->GetLabel();
+  wxString old_event_id = StaticText9->GetLabel();
 
-    Panel1->Layout();
+  auto_detect(StaticText1, StaticText2, StaticText3, _("button"), StaticText9);
+
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("right_stick"))
+        {
+          Device* dev = it->GetDeviceDown();
+          Event* ev = it->GetEventDown();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(StaticText1->GetLabel());
+            dev->SetName(StaticText2->GetLabel());
+            dev->SetId(StaticText3->GetLabel());
+            ev->SetId(StaticText9->GetLabel());
+          }
+        }
+      }
+    }
+  }
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnButton18Click(wxCommandEvent& event)
 {
-    StaticText1->SetLabel(wxEmptyString);
-    StaticText2->SetLabel(wxEmptyString);
-    StaticText3->SetLabel(wxEmptyString);
-    StaticText9->SetLabel(wxEmptyString);
 
-    Panel1->Layout();
+  wxString old_device_type = StaticText1->GetLabel();
+  wxString old_device_name = StaticText2->GetLabel();
+  wxString old_device_id = StaticText3->GetLabel();
+  wxString old_event_id = StaticText9->GetLabel();
+
+  if(old_device_type != wxEmptyString)
+  {
+    int k;
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<Intensity>* intensityList = config->GetIntensityList();
+
+      for(std::list<Intensity>::iterator it = intensityList->begin(); it!=intensityList->end(); it++)
+      {
+        if(it->GetControl() == _("right_stick"))
+        {
+          Device* dev = it->GetDeviceDown();
+          Event* ev = it->GetEventDown();
+          if(dev->GetType() == old_device_type && dev->GetName() == old_device_name && dev->GetType() == old_device_type && ev->GetId() == old_event_id)
+          {
+            dev->SetType(wxEmptyString);
+            dev->SetName(wxEmptyString);
+            dev->SetId(wxEmptyString);
+            ev->SetId(wxEmptyString);
+          }
+        }
+      }
+    }
+  }
+
+  StaticText1->SetLabel(wxEmptyString);
+  StaticText2->SetLabel(wxEmptyString);
+  StaticText3->SetLabel(wxEmptyString);
+  StaticText9->SetLabel(wxEmptyString);
+
+  Panel1->Layout();
 }
 
 void sixaxis_emu_guiFrame::OnMenuSetMouseDPI(wxCommandEvent& event)

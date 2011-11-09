@@ -136,6 +136,8 @@ class sixaxis_emu_guiFrame: public wxFrame
         void fillButtonChoice(wxChoice* choice);
         void replaceDevice(wxString device_type);
         void auto_detect(wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id);
+        void updateButtonConfigurations();
+        void updateAxisConfigurations();
 
         //(*Identifiers(sixaxis_emu_guiFrame)
         static const long ID_STATICTEXT35;
@@ -265,6 +267,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         static const long ID_MENUITEM15;
         static const long ID_MENUITEM16;
         static const long ID_MENUITEM24;
+        static const long ID_MENUITEM25;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
         //*)
@@ -274,6 +277,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         wxStaticText* StaticText10;
         wxStaticText* StaticText22;
         wxStaticText* StaticText9;
+        wxMenuItem* MenuItem31;
         wxMenuItem* MenuItem8;
         wxStaticText* StaticText20;
         wxSpinCtrl* SpinCtrl4;
