@@ -724,6 +724,8 @@ e_axis_index fpsconfigFrame::getAxisIndex(wxButton* button)
 
 void fpsconfigFrame::OnButtonClick(wxCommandEvent& event)
 {
+    ((wxButton*)event.GetEventObject())->Enable(false);
+
     e_button_index bindex;
     e_axis_index aindex;
 
@@ -750,6 +752,8 @@ void fpsconfigFrame::OnButtonClick(wxCommandEvent& event)
             axes[aindex].SetAxis(wxString(axis_labels[aindex], wxConvUTF8));
         }
     }
+
+    ((wxButton*)event.GetEventObject())->Enable(true);
 }
 
 void fpsconfigFrame::OnMenuNew(wxCommandEvent& event)
