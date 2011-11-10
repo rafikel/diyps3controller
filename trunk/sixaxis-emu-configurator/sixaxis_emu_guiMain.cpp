@@ -902,6 +902,9 @@ void sixaxis_emu_guiFrame::OnButtonAdd1Click(wxCommandEvent& event)
         wxMessageBox( wxT("Please select a Button!"), wxT("Error"), wxICON_ERROR);
         return;
     }
+    /*
+     * Todo: check that the control is not already used!
+     */
     Grid1->InsertRows();
     Grid1->SetCellValue(0, 0, StaticText38->GetLabel());
     Grid1->SetCellValue(0, 1, StaticText30->GetLabel());
@@ -926,6 +929,9 @@ void sixaxis_emu_guiFrame::OnButton3Click(wxCommandEvent& event)
         wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
         return;
     }
+    /*
+     * Todo: check that the control is not already used!
+     */
     Grid2->InsertRows();
     Grid2->SetCellValue(0, 0, StaticText41->GetLabel());
     Grid2->SetCellValue(0, 1, StaticText32->GetLabel());
@@ -1159,6 +1165,8 @@ void sixaxis_emu_guiFrame::auto_detect(wxStaticText* device_type, wxStaticText* 
 
 void sixaxis_emu_guiFrame::OnButton1Click1(wxCommandEvent& event)
 {
+    Button1->Enable(false);
+
     wxString old_device_type = StaticText35->GetLabel();
     wxString old_device_name = StaticText27->GetLabel();
     wxString old_device_id = StaticText36->GetLabel();
@@ -1192,10 +1200,14 @@ void sixaxis_emu_guiFrame::OnButton1Click1(wxCommandEvent& event)
     }
 
     Panel1->Layout();
+
+    Button1->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnButton8Click(wxCommandEvent& event)
 {
+    Button8->Enable(false);
+
     auto_detect(StaticText38, StaticText30, StaticText39, Choice4->GetStringSelection(), StaticText40);
 
     if(evcatch.GetEventType() == _("button"))
@@ -1212,10 +1224,14 @@ void sixaxis_emu_guiFrame::OnButton8Click(wxCommandEvent& event)
     fillButtonChoice(Choice5);
 
     Panel2->Layout();
+
+    Button8->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnButton9Click(wxCommandEvent& event)
 {
+    Button9->Enable(false);
+
     auto_detect(StaticText41, StaticText32, StaticText42, Choice7->GetStringSelection(), StaticText43);
 
     if(evcatch.GetEventType() == _("button"))
@@ -1261,6 +1277,8 @@ void sixaxis_emu_guiFrame::OnButton9Click(wxCommandEvent& event)
     }
 
     Panel3->Layout();
+
+    Button9->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::save_current()
@@ -1684,6 +1702,9 @@ void sixaxis_emu_guiFrame::OnButtonModifyButton(wxCommandEvent& event)
             wxMessageBox( wxT("Please select a Button!"), wxT("Error"), wxICON_ERROR);
             return;
         }
+        /*
+         * Todo: check that the control is not already used!
+         */
         if(MenuItem31->IsChecked())
         {
           updateButtonConfigurations();
@@ -1800,6 +1821,9 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
             wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
             return;
         }
+        /*
+         * Todo: check that the control is not already used!
+         */
         if(MenuItem31->IsChecked())
         {
           updateAxisConfigurations();
@@ -2127,6 +2151,8 @@ void sixaxis_emu_guiFrame::OnMenuReplaceMouseDPI(wxCommandEvent& event)
 
 void sixaxis_emu_guiFrame::OnButton13Click1(wxCommandEvent& event)
 {
+  Button13->Enable(false);
+
   wxString old_device_type = StaticText58->GetLabel();
   wxString old_device_name = StaticText59->GetLabel();
   wxString old_device_id = StaticText60->GetLabel();
@@ -2165,10 +2191,14 @@ void sixaxis_emu_guiFrame::OnButton13Click1(wxCommandEvent& event)
   }
 
   Panel1->Layout();
+
+  Button13->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnButton14Click(wxCommandEvent& event)
 {
+  Button14->Enable(false);
+
   wxString old_device_type = StaticText58->GetLabel();
   wxString old_device_name = StaticText59->GetLabel();
   wxString old_device_id = StaticText60->GetLabel();
@@ -2210,10 +2240,13 @@ void sixaxis_emu_guiFrame::OnButton14Click(wxCommandEvent& event)
   StaticText61->SetLabel(wxEmptyString);
 
   Panel1->Layout();
+
+  Button14->Enable(false);
 }
 
 void sixaxis_emu_guiFrame::OnButton11Click1(wxCommandEvent& event)
 {
+  Button11->Enable(false);
 
   wxString old_device_type = StaticText48->GetLabel();
   wxString old_device_name = StaticText49->GetLabel();
@@ -2253,10 +2286,13 @@ void sixaxis_emu_guiFrame::OnButton11Click1(wxCommandEvent& event)
   }
 
   Panel1->Layout();
+
+  Button11->Enable(false);
 }
 
 void sixaxis_emu_guiFrame::OnButton12Click(wxCommandEvent& event)
 {
+  Button12->Enable(false);
 
   wxString old_device_type = StaticText48->GetLabel();
   wxString old_device_name = StaticText49->GetLabel();
@@ -2299,6 +2335,8 @@ void sixaxis_emu_guiFrame::OnButton12Click(wxCommandEvent& event)
   StaticText51->SetLabel(wxEmptyString);
 
   Panel1->Layout();
+
+  Button12->Enable(false);
 }
 
 void sixaxis_emu_guiFrame::OnSpinCtrl3Change(wxSpinEvent& event)
@@ -2325,6 +2363,8 @@ void sixaxis_emu_guiFrame::OnSpinCtrl4Change(wxSpinEvent& event)
 
 void sixaxis_emu_guiFrame::OnButton15Click(wxCommandEvent& event)
 {
+  Button15->Enable(false);
+
   wxString old_device_type = StaticText67->GetLabel();
   wxString old_device_name = StaticText68->GetLabel();
   wxString old_device_id = StaticText69->GetLabel();
@@ -2363,10 +2403,13 @@ void sixaxis_emu_guiFrame::OnButton15Click(wxCommandEvent& event)
   }
 
   Panel1->Layout();
+
+  Button15->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnButton16Click(wxCommandEvent& event)
 {
+  Button16->Enable(false);
 
   wxString old_device_type = StaticText67->GetLabel();
   wxString old_device_name = StaticText68->GetLabel();
@@ -2409,10 +2452,14 @@ void sixaxis_emu_guiFrame::OnButton16Click(wxCommandEvent& event)
   StaticText70->SetLabel(wxEmptyString);
 
   Panel1->Layout();
+
+  Button16->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnButton17Click(wxCommandEvent& event)
 {
+  Button17->Enable(false);
+
   wxString old_device_type = StaticText1->GetLabel();
   wxString old_device_name = StaticText2->GetLabel();
   wxString old_device_id = StaticText3->GetLabel();
@@ -2451,10 +2498,13 @@ void sixaxis_emu_guiFrame::OnButton17Click(wxCommandEvent& event)
   }
 
   Panel1->Layout();
+
+  Button17->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnButton18Click(wxCommandEvent& event)
 {
+  Button18->Enable(false);
 
   wxString old_device_type = StaticText1->GetLabel();
   wxString old_device_name = StaticText2->GetLabel();
@@ -2497,6 +2547,8 @@ void sixaxis_emu_guiFrame::OnButton18Click(wxCommandEvent& event)
   StaticText9->SetLabel(wxEmptyString);
 
   Panel1->Layout();
+
+  Button18->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnMenuSetMouseDPI(wxCommandEvent& event)
