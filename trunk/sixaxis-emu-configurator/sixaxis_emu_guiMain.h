@@ -131,6 +131,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         void OnTextCtrlText(wxCommandEvent& event);
         //*)
         void DeleteSelectedRows(wxGrid* grid);
+        void DeleteLinkedRows(wxGrid* grid, int row);
         void fillButtonAxisChoice(wxChoice* choice);
         void fillAxisAxisChoice(wxChoice* choice);
         void fillButtonChoice(wxChoice* choice);

@@ -943,6 +943,88 @@ void sixaxis_emu_guiFrame::OnButton3Click(wxCommandEvent& event)
     Panel3->Layout();
 }
 
+void sixaxis_emu_guiFrame::DeleteLinkedRows(wxGrid* grid, int row)
+{
+  if(grid == Grid1)
+  {
+    wxString old_device_type = Grid1->GetCellValue(row, 0);
+    wxString old_device_name = Grid1->GetCellValue(row, 1);
+    wxString old_device_id = Grid1->GetCellValue(row, 2);
+    wxString old_event_type = Grid1->GetCellValue(row, 3);
+    wxString old_event_id = Grid1->GetCellValue(row, 4);
+    wxString old_button_id = Grid1->GetCellValue(row, 6);
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(unsigned int k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      if(k == currentConfiguration)
+      {
+        continue;
+      }
+
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<ButtonMapper>* buttonMappers = config->GetButtonMapperList();
+      for(std::list<ButtonMapper>::iterator it = buttonMappers->begin(); it!=buttonMappers->end(); )
+      {
+        if (it->GetDevice()->GetType() == old_device_type
+            && it->GetDevice()->GetName() == old_device_name
+            && it->GetDevice()->GetId() == old_device_id
+            && it->GetEvent()->GetType() == old_event_type
+            && it->GetEvent()->GetId() == old_event_id
+            && it->GetButton() == old_button_id)
+        {
+          it = buttonMappers ->erase(it);
+        }
+        else
+        {
+          it++;
+        }
+      }
+    }
+  }
+  else if(grid == Grid2)
+  {
+    wxString old_device_type = Grid2->GetCellValue(row, 0);
+    wxString old_device_name = Grid2->GetCellValue(row, 1);
+    wxString old_device_id = Grid2->GetCellValue(row, 2);
+    wxString old_event_type = Grid2->GetCellValue(row, 3);
+    wxString old_event_id = Grid2->GetCellValue(row, 4);
+    wxString old_axis_id = Grid2->GetCellValue(row, 5);
+
+    Controller* controller = configFile.GetController(currentController);
+
+    for(unsigned int k=0; k<MAX_CONFIGURATIONS; ++k)
+    {
+      if(k == currentConfiguration)
+      {
+        continue;
+      }
+
+      Configuration* config = controller->GetConfiguration(k);
+
+      std::list<AxisMapper>* axisMappers = config->GetAxisMapperList();
+      for(std::list<AxisMapper>::iterator it = axisMappers->begin(); it!=axisMappers->end(); )
+      {
+        if (it->GetDevice()->GetType() == old_device_type
+            && it->GetDevice()->GetName() == old_device_name
+            && it->GetDevice()->GetId() == old_device_id
+            && it->GetEvent()->GetType() == old_event_type
+            && it->GetEvent()->GetId() == old_event_id
+            && it->GetAxis() == old_axis_id)
+        {
+          it = axisMappers ->erase(it);
+        }
+        else
+        {
+          it++;
+        }
+      }
+    }
+  }
+}
+
 void sixaxis_emu_guiFrame::DeleteSelectedRows(wxGrid* grid)
 {
     unsigned int first;
@@ -960,6 +1042,10 @@ void sixaxis_emu_guiFrame::DeleteSelectedRows(wxGrid* grid)
 
     while(array.GetCount())
     {
+        if(MenuItem31->IsChecked())
+        {
+          DeleteLinkedRows(grid, array.Item(0));
+        }
         grid->DeleteRows(array.Item(0), 1);
         array = grid->GetSelectedRows();
     }
@@ -1082,7 +1168,7 @@ void sixaxis_emu_guiFrame::OnButton1Click1(wxCommandEvent& event)
 
     auto_detect(StaticText35, StaticText27, StaticText36, _("button"), StaticText37);
 
-    if(old_device_type != wxEmptyString)
+    if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
     {
       int k;
 
@@ -2048,7 +2134,7 @@ void sixaxis_emu_guiFrame::OnButton13Click1(wxCommandEvent& event)
 
   auto_detect(StaticText58, StaticText59, StaticText60, _("button"), StaticText61);
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
@@ -2088,7 +2174,7 @@ void sixaxis_emu_guiFrame::OnButton14Click(wxCommandEvent& event)
   wxString old_device_id = StaticText60->GetLabel();
   wxString old_event_id = StaticText61->GetLabel();
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
@@ -2136,7 +2222,7 @@ void sixaxis_emu_guiFrame::OnButton11Click1(wxCommandEvent& event)
 
   auto_detect(StaticText48, StaticText49, StaticText50, _("button"), StaticText51);
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
@@ -2177,7 +2263,7 @@ void sixaxis_emu_guiFrame::OnButton12Click(wxCommandEvent& event)
   wxString old_device_id = StaticText50->GetLabel();
   wxString old_event_id = StaticText51->GetLabel();
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
@@ -2246,7 +2332,7 @@ void sixaxis_emu_guiFrame::OnButton15Click(wxCommandEvent& event)
 
   auto_detect(StaticText67, StaticText68, StaticText69, _("button"), StaticText70);
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
@@ -2287,7 +2373,7 @@ void sixaxis_emu_guiFrame::OnButton16Click(wxCommandEvent& event)
   wxString old_device_id = StaticText69->GetLabel();
   wxString old_event_id = StaticText70->GetLabel();
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
@@ -2334,7 +2420,7 @@ void sixaxis_emu_guiFrame::OnButton17Click(wxCommandEvent& event)
 
   auto_detect(StaticText1, StaticText2, StaticText3, _("button"), StaticText9);
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
@@ -2375,7 +2461,7 @@ void sixaxis_emu_guiFrame::OnButton18Click(wxCommandEvent& event)
   wxString old_device_id = StaticText3->GetLabel();
   wxString old_event_id = StaticText9->GetLabel();
 
-  if(old_device_type != wxEmptyString)
+  if(old_device_type != wxEmptyString && MenuItem31->IsChecked())
   {
     int k;
 
