@@ -139,6 +139,7 @@ class sixaxis_emu_guiFrame: public wxFrame
         void auto_detect(wxStaticText* device_type, wxStaticText* device_name, wxStaticText* device_id, wxString event_type, wxStaticText* event_id);
         void updateButtonConfigurations();
         void updateAxisConfigurations();
+        wxString isAlreadyUsed(wxString device_type, wxString device_name, wxString device_id, wxString event_type, wxString event_id, int gridIndex1, int gridIndex2);
 
         //(*Identifiers(sixaxis_emu_guiFrame)
         static const long ID_STATICTEXT35;

@@ -902,9 +902,18 @@ void sixaxis_emu_guiFrame::OnButtonAdd1Click(wxCommandEvent& event)
         wxMessageBox( wxT("Please select a Button!"), wxT("Error"), wxICON_ERROR);
         return;
     }
-    /*
-     * Todo: check that the control is not already used!
-     */
+
+    wxString check = isAlreadyUsed(StaticText38->GetLabel(), StaticText30->GetLabel(), StaticText39->GetLabel(), Choice4->GetStringSelection(), StaticText40->GetLabel(), -1, -1);
+
+    if(!check.IsEmpty())
+    {
+      int answer = wxMessageBox(check, _("Confirm"), wxYES_NO);
+      if (answer == wxNO)
+      {
+        return;
+      }
+    }
+
     Grid1->InsertRows();
     Grid1->SetCellValue(0, 0, StaticText38->GetLabel());
     Grid1->SetCellValue(0, 1, StaticText30->GetLabel());
@@ -929,9 +938,18 @@ void sixaxis_emu_guiFrame::OnButton3Click(wxCommandEvent& event)
         wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
         return;
     }
-    /*
-     * Todo: check that the control is not already used!
-     */
+
+    wxString check = isAlreadyUsed(StaticText41->GetLabel(), StaticText32->GetLabel(), StaticText42->GetLabel(), Choice7->GetStringSelection(), StaticText43->GetLabel(), -1, -1);
+
+    if(!check.IsEmpty())
+    {
+      int answer = wxMessageBox(check, _("Confirm"), wxYES_NO);
+      if (answer == wxNO)
+      {
+        return;
+      }
+    }
+
     Grid2->InsertRows();
     Grid2->SetCellValue(0, 0, StaticText41->GetLabel());
     Grid2->SetCellValue(0, 1, StaticText32->GetLabel());
@@ -1702,9 +1720,18 @@ void sixaxis_emu_guiFrame::OnButtonModifyButton(wxCommandEvent& event)
             wxMessageBox( wxT("Please select a Button!"), wxT("Error"), wxICON_ERROR);
             return;
         }
-        /*
-         * Todo: check that the control is not already used!
-         */
+
+        wxString check = isAlreadyUsed(StaticText38->GetLabel(), StaticText30->GetLabel(), StaticText39->GetLabel(), Choice4->GetStringSelection(), StaticText40->GetLabel(), grid1mod, -1);
+
+        if(!check.IsEmpty())
+        {
+          int answer = wxMessageBox(check, _("Confirm"), wxYES_NO);
+          if (answer == wxNO)
+          {
+            return;
+          }
+        }
+
         if(MenuItem31->IsChecked())
         {
           updateButtonConfigurations();
@@ -1821,9 +1848,18 @@ void sixaxis_emu_guiFrame::OnButtonModifyAxis(wxCommandEvent& event)
             wxMessageBox( wxT("Please select an Axis!"), wxT("Error"), wxICON_ERROR);
             return;
         }
-        /*
-         * Todo: check that the control is not already used!
-         */
+
+        wxString check = isAlreadyUsed(StaticText41->GetLabel(), StaticText32->GetLabel(), StaticText42->GetLabel(), Choice7->GetStringSelection(), StaticText43->GetLabel(), -1, grid2mod);
+
+        if(!check.IsEmpty())
+        {
+          int answer = wxMessageBox(check, _("Confirm"), wxYES_NO);
+          if (answer == wxNO)
+          {
+            return;
+          }
+        }
+
         if(MenuItem31->IsChecked())
         {
           updateAxisConfigurations();
@@ -2287,7 +2323,7 @@ void sixaxis_emu_guiFrame::OnButton11Click1(wxCommandEvent& event)
 
   Panel1->Layout();
 
-  Button11->Enable(false);
+  Button11->Enable(true);
 }
 
 void sixaxis_emu_guiFrame::OnButton12Click(wxCommandEvent& event)
@@ -2651,4 +2687,76 @@ void sixaxis_emu_guiFrame::OnTextCtrlText(wxCommandEvent& event)
             text->SetValue(_("1.00"));
         }
     }
+}
+
+wxString sixaxis_emu_guiFrame::isAlreadyUsed(wxString device_type, wxString device_name, wxString device_id, wxString event_type, wxString event_id, int gridIndex1, int gridIndex2)
+{
+  for(int i=0; i<Grid1->GetNumberRows(); i++)
+  {
+    if(gridIndex1 >= 0 && i == gridIndex1)
+    {
+      continue;
+    }
+
+    if(Grid1->GetCellValue(i, 0) == device_type
+       && (Grid1->GetCellValue(i, 1).IsEmpty() || device_name.IsEmpty() || Grid1->GetCellValue(i, 1) == device_name)
+       && Grid1->GetCellValue(i, 2) == device_id
+       && Grid1->GetCellValue(i, 3) == event_type
+       && Grid1->GetCellValue(i, 4) == event_id)
+    {
+      return _("This control is already used in the current profile (Button tab).\nContinue?");
+    }
+  }
+
+  for(int i=0; i<Grid2->GetNumberRows(); i++)
+  {
+    if(gridIndex2 >= 0 && i == gridIndex2)
+    {
+      continue;
+    }
+
+    if(Grid2->GetCellValue(i, 0) == device_type
+       && (Grid2->GetCellValue(i, 1).IsEmpty() || device_name.IsEmpty() || Grid1->GetCellValue(i, 1) == device_name)
+       && Grid2->GetCellValue(i, 2) == device_id
+       && Grid2->GetCellValue(i, 3) == event_type
+       && Grid2->GetCellValue(i, 4) == event_id)
+    {
+      return _("This control is already used in the current profile (Axis tab).\nContinue?");
+    }
+  }
+
+  if(event_type == _("button"))
+  {
+    if(device_type == StaticText58->GetLabel()
+       && (StaticText59->GetLabel().IsEmpty() || device_name.IsEmpty() || StaticText59->GetLabel() == device_name)
+       && StaticText60->GetLabel() == device_id
+       && StaticText61->GetLabel() == event_id)
+    {
+      return _("This control is already used in the current profile:\nOverall tab > Stick intensity > Left > Increase.\nContinue?");
+    }
+    if(device_type == StaticText67->GetLabel()
+       && (StaticText68->GetLabel().IsEmpty() || device_name.IsEmpty() || StaticText68->GetLabel() == device_name)
+       && StaticText69->GetLabel() == device_id
+       && StaticText70->GetLabel() == event_id)
+    {
+      return _("This control is already used in the current profile:\nOverall tab > Stick intensity > Left > Decrease.\nContinue?");
+    }
+
+    if(device_type == StaticText48->GetLabel()
+       && (StaticText49->GetLabel().IsEmpty() || device_name.IsEmpty() || StaticText49->GetLabel() == device_name)
+       && StaticText50->GetLabel() == device_id
+       && StaticText51->GetLabel() == event_id)
+    {
+      return _("This control is already used in the current profile:\nOverall tab > Stick intensity > Right > Increase.\nContinue?");
+    }
+    if(device_type == StaticText1->GetLabel()
+       && (StaticText2->GetLabel().IsEmpty() || device_name.IsEmpty() || StaticText2->GetLabel() == device_name)
+       && StaticText3->GetLabel() == device_id
+       && StaticText4->GetLabel() == event_id)
+    {
+      return _("This control is already used in the current profile:\nOverall tab > Stick intensity > Right > Decrease.\nContinue?");
+    }
+  }
+
+  return wxEmptyString;
 }
