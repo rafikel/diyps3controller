@@ -90,7 +90,11 @@ int main(int argc, char *argv[])
   int i;
   int num_evt;
   int read = 0;
+#ifndef WIN32
   struct timeval t0, t1;
+#else
+  LARGE_INTEGER t0, t1, freq;
+#endif
   int time_to_sleep;
 
 #ifndef WIN32
@@ -109,6 +113,8 @@ int main(int argc, char *argv[])
 #else
   SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
+  QueryPerformanceFrequency(&freq);
 #endif
 
   for (i = 1; i < argc; ++i)
@@ -244,7 +250,11 @@ int main(int argc, char *argv[])
   done = 0;
   while (!done)
   {
+#ifndef WIN32
     gettimeofday(&t0, NULL);
+#else
+    QueryPerformanceCounter(&t0);
+#endif
 
     SDL_PumpEvents();
     num_evt = SDL_PeepEvents(events, sizeof(events) / sizeof(events[0]),
@@ -321,9 +331,15 @@ int main(int argc, char *argv[])
     }
 #endif
 
+#ifndef WIN32
     gettimeofday(&t1, NULL);
 
     time_to_sleep = refresh - ((t1.tv_sec * 1000000 + t1.tv_usec) - (t0.tv_sec * 1000000 + t0.tv_usec));
+#else
+    QueryPerformanceCounter(&t1);
+
+    time_to_sleep = refresh - (t1.QuadPart - t0.QuadPart) * 1000000 / freq.QuadPart;
+#endif
 
     if (time_to_sleep > 0)
     {
@@ -332,7 +348,7 @@ int main(int argc, char *argv[])
     else
 
     {
-      printf("processing time higher than %dms!!\n", refresh / 1000);
+      printf("processing time higher than %dus: %dus!!\n", refresh, refresh - time_to_sleep);
     }
   }
 
