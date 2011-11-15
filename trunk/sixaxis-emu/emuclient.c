@@ -108,6 +108,7 @@ int main(int argc, char *argv[])
   system("test -d ~/.emuclient || cp -r /etc/emuclient ~/.emuclient");
 #else
   SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 #endif
 
   for (i = 1; i < argc; ++i)
