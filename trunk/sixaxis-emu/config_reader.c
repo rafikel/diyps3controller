@@ -25,6 +25,7 @@ extern char* homedir;
 #endif
 
 extern int mean_axis_value;
+extern double axis_scale;
 extern int merge_all_devices;
 extern int check_config;
 
@@ -784,6 +785,7 @@ static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
   int ret = 0;
   char* shape;
   unsigned int steps;
+  unsigned int dz;
 
   for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
   {
@@ -807,10 +809,12 @@ static int ProcessIntensityElement(xmlNode * a_node, s_intensity* intensity)
 
   if(ret != -1 && (intensity->device_down_id != -1 || intensity->device_up_id != -1))
   {
-    ret = GetUnsignedIntProp(a_node, X_ATTR_DEADZONE, &intensity->dead_zone);
+    ret = GetUnsignedIntProp(a_node, X_ATTR_DEADZONE, &dz);
 
     if(ret != -1)
     {
+      intensity->dead_zone = dz * axis_scale;
+
       shape = (char*) xmlGetProp(a_node, (xmlChar*) X_ATTR_SHAPE);
       if(shape)
       {
