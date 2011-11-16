@@ -188,7 +188,7 @@ typedef struct
   int device_down_type;
   int device_down_id;
   int down_button;
-  unsigned int dead_zone;
+  double dead_zone;
   e_shape shape;
   double step;
   double value;
