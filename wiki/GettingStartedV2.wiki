@@ -42,7 +42,7 @@ mingw-get install msys-wget
 Download and run the install.sh script:
 
 {{{
-wget http://diyps3controller.googlecode.com/svn/trunk/win/install.sh
+wget http://diyps3controller.googlecode.com/svn/trunk/build/win/install.sh
 ./install.sh
 }}}
 
@@ -55,7 +55,7 @@ Run C:\MinGW\msys\1.0\msys.bat
 Download and run the build.sh script:
 
 {{{
-wget http://diyps3controller.googlecode.com/svn/trunk/win/build.sh
+wget http://diyps3controller.googlecode.com/svn/trunk/build/win/build.sh
 ./build.sh
 }}}
 
