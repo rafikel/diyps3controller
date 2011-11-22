@@ -7,7 +7,7 @@ If you run through these instructions, be prepared to solve dependency issues...
 = Install development packages =
 
 {{{
-sudo apt-get install libbluetooth-dev libglib2.0-dev libxml2-dev libxi-dev libusb-dev g++
+sudo apt-get install g++ libwxgtk2.8-dev libbluetooth-dev libglib2.0-dev libxml2-dev libxi-dev libusb-dev
 }}}
 
 = Compile a patched SDL library =
