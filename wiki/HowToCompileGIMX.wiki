@@ -1,8 +1,6 @@
 #summary This wiki explains how to compile GIMX from a Linux terminal.
 
-= Introduction =
-
-If you run through these instructions, be prepared to solve dependency issues...
+Please report any dependency issue.
 
 = Install development packages =
 
