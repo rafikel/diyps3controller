@@ -12,7 +12,7 @@ Unless otherwise specified, perform a default installation (default directories,
 
 This part explains how to install the compilation toolchain.
 
-Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version (as of this writing, 20110802).
+Download and run the latest <a href="http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst">mingw-get-inst</a> version (as of this writing, <a href="http://ignum.dl.sourceforge.net/project/mingw/Installer/mingw-get-inst/mingw-get-inst-20110802/mingw-get-inst-20110802.exe">20110802</a>).
 
 *Note: the latest mingw (20111118) doesn't work.*
 
