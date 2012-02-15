@@ -5,7 +5,7 @@ Please report any dependency issue.
 = Install development packages =
 
 {{{
-sudo apt-get install g++ libwxgtk2.8-dev libbluetooth-dev libglib2.0-dev libxml2-dev libxi-dev libusb-dev
+sudo apt-get install g++ libwxgtk2.8-dev libbluetooth-dev libglib2.0-dev libxml2-dev libxi-dev libusb-dev libusb-1.0-0-dev
 }}}
 
 = Compile a patched SDL library =
@@ -20,25 +20,25 @@ patch -p1 < ../patch
 cd ..
 }}}
 
+= Copy SDL headers and .so =
+
+{{{
+mkdir -p libsdl/lib
+mkdir -p libsdl/include/SDL
+cp SDL-1.2.14/build/.libs/libSDL.so libsdl/lib
+cp SDL-1.2.14/include/* libsdl/include/SDL
+}}}
+
 = Download GIMX sources =
 
 {{{
 svn checkout http://diyps3controller.googlecode.com/svn/trunk/GIMX
 }}}
 
-= Copy SDL headers and .so =
-
-{{{
-cd GIMX
-mkdir -p libsdl/lib
-mkdir -p libsdl/include/SDL
-cp ../SDL-1.2.14/build/.libs/libSDL.so libsdl/lib
-cp ../SDL-1.2.14/include/* libsdl/include/SDL
-}}}
-
 = Compile =
 
 {{{
+cd GIMX
 make -j 4
 }}}
 
