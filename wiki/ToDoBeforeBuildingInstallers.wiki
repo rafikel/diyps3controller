@@ -9,3 +9,7 @@ Modify version.
 = CONFIG/fpsconfig/fpsconfig.rc =
 
 Modify file and product versions.
+
+= build/win/ino.iss =
+
+Modify version.
