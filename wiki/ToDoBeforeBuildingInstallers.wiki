@@ -4,6 +4,8 @@
 
 Modify version.
 
-= config/config.rc, serial/serial.rc, fpsconfig/fpsconfig.rc =
+= CONFIG/config/config.rc =
+= CONFIG/serial/serial.rc =
+= CONFIG/fpsconfig/fpsconfig.rc =
 
 Modify file and product versions.
