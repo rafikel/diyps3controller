@@ -1,15 +1,15 @@
 #summary This is a list of tasks to do before building installers.
 
-= GIMX/info.h =
+=== GIMX/info.h ===
 
 Modify version.
 
-= GIMX/config/config.rc =
-= GIMX/serial/serial.rc =
-= GIMX/fpsconfig/fpsconfig.rc =
+=== GIMX/config/config.rc ===
+=== GIMX/serial/serial.rc ===
+=== GIMX/fpsconfig/fpsconfig.rc ===
 
 Modify file and product versions.
 
-= build/win/ino.iss =
+=== build/win/ino.iss ===
 
 Modify version.
