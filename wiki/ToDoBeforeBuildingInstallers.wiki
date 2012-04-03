@@ -4,9 +4,9 @@
 
 Modify version.
 
-= CONFIG/config/config.rc =
-= CONFIG/serial/serial.rc =
-= CONFIG/fpsconfig/fpsconfig.rc =
+= GIMX/config/config.rc =
+= GIMX/serial/serial.rc =
+= GIMX/fpsconfig/fpsconfig.rc =
 
 Modify file and product versions.
 
