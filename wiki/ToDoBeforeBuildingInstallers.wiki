@@ -1,0 +1,9 @@
+#summary This is a list of tasks to do before building installers.
+
+= GIMX/info.h =
+
+Modify version.
+
+= config/config.rc, serial/serial.rc, fpsconfig/fpsconfig.rc =
+
+Modify file and product versions.
