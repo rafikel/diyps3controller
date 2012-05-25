@@ -33347,7 +33347,7 @@ diff -uNr SDL-1.2.14_orig/src/video/winmm/macosx_hidutilities.c SDL-1.2.14/src/v
 +			plugInResult = (*ppPlugInInterface)->QueryInterface (ppPlugInInterface,
 +														CFUUIDGetUUIDBytes (kIOHIDDeviceInterfaceID), (void *) &(pDevice->interface));
 +			if (S_OK != plugInResult)
-+				HIDReportErrorNum ("CouldnÕt query HID class device interface from plugInInterface", plugInResult);
++				HIDReportErrorNum ("Couldnï¿½t query HID class device interface from plugInInterface", plugInResult);
 +			IODestroyPlugInInterface (ppPlugInInterface); // replace (*ppPlugInInterface)->Release (ppPlugInInterface)
 +		}
 +		else
@@ -33832,7 +33832,7 @@ diff -uNr SDL-1.2.14_orig/src/video/winmm/macosx_hidutilities.c SDL-1.2.14/src/v
 +			HIDREPORTERRORNUM ("HIDQueueDevice - Failed to stop queue.", result);
 +
 +		// queue element
-+  //¥ pElement = HIDGetFirstDeviceElement (pDevice, kHIDElementTypeIO);
++  //ï¿½ pElement = HIDGetFirstDeviceElement (pDevice, kHIDElementTypeIO);
 +		pElement = HIDGetFirstDeviceElement (pDevice, kHIDElementTypeInput | kHIDElementTypeFeature);
 +
 +		while (pElement)
@@ -33843,7 +33843,7 @@ diff -uNr SDL-1.2.14_orig/src/video/winmm/macosx_hidutilities.c SDL-1.2.14/src/v
 +				if (kIOReturnSuccess != result)
 +					HIDREPORTERRORNUM ("HIDQueueDevice - Failed to add element to queue.", result);
 +			}
-+			//¥ pElement = HIDGetNextDeviceElement (pElement, kHIDElementTypeIO);
++			//ï¿½ pElement = HIDGetNextDeviceElement (pElement, kHIDElementTypeIO);
 +			pElement = HIDGetNextDeviceElement (pElement, kHIDElementTypeInput | kHIDElementTypeFeature);
 +		}
 +
@@ -34615,7 +34615,7 @@ diff -uNr SDL-1.2.14_orig/src/video/winmm/windows_wminput.c SDL-1.2.14/src/video
 +          break;
 +
 +        case VK_SHIFT:
-+          if (isE0)
++          if (keyboard->MakeCode == 0x36)
 +            virtualKey = VK_RSHIFT;
 +          else
 +            virtualKey = VK_LSHIFT;
