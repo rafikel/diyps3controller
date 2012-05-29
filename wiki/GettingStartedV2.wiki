@@ -14,8 +14,6 @@ This part explains how to install the compilation toolchain.
 
 Download and run <a href="http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20120426/mingw-get-inst-20120426.exe/download">Mingw 20120426</a>.
 
-*Note: don't use later Mingw versions.*
-
 The only thing to configure during the installation process: in the "Select Components panel, select "C++ Compiler" and "MSYS Basic System".
 
 http://www.gimx.fr/img/wiki/MinGW.jpg
