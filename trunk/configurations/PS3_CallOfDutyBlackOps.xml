@@ -2,7 +2,7 @@
 <root>
   <controller id="1" dpi="5700">
     <configuration id="1">
-      <trigger type="" id="" name="" button_id="" switch_back="" delay="0"/>
+      <trigger type="" id="" name="" button_id="" switch_back="no" delay="0"/>
       <intensity_list/>
       <button_map>
         <button id="r3" label="Melee">

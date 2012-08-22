@@ -107,15 +107,7 @@
     </configuration>
     <configuration id="2">
       <trigger type="mouse" id="0" name="" button_id="BUTTON_RIGHT" switch_back="yes" delay="0"/>
-      <intensity_list>
-        <intensity control="left_stick" dead_zone="0" shape="Circle" steps="1">
-          <up type="" name="" id="" button_id=""/>
-          <down type="" name="" id="" button_id=""/>
-        </intensity>
-        <intensity control="right_stick" dead_zone="31" shape="Circle" steps="3">
-          <up type="" name="" id="" button_id=""/>
-          <down type="" name="" id="" button_id=""/>
-        </intensity>
+      <intensity_list/>
       </intensity_list>
       <button_map>
         <button id="r1" label="Fire">
