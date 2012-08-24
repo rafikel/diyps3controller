@@ -13,3 +13,7 @@ Modify file and product versions.
 === build/win/ino.iss ===
 
 Modify version.
+
+== po/*.po ==
+
+Update po files.
