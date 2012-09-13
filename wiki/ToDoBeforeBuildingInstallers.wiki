@@ -1,5 +1,9 @@
 #summary This is a list of tasks to do before building installers.
 
+=== Windows makefile ===
+
+Check that all necessary libraries are copied.
+
 === GIMX/info.h ===
 
 Modify version.
