@@ -99,8 +99,7 @@ void results(unsigned int* tdiff, unsigned int cpt)
 
   nbval = i;
 
-  printf("  nb: %d\n", nbval);
-  printf("  worst: %d\n", worst);
+  printf("%d\t", worst);
 
   if(nbval < 2)
   {
@@ -109,7 +108,7 @@ void results(unsigned int* tdiff, unsigned int cpt)
 
   average = sum / nbval;
 
-  printf("  average: %d\n", average);
+  printf("%d\t", average);
 
   for (i = 0; i < nbval; i++)
   {
@@ -118,7 +117,7 @@ void results(unsigned int* tdiff, unsigned int cpt)
 
   temp = pow(temp/(nbval-1), 0.5);
 
-  printf("  standard deviation: %d\n", temp);
+  printf("%d\t", temp);
 }
 
 
@@ -304,36 +303,36 @@ int main(int argc, char* argv[])
       if (twrite[cpt] > wwrite)
       {
         wwrite = twrite[cpt];
-        printf("%ld.%06ld worst write: %d\n", t2.tv_sec, t2.tv_usec, wwrite);
+        //printf("%ld.%06ld worst write: %d\n", t2.tv_sec, t2.tv_usec, wwrite);
       }
       if (tread[cpt] > wread)
       {
         wread = tread[cpt];
-        printf("%ld.%06ld worst read: %d\n", t2.tv_sec, t2.tv_usec, wread);
+        //printf("%ld.%06ld worst read: %d\n", t2.tv_sec, t2.tv_usec, wread);
       }
       if (ttotal[cpt] > wtotal)
       {
         wtotal = ttotal[cpt];
-        printf("%ld.%06ld worst read: %d\n", t2.tv_sec, t2.tv_usec, wtotal);
+        //printf("%ld.%06ld worst read: %d\n", t2.tv_sec, t2.tv_usec, wtotal);
       }
 
       cpt++;
       if(cpt == samples)
       {
-        printf("max records reached!\n");
         break;
       }
     }
   }
 
-  printf("speed: %d\n", rate);
+  printf("speed: %d\t", rate);
+  printf("samples: %d\t", cpt);
   printf("packet size: %d\n", packet_size);
-  printf("write:\n");
+  printf("w:\t\t\tr:\t\t\tw+r\n");
+  printf("worst\tavg\tstdev\tworst\tavg\tstdev\tworst\tavg\tstdev\n");
   results(twrite, cpt);
-  printf("read:\n");
   results(tread, cpt);
-  printf("write+read:\n");
   results(ttotal, cpt);
+  printf("\n");
 
   return 0;
 }
