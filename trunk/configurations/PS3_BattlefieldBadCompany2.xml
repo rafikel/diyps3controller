@@ -51,7 +51,7 @@
         </button>
         <button id="down" label="">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="w"/>
+          <event type="button" id="z"/>
         </button>
         <button id="right" label="Secondary gadget">
           <device type="keyboard" id="0" name=""/>
@@ -59,7 +59,7 @@
         </button>
         <button id="up" label="">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="a"/>
+          <event type="button" id="q"/>
         </button>
         <button id="PS" label="">
           <device type="keyboard" id="0" name=""/>
@@ -77,15 +77,15 @@
       <axis_map>
         <axis id="rstick y" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="y" dead_zone="31" multiplier="11.25" exponent="0.40" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="y" dead_zone="31" multiplier="11.25" exponent="0.40" shape="Circle"/>
         </axis>
         <axis id="rstick x" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="x" dead_zone="31" multiplier="9.00" exponent="0.40" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="x" dead_zone="31" multiplier="9.00" exponent="0.40" shape="Circle"/>
         </axis>
         <axis id="lstick left" label="Strafe left">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="q"/>
+          <event type="button" id="a"/>
         </axis>
         <axis id="lstick down" label="Move back">
           <device type="keyboard" id="0" name=""/>
@@ -97,7 +97,7 @@
         </axis>
         <axis id="lstick up" label="Move forward">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="z"/>
+          <event type="button" id="w"/>
         </axis>
       </axis_map>
     </configuration>
@@ -151,7 +151,7 @@
         </button>
         <button id="down" label="">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="w"/>
+          <event type="button" id="z"/>
         </button>
         <button id="right" label="Secondary gadget">
           <device type="keyboard" id="0" name=""/>
@@ -159,7 +159,7 @@
         </button>
         <button id="up" label="">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="a"/>
+          <event type="button" id="q"/>
         </button>
         <button id="PS" label="">
           <device type="keyboard" id="0" name=""/>
@@ -177,15 +177,15 @@
       <axis_map>
         <axis id="rstick y" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="y" dead_zone="31" multiplier="18.75" exponent="0.40" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="y" dead_zone="31" multiplier="18.75" exponent="0.40" shape="Circle"/>
         </axis>
         <axis id="rstick x" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="x" dead_zone="31" multiplier="15.00" exponent="0.40" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="x" dead_zone="31" multiplier="15.00" exponent="0.40" shape="Circle"/>
         </axis>
         <axis id="lstick left" label="Strafe left">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="q"/>
+          <event type="button" id="a"/>
         </axis>
         <axis id="lstick down" label="Move back">
           <device type="keyboard" id="0" name=""/>
@@ -197,7 +197,7 @@
         </axis>
         <axis id="lstick up" label="Move forward">
           <device type="keyboard" id="0" name=""/>
-          <event type="button" id="z"/>
+          <event type="button" id="w"/>
         </axis>
       </axis_map>
     </configuration>

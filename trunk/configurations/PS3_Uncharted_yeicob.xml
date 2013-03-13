@@ -81,11 +81,11 @@
       <axis_map>
         <axis id="rstick x" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="x" dead_zone="64" multiplier="20" exponent="0.4" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="x" dead_zone="64" multiplier="20" exponent="0.4" shape="Circle"/>
         </axis>
         <axis id="rstick y" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="y" dead_zone="64" multiplier="16.00" exponent="0.4" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="y" dead_zone="64" multiplier="16.00" exponent="0.4" shape="Circle"/>
         </axis>
         <axis id="lstick up" label="Move forward">
           <device type="keyboard" id="0" name=""/>
@@ -108,7 +108,6 @@
     <configuration id="2">
       <trigger type="mouse" id="0" name="" button_id="BUTTON_RIGHT" switch_back="yes" delay="0"/>
       <intensity_list/>
-      </intensity_list>
       <button_map>
         <button id="r1" label="Fire">
           <device type="mouse" id="0" name=""/>
@@ -182,11 +181,11 @@
       <axis_map>
         <axis id="rstick x" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="x" dead_zone="27" multiplier="20" exponent="0.39" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="x" dead_zone="27" multiplier="20" exponent="0.39" shape="Circle"/>
         </axis>
         <axis id="rstick y" label="">
           <device type="mouse" id="0" name=""/>
-          <event type="axis" id="y" dead_zone="27" multiplier="35.00" exponent="0.39" shape="Circle" buffer_size="1" filter="0.00"/>
+          <event type="axis" id="y" dead_zone="27" multiplier="35.00" exponent="0.39" shape="Circle"/>
         </axis>
         <axis id="lstick up" label="Move forward">
           <device type="keyboard" id="0" name=""/>
