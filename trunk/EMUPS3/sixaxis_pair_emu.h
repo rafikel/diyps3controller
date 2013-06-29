@@ -122,15 +122,6 @@
 		/** LED mask for the library LED driver, to indicate that an error has occurred in the USB interface. */
 		#define LEDMASK_USB_ERROR           (LEDS_LED1 | LEDS_LED3)
 
-	/* Type Defines: */
-		/** Type define for the keyboard HID report structure, for creating and sending HID reports to the host PC.
-		 *  This mirrors the layout described to the host in the HID report descriptor, in Descriptors.c.
-		 */
-		typedef struct
-		{
-			uint8_t buffer[49];
-		} USB_SixaxisReport_Data_t;
-
 	/* Function Prototypes: */
 		void SetupHardware(void);
 		void HID_Task(void);
@@ -141,7 +132,6 @@
 		void EVENT_USB_Device_UnhandledControlRequest(void);
 		void EVENT_USB_Device_StartOfFrame(void);
 
-		void CreateSixaxisReport(USB_SixaxisReport_Data_t* ReportData);
 		void ProcessLEDReport(uint8_t LEDReport);
 		void SendNextReport(void);
 		void ReceiveNextReport(void);
