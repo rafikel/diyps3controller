@@ -323,8 +323,12 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
         {
           memcpy_P(buffer, buf3f7, sizeof(buffer));
         }
+        else
+        {
+          break;
+        }
         Endpoint_ClearSETUP();
-        Endpoint_Write_Control_PStream_LE(buffer, USB_ControlRequest.wLength);
+        Endpoint_Write_Control_Stream_LE(buffer, USB_ControlRequest.wLength);
         Endpoint_ClearOUT();
 			}
 		
