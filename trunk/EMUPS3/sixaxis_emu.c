@@ -35,13 +35,15 @@
  *  is responsible for the initial application hardware configuration.
  */
  
-#include "sixaxis_pair_emu.h"
+#include "sixaxis_emu.h"
 #include <util/delay.h>
 
 /*
  * The master bdaddr, read from eeprom at startup.
  */
-uint8_t VolatileMasterBdaddr[6];
+uint8_t masterBdaddr[6];
+
+uint8_t byte_6_ef;
 
 /*
  * Indicates if the master bdaddr was already requested or not.
@@ -197,15 +199,6 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 	USB_Device_EnableSOFEvents();
 }
 
-/*
- * For debug purposes!
-static unsigned int nb_requests = 0;
-
-USB_Request_Header_t log[64];
-*/
-
-static char last_set_data[64];
-
 const char PROGMEM buf301[] = {
     0x00,
     0x01,0x03,0x00,0x04,0x0c,0x01,0x02,0x18,
@@ -231,7 +224,7 @@ const char PROGMEM buf3f2[] = {
     0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
-char buf3f5[] = {
+const char PROGMEM buf3f5[] = {
     0x01,0x00,
     0xaa,0xaa,0xaa,0xaa,0xaa,0xaa, //dummy PS3 bdaddr
     0x23,0x1e,0x00,0x03,0x50,0x81,0xd8,0x01,
@@ -243,7 +236,7 @@ char buf3f5[] = {
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
-char buf3ef[] = {
+const char PROGMEM buf3ef[] = {
     0x00,0xef,0x03,0x00,0x04,0x03,0x01,0xb0,
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
     0x00,0x02,0x05,0x01,0x92,0x02,0x02,0x01,
@@ -254,7 +247,7 @@ char buf3ef[] = {
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
-char buf3f8[] = {
+const char PROGMEM buf3f8[] = {
     0x00,0x01,0x00,0x00,0x07,0x03,0x01,0xb0,
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
     0x00,0x02,0x6b,0x02,0x68,0x00,0x00,0x00,
@@ -282,6 +275,8 @@ const char PROGMEM buf3f7[] = {
  */
 void EVENT_USB_Device_UnhandledControlRequest(void)
 {
+  static char buffer[64];
+
   /* Handle HID Class specific requests */
 	switch (USB_ControlRequest.bRequest)
 	{
@@ -290,25 +285,20 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 			{
         if(USB_ControlRequest.wValue == 0x0301)
         {
-          Endpoint_ClearSETUP();
-          Endpoint_Write_Control_PStream_LE(buf301, USB_ControlRequest.wLength);
-          Endpoint_ClearOUT();
+          memcpy_P(buffer, buf301, sizeof(buffer));
         }
         else if(USB_ControlRequest.wValue == 0x03f2)
         {
-          Endpoint_ClearSETUP();
-          Endpoint_Write_Control_PStream_LE(buf3f2, USB_ControlRequest.wLength);
-          Endpoint_ClearOUT();
+          memcpy_P(buffer, buf3f2, sizeof(buffer));
         }
         else if(USB_ControlRequest.wValue == 0x03f5)
         {
-          Endpoint_ClearSETUP();
+          memcpy_P(buffer, buf3f5, sizeof(buffer));
           if(reply == 0)
           {
             /*
              * First request, tell that the bdaddr is not the one of the PS3.
              */
-            Endpoint_Write_Control_Stream_LE(buf3f5, USB_ControlRequest.wLength);
             reply = 1;
           }
           else
@@ -316,31 +306,26 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
             /*
              * Next requests, tell that the bdaddr is the one of the PS3.
              */
-            memcpy(buf3f5+2, VolatileMasterBdaddr, 6);
-            Endpoint_Write_Control_Stream_LE(buf3f5, USB_ControlRequest.wLength);
+            memcpy(buffer+2, masterBdaddr, 6);
           }
-          Endpoint_ClearOUT();
         }
         else if(USB_ControlRequest.wValue == 0x03ef)
         {
-          buf3ef[7] = last_set_data[6];
-          Endpoint_ClearSETUP();
-          Endpoint_Write_Control_Stream_LE(buf3ef, USB_ControlRequest.wLength);
-          Endpoint_ClearOUT();
+          memcpy_P(buffer, buf3ef, sizeof(buffer));
+          buffer[7] = byte_6_ef;
         }
         else if(USB_ControlRequest.wValue == 0x03f8)
         {
-          buf3f8[7] = last_set_data[6];
-          Endpoint_ClearSETUP();
-          Endpoint_Write_Control_Stream_LE(buf3f8, USB_ControlRequest.wLength);
-          Endpoint_ClearOUT();
+          memcpy_P(buffer, buf3f8, sizeof(buffer));
+          buffer[7] = byte_6_ef;//necessary??
         }
         else if(USB_ControlRequest.wValue == 0x03f7)
         {
-          Endpoint_ClearSETUP();
-          Endpoint_Write_Control_PStream_LE(buf3f7, USB_ControlRequest.wLength);
-          Endpoint_ClearOUT();
+          memcpy_P(buffer, buf3f7, sizeof(buffer));
         }
+        Endpoint_ClearSETUP();
+        Endpoint_Write_Control_PStream_LE(buffer, USB_ControlRequest.wLength);
+        Endpoint_ClearOUT();
 			}
 		
 			break;
@@ -359,7 +344,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 
 				for(i=0; i<USB_ControlRequest.wLength; i++)
 				{
-					last_set_data[i] = Endpoint_Read_Byte();
+					buffer[i] = Endpoint_Read_Byte();
 				}
 
 				/* Clear the endpoint data */
@@ -369,8 +354,12 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 
 				if(USB_ControlRequest.wValue == 0x03f5)
 				{
-					memcpy(VolatileMasterBdaddr, last_set_data+2, 6);
+					memcpy(masterBdaddr, buffer+2, 6);
 				}
+				else if(USB_ControlRequest.wValue == 0x03ef)
+        {
+          byte_6_ef = buffer[6];
+        }
 			}
 			
 			break;

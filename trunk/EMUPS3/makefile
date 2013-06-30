@@ -102,7 +102,7 @@ FORMAT = ihex
 
 
 # Target file name (without extension).
-TARGET = sixaxis_pair_emu
+TARGET = sixaxis_emu
 
 
 # Object files directory

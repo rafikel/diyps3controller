@@ -20,7 +20,7 @@ for TARGET in $TARGETS
 do
   make clean
   make MCU=$TARGET
-  mv Joystick.hex firmwares/$TARGET.hex
+  mv sixaxis_emu.hex firmwares/$TARGET.hex
 done
 
 zip -r firmwares.zip firmwares
