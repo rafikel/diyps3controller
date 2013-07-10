@@ -35,7 +35,7 @@
  */
  
 #include "xbox_emu.h"
-//#include <util/delay.h>
+#include <LUFA/Drivers/Peripheral/Serial.h>
 
 /*
  * The report data.
@@ -71,17 +71,52 @@ static uint8_t report[20] = {
 #define USART_BAUDRATE 500000
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
-uint8_t* pdata = report;
-unsigned char i = 0;
+static uint8_t* pdata = report;
+static unsigned char i = 0;
 
-ISR(USART1_RX_vect)
+static unsigned char led = 0;
+static unsigned char j = 0;
+
+#define LED_ON (PORTD |= (1<<6))
+#define LED_OFF (PORTD &= ~(1<<6))
+
+static unsigned char sendReport = 0;
+
+void Serial_Task(void)
+{
+  if((UCSR1A & (1 << RXC1)))
+  {
+    while(i < sizeof(report))
+    {
+      pdata[i++] = Serial_RxByte();
+    }
+    i = 0;
+    sendReport = 1;
+    ++j;
+    if(!j)
+    {
+      if(led)
+      {
+        LED_OFF;
+        led = 0;
+      }
+      else
+      {
+        LED_ON;
+        led = 1;
+      }
+    }
+  }
+}
+
+/*ISR(USART1_RX_vect)
 {
   pdata[i] = UDR1; // Fetch the received byte value
   //UDR1 = pdata[i]; // Echo back the received byte back to the computer
 
   i++;
   i%=sizeof(report);
-}
+}*/
 
 void serial_init(void)
 {
@@ -92,14 +127,10 @@ void serial_init(void)
 
    UCSR1C |= _BV(UCSZ10) | _BV(UCSZ11); /* 8 bits per char */
 
-   UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
+   //UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
 
    return;
 }
-
-
-#define LED_ON (PORTD |= (1<<6))
-#define LED_OFF (PORTD &= ~(1<<6))
 
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
@@ -111,6 +142,7 @@ int main(void)
 
 	for (;;)
 	{
+	  Serial_Task();
 		HID_Task();
 		USB_USBTask();
 	}
@@ -194,9 +226,6 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 	// One millisecond has elapsed.
 }*/
 
-static unsigned char led = 0;
-static unsigned char j = 0;
-
 /** Sends the next HID report to the host, via the IN endpoint. */
 void SendNextReport(void)
 {
@@ -205,29 +234,18 @@ void SendNextReport(void)
 
   //Endpoint_SetEndpointDirection(ENDPOINT_DIR_IN);
 
-	/* Check if IN Endpoint Ready for Read/Write and if we should send a new report */
-	if (Endpoint_IsReadWriteAllowed())
+	if (sendReport)
 	{
+	  /* Wait until the host is ready to accept another packet */
+	  while (!Endpoint_IsINReady()) {}
+
 		/* Write IN Report Data */
 		Endpoint_Write_Stream_LE(report, sizeof(report));
 		
+		sendReport = 0;
+
 		/* Finalize the stream transfer to send the last packet */
 		Endpoint_ClearIN();
-
-		++j;
-    if(!j)
-    {
-      if(led)
-      {
-        LED_OFF;
-        led = 0;
-      }
-      else
-      {
-        LED_ON;
-        led = 1;
-      }
-    }
 	}
 
   //Endpoint_SetEndpointDirection(ENDPOINT_DIR_OUT);
