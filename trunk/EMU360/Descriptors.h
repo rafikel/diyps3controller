@@ -40,7 +40,6 @@
 		#include <avr/pgmspace.h>
 
 		#include <LUFA/Drivers/USB/USB.h>
-		#include <LUFA/Drivers/USB/Class/HID.h>
 
 	/* Type Defines: */
 		/** Type define for the device configuration descriptor structure. This must be defined in the
@@ -73,22 +72,20 @@
 		} USB_Descriptor_Configuration_t;
 					
 	/* Macros: */
-		/** Endpoint number of the X360PE HID reporting IN endpoint. */
-		#define X360PE_EPNUM11               1
-    #define X360PE_EPNUM12               2
-    #define X360PE_EPNUM21               3
-    #define X360PE_EPNUM22               4
-    #define X360PE_EPNUM23               5
-    #define X360PE_EPNUM24               5
-    #define X360PE_EPNUM31               6
+		/** Endpoint number of the X360_EMU HID reporting IN endpoint. */
+		#define X360_EMU_EPNUM11               1
+    #define X360_EMU_EPNUM12               2
+    #define X360_EMU_EPNUM21               3
+    #define X360_EMU_EPNUM22               4
+    #define X360_EMU_EPNUM23               5
+    #define X360_EMU_EPNUM24               5
+    #define X360_EMU_EPNUM31               6
 		
-		/** Size in bytes of the X360PE HID reporting IN and OUT endpoints. */
-		#define X360PE_EPSIZE              32
+		/** Size in bytes of the X360_EMU HID reporting IN and OUT endpoints. */
+		#define X360_EMU_EPSIZE              32
 
 	/* Function Prototypes: */
-    uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
-                                        const uint8_t wIndex,
-                                        const void** const DescriptorAddress)
-                                        ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
+    uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex, void** const DescriptorAddress, uint8_t* MemoryAddressSpace)
+                      ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
 
 #endif
