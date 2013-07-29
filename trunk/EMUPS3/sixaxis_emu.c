@@ -1,14 +1,13 @@
 /*
-             LUFA Library
-     Copyright (C) Dean Camera, 2010.
-              
-  dean [at] fourwalledcubicle [dot] com
-      www.fourwalledcubicle.com
-*/
+  Copyright 2013  Mathieu Laurendeau (mat.lau [at] laposte [dot] net)
 
-/*
-  Copyright 2010  Denver Gingerich (denver [at] ossguy [dot] com)
-      Based on code by Dean Camera (dean [at] fourwalledcubicle [dot] com)
+  Redistributed under the GPLv3 licence.
+
+  Based on code by
+    Denver Gingerich (denver [at] ossguy [dot] com)
+    Dean Camera (dean [at] fourwalledcubicle [dot] com)
+
+  Original licence:
 
   Permission to use, copy, modify, distribute, and sell this 
   software and its documentation for any purpose is hereby granted
@@ -31,40 +30,27 @@
 
 /** \file
  *
- *  Main source file for the Keyboard demo. This file contains the main tasks of the demo and
+ *  Main source file for the sixaxis controller. This file contains the main tasks and
  *  is responsible for the initial application hardware configuration.
  */
  
 #include "sixaxis_emu.h"
-#include <util/delay.h>
+#include <LUFA/Drivers/Peripheral/Serial.h>
 
 /*
- * The master bdaddr, read from eeprom at startup.
+ * The master bdaddr.
  */
-uint8_t masterBdaddr[6];
+static uint8_t masterBdaddr[6];
 
-uint8_t byte_6_ef;
+/*
+ * A byte to save.
+ */
+static uint8_t byte_6_ef;
 
 /*
  * Indicates if the master bdaddr was already requested or not.
  */
 static unsigned char reply = 0;
-
-/** Indicates what report mode the host has requested, true for normal HID reporting mode, false for special boot
- *  protocol reporting mode.
- */
-bool UsingReportProtocol = true;
-
-/** Current Idle period. This is set by the host via a Set Idle HID class request to silence the device's reports
- *  for either the entire idle duration, or until the report status changes (e.g. the user presses a key).
- */
-uint16_t IdleCount = 500;
-
-/** Current Idle period remaining. When the IdleCount value is set, this tracks the remaining number of idle
- *  milliseconds. This is separate to the IdleCount timer and is incremented and compared as the host may request 
- *  the current idle period via a Get Idle HID class request, thus its value must be preserved.
- */
-uint16_t IdleMSRemaining = 0;
 
 /*
  * The reference report data.
@@ -88,17 +74,52 @@ static uint8_t report[49] = {
 #define USART_BAUDRATE 500000
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
-uint8_t* pdata = report;
-unsigned char i = 0;
+static uint8_t* pdata = report;
+static unsigned char i = 0;
 
-ISR(USART1_RX_vect)
+static unsigned char led = 0;
+static unsigned char j = 0;
+
+#define LED_ON (PORTD |= (1<<6))
+#define LED_OFF (PORTD &= ~(1<<6))
+
+static unsigned char sendReport = 0;
+
+void Serial_Task(void)
+{
+  if((UCSR1A & (1 << RXC1)))
+  {
+    while(i < sizeof(report))
+    {
+      pdata[i++] = Serial_RxByte();
+    }
+    i = 0;
+    sendReport = 1;
+    ++j;
+    if(!j)
+    {
+      if(led)
+      {
+        LED_OFF;
+        led = 0;
+      }
+      else
+      {
+        LED_ON;
+        led = 1;
+      }
+    }
+  }
+}
+
+/*ISR(USART1_RX_vect)
 {
   pdata[i] = UDR1; // Fetch the received byte value
   //UDR1 = pdata[i]; // Echo back the received byte back to the computer
 
   i++;
   i%=sizeof(report);
-}
+}*/
 
 void serial_init(void)
 {
@@ -109,14 +130,10 @@ void serial_init(void)
 
    UCSR1C |= _BV(UCSZ10) | _BV(UCSZ11); /* 8 bits per char */
 
-   UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
+   //UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
 
    return;
 }
-
-
-#define LED_ON (PORTD |= (1<<6))
-#define LED_OFF (PORTD &= ~(1<<6))
 
 /** Main program entry point. This routine configures the hardware required by the application, then
  *  enters a loop to run the application tasks in sequence.
@@ -128,6 +145,7 @@ int main(void)
 	
 	for (;;)
 	{
+    Serial_Task();
 		HID_Task();
 		USB_USBTask();
 	}
@@ -158,9 +176,6 @@ void EVENT_USB_Device_Connect(void)
 {
 	/* Indicate USB enumerating */
 	LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
-
-	/* Default to report protocol on connect */
-	UsingReportProtocol = true;
 }
 
 /** Event handler for the USB_Disconnect event. This indicates that the device is no longer connected to a host via
@@ -173,14 +188,14 @@ void EVENT_USB_Device_Disconnect(void)
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This is fired when the host sets the current configuration
- *  of the USB device after enumeration, and configures the keyboard device endpoints.
+ *  of the USB device after enumeration, and configures the device endpoints.
  */
 void EVENT_USB_Device_ConfigurationChanged(void)
 {	
 	/* Indicate USB connected and ready */
 	LEDs_SetAllLEDs(LEDMASK_USB_READY);
 
-	/* Setup Keyboard Keycode Report Endpoint */
+	/* Setup IN Report Endpoint */
 	if (!(Endpoint_ConfigureEndpoint(SIXAXIS_IN_EPNUM, EP_TYPE_INTERRUPT,
 		                             ENDPOINT_DIR_IN, SIXAXIS_EPSIZE,
 	                                 ENDPOINT_BANK_SINGLE)))
@@ -188,7 +203,7 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 		LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 	}
 	
-	/* Setup Keyboard LED Report Endpoint */
+	/* Setup OUT LED Report Endpoint */
 	if (!(Endpoint_ConfigureEndpoint(SIXAXIS_OUT_EPNUM, EP_TYPE_INTERRUPT,
 		                             ENDPOINT_DIR_OUT, SIXAXIS_EPSIZE,
 	                                 ENDPOINT_BANK_SINGLE)))
@@ -196,7 +211,7 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 		LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 	}
 	
-	USB_Device_EnableSOFEvents();
+	//USB_Device_EnableSOFEvents();
 }
 
 const char PROGMEM buf301[] = {
@@ -367,151 +382,52 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 			}
 			
 			break;
-		case REQ_GetProtocol:
-			if (USB_ControlRequest.bmRequestType == (REQDIR_DEVICETOHOST | REQTYPE_CLASS | REQREC_INTERFACE))
-			{
-				Endpoint_ClearSETUP();
-				
-				/* Write the current protocol flag to the host */
-				Endpoint_Write_Byte(UsingReportProtocol);
-				
-				/* Send the flag to the host */
-				Endpoint_ClearIN();
 
-				Endpoint_ClearStatusStage();
-			}
-			
-			break;
-		case REQ_SetProtocol:
-			if (USB_ControlRequest.bmRequestType == (REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE))
-			{
-				Endpoint_ClearSETUP();
-
-				/* Set or clear the flag depending on what the host indicates that the current Protocol should be */
-				UsingReportProtocol = (USB_ControlRequest.wValue != 0);
-
-				Endpoint_ClearStatusStage();
-			}
-			
-			break;
-		case REQ_SetIdle:
-			if (USB_ControlRequest.bmRequestType == (REQDIR_HOSTTODEVICE | REQTYPE_CLASS | REQREC_INTERFACE))
-			{
-				Endpoint_ClearSETUP();
-				
-				/* Get idle period in MSB, IdleCount must be multiplied by 4 to get number of milliseconds */
-				IdleCount = ((USB_ControlRequest.wValue & 0xFF00) >> 6);
-				
-				Endpoint_ClearStatusStage();
-			}
-			
-			break;
-		case REQ_GetIdle:
-			if (USB_ControlRequest.bmRequestType == (REQDIR_DEVICETOHOST | REQTYPE_CLASS | REQREC_INTERFACE))
-			{		
-				Endpoint_ClearSETUP();
-				
-				/* Write the current idle duration to the host, must be divided by 4 before sent to host */
-				Endpoint_Write_Byte(IdleCount >> 2);
-				
-				/* Send the flag to the host */
-				Endpoint_ClearIN();
-
-				Endpoint_ClearStatusStage();
-			}
-
-			break;
 	}
 }
 
 /** Event handler for the USB device Start Of Frame event. */
-void EVENT_USB_Device_StartOfFrame(void)
+/*void EVENT_USB_Device_StartOfFrame(void)
 {
-	/* One millisecond has elapsed, decrement the idle time remaining counter if it has not already elapsed */
-	if (IdleMSRemaining)
-	  IdleMSRemaining--;
-}
+	// One millisecond has elapsed.
+}*/
 
-/** Processes a received LED report, and updates the board LEDs states to match.
- *
- *  \param[in] LEDReport  LED status report from the host
- */
-void ProcessLEDReport(uint8_t LEDReport)
-{
-	
-}
 
-static int led = 0;
-static unsigned int j = 0;
-
-/** Sends the next HID report to the host, via the keyboard data endpoint. */
+/** Sends the next HID report to the host, via the IN endpoint. */
 void SendNextReport(void)
 {
-	static uint8_t prevReport[sizeof(report)];
-	bool SendReport = true;
-	
-	/* Check to see if the report data has changed - if so a report MUST be sent */
-	SendReport = (memcmp(prevReport, report, sizeof(report)) != 0);
-	
-	/* Check if the idle period is set and has elapsed */
-	if ((IdleCount != HID_IDLE_CHANGESONLY) && (!(IdleMSRemaining)))
-	{
-		/* Reset the idle time remaining counter */
-		IdleMSRemaining = IdleCount;
-		
-		/* Idle period is set and has elapsed, must send a report to the host */
-		SendReport = true;
-	}
-	
-	/* Select the Keyboard Report Endpoint */
+	/* Select the IN Report Endpoint */
 	Endpoint_SelectEndpoint(SIXAXIS_IN_EPNUM);
 
-	/* Check if Keyboard Endpoint Ready for Read/Write and if we should send a new report */
-	if (Endpoint_IsReadWriteAllowed() && SendReport)
-	{
-		/* Save the current report data for later comparison to check for changes */
-		memcpy(prevReport, report, sizeof(report));
-	
-		/* Write Keyboard Report Data */
+  if (sendReport)
+  {
+    /* Wait until the host is ready to accept another packet */
+    while (!Endpoint_IsINReady()) {}
+
+		/* Write IN Report Data */
 		Endpoint_Write_Stream_LE(report, sizeof(report));
 		
+		sendReport = 0;
+
 		/* Finalize the stream transfer to send the last packet */
 		Endpoint_ClearIN();
-
-		++j;
-    if(!(j%250))
-    {
-      if(led)
-      {
-        LED_OFF;
-        led = 0;
-      }
-      else
-      {
-        LED_ON;
-        led = 1;
-      }
-    }
 	}
 }
 
-/** Reads the next LED status report from the host from the LED data endpoint, if one has been sent. */
+/** Reads the next OUT report from the host from the OUT endpoint, if one has been sent. */
 void ReceiveNextReport(void)
 {
-	/* Select the Keyboard LED Report Endpoint */
+	/* Select the OUT Report Endpoint */
 	Endpoint_SelectEndpoint(SIXAXIS_OUT_EPNUM);
 
-	/* Check if Keyboard LED Endpoint contains a packet */
+	/* Check if OUT Endpoint contains a packet */
 	if (Endpoint_IsOUTReceived())
 	{
 		/* Check to see if the packet contains data */
 		if (Endpoint_IsReadWriteAllowed())
 		{
-			/* Read in the LED report from the host */
-			uint8_t LEDReport = Endpoint_Read_Byte();
-
-			/* Process the read LED report from the host */
-			ProcessLEDReport(LEDReport);
+			/* Discard data */
+			Endpoint_Discard_Byte();
 		}
 
 		/* Handshake the OUT Endpoint - clear endpoint and ready for next report */

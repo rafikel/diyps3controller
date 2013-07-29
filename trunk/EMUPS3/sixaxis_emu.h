@@ -53,62 +53,11 @@
 		#include <LUFA/Drivers/Board/LEDs.h>
 
 	/* Macros: */
-		/** Idle period indicating that reports should be sent only when the inputs have changed */
-		#define HID_IDLE_CHANGESONLY        0
-
 		/** HID Class specific request to get the next HID report from the device. */
 		#define REQ_GetReport               0x01
 
-		/** HID Class specific request to get the idle timeout period of the device. */
-		#define REQ_GetIdle                 0x02
-
 		/** HID Class specific request to send the next HID report to the device. */
 		#define REQ_SetReport               0x09
-
-		/** HID Class specific request to set the idle timeout period of the device. */
-		#define REQ_SetIdle                 0x0A
-
-		/** HID Class specific request to get the current HID protocol in use, either report or boot. */
-		#define REQ_GetProtocol             0x03
-
-		/** HID Class specific request to set the current HID protocol in use, either report or boot. */
-		#define REQ_SetProtocol             0x0B
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's left control key is currently pressed. */
-		#define KEYBOARD_MODIFER_LEFTCTRL   (1 << 0)
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's left shift key is currently pressed. */
-		#define KEYBOARD_MODIFER_LEFTSHIFT  (1 << 1)
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's left alt key is currently pressed. */
-		#define KEYBOARD_MODIFER_LEFTALT    (1 << 2)
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's left GUI key is currently pressed. */
-		#define KEYBOARD_MODIFER_LEFTGUI    (1 << 3)
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's right control key is currently pressed. */
-		#define KEYBOARD_MODIFER_RIGHTCTRL  (1 << 4)
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's right shift key is currently pressed. */
-		#define KEYBOARD_MODIFER_RIGHTSHIFT (1 << 5)
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's right alt key is currently pressed. */
-		#define KEYBOARD_MODIFER_RIGHTALT   (1 << 6)
-
-		/** Constant for a keyboard report modifier byte, indicating that the keyboard's right GUI key is currently pressed. */
-		#define KEYBOARD_MODIFER_RIGHTGUI   (1 << 7)
-
-		/** Constant for a keyboard output report LED byte, indicating that the host's NUM LOCK mode is currently set. */
-		#define KEYBOARD_LED_NUMLOCK        (1 << 0)
-		
-		/** Constant for a keyboard output report LED byte, indicating that the host's CAPS LOCK mode is currently set. */
-		#define KEYBOARD_LED_CAPSLOCK       (1 << 1)
-
-		/** Constant for a keyboard output report LED byte, indicating that the host's SCROLL LOCK mode is currently set. */
-		#define KEYBOARD_LED_SCROLLLOCK     (1 << 2)
-
-		/** Constant for a keyboard output report LED byte, indicating that the host's KATANA mode is currently set. */
-		#define KEYBOARD_LED_KATANA         (1 << 3)
 		
 		/** LED mask for the library LED driver, to indicate that the USB interface is not ready. */
 		#define LEDMASK_USB_NOTREADY        LEDS_LED1
@@ -130,7 +79,7 @@
 		void EVENT_USB_Device_Disconnect(void);
 		void EVENT_USB_Device_ConfigurationChanged(void);
 		void EVENT_USB_Device_UnhandledControlRequest(void);
-		void EVENT_USB_Device_StartOfFrame(void);
+//    void EVENT_USB_Device_StartOfFrame(void);
 
 		void ProcessLEDReport(uint8_t LEDReport);
 		void SendNextReport(void);
