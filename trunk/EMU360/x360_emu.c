@@ -148,12 +148,7 @@ static inline void SerialTxData(char* buf)
 
 void serial_init(void)
 {
-   UBRR1H = (BAUD_PRESCALE >> 8); // Load upper 8-bits of the baud rate value into the high byte of the UBRR register
-   UBRR1L = BAUD_PRESCALE; // Load lower 8-bits of the baud rate value into the low byte of the UBRR register
-
-   UCSR1B |= (1 << RXEN1) | (1 << TXEN1); // Turn on the transmission and reception circuitry
-
-   UCSR1C |= _BV(UCSZ10) | _BV(UCSZ11); /* 8 bits per char */
+   Serial_Init(USART_BAUDRATE, false);
 
    //UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
 
