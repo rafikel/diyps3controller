@@ -183,6 +183,8 @@ void SetupHardware(void)
 
   Serial_RxByte();
 
+  LED_ON;
+
   /* Hardware Initialization */
   //LEDs_Init();
   DDRD |= (1<<6);
