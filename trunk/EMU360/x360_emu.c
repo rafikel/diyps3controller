@@ -54,7 +54,6 @@ static uint8_t report[20] = {
 };
 
 #define USART_BAUDRATE 500000
-#define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
 static uint8_t* pdata = report;
 static unsigned char i = 0;
