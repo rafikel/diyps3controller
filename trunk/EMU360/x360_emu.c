@@ -61,8 +61,10 @@ static unsigned char i = 0;
 static unsigned char led = 0;
 static unsigned char j = 0;
 
-#define LED_ON (PORTD |= (1<<6))
-#define LED_OFF (PORTD &= ~(1<<6))
+#define LED_PIN 5
+
+#define LED_ON (PORTD |= (1<<LED_PIN))
+#define LED_OFF (PORTD &= ~(1<<LED_PIN))
 
 static unsigned char sendReport = 0;
 
@@ -185,7 +187,10 @@ void SetupHardware(void)
 
   /* Hardware Initialization */
   //LEDs_Init();
-  DDRD |= (1<<6);
+  DDRD |= (1<<LED_PIN);
+  
+  LED_ON;
+  
   USB_Init();
 }
 
