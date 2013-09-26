@@ -73,19 +73,15 @@
 					
 	/* Macros: */
 		/** Endpoint number of the X360_EMU HID reporting IN endpoint. */
-		#define X360_EMU_EPNUM11               1
-    #define X360_EMU_EPNUM12               2
-    #define X360_EMU_EPNUM21               3
-    #define X360_EMU_EPNUM22               4
-    #define X360_EMU_EPNUM23               5
-    #define X360_EMU_EPNUM24               5
-    #define X360_EMU_EPNUM31               6
+		#define X360_EMU_EPNUM11               (ENDPOINT_DIR_IN  | 1)
+    #define X360_EMU_EPNUM12               (ENDPOINT_DIR_OUT | 2)
+    #define X360_EMU_EPNUM21               (ENDPOINT_DIR_IN  | 3)
+    #define X360_EMU_EPNUM22               (ENDPOINT_DIR_OUT | 4)
+    #define X360_EMU_EPNUM23               (ENDPOINT_DIR_IN  | 5)
+    #define X360_EMU_EPNUM24               (ENDPOINT_DIR_OUT | 5)
+    #define X360_EMU_EPNUM31               (ENDPOINT_DIR_IN  | 6)
 		
 		/** Size in bytes of the X360_EMU HID reporting IN and OUT endpoints. */
 		#define X360_EMU_EPSIZE              32
-
-	/* Function Prototypes: */
-    uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex, void** const DescriptorAddress, uint8_t* MemoryAddressSpace)
-                      ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
 
 #endif

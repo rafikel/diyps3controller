@@ -36,6 +36,7 @@
  
 #include "x360_emu.h"
 #include <LUFA/Drivers/Peripheral/Serial.h>
+#include <avr/wdt.h>
 
 /*
  * The reference report data.
@@ -61,7 +62,7 @@ static unsigned char i = 0;
 static unsigned char led = 0;
 static unsigned char j = 0;
 
-#define LED_PIN 5
+#define LED_PIN 6
 
 #define LED_ON (PORTD |= (1<<LED_PIN))
 #define LED_OFF (PORTD &= ~(1<<LED_PIN))
@@ -70,24 +71,39 @@ static unsigned char sendReport = 0;
 
 static unsigned char spoof_initialized = 0;
 
-void Serial_Task(void)
+void forceHardReset(void)
+{
+  cli(); // disable interrupts
+  wdt_enable(WDTO_15MS); // enable watchdog
+  while(1); // wait for watchdog to reset processor
+}
+
+static inline int16_t Serial_BlockingReceiveByte(void)
+{
+  while(!Serial_IsCharReceived());
+  return UDR1;
+}
+
+/*void Serial_Task(void)
 {
   if(!spoof_initialized)
   {
     return;
   }
 
-  /*if((UCSR1A & (1 << DOR1)))
+  if((UCSR1A & (1 << DOR1)))
   {
     LED_ON;
-  }*/
+  }
 
-  if((UCSR1A & (1 << RXC1)))
+  if(Serial_IsCharReceived())
   {
+    LED_ON;
     while(i < sizeof(report))
     {
-      pdata[i++] = Serial_RxByte();
+      pdata[i++] = Serial_BlockingReceiveByte();
     }
+    LED_OFF;
     i = 0;
     sendReport = 1;
     ++j;
@@ -105,55 +121,34 @@ void Serial_Task(void)
       }
     }
   }
-}
-
-static inline void SerialTxHeader(void)
-{
-  Serial_TxByte(USB_ControlRequest.bmRequestType);
-  Serial_TxByte(USB_ControlRequest.bRequest);
-  Serial_TxByte(USB_ControlRequest.wValue & 0xFF);
-  Serial_TxByte(USB_ControlRequest.wValue >> 8);
-  Serial_TxByte(USB_ControlRequest.wIndex & 0xFF);
-  Serial_TxByte(USB_ControlRequest.wIndex >> 8);
-  Serial_TxByte(USB_ControlRequest.wLength & 0xFF);
-  Serial_TxByte(USB_ControlRequest.wLength >> 8);
-}
+}*/
 
 static inline void SerialRxData(char* buf, unsigned short* length)
 {
   unsigned short cpt = 0;
-  *length = Serial_RxByte() + (Serial_RxByte() << 8);
+  *length = Serial_BlockingReceiveByte() + (Serial_BlockingReceiveByte() << 8);
   while(cpt < *length)
   {
-    buf[cpt++] = Serial_RxByte();
+    buf[cpt++] = Serial_BlockingReceiveByte();
   };
 }
 
-static inline void SerialTxData(char* buf)
+ISR(USART1_RX_vect)
 {
-  unsigned short cpt = 0;
-  while(cpt < USB_ControlRequest.wLength)
+  pdata[i++] = UDR1;
+  while(i < sizeof(report))
   {
-    Serial_TxByte(buf[cpt++]);
+    pdata[i++] = Serial_BlockingReceiveByte();
   }
+  i = 0;
+  sendReport = 1;
 }
-
-/*ISR(USART1_RX_vect)
-{
-  pdata[i] = UDR1; // Fetch the received byte value
-  //UDR1 = pdata[i]; // Echo back the received byte back to the computer
-
-  i++;
-  i%=sizeof(report);
-}*/
 
 void serial_init(void)
 {
    Serial_Init(USART_BAUDRATE, false);
 
    //UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
-
-   return;
 }
 
 /** Main program entry point. This routine configures the hardware required by the application, then
@@ -163,9 +158,11 @@ int main(void)
 {
   SetupHardware();
 
+  GlobalInterruptEnable();
+
   for (;;)
   {
-    Serial_Task();
+    //Serial_Task();
     HID_Task();
     USB_USBTask();
   }
@@ -183,14 +180,12 @@ void SetupHardware(void)
 
   serial_init();
 
-  Serial_RxByte();
+  Serial_BlockingReceiveByte();
 
   /* Hardware Initialization */
   //LEDs_Init();
   DDRD |= (1<<LED_PIN);
-  
-  LED_ON;
-  
+
   USB_Init();
 }
 
@@ -219,12 +214,12 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 {
   LEDs_SetAllLEDs(LEDMASK_USB_READY);
 
-  if (!Endpoint_ConfigureEndpoint(X360_EMU_EPNUM11, EP_TYPE_INTERRUPT, ENDPOINT_DIR_IN, X360_EMU_EPSIZE, ENDPOINT_BANK_SINGLE))
+  if (!Endpoint_ConfigureEndpoint(X360_EMU_EPNUM11, EP_TYPE_INTERRUPT, X360_EMU_EPSIZE, 1))
   {
     LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
   }
 
-  if(!Endpoint_ConfigureEndpoint(X360_EMU_EPNUM12, EP_TYPE_INTERRUPT, ENDPOINT_DIR_OUT, X360_EMU_EPSIZE, ENDPOINT_BANK_SINGLE))
+  if(!Endpoint_ConfigureEndpoint(X360_EMU_EPNUM12, EP_TYPE_INTERRUPT, X360_EMU_EPSIZE, 1))
   {
     LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
   }
@@ -234,14 +229,19 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 
 static unsigned char response = 0;
 
-/** Event handler for the USB_UnhandledControlRequest event. This is used to catch standard and class specific
- *  control requests that are not handled internally by the USB library (including the HID commands, which are
- *  all issued via the control endpoint), so that they can be handled appropriately for the application.
+static char buf[64];
+static unsigned short length;
+
+/** Event handler for the USB_ControlRequest event. This is used to catch and process control requests sent to
+ *  the device from the USB host before passing along unhandled control requests to the library for processing
+ *  internally.
  */
-void EVENT_USB_Device_UnhandledControlRequest(void)
+void EVENT_USB_Device_ControlRequest(void)
 {
-  char buf[256];
-  unsigned short length;
+  if(!Endpoint_IsSETUPReceived())
+  {
+    return;
+  }
 
   if(USB_ControlRequest.bmRequestType & REQTYPE_VENDOR)
   {
@@ -253,7 +253,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
         Endpoint_Read_Control_Stream_LE(buf, USB_ControlRequest.wLength);
         Endpoint_ClearIN();
       }
-      SerialTxHeader();
+      Serial_SendData(&USB_ControlRequest, sizeof(USB_ControlRequest));
       if( USB_ControlRequest.bmRequestType & REQDIR_DEVICETOHOST )
       {
         /*if(USB_ControlRequest.wValue == 0x5c10 && response)
@@ -274,7 +274,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
           {
             spoof_initialized = 1;
             LED_OFF;
-            //UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
+            UCSR1B |= (1 << RXCIE1); // Enable the USART Receive Complete interrupt (USART_RXC)
           }
           response = 1;
         }
@@ -285,14 +285,18 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
       }
       else
       {
-        SerialTxData(buf);
+        Serial_SendData(buf, USB_ControlRequest.wLength);
       }
     }
     else
     {
-      //SerialTxHeader();
+      //Serial_SendData(&USB_ControlRequest, sizeof(USB_ControlRequest));
       if( USB_ControlRequest.bmRequestType & REQDIR_DEVICETOHOST )
       {
+        if(USB_ControlRequest.wValue == 0x5b17)
+        {
+          forceHardReset();
+        }
         Endpoint_ClearSETUP();
         if(USB_ControlRequest.bRequest == 0x01)
         {
@@ -324,7 +328,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
         Endpoint_ClearSETUP();
         Endpoint_Read_Control_Stream_LE(buf, USB_ControlRequest.wLength);
         Endpoint_ClearIN();
-        //SerialTxData(buf);
+        //Serial_SendData(buf, USB_ControlRequest.wLength);
       }
     }
   }
@@ -349,7 +353,7 @@ void SendNextReport(void)
     while (!Endpoint_IsINReady()) {}
 
     /* Write IN Report Data */
-    Endpoint_Write_Stream_LE(report, sizeof(report));
+    Endpoint_Write_Stream_LE(report, sizeof(report), NULL);
 
     sendReport = 0;
 
@@ -371,7 +375,7 @@ void ReceiveNextReport(void)
     if (Endpoint_IsReadWriteAllowed())
     {
       /* Discard data */
-      Endpoint_Discard_Byte();
+      Endpoint_Discard_8();
     }
 
     /* Handshake the OUT Endpoint - clear endpoint and ready for next report */
