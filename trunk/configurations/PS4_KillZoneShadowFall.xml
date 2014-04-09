@@ -8,6 +8,22 @@
       </mouse_options_list>
       <intensity_list/>
       <button_map>
+        <!--<button id="abs_axis_18" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="1"/>
+        </button>
+        <button id="abs_axis_18" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="2"/>
+        </button>
+        <button id="abs_axis_18" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="3"/>
+        </button>
+        <button id="abs_axis_18" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="4"/>
+        </button>-->
         <button id="abs_axis_18" label="">
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="f"/>
@@ -146,6 +162,22 @@
         </button>
       </button_map>
       <axis_map>
+        <!--<axis id="rel_axis_4-" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="1"/>
+        </axis>
+        <axis id="rel_axis_4+" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="2"/>
+        </axis>
+        <axis id="rel_axis_5-" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="3"/>
+        </axis>
+        <axis id="rel_axis_5+" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="4"/>
+        </axis>-->
         <axis id="lstick x" label="">
           <device type="joystick" id="0" name="Sony Computer Entertainment Wireless Controller"/>
           <event type="axis" id="0" dead_zone="0" multiplier="0.004" exponent="1.00" shape="Circle"/>
@@ -203,6 +235,10 @@
       </mouse_options_list>
       <intensity_list/>
       <button_map>
+        <button id="abs_axis_18" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="f"/>
+        </button>
         <button id="l2" label="">
           <device type="mouse" id="0" name=""/>
           <event type="button" id="BUTTON_RIGHT"/>
