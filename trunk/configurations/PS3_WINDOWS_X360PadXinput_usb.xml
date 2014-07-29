@@ -34,11 +34,11 @@
           <device type="joystick" id="0" name="X360 Controller"/>
           <event type="button" id="6"/>
         </button>
-        <button id="abs_axis_16" label="">
+        <button id="abs_axis_15" label="">
           <device type="joystick" id="0" name="X360 Controller"/>
           <event type="button" id="7"/>
         </button>
-        <button id="abs_axis_15" label="">
+        <button id="abs_axis_16" label="">
           <device type="joystick" id="0" name="X360 Controller"/>
           <event type="button" id="8"/>
         </button>
