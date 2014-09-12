@@ -60,13 +60,13 @@
 
 
 # MCU name
-MCU = at90usb1286
+MCU = atmega32u4
 
 
 # Target board (see library "Board Types" documentation, NONE for projects not requiring
 # LUFA board drivers). If USER is selected, put custom board drivers in a directory called 
 # "Board" inside the application directory.
-BOARD  = TEENSY
+BOARD  = NONE
 
 
 # Processor frequency.
@@ -156,7 +156,7 @@ ASRC =
 # Optimization level, can be [0, 1, 2, 3, s]. 
 #     0 = turn off optimization. s = optimize for size.
 #     (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
-OPT = 0
+OPT = s
 
 
 # Debugging format.

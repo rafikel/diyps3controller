@@ -48,8 +48,8 @@
 
 		#include <LUFA/Version.h>
 		#include <LUFA/Drivers/USB/USB.h>
-		#include <LUFA/Drivers/Board/Joystick.h>
-		#include <LUFA/Drivers/Board/Buttons.h>
+		//#include <LUFA/Drivers/Board/Joystick.h>
+		//#include <LUFA/Drivers/Board/Buttons.h>
 		#include <LUFA/Drivers/Board/LEDs.h>
 
 	/* Macros: */
@@ -130,7 +130,7 @@
 		{
 			uint8_t buffer[50];
 		} USB_SixaxisReport_Data_t;
-		
+
 	/* Function Prototypes: */
 		void SetupHardware(void);
 		void HID_Task(void);
