@@ -1,3 +1,0 @@
-#summary This wiki explains how to compile GIMX from a Linux terminal.
-
-Moved to: http://gimx.fr/wiki/index.php?title=Development_on_Linux
