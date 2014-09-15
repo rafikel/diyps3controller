@@ -1,3 +1,0 @@
-#summary This wiki explains how to install Windows development tools for GIMX.
-
-Moved to http://gimx.fr/wiki/index.php?title=Development_on_Windows
