@@ -6,6 +6,10 @@
       <mouse_options_list/>
       <intensity_list/>
       <button_map>
+        <button id="abs_axis_17" label="">
+          <device type="joystick" id="0" name="PS4 Controller"/>
+          <event type="button" id="15"/>
+        </button>
         <button id="abs_axis_10" label="">
           <device type="joystick" id="0" name="PS4 Controller"/>
           <event type="button" id="2"/>
