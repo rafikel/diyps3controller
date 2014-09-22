@@ -56,6 +56,10 @@
           <device type="joystick" id="0" name="Sony Computer Entertainment Wireless Controller"/>
           <event type="button" id="12"/>
         </button>
+        <button id="abs_axis_17" label="">
+          <device type="joystick" id="0" name="Sony Computer Entertainment Wireless Controller"/>
+          <event type="button" id="13"/>
+        </button>
         <button id="abs_axis_3" label="">
           <device type="joystick" id="0" name="Sony Computer Entertainment Wireless Controller"/>
           <event type="button" id="14"/>
@@ -140,7 +144,7 @@
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="TAB"/>
         </button>
-        <button id="abs_axis_10" label="">
+        <button id="abs_axis_17" label="">
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="LALT"/>
         </button>
@@ -275,7 +279,7 @@
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="TAB"/>
         </button>
-        <button id="abs_axis_10" label="">
+        <button id="abs_axis_17" label="">
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="LALT"/>
         </button>
@@ -317,6 +321,10 @@
         <button id="abs_axis_18" label="">
           <device type="keyboard" id="0" name=""/>
           <event type="button" id="f"/>
+        </button>
+        <button id="abs_axis_17" label="">
+          <device type="keyboard" id="0" name=""/>
+          <event type="button" id="LALT"/>
         </button>
       </button_map>
       <axis_map>
