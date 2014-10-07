@@ -1,1 +1,1 @@
-This project has moved to [https://github.com/matlo/GIMX github]!
+This project moved to [https://github.com/matlo/GIMX github].
